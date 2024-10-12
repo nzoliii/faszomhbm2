@@ -10,7 +10,7 @@ public class MobConfig {
 	public static int maskmanMinRad = 50;
 	public static boolean maskmanUnderground = true;
 
-	public static boolean enableRaids = false;
+	public static boolean enableRaids = true;
 	public static int raidDelay = 30 * 60 * 60;
 	public static int raidChance = 3;
 	public static int raidAmount = 15;

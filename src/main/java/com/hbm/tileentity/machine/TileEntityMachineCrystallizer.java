@@ -265,7 +265,7 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 				durationMod *= 0.5F;
 			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_speed_3)
 				durationMod *= 0.25F;
-			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_screm)
+			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_scream)
 				durationMod *= 0.1F;
 		}
 
@@ -284,7 +284,7 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 				consumption += 2000;
 			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_speed_3)
 				consumption += 3000;
-			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_screm)
+			if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_scream)
 				consumption += 6000;
 		}
 

@@ -23,6 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.init.MobEffects;
 
 public class EntitySpear extends Entity {
 	
@@ -36,7 +38,10 @@ public class EntitySpear extends Entity {
 	}
 
 	@Override
-	protected void entityInit() { }
+	protected void entityInit() {
+		world.playSound(null, posX, posY, posZ, HBMSoundHandler.fhbm2_ameno, SoundCategory.HOSTILE, 25000.0F, 1.0F);
+	}
+
 
 	@Override
 	public void onUpdate() {
@@ -71,6 +76,7 @@ public class EntitySpear extends Entity {
 				.addAttrib(at).explode();
 				
 				for(EntityPlayer player : world.playerEntities) {
+					player.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 10 * 20, 0));
 					ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 0.05F);
 					AdvancementManager.grantAchievement(player, AdvancementManager.digammaKauaiMoho);
 				}

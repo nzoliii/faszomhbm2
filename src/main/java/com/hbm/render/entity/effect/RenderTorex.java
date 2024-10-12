@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 
+import com.hbm.lib.HBMSoundHandler;
 import org.lwjgl.opengl.GL11;
 
 import com.hbm.entity.effect.EntityNukeTorex;
@@ -84,7 +85,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		amplitude = Math.min(amplitude, 125);
 		int duration = ((int)(amplitude * Math.min(1, (amplitude * amplitude)/(dist * dist))));
 		int swingTimer = duration<<1;
-		cloud.world.playSound(player, cloud.posX, cloud.posY, cloud.posZ, SoundEvents.ENTITY_LIGHTNING_THUNDER, SoundCategory.AMBIENT, amplitude * 10F, 0.8F + cloud.world.rand.nextFloat() * 0.2F);
+		cloud.world.playSound(player, cloud.posX, cloud.posY, cloud.posZ, HBMSoundHandler.fhbm2_nuclear_explosion, SoundCategory.AMBIENT, amplitude * 10F, 0.8F + cloud.world.rand.nextFloat() * 0.2F);
 		
 		if(player.getDisplayName().equals("Vic4Games")) {
 			player.hurtTime = swingTimer<<1;

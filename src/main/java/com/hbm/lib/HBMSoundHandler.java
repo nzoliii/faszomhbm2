@@ -152,7 +152,7 @@ public final class HBMSoundHandler {
 	public static SoundEvent fatmanReload;
 	public static SoundEvent soyuzReady;
 	public static SoundEvent soyuzTakeOff;
-	public static SoundEvent chime;
+	public static SoundEvent fhbm2_chime;
 	public static SoundEvent deagleShoot;
 	public static SoundEvent tauChargeLoop;
 	public static SoundEvent tauChargeLoop2;
@@ -168,7 +168,7 @@ public final class HBMSoundHandler {
 	public static SoundEvent glauncher;
 	public static SoundEvent hksShoot;
 	public static SoundEvent vice;
-	public static SoundEvent screm;
+	public static SoundEvent scream;
 	public static SoundEvent upgradePlug;
 	public static SoundEvent quadroReload;
 	public static SoundEvent fstbmbStart;
@@ -270,8 +270,17 @@ public final class HBMSoundHandler {
 	public static SoundEvent[] geigerSounds;
 	public static SoundEvent[] voiceSounds;
 
-	
-	
+	public static SoundEvent fhbm2_main_menu;
+	public static SoundEvent fhbm2_oppenheimer;
+	public static SoundEvent fhbm2_ameno;
+	public static SoundEvent fhbm2_citadel_alert;
+	public static SoundEvent fhbm2_nuclear_explosion;
+
+
+
+
+
+
 	public static void init() {
 		
 		
@@ -412,7 +421,7 @@ public final class HBMSoundHandler {
 		osiprReload = register("weapon.osiprReload");
 		soyuzReady = register("block.soyuzReady");
 		soyuzTakeOff = register("entity.soyuzTakeoff");
-		chime = register("alarm.chime");
+		fhbm2_chime = register("alarm.fhbm2_chime");
 		deagleShoot = register("weapon.deagleShoot");
 		tauChargeLoop2 = register("weapon.tauChargeLoop2");
 		chopperFlyingLoop = register("entity.chopperFlyingLoop");
@@ -427,7 +436,7 @@ public final class HBMSoundHandler {
 		glauncher = register("weapon.glauncher");
 		hksShoot = register("weapon.hksShoot");
 		vice = register("item.vice");
-		screm = register("block.screm");
+		scream = register("block.scream");
 		upgradePlug = register("item.upgradePlug");
 		tauChargeLoop = register("weapon.tauChargeLoop");
 		quadroReload = register("weapon.quadroReload");
@@ -496,6 +505,14 @@ public final class HBMSoundHandler {
 		
 		geigerSounds = new SoundEvent[]{geiger1, geiger2, geiger3, geiger4, geiger5, geiger6, geiger7, geiger8};
 		voiceSounds = new SoundEvent[]{voices1, voices2, voices3, voices4, voices5, voices6, voices7, voices8};
+
+		fhbm2_main_menu = register("fhbm2_main_menu");
+		fhbm2_oppenheimer = register("fhbm2_oppenheimer");
+		fhbm2_ameno = register("fhbm2_ameno");
+		fhbm2_citadel_alert = register("fhbm2_citadel_alert");
+		fhbm2_nuclear_explosion = register("fhbm2_nuclear_explosion");
+
+
 	}
 	
 	public static SoundEvent register(String name) {

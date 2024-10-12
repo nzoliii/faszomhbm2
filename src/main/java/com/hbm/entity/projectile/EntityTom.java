@@ -14,6 +14,11 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.init.MobEffects;
+
+
 
 public class EntityTom extends EntityThrowable implements IConstantRenderer {
 
@@ -30,11 +35,17 @@ public class EntityTom extends EntityThrowable implements IConstantRenderer {
 		this.lastTickPosY = this.prevPosY = posY;
 		this.lastTickPosZ = this.prevPosZ = posZ;
 		this.setPosition(posX + this.motionX, posY + this.motionY, posZ + this.motionZ);
-		
+
 		if(this.ticksExisted % 100 == 0) {
-			world.playSound(null, posX, posY, posZ, HBMSoundHandler.chime, SoundCategory.HOSTILE, 10000, 1.0F);
+			world.playSound(null, posX, posY, posZ, HBMSoundHandler.fhbm2_chime, SoundCategory.HOSTILE, 10000, 1.0F);
+
+			for(EntityPlayer player : world.playerEntities) {
+				player.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 60 * 20, 0));
+			}
 		}
-        
+
+
+
 		motionY = -0.5;
         
         if(this.world.getBlockState(new BlockPos((int)this.posX, (int)this.posY, (int)this.posZ)).getBlock() != Blocks.AIR)

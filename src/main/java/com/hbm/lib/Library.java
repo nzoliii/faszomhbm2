@@ -100,6 +100,7 @@ public class Library {
 	public static String SweatySwiggs = "5544aa30-b305-4362-b2c1-67349bb499d5";
 	public static String Drillgon = "41ebd03f-7a12-42f3-b037-0caa4d6f235b";
 	public static String Alcater = "0b399a4a-8545-45a1-be3d-ece70d7d48e9";
+	public static String Cringebait = "5760874a-2734-4605-a497-20c9ffbd90ae";
 	public static String ege444 = "42ee978c-442a-4cd8-95b6-29e469b6df10";
 	public static String Doctor17 = "e4ab1199-1c22-4f82-a516-c3238bc2d0d1";
 	public static String Doctor17PH = "4d0477d7-58da-41a9-a945-e93df8601c5a";
@@ -143,6 +144,7 @@ public class Library {
 		superuser.add(Ducxkskiziko);
 		superuser.add(Drillgon);
 		superuser.add(Alcater);
+		superuser.add(Cringebait);
 	}
 
 	public static boolean checkForHeld(EntityPlayer player, Item item) {

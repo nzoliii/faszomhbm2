@@ -1,7 +1,9 @@
 package com.hbm.blocks.bomb;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import com.hbm.lib.HBMSoundHandler;
 import com.hbm.util.I18nUtil;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
@@ -86,13 +88,21 @@ public class NukeGadget extends BlockContainer implements IBomb {
 			}
 		}
 	}
-	
+
 	public boolean igniteTestBomb(World world, int x, int y, int z) {
 		if (!world.isRemote) {
-			
+
+			world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_oppenheimer, SoundCategory.PLAYERS, 50000.0F, 1.0F); // x,y,z,sound,volume,pitch
+
+			try {
+				TimeUnit.MILLISECONDS.sleep(3500);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+
 			world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 1.0f, world.rand.nextFloat() * 0.1F + 0.9F); // x,y,z,sound,volume,pitch
-			
-	    	world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
+
+			world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
 			if (BombConfig.enableNukeClouds) {
 				EntityNukeTorex.statFac(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.gadgetRadius);
 			}
