@@ -3,7 +3,8 @@
 # Description
 The sequel to [FaszomHBM](https://github.com/nzoliii/faszomhbm).<br>
 This mod is based off of [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
-which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).
+which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).<br>
+Due to the amount and complexity of the recipes of this mod [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei) is strongly recommended.
 
 # Features
 HBM's Nuclear Tech Mod is all about technology, atomic science and nuclear weapons. It features an expansive tech<br>
