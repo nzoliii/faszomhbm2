@@ -1,9 +1,11 @@
 ![fhbm2_title](https://raw.githubusercontent.com/nzoliii/faszomhbm2/refs/heads/main/static_banners/fhbm2_title.png)
 
 # Description
+The sequel to [FaszomHBM](https://github.com/nzoliii/faszomhbm).<br>
 This mod is based off of [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
-which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).
+which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).
 
+# Features
 HBM's Nuclear Tech Mod is all about technology, atomic science and nuclear weapons. It features an expansive tech<br>
 tree of various processing and utility machines, craftable bombs and missiles, guns, and abandoned structures to<br>
 explore. Nukes are no longer just green TNT blocks. You will have to synthesize new types of explosives and enrich<br>
@@ -13,18 +15,6 @@ friends. There are new items exclusive to the FaszomHBM series including nicotin
 my pálinka Som, and The Copper Pig. The main menu has been retextured inspired by the Terraria Calamity Mod.<br>
 In summary, this mod aims to be the funniest version of the HBM mods. You can find out the rest of the features by<br>
 downloading this mod from [Curseforge](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
-
-# Features
-- Nukes
-- Missiles
-- Weapons
-- Huge Machines
-- Radiation and other Hazards
-- Realistic vomit sounds
-- New consumables
-- and more!
-
-(The full changelog will be published at release)
 
 # Build Guide
 Download the repository, then open a shell prompt in that folder, then type the following: ```./gradlew build```<br>
