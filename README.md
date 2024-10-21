@@ -20,4 +20,4 @@ downloading this mod from [Curseforge](https://www.curseforge.com/minecraft/mc-m
 Download the repository, then open a shell prompt in that folder, then type the following: ```./gradlew build```<br>
 Press enter.<br>
 Wait for gradlew to finish building.
-The build will be located in the ```faszomhbm2\build\libs``` folder.
+The build will be located in the ```faszomhbm2/build/libs``` folder.
