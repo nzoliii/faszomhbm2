@@ -5160,4 +5160,14 @@ tile.dummy_plate_launch_table.name=Launch Plate Table
 tile.dummy_port_launch_table.name=Launch Table Port
 tile.dummy_plate_cargo.name=Cargo Plate
 
-item.upgrade_scream.name=Screaming Scientist Upgrade
+tile.fhbm2_copper_pig.name=Copper Pig
+
+item.fhbm2_iceberg_arasaka.name=Iceberg Arasaka
+item.fhbm2_iceberg_black.name=Iceberg Black
+item.fhbm2_iceberg_crazy_mix.name=Iceberg Crazy Mix
+item.fhbm2_iceberg_dragonfire.name=Iceberg Dragonfire
+item.fhbm2_iceberg_emerald.name=Iceberg Emerald
+item.fhbm2_iceberg_sour_berries.name=Iceberg Sour Berries
+item.fhbm2_copper_pig_fragment.name=Copper Pig Fragment
+
+entity.ItemFrame.name=Item Frame

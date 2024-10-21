@@ -37,7 +37,10 @@ public class RenderAccessoryUtility {
 	private static ResourceLocation alcater = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capealcater.png");
 	private static ResourceLocation jame = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capejame.png");
 	private static ResourceLocation golem = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capegolem.png");
-	
+	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_CapeCringebait.png");
+	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_CapeAndor2121.png");
+
+
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player) {
 		String uuid = player.getUniqueID().toString();
 		String name = player.getDisplayName().getUnformattedText();
@@ -105,6 +108,12 @@ public class RenderAccessoryUtility {
 		if(uuid.equals(Library.Golem)) {
 			return golem;
 		}
+		if(uuid.equals(Library.Cringebait)) {
+			return cringebait;
+		}
+		if(uuid.equals(Library.Andor2121)) {
+			return andor2121;
+		}
 		if(Library.contributors.contains(uuid)) {
 			return wiki;
 		}
@@ -120,7 +129,6 @@ public class RenderAccessoryUtility {
 			Map<Type, ResourceLocation> playerTextures = ReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, info, "playerTextures", "field_187107_a");
 
 			playerTextures.put(Type.CAPE, rl);
-		} catch(Exception x) {
-		}
+		} catch(Exception x) {}
 	}
 }

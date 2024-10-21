@@ -1872,6 +1872,19 @@ public class ModItems {
 	public static final Item peas = new ItemPeas("peas").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item marshmallow = new ItemLemon(2, 2, false, "marshmallow").setMaxStackSize(1).setFull3D().setCreativeTab(MainRegistry.consumableTab);
 	public static final Item marshmallow_roasted = new ItemLemon(6, 6, false, "marshmallow_roasted").setMaxStackSize(1).setFull3D().setCreativeTab(MainRegistry.consumableTab);
+
+	//fhbm2 icebergs
+	public static final Item fhbm2_iceberg_arasaka = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_black = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_crazy_mix = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_dragonfire = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_emerald = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_sour_berries = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
+
+	//fhbm2 other stuff
+	public static final Item fhbm2_copper_pig_fragment = new ItemFoodHazard(3, 5, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
+
+
 	//Bongespob arcarmoni
 	public static final Item spongebob_macaroni = new ItemLemon(5, 5, false, "spongebob_macaroni").setCreativeTab(MainRegistry.consumableTab);
 	

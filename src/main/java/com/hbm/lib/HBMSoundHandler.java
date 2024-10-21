@@ -275,6 +275,10 @@ public final class HBMSoundHandler {
 	public static SoundEvent fhbm2_ameno;
 	public static SoundEvent fhbm2_citadel_alert;
 	public static SoundEvent fhbm2_nuclear_explosion;
+	public static SoundEvent fhbm2_copper_pig_bewitches_the_clueless_player;
+	public static SoundEvent fhbm2_copper_pig_scream;
+	public static SoundEvent fhbm2_copper_pig_explosion;
+
 
 
 
@@ -511,6 +515,9 @@ public final class HBMSoundHandler {
 		fhbm2_ameno = register("fhbm2_ameno");
 		fhbm2_citadel_alert = register("fhbm2_citadel_alert");
 		fhbm2_nuclear_explosion = register("fhbm2_nuclear_explosion");
+		fhbm2_copper_pig_bewitches_the_clueless_player = register("fhbm2_copper_pig_bewitches_the_clueless_player");
+		fhbm2_copper_pig_scream = register("fhbm2_copper_pig_scream");
+		fhbm2_copper_pig_explosion = register("fhbm2_copper_pig_explosion");
 
 
 	}

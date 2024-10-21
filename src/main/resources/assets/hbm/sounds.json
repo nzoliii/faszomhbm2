@@ -305,7 +305,12 @@
 
     "fhbm2_main_menu": {"category": "music", "sounds": [{"name": "hbm:fhbm2_main_menu", "stream": true}]},
     "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:player/fhbm2_oppenheimer", "stream": false}]},
-    "fhbm2_ameno": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_ameno", "stream": true}]},
+    "fhbm2_ameno": {"category": "music", "sounds": [{"name": "hbm:fhbm2_ameno", "stream": true}]},
     "fhbm2_citadel_alert": {"category": "hostile", "sounds": [{"name": "hbm:alarm/fhbm2_citadel_alert", "stream": false}]},
-    "fhbm2_nuclear_explosion": {"category": "ambient", "sounds": [{"name": "hbm:fhbm2_nuclear_explosion", "stream": true}]}
+    "fhbm2_nuclear_explosion": {"category": "ambient", "sounds": [{"name": "hbm:fhbm2_nuclear_explosion", "stream": true}]},
+    "fhbm2_copper_pig_bewitches_the_clueless_player": {"category": "ambient", "sounds": [{"name": "hbm:fhbm2_copper_pig_bewitches_the_clueless_player", "stream": false}]},
+    "fhbm2_copper_pig_scream": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_scream", "stream": false}]},
+    "fhbm2_copper_pig_explosion": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_explosion", "stream": false}]}
+
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.hbm.items.ModItems;
 import com.hbm.interfaces.IItemHazard;
+import com.hbm.lib.HBMSoundHandler;
 import com.hbm.modules.ItemHazardModule;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
@@ -21,11 +22,14 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import net.minecraft.item.ItemFood;
+
+import net.minecraft.world.World;
 
 public class ItemFoodHazard extends ItemFood implements IItemHazard {
 
@@ -83,6 +87,40 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
             list.add("right?");
             list.add("§a[RAD-X (4) for 1min]§r");
     	}
+		if(this == ModItems.fhbm2_iceberg_arasaka) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_iceberg_black) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_iceberg_crazy_mix) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_iceberg_dragonfire) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_iceberg_emerald) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_iceberg_sour_berries) {
+			list.add("Iceberg nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_copper_pig_fragment) {
+			list.add("§oI must become one with the Copper Pig.");
+			list.add("§oI must consume this fragment.");
+			list.add("A fragment of the most gracious the most merciful Copper Pig, кабан.");
+			list.add("If the Copper Pig has a million fans, then I am one of them.");
+			list.add("If the Copper Pig has ten fans, then I am one of them.");
+			list.add("If the Copper Pig has only one fan then that is me.");
+			list.add("If the Copper Pig has no fans, then that means I am no longer on earth.");
+			list.add("If the world is against the Copper Pig, then I am against the world. ");
+		}
 
 		this.module.addInformation(stack, list, flagIn);
 		super.addInformation(stack, world, list, flagIn);
@@ -183,6 +221,38 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 30 * 20, 0));
 			player.addPotionEffect(new PotionEffect(HbmPotion.lead, 8 * 20, 2));
 			player.attackEntityFrom(ModDamageSource.lead, 24F);
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_arasaka){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_black){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_crazy_mix){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_dragonfire){
+			worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
+			EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_emerald){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+
+		}
+		if(stack.getItem() == ModItems.fhbm2_iceberg_sour_berries){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+
+		}
+		if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
+			player.world.playSound(null, player.posX, player.posY, player.posZ, HBMSoundHandler.fhbm2_chime, SoundCategory.HOSTILE, 10000, 1.0F);
+			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 2147483647, 255));
+			player.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 2147483647, 255));
+			player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 2147483647, 255));
+			player.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 2147483647, 255));
+			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
 		}
 	}
 

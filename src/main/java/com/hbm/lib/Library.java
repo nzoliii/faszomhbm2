@@ -100,7 +100,6 @@ public class Library {
 	public static String SweatySwiggs = "5544aa30-b305-4362-b2c1-67349bb499d5";
 	public static String Drillgon = "41ebd03f-7a12-42f3-b037-0caa4d6f235b";
 	public static String Alcater = "0b399a4a-8545-45a1-be3d-ece70d7d48e9";
-	public static String Cringebait = "5760874a-2734-4605-a497-20c9ffbd90ae";
 	public static String ege444 = "42ee978c-442a-4cd8-95b6-29e469b6df10";
 	public static String Doctor17 = "e4ab1199-1c22-4f82-a516-c3238bc2d0d1";
 	public static String Doctor17PH = "4d0477d7-58da-41a9-a945-e93df8601c5a";
@@ -110,6 +109,9 @@ public class Library {
 	public static String Pu_238 = "c95fdfd3-bea7-4255-a44b-d21bc3df95e3";
 
 	public static String Golem = "058b52a6-05b7-4d11-8cfa-2db665d9a521";
+	public static String Cringebait = "5760874a-2734-4605-a497-20c9ffbd90ae";
+	public static String Andor2121 = "a31ee99d-8708-43c6-a4e5-29c9e0274018";
+
 	public static Set<String> contributors = Sets.newHashSet(new String[] {
 			"06ab7c03-55ce-43f8-9d3c-2850e3c652de", //mustang_rudolf
 			"5bf069bc-5b46-4179-aafe-35c0a07dee8b", //JMF781
@@ -145,6 +147,7 @@ public class Library {
 		superuser.add(Drillgon);
 		superuser.add(Alcater);
 		superuser.add(Cringebait);
+		superuser.add(Andor2121);
 	}
 
 	public static boolean checkForHeld(EntityPlayer player, Item item) {
