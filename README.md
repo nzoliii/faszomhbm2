@@ -4,10 +4,10 @@ This mod is based off of [Alcater's NTM Extended Edition mod](https://github.com
 which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).
 
 # Features
-HBM's Nuclear Tech Mod is all about technology, atomic science and nuclear weapons.<br>
-It features an expansive tech tree of various processing and utility machines, craftable bombs and missiles, guns, and abandoned structures to explore.<br>
-Nukes are no longer just green TNT blocks.<br>
-You will have to synthesize new types of explosives and enrich uranium before you can send nuclear missiles towards your friends.<br>
+HBM's Nuclear Tech Mod is all about technology, atomic science and nuclear weapons.
+It features an expansive tech tree of various processing and utility machines, craftable bombs and missiles, guns, and abandoned structures to explore.
+Nukes are no longer just green TNT blocks.
+You will have to synthesize new types of explosives and enrich uranium before you can send nuclear missiles towards your friends.
 
 - Nukes
 - Missiles
