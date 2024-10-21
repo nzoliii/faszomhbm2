@@ -14,14 +14,3 @@ public class RefStrings {
 	public static final String CLIENTSIDE = "com.hbm.main.ClientProxy";
 	public static final String SERVERSIDE = "com.hbm.main.ServerProxy";
 }
-
-// Yes I like putting this list here.
-// TODO: Scourge of Univserse is way too loud, reduce it.
-// TODO: Add Kakonyi vomit and cough sounds
-// TODO: Add Copper Pig Statue
-// TODO: Mini Pablo, if player Tuzvarazslo consumes it, recreate the yay_taktiki.mp4 video but in minecraft.
-// TODO: Zyn.
-// TODO: Every iceberg should hurt player Tuzvarazslo
-// TODO: Every version of Som.
-// TODO: Make every snus consumable, ignoring saturation levels.
-// TODO: Abált Szalonna
