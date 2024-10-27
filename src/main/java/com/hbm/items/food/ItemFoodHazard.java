@@ -31,6 +31,10 @@ import net.minecraft.item.ItemFood;
 
 import net.minecraft.world.World;
 
+import com.hbm.util.ContaminationUtil;
+import com.hbm.util.ContaminationUtil.ContaminationType;
+import com.hbm.util.ContaminationUtil.HazardType;
+
 public class ItemFoodHazard extends ItemFood implements IItemHazard {
 
 	ItemHazardModule module;
@@ -244,7 +248,6 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_sour_berries){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-
 		}
 		if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
 			player.world.playSound(null, player.posX, player.posY, player.posZ, HBMSoundHandler.fhbm2_chime, SoundCategory.HOSTILE, 10000, 1.0F);
@@ -253,6 +256,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
+			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 100F);
 		}
 	}
 

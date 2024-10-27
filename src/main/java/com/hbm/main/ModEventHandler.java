@@ -262,6 +262,47 @@ public class ModEventHandler {
 			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.heart_piece), 1, 1, 1));
 			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.scrumpy), 1, 1, 1));
 			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.scrumpy), 1, 1, 1));
+
+			// adding faszomhbm2 loot to chests because i don't want to figure out how to add it to crates
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_arasaka), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_black), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_crazy_mix), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_dragonfire), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_emerald), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_sour_berries), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_VILLAGE_BLACKSMITH, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_copper_pig_fragment), 1, 1, 1));
+
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_arasaka), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_black), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_crazy_mix), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_emerald), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_dragonfire), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_sour_berries), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_ABANDONED_MINESHAFT, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_copper_pig_fragment), 1, 1, 1));
+
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_arasaka), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_black), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_crazy_mix), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_emerald), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_dragonfire), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_sour_berries), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_SIMPLE_DUNGEON, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_copper_pig_fragment), 1, 1, 1));
+
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_arasaka), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_black), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_crazy_mix), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_emerald), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_dragonfire), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_sour_berries), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_DESERT_PYRAMID, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_copper_pig_fragment), 1, 1, 1));
+
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_arasaka), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_black), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_crazy_mix), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_emerald), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_dragonfire), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_iceberg_sour_berries), 1, 1, 1));
+			addWeightedRandomToLootTable(e, LootTableList.CHESTS_JUNGLE_TEMPLE, new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.fhbm2_copper_pig_fragment), 1, 1, 1));
 		}
 	}
 

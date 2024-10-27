@@ -213,7 +213,12 @@
       "hbm:player/fhbm2_zoli_vomit3",
       "hbm:player/fhbm2_zoli_vomit4",
       "hbm:player/fhbm2_zoli_vomit5",
-      "hbm:player/fhbm2_zoli_vomit6"
+      "hbm:player/fhbm2_zoli_vomit6",
+      "hbm:player/fhbm2_zoli_vomit7",
+      "hbm:player/fhbm2_zoli_vomit8",
+      "hbm:player/fhbm2_kakonyi_vomit1",
+      "hbm:player/fhbm2_kakonyi_vomit2",
+      "hbm:player/fhbm2_kakonyi_vomit3"
     ]},
     "player.cough": {"category": "player", "sounds": [
       "hbm:player/fhbm2_andor_cough1",
@@ -230,7 +235,9 @@
       "hbm:player/fhbm2_andor_cough12",
       "hbm:player/fhbm2_zoli_cough1",
       "hbm:player/fhbm2_zoli_cough2",
-      "hbm:player/fhbm2_zoli_cough3"
+      "hbm:player/fhbm2_zoli_cough3",
+      "hbm:player/fhbm2_zoli_cough4",
+      "hbm:player/fhbm2_kakonyi_cough1"
     ]},
     
     "step.metal": {"category": "player", "sounds": [{"name": "hbm:footsteps/metal", "stream": false}]},
