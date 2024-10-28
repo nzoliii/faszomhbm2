@@ -1,35 +1,27 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { // Forge maven
-            name = "Forge maven"
-            url = "https://maven.minecraftforge.net/"
-        }
-        maven { // JEI
-            name = "Progwml6 maven"
-            url = "https://dvs1.progwml6.com/files/maven/"
-        }
-        maven { // Maven mirror backup for JEI files
-            name = "ModMaven"
-            url = "https://modmaven.dev/"
-        }
+        maven { url = "https://dvs1.progwml6.com/files/maven/" }    // Progwml6 Maven
+        maven { url = "https://maven.minecraftforge.net/" }         // Forge Maven
+        maven { url = "https://modmaven.dev/" }                     // ModMaven
     }
+
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
-        
-apply plugin: 'net.minecraftforge.gradle'
+
 apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'net.minecraftforge.gradle'
 
 version = 'Iceberg'
 group = 'com.hbm'
 archivesBaseName = 'FaszomHBM-2-1.12.2'
 
 compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.fork = true
     options.incremental = true
     options.encoding = 'UTF-8'
@@ -39,76 +31,42 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
+
     runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+        "client" {
+            workingDirectory file("./run")
+            mods { "${project.name}" { source sourceSets.main } }
         }
 
-        server {
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+        "server" {
+            workingDirectory file("./run/server")
+            mods { "${project.name}" { source sourceSets.main } }
         }
     }
 }
 
 repositories {
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name = "ModMaven"
-        url = "https://modmaven.dev/"
-    }
-    maven {
-        name = "jared maven"
-        url = "http://maven.blamejared.com/"
-    }
-    maven {
-        name = 'CoFH Maven'
-        url = 'https://maven.covers1624.net'
-    }
-    maven {
-        name = 'Cursemaven'
-        url 'https://cursemaven.com'
-    }
-    maven {
-        name = "Forge Maven"
-        url = "https://maven.minecraftforge.net/"
-    }
-    maven {
-        name = "papermc"
-        url "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
-        name 'Garden of Fancy'
-        url 'https://maven.gofancy.wtf/releases'
-    }
-    maven {
-        name 'velocity'
-        url 'https://nexus.velocitypowered.com/repository/maven-public/'
-    }
+    maven { url = "http://maven.blamejared.com/" }                                  // Jared Maven
+    maven { url = "https://cursemaven.com" }                                        // Curse Maven
+    maven { url = "https://dvs1.progwml6.com/files/maven/" }                        // Progwml6 Maven
+    maven { url = "https://maven.covers1624.net" }                                  // CoFH Maven
+    maven { url = "https://maven.gofancy.wtf/releases" }                            // Garden of Fancy Maven
+    maven { url = "https://maven.minecraftforge.net/" }                             // Forge Maven
+    maven { url = "https://modmaven.dev/" }                                         // ModMaven
+    maven { url = "https://nexus.velocitypowered.com/repository/maven-public/" }    // Velocity Maven
+    maven { url = "https://repo.papermc.io/repository/maven-public/" }              // PaperMC Maven
 }
 
+
 dependencies {
-	minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2860"
-    compile "li.cil.oc:OpenComputers:MC1.12.2-1.7.+:api" 
+    minecraft   "net.minecraftforge:forge:1.12.2-14.23.5.2860"
+    compile     "li.cil.oc:OpenComputers:MC1.12.2-1.7.+:api"
+    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${version_crafttweaker}"
+    compileOnly fg.deobf("curse.maven:baubles-227083:2518667")
+    compileOnly fg.deobf("curse.maven:galacticraft-legacy-564236:4671122")
+    compileOnly fg.deobf("curse.maven:redstoneflux-270789:2920436")
     compileOnly fg.deobf("mezz.jei:jei_1.12.2:${version_jei}:api")
     runtimeOnly fg.deobf("mezz.jei:jei_1.12.2:${version_jei}")
-    compileOnly "CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-${version_crafttweaker}"
-    compileOnly fg.deobf("curse.maven:galacticraft-legacy-564236:4671122")
-    compileOnly fg.deobf("curse.maven:baubles-227083:2518667")
-    compileOnly fg.deobf("curse.maven:redstoneflux-270789:2920436")
-    //compileOnly fg.deobf("cofh:RedstoneFlux:1.12-2.0.0.1:universal")
 }
 
 jar {
@@ -116,26 +74,26 @@ jar {
         attributes([
             "Specification-Title": "FaszomHBM 2",
             "Specification-Vendor": "nzoliii",
-            "Specification-Version": "1", // We are version 1 of ourselves
+            "Specification-Version": "1",
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
+            "Implementation-Vendor" :"nzoliii",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact jar
+        create("mavenJava", MavenPublication) {
+            artifact(tasks.jar)
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            url = uri("file://${project.projectDir}/mcmodsrepo")
         }
     }
 }
