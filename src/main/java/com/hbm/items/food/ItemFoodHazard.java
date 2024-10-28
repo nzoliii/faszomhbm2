@@ -255,7 +255,8 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
-			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 10F);
+			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2147483647, 3));
+			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 5F);
 		}
 	}
 
