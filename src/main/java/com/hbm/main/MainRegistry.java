@@ -8,7 +8,15 @@ import java.util.List;
 import java.util.Random;
 
 import com.hbm.entity.item.EntityMovingPackage;
+import com.hbm.fhbm2CustomMainMenu;
+import com.hbm.fhbm2MenuStateManager;
 import com.hbm.tileentity.network.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.Logger;
 
 import com.hbm.blocks.ModBlocks;
@@ -394,6 +402,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = RefStrings.MODID, version = RefStrings.VERSION, name = RefStrings.NAME)
 public class MainRegistry {
+
+	private boolean customMenuDisplayed = false;
 
 	static {
 		HBMSoundHandler.init();
@@ -1062,6 +1072,35 @@ public class MainRegistry {
 		registerReactorFuels();
 		ControlRegistry.init();
 		OreDictManager.registerOres();
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event) {
+		if (!customMenuDisplayed
+				&& Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
+				&& fhbm2MenuStateManager.isCustomMenuEnabled()) {
+
+			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+			customMenuDisplayed = true;
+		}
+	}
+
+	@SubscribeEvent
+	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+		int yOffset = event.getGui().height / 4 + 48;
+
+		if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
+			event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
+		}
+	}
+
+	@SubscribeEvent
+	public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
+		if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
+			fhbm2MenuStateManager.setCustomMenuEnabled(true);
+			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+		}
 	}
 
 	@EventHandler
