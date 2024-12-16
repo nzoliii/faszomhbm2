@@ -3,8 +3,8 @@ package com.hbm.lib;
 public class RefStrings {
 	public static final String MODID = "hbm";
 	public static final String NAME = "FaszomHBM 2";
-	public static final String VERSION = "BETA";
-	public static final String CHANGELOG = "- I am fucking pissed.$- Half-assed custom main menu instead of retexturing Minecraft's.";
+	public static final String VERSION = "Réz-Sárban-Dagonyázó";
+	public static final String CHANGELOG = "- Took a long break.$- Fixed crash on servers.";
 	//HBM's Beta Naming Convention:
 	//V T (X)
 	//V -> next release version

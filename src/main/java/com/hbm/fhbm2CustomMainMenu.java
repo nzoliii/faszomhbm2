@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.realms.RealmsBridge;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.GuiModList;
 import java.awt.*;
 import java.io.IOException;
@@ -23,9 +24,14 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         textLines = new String[]{
                 "You are playing on FaszomHBM 2 " + RefStrings.VERSION,
                 "",
-                "Its 21:47, I am way too fucking mad to continue this shit.",
-                "I have no idea why the fuck does this thing not work.",
-                "For now, this is what you'll get.",
+                "After a long break, I have finally fixed this.",
+                "Alcater please release an NTM Extended update.",
+                "",
+                "Here are some synonyms for Sertés:",
+                "Disznó, Koca, Hízó, Malac, Kucu, Göbe, Emse, Ártány,",
+                "Coca, Röfögő, Röfi, Mangalica, Kurta Farkú, Sárban Dagonyázó, Süldő",
+                "",
+                "Image playing Skyblock instead of FaszomHBM 2. Shame.",
                 "",
                 "Copyright Mojang AB. Do not distribute!"
         };
@@ -56,7 +62,24 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        this.drawDefaultBackground();
+
+        // Bind and draw the background texture
+        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/background.png"));
+        drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
+
+        // Bind and draw the custom title logo
+        // Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/faszomhbm.png"));
+
+        // Position the custom title logo
+        int logoWidth = 512; // The width of your custom title image
+        int logoHeight = 256; // The height of your custom title image
+        int logoX = (this.width - logoWidth) / 2; // Center it horizontally
+        int logoY = 50; // You can adjust this value to position the logo vertically
+
+        // Draw the logo
+        // drawModalRectWithCustomSizedTexture(logoX, logoY, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
+
+        //this.drawDefaultBackground();
         this.buttonList.forEach(button -> button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks));
         drawCustomText();
     }
@@ -75,8 +98,6 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
             yOffset -= lineHeight; // Move the yOffset up for the next line
         }
     }
-
-
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
