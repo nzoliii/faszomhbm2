@@ -17,6 +17,9 @@ my pálinka Som, and The Copper Pig. The main menu has been retextured inspired 
 In summary, this mod aims to be the funniest version of the HBM mods. You can find out the rest of the features by<br>
 downloading this mod from [Curseforge](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
 
+# Planning
+You can see all of my NTM-related plans [here.](https://github.com/users/nzoliii/projects/3)
+
 # Build Guide
 Download the repository, then open a shell prompt in that folder, then type the following: ```./gradlew build```<br>
 Press enter.<br>
