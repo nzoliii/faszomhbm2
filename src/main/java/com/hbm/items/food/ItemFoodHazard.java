@@ -3,6 +3,7 @@ package com.hbm.items.food;
 import java.util.List;
 import java.util.UUID;
 
+import com.hbm.config.VersatileConfig;
 import com.hbm.items.ModItems;
 import com.hbm.interfaces.IItemHazard;
 import com.hbm.lib.HBMSoundHandler;
@@ -22,6 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.EnumRarity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
@@ -31,6 +33,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemFood;
 
 import net.minecraft.world.World;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.world.World;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+
 
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
@@ -127,6 +140,24 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			list.add("If the Copper Pig has no fans, then that means I am no longer on earth.");
 			list.add("If the world is against the Copper Pig, then I am against the world. ");
 		}
+		if(this == ModItems.fhbm2_mini_pablo) {
+			list.add("Mini Pablo nicotine pouches.");
+			list.add("Tastes awful.");
+			list.add("Smells awful.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_zyn) {
+			list.add("Zyn nicotine pouches.");
+			list.add("Takes the edge off.");
+		}
+		if(this == ModItems.fhbm2_som) {
+			list.add("God knows when it was made.");
+			list.add("Tastes awful, yet we still drink it.");
+		}
+		if(this == ModItems.fhbm2_abalt_salonna) {
+			list.add("The mighty Abált Szalonna.");
+			list.add("Best food ever.");
+		}
 
 		this.module.addInformation(stack, list, flagIn);
 		super.addInformation(stack, world, list, flagIn);
@@ -140,6 +171,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 
 	@Override
 	protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player) {
+
 		if(stack.getItem() == ModItems.bomb_waffle){
 			player.setFire(60 * 20);
 			player.motionY = -2;
@@ -152,6 +184,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.fatmanRadius * 1.5), player.posX, player.posY, player.posZ));
 	    	EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.fatmanRadius * 1.5));
 		}
+
 		if(stack.getItem() == ModItems.cotton_candy){
 			player.addPotionEffect(new PotionEffect(MobEffects.WITHER, 5 * 20, 0));
 			player.addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 20, 0));
@@ -159,6 +192,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.SPEED, 25 * 20, 5));
 			player.addPotionEffect(new PotionEffect(MobEffects.HASTE, 25 * 20, 5));
 		}
+
 		if(stack.getItem() == ModItems.schnitzel_vegan){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 10 * 20, 0));
         	player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 3 * 20, 0));
@@ -169,6 +203,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
         	player.setFire(5 * 20);
         	player.motionY = 2;
 		}
+
 		if(stack.getItem() == ModItems.apple_schrabidium){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 10 * 20, 0));
         	player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 3 * 20, 0));
@@ -176,6 +211,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.RESISTANCE, 600, 0));
 			player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 600, 0));
 		}
+
 		if(stack.getItem() == ModItems.apple_schrabidium1){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 10 * 20, 0));
         	player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 3 * 20, 0));
@@ -190,6 +226,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 1200, 4));
 			player.addPotionEffect(new PotionEffect(MobEffects.SATURATION, 1200, 9));
 		}
+
 		if(stack.getItem() == ModItems.apple_schrabidium2){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 10 * 20, 0));
         	player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 3 * 20, 0));
@@ -204,6 +241,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 2147483647, 14));
 			player.addPotionEffect(new PotionEffect(MobEffects.SATURATION, 2147483647, 99));
 		}
+
 		if(stack.getItem() == ModItems.apple_lead){
 			player.addPotionEffect(new PotionEffect(HbmPotion.radx, 8 * 60 * 20, 5));
 			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 5 * 60 * 20, 0));
@@ -212,6 +250,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(HbmPotion.lead, 2 * 20, 0));
 			player.attackEntityFrom(ModDamageSource.lead, 1F);
 		}
+
 		if(stack.getItem() == ModItems.apple_lead1){
 			player.addPotionEffect(new PotionEffect(HbmPotion.radx, 4 * 60 * 20, 10));
 			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 10 * 60 * 20, 1));
@@ -220,27 +259,28 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(HbmPotion.lead, 4 * 20, 1));
 			player.attackEntityFrom(ModDamageSource.lead, 10F);
 		}
+
 		if(stack.getItem() == ModItems.apple_lead2){
-			player.addPotionEffect(new PotionEffect(HbmPotion.radx, 1 * 60 * 20, 40));
+			player.addPotionEffect(new PotionEffect(HbmPotion.radx, 60 * 20, 40));
 			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 15 * 60 * 20, 2));
 			player.addPotionEffect(new PotionEffect(MobEffects.FIRE_RESISTANCE, 2 * 60 * 20, 0));
 			player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 30 * 20, 0));
 			player.addPotionEffect(new PotionEffect(HbmPotion.lead, 8 * 20, 2));
 			player.attackEntityFrom(ModDamageSource.lead, 24F);
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_iceberg_arasaka){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
-
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_iceberg_black){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_iceberg_crazy_mix){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if (stack.getItem() == ModItems.fhbm2_iceberg_dragonfire) {
 			UUID playerUUID = player.getUniqueID();
 			UUID targetUUID = UUID.fromString("5af3c6bb-6b31-4c26-8766-a229572b1d2a");
@@ -248,19 +288,20 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 				worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
 				EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
 			}
+
 			else {
 				player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
 			}
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_iceberg_emerald){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_iceberg_sour_berries){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 2147483647, 255));
@@ -269,23 +310,22 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2147483647, 3));
 			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 5F);
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_mini_pablo){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_zyn){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_som){
 			player.addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
+
 		if(stack.getItem() == ModItems.fhbm2_abalt_salonna){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			this.setAlwaysEdible();
 		}
 	}
 

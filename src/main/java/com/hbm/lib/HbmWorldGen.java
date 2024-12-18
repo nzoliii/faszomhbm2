@@ -123,8 +123,8 @@ public class HbmWorldGen implements IWorldGenerator {
 				int d = 16 + rand.nextInt(96);
 
 				for(int y = d - 5; y <= d; y++)
-				if(world.getBlockState(new BlockPos(x, y + 1, z)).getBlock() == Blocks.AIR && world.getBlockState(new BlockPos(x, y, z)).getBlock() == Blocks.NETHERRACK)
-					world.setBlockState(new BlockPos(x, y, z), ModBlocks.ore_nether_smoldering.getDefaultState());
+					if(world.getBlockState(new BlockPos(x, y + 1, z)).getBlock() == Blocks.AIR && world.getBlockState(new BlockPos(x, y, z)).getBlock() == Blocks.NETHERRACK)
+						world.setBlockState(new BlockPos(x, y, z), ModBlocks.ore_nether_smoldering.getDefaultState());
 			}
 		}
 

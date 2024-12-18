@@ -24,14 +24,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         textLines = new String[]{
                 "You are playing on FaszomHBM 2 " + RefStrings.VERSION,
                 "",
-                "After a long break, I have finally fixed this.",
-                "Alcater please release an NTM Extended update.",
-                "",
-                "Here are some synonyms for Sertés:",
-                "Disznó, Koca, Hízó, Malac, Kucu, Göbe, Emse, Ártány,",
-                "Coca, Röfögő, Röfi, Mangalica, Kurta Farkú, Sárban Dagonyázó, Süldő",
-                "",
-                "Image playing Skyblock instead of FaszomHBM 2. Shame.",
+                "Finally consistent updates?",
                 "",
                 "Copyright Mojang AB. Do not distribute!"
         };
@@ -64,7 +57,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
         // Bind and draw the background texture
-        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/background.png"));
+        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/cursed_pig.png"));
         drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
         // Bind and draw the custom title logo
