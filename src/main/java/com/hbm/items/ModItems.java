@@ -1880,10 +1880,13 @@ public class ModItems {
 	public static final Item fhbm2_iceberg_dragonfire = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_emerald = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_sour_berries = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_mini_pablo = new ItemFoodHazard(3, 5, false, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_zyn = new ItemFoodHazard(3, 5, false, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_som = new ItemFoodHazard(3, 5, false, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_abalt_salonna = new ItemFoodHazard(3, 20, false, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab);
 
 	//fhbm2 other stuff
 	public static final Item fhbm2_copper_pig_fragment = new ItemFoodHazard(3, 5, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
-
 
 	//Bongespob arcarmoni
 	public static final Item spongebob_macaroni = new ItemLemon(5, 5, false, "spongebob_macaroni").setCreativeTab(MainRegistry.consumableTab);
@@ -2292,7 +2295,6 @@ public class ModItems {
 	public static final Item plate_armor_fau = new ItemBase("plate_armor_fau").setCreativeTab(MainRegistry.partsTab);
 	public static final Item plate_armor_dnt = new ItemBase("plate_armor_dnt").setCreativeTab(MainRegistry.partsTab);
 
-	
 	//Crystals
 	public static final Item crystal_coal = new ItemFuelHazard("crystal_coal", 6400, false).addCoal(5).toItem().setCreativeTab(MainRegistry.partsTab);
 	public static final Item crystal_iron = new ItemBase("crystal_iron").setCreativeTab(MainRegistry.partsTab);

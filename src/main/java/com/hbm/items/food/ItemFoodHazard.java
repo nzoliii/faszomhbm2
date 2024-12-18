@@ -1,6 +1,7 @@
 package com.hbm.items.food;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.hbm.items.ModItems;
 import com.hbm.interfaces.IItemHazard;
@@ -106,6 +107,7 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 		if(this == ModItems.fhbm2_iceberg_dragonfire) {
 			list.add("Iceberg nicotine pouches.");
 			list.add("Takes the edge off.");
+			list.add("Tuzvarazslo shouldn't use this.");
 		}
 		if(this == ModItems.fhbm2_iceberg_emerald) {
 			list.add("Iceberg nicotine pouches.");
@@ -228,26 +230,36 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_arasaka){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			this.setAlwaysEdible();
 
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_black){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-
+			this.setAlwaysEdible();
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_crazy_mix){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-
+			this.setAlwaysEdible();
 		}
-		if(stack.getItem() == ModItems.fhbm2_iceberg_dragonfire){
-			worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
-			EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
+		if (stack.getItem() == ModItems.fhbm2_iceberg_dragonfire) {
+			UUID playerUUID = player.getUniqueID();
+			UUID targetUUID = UUID.fromString("5af3c6bb-6b31-4c26-8766-a229572b1d2a");
+			if (playerUUID.equals(targetUUID)) {
+				worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
+				EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
+			}
+			else {
+				player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			}
+			this.setAlwaysEdible();
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_emerald){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-
+			this.setAlwaysEdible();
 		}
 		if(stack.getItem() == ModItems.fhbm2_iceberg_sour_berries){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			this.setAlwaysEdible();
 		}
 		if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
 			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 2147483647, 255));
@@ -257,6 +269,23 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
 			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2147483647, 3));
 			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 5F);
+			this.setAlwaysEdible();
+		}
+		if(stack.getItem() == ModItems.fhbm2_mini_pablo){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			this.setAlwaysEdible();
+		}
+		if(stack.getItem() == ModItems.fhbm2_zyn){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			this.setAlwaysEdible();
+		}
+		if(stack.getItem() == ModItems.fhbm2_som){
+			player.addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 60, 4));
+			this.setAlwaysEdible();
+		}
+		if(stack.getItem() == ModItems.fhbm2_abalt_salonna){
+			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+			this.setAlwaysEdible();
 		}
 	}
 

@@ -5170,4 +5170,9 @@ item.fhbm2_iceberg_emerald.name=Iceberg Emerald
 item.fhbm2_iceberg_sour_berries.name=Iceberg Sour Berries
 item.fhbm2_copper_pig_fragment.name=Copper Pig Fragment
 
+item.fhbm2_mini_pablo.name=Mini Pablo
+item.fhbm2_zyn.name=Zyn
+item.fhbm2_som.name=SOM
+item.fhbm2_abalt_szalonna.name=Abált Szalonna
+
 entity.ItemFrame.name=Item Frame

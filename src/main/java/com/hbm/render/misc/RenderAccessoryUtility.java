@@ -37,8 +37,8 @@ public class RenderAccessoryUtility {
 	private static ResourceLocation alcater = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capealcater.png");
 	private static ResourceLocation jame = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capejame.png");
 	private static ResourceLocation golem = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capegolem.png");
-	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_CapeCringebait.png");
-	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_CapeAndor2121.png");
+	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capecringebait.png");
+	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capeandor2121.png");
 
 
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player) {
