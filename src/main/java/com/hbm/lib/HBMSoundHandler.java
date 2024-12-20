@@ -152,6 +152,7 @@ public final class HBMSoundHandler {
 	public static SoundEvent fatmanReload;
 	public static SoundEvent soyuzReady;
 	public static SoundEvent soyuzTakeOff;
+	public static SoundEvent chime;
 	public static SoundEvent fhbm2_chime;
 	public static SoundEvent deagleShoot;
 	public static SoundEvent tauChargeLoop;
@@ -425,7 +426,8 @@ public final class HBMSoundHandler {
 		osiprReload = register("weapon.osiprReload");
 		soyuzReady = register("block.soyuzReady");
 		soyuzTakeOff = register("entity.soyuzTakeoff");
-		fhbm2_chime = register("alarm.fhbm2_chime");
+		chime = register("alarm.chime");
+		fhbm2_chime = register("fhbm2_chime");
 		deagleShoot = register("weapon.deagleShoot");
 		tauChargeLoop2 = register("weapon.tauChargeLoop2");
 		chopperFlyingLoop = register("entity.chopperFlyingLoop");
