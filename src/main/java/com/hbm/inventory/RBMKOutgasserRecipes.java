@@ -23,6 +23,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBucketMilk;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -139,6 +140,10 @@ public class RBMKOutgasserRecipes {
 		addRecipe(128000, ModBlocks.sellafield_4, new ItemStack(ModBlocks.sellafield_core));
 		addRecipe(500000, ModBlocks.block_corium_cobble, new ItemStack(ModBlocks.block_corium));
 		addRecipe(1000000, ModItems.meteorite_sword_bred, new ItemStack(ModItems.meteorite_sword_irradiated));
+
+		//fhbm2
+		addRecipe(1000000, Items.MILK_BUCKET, new ItemStack(ModItems.fhbm2_bucket_abale));
+
 	}
 
 	public static void addRecipe(int requiredFlux, ItemStack in, ItemStack out) {

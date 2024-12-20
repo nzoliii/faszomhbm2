@@ -82,17 +82,7 @@ import com.hbm.items.bomb.ItemMike;
 import com.hbm.items.bomb.ItemN2;
 import com.hbm.items.bomb.ItemSolinium;
 import com.hbm.items.bomb.ItemTsar;
-import com.hbm.items.food.ItemAppleEuphemium;
-import com.hbm.items.food.ItemCanteen;
-import com.hbm.items.food.ItemEnergy;
-import com.hbm.items.food.ItemFoodBase;
-import com.hbm.items.food.ItemFoodHazard;
-import com.hbm.items.food.ItemHazardSoup;
-import com.hbm.items.food.ItemLemon;
-import com.hbm.items.food.ItemNugget;
-import com.hbm.items.food.ItemPancake;
-import com.hbm.items.food.ItemPill;
-import com.hbm.items.food.ItemTemFlakes;
+import com.hbm.items.food.*;
 import com.hbm.items.gear.ArmorAustralium;
 import com.hbm.items.gear.ArmorEuphemium;
 import com.hbm.items.gear.ArmorFSB;
@@ -1874,19 +1864,20 @@ public class ModItems {
 	public static final Item marshmallow_roasted = new ItemLemon(6, 6, false, "marshmallow_roasted").setMaxStackSize(1).setFull3D().setCreativeTab(MainRegistry.consumableTab);
 
 	//fhbm2 icebergs
-	public static final Item fhbm2_iceberg_arasaka = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_black = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_crazy_mix = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_dragonfire = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_emerald = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_sour_berries = new ItemFoodHazard(3, 5, false, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_mini_pablo = new ItemFoodHazard(3, 5, false, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_zyn = new ItemFoodHazard(3, 5, false, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_som = new ItemFoodHazard(3, 5, false, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_abalt_salonna = new ItemFoodHazard(3, 20, false, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_arasaka = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_black = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_crazy_mix = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_dragonfire = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_emerald = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_sour_berries = new ItemFHBM2Consumables(3, 20, false, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_mini_pablo = new ItemFHBM2Consumables(3, 20, false, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_zyn = new ItemFHBM2Consumables(3, 20, false, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_som = new ItemFHBM2Consumables(3, 20, false, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_abalt_salonna = new ItemFHBM2Consumables(3, 20, false, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab);
 
 	//fhbm2 other stuff
-	public static final Item fhbm2_copper_pig_fragment = new ItemFoodHazard(3, 5, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_copper_pig_fragment = new ItemFHBM2Consumables(3, 20, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_bucket_abale = new ItemFHBM2Consumables(3, 20, false, "fhbm2_bucket_abale").setCreativeTab(MainRegistry.consumableTab);
 
 	//Bongespob arcarmoni
 	public static final Item spongebob_macaroni = new ItemLemon(5, 5, false, "spongebob_macaroni").setCreativeTab(MainRegistry.consumableTab);

@@ -105,59 +105,6 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
             list.add("right?");
             list.add("§a[RAD-X (4) for 1min]§r");
     	}
-		if(this == ModItems.fhbm2_iceberg_arasaka) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_iceberg_black) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_iceberg_crazy_mix) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_iceberg_dragonfire) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-			list.add("Tuzvarazslo shouldn't use this.");
-		}
-		if(this == ModItems.fhbm2_iceberg_emerald) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_iceberg_sour_berries) {
-			list.add("Iceberg nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_copper_pig_fragment) {
-			list.add("§oI must become one with the Copper Pig.");
-			list.add("§oI must consume this fragment.");
-			list.add("A fragment of the most gracious the most merciful Copper Pig, кабан.");
-			list.add("If the Copper Pig has a million fans, then I am one of them.");
-			list.add("If the Copper Pig has ten fans, then I am one of them.");
-			list.add("If the Copper Pig has only one fan then that is me.");
-			list.add("If the Copper Pig has no fans, then that means I am no longer on earth.");
-			list.add("If the world is against the Copper Pig, then I am against the world. ");
-		}
-		if(this == ModItems.fhbm2_mini_pablo) {
-			list.add("Mini Pablo nicotine pouches.");
-			list.add("Tastes awful.");
-			list.add("Smells awful.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_zyn) {
-			list.add("Zyn nicotine pouches.");
-			list.add("Takes the edge off.");
-		}
-		if(this == ModItems.fhbm2_som) {
-			list.add("God knows when it was made.");
-			list.add("Tastes awful, yet we still drink it.");
-		}
-		if(this == ModItems.fhbm2_abalt_salonna) {
-			list.add("The mighty Abált Szalonna.");
-			list.add("Best food ever.");
-		}
 
 		this.module.addInformation(stack, list, flagIn);
 		super.addInformation(stack, world, list, flagIn);
@@ -269,64 +216,6 @@ public class ItemFoodHazard extends ItemFood implements IItemHazard {
 			player.attackEntityFrom(ModDamageSource.lead, 24F);
 		}
 
-		if(stack.getItem() == ModItems.fhbm2_iceberg_arasaka){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_iceberg_black){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_iceberg_crazy_mix){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if (stack.getItem() == ModItems.fhbm2_iceberg_dragonfire) {
-			UUID playerUUID = player.getUniqueID();
-			UUID targetUUID = UUID.fromString("5af3c6bb-6b31-4c26-8766-a229572b1d2a");
-			if (playerUUID.equals(targetUUID)) {
-				worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
-				EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
-			}
-
-			else {
-				player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-			}
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_iceberg_emerald){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_iceberg_sour_berries){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
-			player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 2147483647, 255));
-			player.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 2147483647, 255));
-			player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 2147483647, 255));
-			player.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 2147483647, 255));
-			player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
-			player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2147483647, 3));
-			ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 5F);
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_mini_pablo){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_zyn){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_som){
-			player.addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 60, 4));
-		}
-
-		if(stack.getItem() == ModItems.fhbm2_abalt_salonna){
-			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
-		}
 	}
 
 	@Override
