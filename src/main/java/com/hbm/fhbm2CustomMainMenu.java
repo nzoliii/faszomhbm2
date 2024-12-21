@@ -22,7 +22,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
     // Method to initialize the text lines
     private void initializeTextLines() {
         textLines = new String[]{
-                "You are playing on FaszomHBM 2 " + RefStrings.VERSION,
+                "You are playing FaszomHBM 2 " + RefStrings.VERSION,
                 "",
                 "Finally consistent updates?",
                 "",
@@ -57,7 +57,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 
         // Bind and draw the background texture
-        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/cursed_pig.png"));
+        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/background.png"));
         drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
         // Bind and draw the custom title logo
