@@ -142,7 +142,7 @@ public class RBMKOutgasserRecipes {
 		addRecipe(1000000, ModItems.meteorite_sword_bred, new ItemStack(ModItems.meteorite_sword_irradiated));
 
 		//fhbm2
-		addRecipe(1000000, Items.MILK_BUCKET, new ItemStack(ModItems.fhbm2_bucket_abale));
+		addRecipe(1000000, Items.MILK_BUCKET, new ItemStack(ModItems.fhbm2_bucket_abale_old));
 
 	}
 

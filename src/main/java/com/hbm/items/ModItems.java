@@ -1877,7 +1877,7 @@ public class ModItems {
 
 	//fhbm2 other stuff
 	public static final Item fhbm2_copper_pig_fragment = new ItemFHBM2Consumables(3, 20, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_bucket_abale = new ItemFHBM2Consumables(3, 20, false, "fhbm2_bucket_abale").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_bucket_abale_old = new ItemFHBM2Consumables(3, 20, false, "fhbm2_bucket_abale_old").setCreativeTab(MainRegistry.consumableTab);
 
 	//Bongespob arcarmoni
 	public static final Item spongebob_macaroni = new ItemLemon(5, 5, false, "spongebob_macaroni").setCreativeTab(MainRegistry.consumableTab);

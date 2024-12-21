@@ -3,6 +3,7 @@ package com.hbm.items.food;
 import java.util.List;
 import java.util.UUID;
 
+import com.hbm.config.VersatileConfig;
 import com.hbm.items.ModItems;
 import com.hbm.interfaces.IItemHazard;
 import com.hbm.modules.ItemHazardModule;
@@ -17,6 +18,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemFood;
@@ -27,6 +29,9 @@ import com.hbm.util.ContaminationUtil.HazardType;
 public class ItemFHBM2Consumables extends ItemFood implements IItemHazard {
 
 	ItemHazardModule module;
+
+	private boolean alwaysEdible;
+
 
 	public ItemFHBM2Consumables(int amount, float saturation, boolean isWolfFood, String s){
 		super(amount, saturation, isWolfFood);
@@ -176,4 +181,16 @@ public class ItemFHBM2Consumables extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
 		}
 	}
+
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+		if(!VersatileConfig.hasPotionSickness(playerIn))
+			playerIn.setActiveHand(handIn);
+		return super.onItemRightClick(worldIn, playerIn, handIn);
+	}
+
+	//public ItemFood setAlwaysEdible() {
+	//	this.alwaysEdible = true;
+	//	return this;
+	//}
 }

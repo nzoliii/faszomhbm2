@@ -5175,6 +5175,6 @@ item.fhbm2_zyn.name=Zyn
 item.fhbm2_som.name=SOM
 item.fhbm2_abalt_szalonna.name=Abált Szalonna
 
-item.fhbm2_bucket_abale.name=Abalé
+item.fhbm2_bucket_abale_old.name=Abalé
 
 entity.ItemFrame.name=Item Frame

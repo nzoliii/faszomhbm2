@@ -2739,7 +2739,7 @@ public class CraftingManager {
 		add1To9Pair(ModBlocks.block_semtex, ModItems.ingot_semtex);
 
 		//fhbm2
-		addRecipeAuto(new ItemStack(ModItems.fhbm2_abalt_salonna, 64), new Object[] { "   ", " P ", " B ", 'P', Items.PORKCHOP, 'B', ModItems.fhbm2_bucket_abale });
+		addRecipeAuto(new ItemStack(ModItems.fhbm2_abalt_salonna, 64), new Object[] { "   ", " P ", " B ", 'P', Items.PORKCHOP, 'B', ModItems.fhbm2_bucket_abale_old });
 
 		if(!GeneralConfig.enable528) {
 			addRecipeAuto(new ItemStack(ModBlocks.struct_launcher_core, 1), new Object[] { "SCS", "SIS", "BEB", 'S', ModBlocks.steel_scaffold, 'I', Blocks.IRON_BARS, 'C', ModItems.circuit_targeting_tier3, 'B', ModBlocks.struct_launcher, 'E', ModBlocks.machine_battery });
