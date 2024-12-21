@@ -23,5 +23,5 @@ You can see all of my NTM-related plans [here.](https://github.com/users/nzoliii
 # Build Guide
 Download the repository, then open a shell prompt in that folder, then type the following: ```./gradlew build```<br>
 Press enter.<br>
-Wait for gradlew to finish building.
+Wait for gradlew to finish building.<br>
 The build will be located in the ```faszomhbm2/build/libs``` folder. 
