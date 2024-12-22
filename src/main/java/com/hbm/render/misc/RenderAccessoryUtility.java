@@ -39,6 +39,8 @@ public class RenderAccessoryUtility {
 	private static ResourceLocation golem = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capegolem.png");
 	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capecringebait.png");
 	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capeandor2121.png");
+	private static ResourceLocation tuzvarazslo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capetuzvarazslo.png");
+
 
 
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player) {
@@ -113,6 +115,9 @@ public class RenderAccessoryUtility {
 		}
 		if(uuid.equals(Library.Andor2121)) {
 			return andor2121;
+		}
+		if(uuid.equals(Library.Tuzvarazslo)) {
+			return tuzvarazslo;
 		}
 		if(Library.contributors.contains(uuid)) {
 			return wiki;

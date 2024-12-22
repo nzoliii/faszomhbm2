@@ -2740,6 +2740,8 @@ public class CraftingManager {
 
 		//fhbm2
 		addRecipeAuto(new ItemStack(ModItems.fhbm2_abalt_salonna, 64), new Object[] { "   ", " P ", " B ", 'P', Items.PORKCHOP, 'B', ModItems.fhbm2_bucket_abale_old });
+		addRecipeAuto(new ItemStack(ModItems.fluid_barrel_infinite, 1), new Object[] { "SSS", "SAS", "SSS", 'S', ModItems.tank_steel, 'A', ModItems.particle_amat });
+
 
 		if(!GeneralConfig.enable528) {
 			addRecipeAuto(new ItemStack(ModBlocks.struct_launcher_core, 1), new Object[] { "SCS", "SIS", "BEB", 'S', ModBlocks.steel_scaffold, 'I', Blocks.IRON_BARS, 'C', ModItems.circuit_targeting_tier3, 'B', ModBlocks.struct_launcher, 'E', ModBlocks.machine_battery });

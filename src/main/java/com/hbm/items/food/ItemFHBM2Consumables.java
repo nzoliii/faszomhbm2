@@ -108,6 +108,10 @@ public class ItemFHBM2Consumables extends ItemFood implements IItemHazard {
 			list.add("The mighty Abált Szalonna.");
 			list.add("Best food ever.");
 		}
+		if(this == ModItems.fhbm2_bucket_abale_old) {
+			list.add("Tasty Abalé.");
+			list.add("Why would anyone drink this?");
+		}
 
 		this.module.addInformation(stack, list, flagIn);
 		super.addInformation(stack, world, list, flagIn);
@@ -134,7 +138,7 @@ public class ItemFHBM2Consumables extends ItemFood implements IItemHazard {
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
 		}
 
-		if (stack.getItem() == ModItems.fhbm2_iceberg_dragonfire) {
+		if(stack.getItem() == ModItems.fhbm2_iceberg_dragonfire) {
 			UUID playerUUID = player.getUniqueID();
 			UUID targetUUID = UUID.fromString("5af3c6bb-6b31-4c26-8766-a229572b1d2a");
 			if (playerUUID.equals(targetUUID)) {
@@ -179,6 +183,10 @@ public class ItemFHBM2Consumables extends ItemFood implements IItemHazard {
 
 		if(stack.getItem() == ModItems.fhbm2_abalt_salonna){
 			player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+		}
+
+		if(stack.getItem() == ModItems.fhbm2_bucket_abale_old){
+			player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 15 * 60, 4));
 		}
 	}
 

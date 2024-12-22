@@ -4,8 +4,10 @@ import com.hbm.lib.RefStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.GuiModList;
 import java.awt.*;
 import java.io.IOException;
@@ -15,24 +17,20 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
 
     private String[] textLines;
 
-    public fhbm2CustomMainMenu() {
-        initializeTextLines();
-    }
-
-    // Method to initialize the text lines
     private void initializeTextLines() {
-        textLines = new String[]{
+        textLines = new String[] {
                 "You are playing FaszomHBM 2 " + RefStrings.VERSION,
-                "",
-                "Finally consistent updates?",
                 "",
                 "Copyright Mojang AB. Do not distribute!"
         };
     }
 
+    public fhbm2CustomMainMenu() {
+        initializeTextLines();
+    }
+
     @Override
     public void initGui() {
-
         this.buttonList.clear();
 
         int yOffset = this.height / 4 + 48;
@@ -55,40 +53,34 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-
-        // Bind and draw the background texture
         Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/background.png"));
         drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
-        // Bind and draw the custom title logo
-        // Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/faszomhbm.png"));
 
-        // Position the custom title logo
-        int logoWidth = 512; // The width of your custom title image
-        int logoHeight = 256; // The height of your custom title image
-        int logoX = (this.width - logoWidth) / 2; // Center it horizontally
-        int logoY = 50; // You can adjust this value to position the logo vertically
 
-        // Draw the logo
-        // drawModalRectWithCustomSizedTexture(logoX, logoY, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
+        // INSERT CUSTOM IMAGE LOGIC BELOW
 
-        //this.drawDefaultBackground();
+
+
+        // EMD CUSTOM IMAGE LOGIC ABOVE
+
+
+
         this.buttonList.forEach(button -> button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks));
         drawCustomText();
     }
 
     private void drawCustomText() {
-        int lineHeight = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT; // Height of one line of text
-        int yOffset = this.height - 10; // Start from the bottom of the screen
+        int lineHeight = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
+        int yOffset = this.height - 10;
 
-        // Iterate over the array in reverse order and draw each line of text
         for (int i = textLines.length - 1; i >= 0; i--) {
-            String text = textLines[i]; // Get the current line of text
-            int textWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text); // Get the width of the text
-            int x = this.width - textWidth - 2; // Position text 5 pixels from the right edge
-            drawString(Minecraft.getMinecraft().fontRenderer, text, x, yOffset, 0xFFFFFF); // Draw the text
+            String text = textLines[i];
+            int textWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+            int x = this.width - textWidth - 2;
+            drawString(Minecraft.getMinecraft().fontRenderer, text, x, yOffset, 0xFFFFFF);
 
-            yOffset -= lineHeight; // Move the yOffset up for the next line
+            yOffset -= lineHeight;
         }
     }
 
