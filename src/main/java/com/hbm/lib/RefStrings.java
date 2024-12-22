@@ -3,8 +3,8 @@ package com.hbm.lib;
 public class RefStrings {
 	public static final String MODID = "hbm";
 	public static final String NAME = "FaszomHBM 2";
-	public static final String VERSION = "Digamma";
-	public static final String CHANGELOG = "- Check GitHub for changelog. $- https://github.com/users/nzoliii/projects/3";
+	public static final String VERSION = "RELEASE-1";
+	public static final String CHANGELOG = "Using NTM-Extended-1.12.2-2.0.2 as a base, everything that was FaszomHBM has been completely rewritten from scratch, and now its called FaszomHBM 2. $You can find the full FaszomHBM 2 Roadmap on GitHub: $https://github.com/users/nzoliii/projects/3/";
 	//HBM's Beta Naming Convention:
 	//V T (X)
 	//V -> next release version

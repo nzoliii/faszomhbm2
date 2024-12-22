@@ -9,6 +9,8 @@ import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.GuiModList;
+import org.lwjgl.opengl.GL11;
+
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -56,15 +58,36 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/background.png"));
         drawModalRectWithCustomSizedTexture(0, 0, 0, 0, this.width, this.height, this.width, this.height);
 
+        Minecraft mc = Minecraft.getMinecraft();
 
+        int baseWidth = 300;
+        int baseHeight = 75;
 
-        // INSERT CUSTOM IMAGE LOGIC BELOW
+        float scaleFactor = 0.9F;
 
+        int textureWidth = (int) (baseWidth * scaleFactor);
+        int textureHeight = (int) (baseHeight * scaleFactor);
 
+        int xPosition = (this.width / 2) - (textureWidth / 2);
+        int yPosition = 30;
 
-        // EMD CUSTOM IMAGE LOGIC ABOVE
+        if (xPosition < 0) {xPosition = 0;}
+        if (xPosition + textureWidth > this.width) {xPosition = this.width - textureWidth;}
 
+        if (yPosition < 0) {yPosition = 0;}
+        if (yPosition + textureHeight > this.height) {yPosition = this.height - textureHeight;}
 
+        mc.getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/faszomhbm.png"));
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        drawModalRectWithCustomSizedTexture(xPosition, yPosition, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
 
         this.buttonList.forEach(button -> button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY, partialTicks));
         drawCustomText();
