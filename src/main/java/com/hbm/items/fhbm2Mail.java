@@ -15,6 +15,9 @@ public class fhbm2Mail extends Item {
         this.setUnlocalizedName(s);
         this.setRegistryName(s);
 
+        // Adding this item to the game
+        ModItems.ALL_ITEMS.add(this);
+
         // Register item with the event bus
         MinecraftForge.EVENT_BUS.register(this);
     }
