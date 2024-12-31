@@ -57,6 +57,9 @@ public class ModDamageSource extends DamageSource {
     public static DamageSource blacklung = (new DamageSource("blacklung")).setDamageIsAbsolute().setDamageBypassesArmor();
     public static DamageSource mku = (new DamageSource("mku")).setDamageIsAbsolute().setDamageBypassesArmor();
 
+    //fhbm2
+    public static DamageSource unabomber = (new DamageSource("unabomber")).setExplosion();
+
     public ModDamageSource(String p_i1566_1_) {
 		super(p_i1566_1_);
 	}

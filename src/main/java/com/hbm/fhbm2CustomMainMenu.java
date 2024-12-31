@@ -75,7 +75,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         if (yPosition < 0) {yPosition = 0;}
         if (yPosition + textureHeight > this.height) {yPosition = this.height - textureHeight;}
 
-        mc.getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/gui/title/faszomhbm.png"));
+        mc.getTextureManager().bindTexture(new ResourceLocation("hbm", "textures/branding/fhbm2_title.png"));
 
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();

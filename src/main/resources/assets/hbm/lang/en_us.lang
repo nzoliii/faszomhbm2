@@ -646,6 +646,7 @@ death.attack.taint=%1$s died from flux tumors.
 death.attack.tau=%1$s was riddled by %2$s using negatively charged tauons.
 death.attack.tauBlast=%1$s charged the XVL1456 for too long and was blown into pieces.
 death.attack.teleporter=%1$s was teleported into nothingness.
+death.attack.unabomber=%1$s got a package from Uncle Ted.
 desc.abmissile=AB Missile
 desc.abmissile1=Only targets other missiles
 desc.airstrike=Aim & click to call an airstrike!
@@ -5176,5 +5177,7 @@ item.fhbm2_som.name=SOM
 item.fhbm2_abalt_szalonna.name=Abált Szalonna
 
 item.fhbm2_bucket_abale_old.name=Abalé
+
+item.fhbm2_mail.name=Mail
 
 entity.ItemFrame.name=Item Frame

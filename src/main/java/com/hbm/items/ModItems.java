@@ -311,7 +311,10 @@ public class ModItems {
 	public static final Item geiger_counter = new ItemGeigerCounter("geiger_counter").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
 	public static final Item digamma_diagnostic = new ItemDigammaDiagnostic("digamma_diagnostic").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
 	public static final Item lung_diagnostic = new ItemLungDiagnostic("lung_diagnostic").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
-	
+
+	//fhbm2
+	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
+
 	//Tools
 	public static final Item screwdriver = new ItemTooling(ToolType.SCREWDRIVER, 100, "screwdriver");
 	public static final Item screwdriver_desh = new ItemTooling(ToolType.SCREWDRIVER, -1, "screwdriver_desh");

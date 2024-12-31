@@ -64,6 +64,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] antenna = new WeightedRandomChestContentFrom1710[] {
@@ -103,6 +104,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] expensive = new WeightedRandomChestContentFrom1710[] {
@@ -158,6 +160,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] nukeTrash = new WeightedRandomChestContentFrom1710[] {
@@ -188,6 +191,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] nuclear = new WeightedRandomChestContentFrom1710[] {
@@ -231,6 +235,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] vertibird = new WeightedRandomChestContentFrom1710[] {
@@ -272,6 +277,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] missile = new WeightedRandomChestContentFrom1710[] {
@@ -309,6 +315,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] spaceship = new WeightedRandomChestContentFrom1710[] {
@@ -339,6 +346,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] powder = new WeightedRandomChestContentFrom1710[] {
@@ -366,6 +374,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] vault1 = new WeightedRandomChestContentFrom1710[] {
@@ -392,6 +401,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] vault2 = new WeightedRandomChestContentFrom1710[] {
@@ -421,6 +431,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] vault3 = new WeightedRandomChestContentFrom1710[] {
@@ -454,6 +465,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 
 	private static WeightedRandomChestContentFrom1710[] vault4 = new WeightedRandomChestContentFrom1710[] {
@@ -488,6 +500,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1)
 	};
 	
 	/**
