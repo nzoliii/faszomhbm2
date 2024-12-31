@@ -11,8 +11,8 @@ import com.hbm.entity.item.EntityMovingPackage;
 import com.hbm.fhbm2CustomMainMenu;
 import com.hbm.fhbm2MenuStateManager;
 import com.hbm.tileentity.network.*;
-import com.hbm.world.fhbm2GenerateDigammaTower;
-import com.hbm.world.fhbm2GenerateHorrorTower;
+import com.hbm.world.fhbm2GenerateHorrorTowers;
+import com.hbm.world.fhbm2GenerateUncleTedShed;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -607,8 +607,8 @@ public class MainRegistry {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 
 		//fhbm2
-		GameRegistry.registerWorldGenerator(new fhbm2GenerateDigammaTower(), 0);
-		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTower(), 0);
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
 
 		GameRegistry.registerTileEntity(TileEntityDummy.class, new ResourceLocation(RefStrings.MODID, "tileentity_dummy"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssembler.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assembler"));

@@ -374,7 +374,7 @@ public class HbmWorldGen implements IWorldGenerator {
 						}
 
 						if (GeneralConfig.enableDebugMode)
-							MainRegistry.logger.info("[Debug] Successfully spawned landmine at x=" + x + " y=" + y + " z=" + z);
+							MainRegistry.logger.info("[Debug] Successfully spawned (nuclear) landmine at x=" + x + " y=" + y + " z=" + z);
 					}
 				}
 			}

@@ -7,9 +7,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.GuiModList;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;

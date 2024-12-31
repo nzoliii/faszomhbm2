@@ -12,11 +12,12 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
-public class fhbm2GenerateDigammaTower implements IWorldGenerator {
+public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
 
     private static final int STRUCTURE_SIZE = 18;
-    private static final String STRUCTURE_NAME = "digamma_tower";
-    private static final double BASE_SPAWN_CHANCE = 5;
+    private static final String FIRST_TOWER = "digamma_tower";
+    private static final String SECOND_TOWER = "horror_tower";
+    private static final double BASE_SPAWN_CHANCE = 0.05;  // Represents 5% chance
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, net.minecraft.world.gen.IChunkGenerator chunkGenerator, net.minecraft.world.chunk.IChunkProvider chunkProvider) {
@@ -24,9 +25,9 @@ public class fhbm2GenerateDigammaTower implements IWorldGenerator {
 
         double spawnChance = BASE_SPAWN_CHANCE;
 
-        if (world.getWorldType() == WorldType.FLAT) {
-            spawnChance = spawnChance / 50;
-        }
+        //if (world.getWorldType() == WorldType.FLAT) {
+        //    spawnChance = spawnChance / 50;
+        //}
 
         int x = chunkX * 16 + random.nextInt(16);
         int z = chunkZ * 16 + random.nextInt(16);
@@ -60,8 +61,12 @@ public class fhbm2GenerateDigammaTower implements IWorldGenerator {
     }
 
     private void spawnStructure(World world, BlockPos pos) {
+        Random random = new Random();
+
+        String structureToSpawn = random.nextBoolean() ? FIRST_TOWER : SECOND_TOWER;
+
         Template template = world.getSaveHandler().getStructureTemplateManager()
-                .getTemplate(world.getMinecraftServer(), new ResourceLocation(RefStrings.MODID, STRUCTURE_NAME));
+                .getTemplate(world.getMinecraftServer(), new ResourceLocation(RefStrings.MODID, structureToSpawn));
 
         if (template != null) {
             PlacementSettings settings = new PlacementSettings();
@@ -69,9 +74,9 @@ public class fhbm2GenerateDigammaTower implements IWorldGenerator {
             BlockPos adjustedPos = pos.add((STRUCTURE_SIZE - structureSize.getX()) / 2, 0, (STRUCTURE_SIZE - structureSize.getZ()) / 2);
 
             template.addBlocksToWorld(world, adjustedPos, settings);
-            System.out.println("Generated structure: " + STRUCTURE_NAME + " at " + adjustedPos);
+            System.out.println("Generated structure: " + structureToSpawn + " at " + adjustedPos);
         } else {
-            System.err.println("Could not find structure: " + STRUCTURE_NAME);
+            System.err.println("Could not find structure: " + structureToSpawn);
         }
     }
 }
