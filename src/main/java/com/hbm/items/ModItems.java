@@ -312,9 +312,6 @@ public class ModItems {
 	public static final Item digamma_diagnostic = new ItemDigammaDiagnostic("digamma_diagnostic").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
 	public static final Item lung_diagnostic = new ItemLungDiagnostic("lung_diagnostic").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
 
-	//fhbm2
-	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
-
 	//Tools
 	public static final Item screwdriver = new ItemTooling(ToolType.SCREWDRIVER, 100, "screwdriver");
 	public static final Item screwdriver_desh = new ItemTooling(ToolType.SCREWDRIVER, -1, "screwdriver_desh");
@@ -1881,6 +1878,8 @@ public class ModItems {
 	//fhbm2 other stuff
 	public static final Item fhbm2_copper_pig_fragment = new ItemFHBM2Consumables(3, 20, false, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_bucket_abale_old = new ItemFHBM2Consumables(3, 20, false, "fhbm2_bucket_abale_old").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
+	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 
 	//Bongespob arcarmoni
 	public static final Item spongebob_macaroni = new ItemLemon(5, 5, false, "spongebob_macaroni").setCreativeTab(MainRegistry.consumableTab);

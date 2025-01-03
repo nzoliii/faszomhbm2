@@ -21,6 +21,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityNukeTorex extends Entity implements IConstantRenderer {
 
+	public boolean explosionSoundPlayed = false;
+
 	public static final DataParameter<Float> SCALE = EntityDataManager.createKey(EntityNukeTorex.class, DataSerializers.FLOAT);
 	public static final DataParameter<Byte> TYPE = EntityDataManager.createKey(EntityNukeTorex.class, DataSerializers.BYTE);
 	

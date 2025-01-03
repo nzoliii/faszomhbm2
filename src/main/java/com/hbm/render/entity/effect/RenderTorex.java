@@ -35,7 +35,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 public class RenderTorex extends Render<EntityNukeTorex> {
 
 	public static final IRenderFactory<EntityNukeTorex> FACTORY = man -> new RenderTorex(man);
-	
+
 	private static final ResourceLocation cloudlet = new ResourceLocation(RefStrings.MODID + ":textures/particle/particle_base.png");
 	private static final ResourceLocation flare = new ResourceLocation(RefStrings.MODID + ":textures/particle/flare.png");
 
@@ -53,7 +53,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		float flareDuration = scale * flareBaseDuration;
 
 		doScreenShake(cloud, x, y, z, scale * 100);
-		
+
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 
@@ -65,7 +65,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 
 		if(cloud.ticksExisted < flareDuration+1)
 			flareWrapper(cloud, partialTicks, flareDuration);
-		
+
 		if(cloud.ticksExisted < flashDuration+1)
 			flashWrapper(cloud, partialTicks, flashDuration);
 
@@ -85,8 +85,12 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		amplitude = Math.min(amplitude, 125);
 		int duration = ((int)(amplitude * Math.min(1, (amplitude * amplitude)/(dist * dist))));
 		int swingTimer = duration<<1;
-		cloud.world.playSound(player, cloud.posX, cloud.posY, cloud.posZ, HBMSoundHandler.fhbm2_nuclear_explosion, SoundCategory.AMBIENT, amplitude * 10F, 0.8F + cloud.world.rand.nextFloat() * 0.2F);
-		
+
+		if (!cloud.explosionSoundPlayed) {
+			cloud.world.playSound(player, cloud.posX, cloud.posY, cloud.posZ, HBMSoundHandler.fhbm2_nuclear_explosion, SoundCategory.AMBIENT, amplitude * 10F, 0.8F + cloud.world.rand.nextFloat() * 0.2F);
+			cloud.explosionSoundPlayed = true;
+		}
+
 		if(player.getDisplayName().equals("Vic4Games")) {
 			player.hurtTime = swingTimer<<1;
 			player.maxHurtTime = duration<<1;
@@ -96,7 +100,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		}
 		player.attackedAtYaw = 0F;
 	}
-	
+
 	private Comparator cloudSorter = new Comparator() {
 
 		@Override
@@ -106,7 +110,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 			EntityPlayer player = MainRegistry.proxy.me();
 			double dist1 = player.getDistanceSq(first.posX, first.posY, first.posZ);
 			double dist2 = player.getDistanceSq(second.posX, second.posY, second.posZ);
-			
+
 			return dist1 > dist2 ? -1 : dist1 == dist2 ? 0 : 1;
 		}
 	};
@@ -121,16 +125,16 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDepthMask(false);
 		RenderHelper.disableStandardItemLighting();
-		
+
 		bindTexture(cloudlet);
 
 		Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-		
+
 		ArrayList<Cloudlet> cloudlets = new ArrayList(cloud.cloudlets);
 		cloudlets.sort(cloudSorter);
-		
+
 		for(Cloudlet cloudlet : cloudlets) {
 			Vec3 vec = cloudlet.getInterpPos(partialTicks);
 			tessellateCloudlet(buf, vec.xCoord - cloud.posX, vec.yCoord - cloud.posY, vec.zCoord - cloud.posZ, cloudlet, partialTicks);
@@ -145,7 +149,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
-	
+
 	private void flareWrapper(EntityNukeTorex cloud, float partialTicks, float flareDuration) {
 
 		GL11.glPushMatrix();
@@ -155,18 +159,18 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDepthMask(false);
 		RenderHelper.disableStandardItemLighting();
-			
+
 		bindTexture(flare);
 
 		Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-		
+
 		double age = Math.min(cloud.ticksExisted + partialTicks, flareDuration);
 		float alpha = (float) Math.min(1, (flareDuration - age) / flareDuration);
-		
+
 		Random rand = new Random(cloud.getEntityId());
-		
+
 		for(int i = 0; i < 3; i++) {
 			float x = (float) (rand.nextGaussian() * 0.5F * cloud.rollerSize);
 			float y = (float) (rand.nextGaussian() * 0.5F * cloud.rollerSize);
@@ -267,7 +271,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
         GlStateManager.enableCull();
         GlStateManager.depthMask(false);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-		
+
         GL11.glPushMatrix();
 
         for(int i = 0; i < 300; i++) {

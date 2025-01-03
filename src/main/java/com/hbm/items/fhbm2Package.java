@@ -1,6 +1,5 @@
 package com.hbm.items;
 
-import java.util.List;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import net.minecraft.client.util.ITooltipFlag;
@@ -12,9 +11,11 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class fhbm2Mail extends Item {
+import java.util.List;
 
-    public fhbm2Mail(String s) {
+public class fhbm2Package extends Item {
+
+    public fhbm2Package(String s) {
         this.setUnlocalizedName(s);
         this.setRegistryName(s);
         this.setCreativeTab(MainRegistry.weaponTab);
@@ -23,7 +24,7 @@ public class fhbm2Mail extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        if(this == ModItems.fhbm2_mail)
+        if(this == ModItems.fhbm2_package)
         {
             if (!world.isRemote)
             {
@@ -39,8 +40,8 @@ public class fhbm2Mail extends Item {
 
     @Override
     public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if (this == ModItems.fhbm2_mail) {
-            tooltip.add("A mysterious mail.");
+        if (this == ModItems.fhbm2_package) {
+            tooltip.add("A mysterious package.");
         }
     }
 }

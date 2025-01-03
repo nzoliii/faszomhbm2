@@ -12,11 +12,18 @@ import net.minecraft.world.gen.structure.template.Template;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
 
-    private static final double BASE_SPAWN_CHANCE = 0.5;
+    private static final int BASE_SPAWN_CHANCE = 1;
+
+    private static final Set<String> ALLOWED_BIOMES = new HashSet<>();
+    static {
+        ALLOWED_BIOMES.add("minecraft:taiga");
+    }
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, net.minecraft.world.gen.IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
@@ -26,10 +33,10 @@ public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
         int z = chunkZ * 16 + random.nextInt(16);
         BlockPos position = new BlockPos(x, 0, z);
 
-        if (random.nextDouble() * 100 >= BASE_SPAWN_CHANCE) return;
+        if (random.nextInt(100) >= BASE_SPAWN_CHANCE) return;
 
         Biome biome = world.getBiome(position);
-        if (biome.getRegistryName() != null && biome.getRegistryName().toString().contains("taiga")) {
+        if (biome.getRegistryName() != null && ALLOWED_BIOMES.contains(biome.getRegistryName().toString())) {
             position = findGround(world, position);
 
             if (position != null && isGrassBlock(world, position.down())) {

@@ -17,17 +17,13 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
     private static final int STRUCTURE_SIZE = 18;
     private static final String FIRST_TOWER = "digamma_tower";
     private static final String SECOND_TOWER = "horror_tower";
-    private static final double BASE_SPAWN_CHANCE = 0.05;  // Represents 5% chance
+    private static final int BASE_SPAWN_CHANCE = 1;
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, net.minecraft.world.gen.IChunkGenerator chunkGenerator, net.minecraft.world.chunk.IChunkProvider chunkProvider) {
         if (world.provider.getDimension() != 0) return;
 
-        double spawnChance = BASE_SPAWN_CHANCE;
-
-        //if (world.getWorldType() == WorldType.FLAT) {
-        //    spawnChance = spawnChance / 50;
-        //}
+        int spawnChance = BASE_SPAWN_CHANCE;
 
         int x = chunkX * 16 + random.nextInt(16);
         int z = chunkZ * 16 + random.nextInt(16);
@@ -35,7 +31,7 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
         BlockPos origin = new BlockPos(x, y, z);
 
         if (isFlatAndClear(world, origin, STRUCTURE_SIZE)) {
-            if (random.nextDouble() * 100 < spawnChance) {
+            if (random.nextInt(100) < spawnChance) {
                 this.spawnStructure(world, origin);
             }
         }
