@@ -8,6 +8,7 @@ import com.hbm.forgefluid.SpecialContainerFillLists.EnumGasCanister;
 import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
+import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -33,7 +34,7 @@ public class ItemGasCanister extends Item implements IHasCustomModel {
 	
 	
 	public ItemGasCanister(String s, int cap){
-		this.setUnlocalizedName(s);
+		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.setCreativeTab(MainRegistry.controlTab);
 		this.setMaxStackSize(1);
@@ -85,7 +86,10 @@ public class ItemGasCanister extends Item implements IHasCustomModel {
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		FluidStack f = FluidUtil.getFluidContained(stack);
-		tooltip.add((f == null ? "0" : f.amount) + "/" + cap + " mb");
+		String s = Library.getColoredMbPercent(f == null ? 0 : f.amount, cap);
+		if(stack.getCount() > 1)
+			s = stack.getCount() + "x " + s;
+		tooltip.add(s);
 	}
 	
 	@Override

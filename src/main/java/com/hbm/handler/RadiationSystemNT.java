@@ -30,14 +30,17 @@ import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.hazard.HazardSystem;
 
 import com.hbm.saveddata.AuxSavedData;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.util.ContaminationUtil;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityZombieVillager;
@@ -218,7 +221,7 @@ public class RadiationSystemNT {
 		SubChunkRadiationStorage sc = st.getForYLevel(pos.getY());
 		//If the sub chunk doesn't exist, bring it into existence by rebuilding the sub chunk, then get it.
 		if(sc == null){
-			rebuildChunkPockets(world.getChunkFromBlockCoords(pos), pos.getY() >> 4);
+			rebuildChunkPockets(world.getChunk(pos), pos.getY() >> 4);
 		}
 		sc = st.getForYLevel(pos.getY());
 		return sc;
@@ -235,7 +238,7 @@ public class RadiationSystemNT {
 		ChunkRadiationStorage st = worldRadData.data.get(new ChunkPos(pos));
 		//If it doesn't currently exist, create it
 		if(st == null){
-			st = new ChunkRadiationStorage(worldRadData, world.getChunkFromBlockCoords(pos));
+			st = new ChunkRadiationStorage(worldRadData, world.getChunk(pos));
 			worldRadData.data.put(new ChunkPos(pos), st);
 		}
 		return st;
@@ -478,6 +481,8 @@ public class RadiationSystemNT {
 								AdvancementManager.grantAchievement((EntityPlayerMP) entity, AdvancementManager.achRadPoison);
 						}
 
+					} else if(e instanceof EntityItem) {
+						HazardSystem.updateDroppedItem((EntityItem) e);
 					}
 				}
 			}
@@ -529,7 +534,7 @@ public class RadiationSystemNT {
 					MainRegistry.logger.info("[Debug] Rebuilding chunk pockets for dirty chunk at " + dirtyChunkPos);
 				}
 
-				rebuildChunkPockets(r.world.getChunkFromChunkCoords(dirtyChunkPos.getX(), dirtyChunkPos.getZ()), dirtyChunkPos.getY());
+				rebuildChunkPockets(r.world.getChunk(dirtyChunkPos.getX(), dirtyChunkPos.getZ()), dirtyChunkPos.getY());
 				hadDirty = true;
 			}
 			r.iteratingDirty = false;
@@ -707,7 +712,7 @@ public class RadiationSystemNT {
 							randPos = randPos.add(p.parent.parent.getWorldPos(p.parent.yLevel));
 							IBlockState state = w.world.getBlockState(randPos);
 							Vec3d rPos = new Vec3d(randPos.getX() + 0.5, randPos.getY() + 0.5, randPos.getZ() + 0.5);
-							RayTraceResult trace = w.world.rayTraceBlocks(rPos, rPos.addVector(0, -6, 0));
+							RayTraceResult trace = w.world.rayTraceBlocks(rPos, rPos.add(0, -6, 0));
 							if (state.getBlock().isAir(state, w.world, randPos) && trace != null && trace.typeOfHit == Type.BLOCK) {
 								PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacket(randPos.getX() + 0.5F, randPos.getY() + 0.5F, randPos.getZ() + 0.5F, 3), new TargetPoint(w.world.provider.getDimension(), randPos.getX(), randPos.getY(), randPos.getZ(), 100));
 								break;
@@ -748,7 +753,7 @@ public class RadiationSystemNT {
 
 						if (p.connectionIndices[e.ordinal()].size() == 1 && p.connectionIndices[e.ordinal()].get(0) == -1) {
 							//If the chunk in this direction isn't loaded, load it
-							rebuildChunkPockets(p.parent.parent.chunk.getWorld().getChunkFromBlockCoords(nPos), nPos.getY() >> 4);
+							rebuildChunkPockets(p.parent.parent.chunk.getWorld().getChunk(nPos), nPos.getY() >> 4);
 						} else {
 							// Otherwise, for every pocket this chunk is connected to in this direction, add radiation to it;
 							// also add those pockets to the active pockets set

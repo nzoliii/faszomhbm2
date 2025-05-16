@@ -152,6 +152,25 @@ public class Library {
 		superuser.add(Andor2121);
 	}
 
+	public static String getColor(long a, long b){
+		float fraction = 100F * a/b;
+		if(fraction > 75)
+			return "§a";
+		if(fraction > 25)
+			return "§e";
+		return "§c";
+	}
+
+	public static String getColoredMbPercent(long a, long b){
+		String color = getColor(a, b);
+		return color+a+" §2/ "+b+" mB "+color+"("+getPercentage(a/(double)b)+"%)";
+	}
+
+	public static String getColoredDurabilityPercent(long a, long b){
+		String color = getColor(a, b);
+		return "Durability: "+color+a+" §2/ "+b+" "+color+"("+getPercentage(a/(double)b)+"%)";
+	}
+
 	public static boolean checkForHeld(EntityPlayer player, Item item) {
 		return player.getHeldItemMainhand().getItem() == item || player.getHeldItemOffhand().getItem() == item;
 	}
@@ -233,10 +252,10 @@ public class Library {
 		TextureAtlasSprite sprite = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getParticleIcon(stack.getItem(), stack.getMetadata());
 		if(sprite != null){
 			path = new ResourceLocation(sprite.getIconName()+".png");
-			actualPath = new ResourceLocation(path.getResourceDomain(), "textures/"+path.getResourcePath());
+			actualPath = new ResourceLocation(path.getNamespace(), "textures/"+path.getPath());
 		} else {
 			path = new ResourceLocation(stack.getItem().getRegistryName()+".png");
-			actualPath = new ResourceLocation(path.getResourceDomain(), "textures/items/"+path.getResourcePath());
+			actualPath = new ResourceLocation(path.getNamespace(), "textures/items/"+path.getPath());
 		}
 		return getColorFromResourceLocation(actualPath);
 	}
@@ -397,17 +416,17 @@ public class Library {
 
 	public static RayTraceResult rayTrace(EntityPlayer player, double length, float interpolation) {
 		Vec3d vec3 = getPosition(interpolation, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
 		Vec3d vec31 = player.getLook(interpolation);
-		Vec3d vec32 = vec3.addVector(vec31.x * length, vec31.y * length, vec31.z * length);
+		Vec3d vec32 = vec3.add(vec31.x * length, vec31.y * length, vec31.z * length);
 		return player.world.rayTraceBlocks(vec3, vec32, false, false, true);
 	}
 	
 	public static RayTraceResult rayTrace(EntityPlayer player, double length, float interpolation, boolean b1, boolean b2, boolean b3) {
 		Vec3d vec3 = getPosition(interpolation, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
 		Vec3d vec31 = player.getLook(interpolation);
-		Vec3d vec32 = vec3.addVector(vec31.x * length, vec31.y * length, vec31.z * length);
+		Vec3d vec32 = vec3.add(vec31.x * length, vec31.y * length, vec31.z * length);
 		return player.world.rayTraceBlocks(vec3, vec32, b1, b2, b3);
 	}
 	
@@ -428,16 +447,16 @@ public class Library {
 	
 	public static RayTraceResult rayTraceIncludeEntities(EntityPlayer player, double d, float f) {
 		Vec3d vec3 = getPosition(f, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
 		Vec3d vec31 = player.getLook(f);
-		Vec3d vec32 = vec3.addVector(vec31.x * d, vec31.y * d, vec31.z * d);
+		Vec3d vec32 = vec3.add(vec31.x * d, vec31.y * d, vec31.z * d);
 		return rayTraceIncludeEntities(player.world, vec3, vec32, player);
 	}
 	
 	public static RayTraceResult rayTraceIncludeEntitiesCustomDirection(EntityPlayer player, Vec3d look, double d, float f) {
 		Vec3d vec3 = getPosition(f, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
-		Vec3d vec32 = vec3.addVector(look.x * d, look.y * d, look.z * d);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
+		Vec3d vec32 = vec3.add(look.x * d, look.y * d, look.z * d);
 		return rayTraceIncludeEntities(player.world, vec3, vec32, player);
 	}
 	
@@ -471,9 +490,9 @@ public class Library {
 	
 	public static Pair<RayTraceResult, List<Entity>> rayTraceEntitiesOnLine(EntityPlayer player, double d, float f){
 		Vec3d vec3 = getPosition(f, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
 		Vec3d vec31 = player.getLook(f);
-		Vec3d vec32 = vec3.addVector(vec31.x * d, vec31.y * d, vec31.z * d);
+		Vec3d vec32 = vec3.add(vec31.x * d, vec31.y * d, vec31.z * d);
 		RayTraceResult result = player.world.rayTraceBlocks(vec3, vec32, false, true, true);
 		if(result != null)
 			vec32 = result.hitVec;
@@ -494,9 +513,9 @@ public class Library {
 	public static RayTraceResult rayTraceEntitiesInCone(EntityPlayer player, double d, float f, float degrees) {
 		double cosDegrees = Math.cos(Math.toRadians(degrees));
 		Vec3d vec3 = getPosition(f, player);
-		vec3 = vec3.addVector(0D, (double) player.eyeHeight, 0D);
+		vec3 = vec3.add(0D, (double) player.eyeHeight, 0D);
 		Vec3d vec31 = player.getLook(f);
-		Vec3d vec32 = vec3.addVector(vec31.x * d, vec31.y * d, vec31.z * d);
+		Vec3d vec32 = vec3.add(vec31.x * d, vec31.y * d, vec31.z * d);
 		
 		RayTraceResult result = player.world.rayTraceBlocks(vec3, vec32, false, true, true);
 		double runningDot = Double.MIN_VALUE;
@@ -529,7 +548,7 @@ public class Library {
 		Vec3d V = center.subtract(coneStart);
 		double VlenSq = V.lengthSquared();
 		Vec3d direction = coneEnd.subtract(coneStart);
-		double size = direction.lengthVector();
+		double size = direction.length();
 		double V1len  = V.dotProduct(direction.normalize());
 		double angRad = Math.toRadians(degrees);
 		double distanceClosestPoint = Math.cos(angRad) * Math.sqrt(VlenSq - V1len*V1len) - V1len * Math.sin(angRad);

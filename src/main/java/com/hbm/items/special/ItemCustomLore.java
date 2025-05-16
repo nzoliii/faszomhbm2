@@ -3,7 +3,6 @@ package com.hbm.items.special;
 import java.util.List;
 import java.util.Random;
 
-import com.hbm.config.BombConfig;
 import com.hbm.config.GeneralConfig;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.ArmorUtil;
@@ -27,7 +26,7 @@ public class ItemCustomLore extends Item {
 	EnumRarity rarity;
 	
 	public ItemCustomLore(String s) {
-		this.setUnlocalizedName(s);
+		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.setCreativeTab(MainRegistry.controlTab);
 		ModItems.ALL_ITEMS.add(this);
@@ -36,7 +35,7 @@ public class ItemCustomLore extends Item {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flagIn) {
-		String unloc = this.getUnlocalizedName() + ".desc";
+		String unloc = this.getTranslationKey() + ".desc";
 		String loc = I18nUtil.resolveKey(unloc);
 
 		if(!unloc.equals(loc)) {
@@ -205,14 +204,6 @@ public class ItemCustomLore extends Item {
 			} else {
 				list.add("Explore the other side.");
 			}
-		}
-		if(this == ModItems.crystal_energy) {
-			list.add("Densely packed energy powder.");
-			list.add("Not edible.");
-		}
-		if(this == ModItems.pellet_coolant) {
-			list.add("Required for cyclotron operation.");
-			list.add("Do NOT operate cyclotron without it!");
 		}
 		if(this == ModItems.fuse) {
 			list.add("This item is needed for every large");
@@ -471,8 +462,6 @@ public class ItemCustomLore extends Item {
 			this == ModItems.powder_schrabidate || 
 			this == ModItems.powder_schrabidium || 
 
-			this == ModItems.wire_schrabidium || 
-
 			this == ModItems.plate_schrabidium || 
 			this == ModItems.plate_saturnite || 
 			
@@ -491,7 +480,7 @@ public class ItemCustomLore extends Item {
 			this == ModItems.crystal_schrabidium ||
     		this == ModItems.crystal_schraranium ||
     		this == ModItems.crystal_trixite ||
-    		ItemCell.hasFluid(stack, ModForgeFluids.sas3) || 
+    		ItemCell.hasFluid(stack, ModForgeFluids.SAS3) ||
     		this == ModItems.rod_unobtainium || 
     		this == ModItems.rod_schrabidium || 
 			this == ModItems.rod_dual_schrabidium || 

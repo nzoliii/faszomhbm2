@@ -16,6 +16,7 @@ import com.hbm.tileentity.machine.TileEntityCrateSteel;
 import com.hbm.tileentity.machine.TileEntityCrateTungsten;
 import com.hbm.tileentity.machine.TileEntityCrateDesh;
 import com.hbm.tileentity.machine.TileEntitySafe;
+import com.hbm.hazard.HazardSystem;
 
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -54,7 +55,7 @@ public class BlockStorageCrate extends BlockContainer {
 
 	public BlockStorageCrate(Material materialIn, String s){
 		super(materialIn);
-		this.setUnlocalizedName(s);
+		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.setSoundType(SoundType.METAL);
 
@@ -105,7 +106,7 @@ public class BlockStorageCrate extends BlockContainer {
 			TileEntity te = world.getTileEntity(pos);
 			
 			NBTTagCompound nbt = new NBTTagCompound();
-			
+			float rads = 0;
 			if(te != null) {
 				IItemHandler inventory;
 				if(te instanceof TileEntitySafe){
@@ -121,11 +122,15 @@ public class BlockStorageCrate extends BlockContainer {
 					ItemStack stack = inventory.getStackInSlot(i);
 					if(stack.isEmpty())
 						continue;
-					
+					rads += HazardSystem.getTotalRadsFromStack(stack) * stack.getCount();
 					NBTTagCompound slot = new NBTTagCompound();
 					stack.writeToNBT(slot);
 					nbt.setTag("slot" + i, slot);
 				}
+			}
+
+			if(rads > 0){
+				nbt.setFloat("cRads", rads);
 			}
 			
 			if(te instanceof TileEntityLockableBase) {
@@ -138,7 +143,7 @@ public class BlockStorageCrate extends BlockContainer {
 			}
 			
 			
-			if(!nbt.hasNoTags()) {
+			if(!nbt.isEmpty()) {
 				drop.setTagCompound(nbt);
 								
 				if(nbt.toString().length() > MachineConfig.crateByteSize * 1000) {
@@ -257,7 +262,7 @@ public class BlockStorageCrate extends BlockContainer {
 
 	@Override
 	public IBlockState getStateFromMeta(int meta){
-		EnumFacing enumfacing = EnumFacing.getFront(meta);
+		EnumFacing enumfacing = EnumFacing.byIndex(meta);
 
 		if(enumfacing.getAxis() == EnumFacing.Axis.Y) {
 			enumfacing = EnumFacing.NORTH;

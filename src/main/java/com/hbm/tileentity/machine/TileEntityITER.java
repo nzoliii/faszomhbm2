@@ -72,7 +72,7 @@ public class TileEntityITER extends TileEntityMachineBase implements ITickable, 
 		tanks[0] = new FluidTank(12800000);
 		types[0] = FluidRegistry.WATER;
 		tanks[1] = new FluidTank(1280000);
-		types[1] = ModForgeFluids.ultrahotsteam;
+		types[1] = ModForgeFluids.ULTRAHOTSTEAM;
 		plasma = new FluidTank(16000);
 	}
 
@@ -155,7 +155,7 @@ public class TileEntityITER extends TileEntityMachineBase implements ITickable, 
 			/// END Processing part ///
 
 			/// START Notif packets ///
-			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, new FluidTank[] { tanks[0], tanks[1], plasma }), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 120));
+			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, tanks[0], tanks[1], plasma), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 120));
 			PacketDispatcher.wrapper.sendToAllAround(new FluidTypePacketTest(pos.getX(), pos.getY(), pos.getZ(), new Fluid[]{plasmaType}), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
 			/// END Notif packets ///
 			NBTTagCompound data = new NBTTagCompound();
@@ -412,7 +412,7 @@ public class TileEntityITER extends TileEntityMachineBase implements ITickable, 
 
 	@Override
 	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if(resource != null && resource.getFluid() == ModForgeFluids.ultrahotsteam) {
+		if(resource != null && resource.getFluid() == ModForgeFluids.ULTRAHOTSTEAM) {
 			return tanks[1].drain(resource, doDrain);
 		}
 		return null;

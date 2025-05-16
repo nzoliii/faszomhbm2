@@ -9,15 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 
+import net.minecraft.entity.item.EntityArmorStand;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.Level;
 
@@ -46,6 +41,7 @@ import com.hbm.handler.MissileStruct;
 import com.hbm.handler.RadiationWorldHandler;
 import com.hbm.handler.WeightedRandomChestContentFrom1710;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
+import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
 import com.hbm.inventory.AssemblerRecipes;
 import com.hbm.items.IEquipReceiver;
@@ -338,8 +334,8 @@ public class ModEventHandler {
 					return sta;
 				}
 			};
-			LootEntry entry = new LootEntryItem(content.theItemId.getItem(), content.itemWeight, 1, funcs, conds, content.theItemId.getUnlocalizedName() + "_loot");
-			LootPool pool = new LootPool(new LootEntry[]{entry}, new LootCondition[]{new RandomChanceWithLooting(0.25F, 0.1F)}, new RandomValueRange(1), new RandomValueRange(0), content.theItemId.getUnlocalizedName() + "_loot");
+			LootEntry entry = new LootEntryItem(content.theItemId.getItem(), content.itemWeight, 1, funcs, conds, content.theItemId.getTranslationKey() + "_loot");
+			LootPool pool = new LootPool(new LootEntry[]{entry}, new LootCondition[]{new RandomChanceWithLooting(0.25F, 0.1F)}, new RandomValueRange(1), new RandomValueRange(0), content.theItemId.getTranslationKey() + "_loot");
 			e.getTable().addPool(pool);
 		}
 	}
@@ -711,7 +707,7 @@ public class ModEventHandler {
 			
 			ItemStack armor = ent.getItemStackFromSlot(EntityEquipmentSlot.values()[i]);
 			
-			if(armor != null && ArmorModHandler.hasMods(armor)) {
+			if(ArmorModHandler.hasMods(armor)) {
 				
 				for(ItemStack mod : ArmorModHandler.pryMods(armor)) {
 					
@@ -727,7 +723,7 @@ public class ModEventHandler {
 	public void onEntityAttacked(LivingAttackEvent event) {
 		EntityLivingBase e = event.getEntityLiving();
 
-		if(e instanceof EntityPlayer && ArmorUtil.checkArmor((EntityPlayer) e, ModItems.euphemium_helmet, ModItems.euphemium_plate, ModItems.euphemium_legs, ModItems.euphemium_boots)) {
+		if(e instanceof EntityPlayer && ArmorUtil.checkArmor(e, ModItems.euphemium_helmet, ModItems.euphemium_plate, ModItems.euphemium_legs, ModItems.euphemium_boots)) {
 			if(event.getSource() != ModDamageSource.digamma){
 				e.world.playSound(null, e.posX, e.posY, e.posZ, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 5F, 1.0F + e.getRNG().nextFloat() * 0.5F);
 				event.setCanceled(true);
@@ -776,6 +772,10 @@ public class ModEventHandler {
 				}
 			}
 			/// BETA HEALTH END ///
+
+			/// NEW ITEM SYS START ///
+			HazardSystem.updatePlayerInventory(player);
+			/// NEW ITEM SYS END ///
 		}
 		if(!player.world.isRemote && event.phase == Phase.START){
 			ItemDigammaDiagnostic.playVoices(player.world, player);
@@ -971,12 +971,13 @@ public class ModEventHandler {
 	public void onLivingUpdate(LivingUpdateEvent event){
 		if(event.isCancelable() && event.isCanceled())
 			return;
+		if(event.getEntityLiving() instanceof EntityArmorStand) return;
 		ArmorFSB.handleTick(event.getEntityLiving());
 		if(r_handInventory == null){
 			r_handInventory = ReflectionHelper.findField(EntityLivingBase.class, "handInventory", "field_184630_bs");
 			r_armorArray = ReflectionHelper.findField(EntityLivingBase.class, "armorArray", "field_184631_bt");
 		}
-		NonNullList<ItemStack> handInventory = null;
+		NonNullList<ItemStack> handInventory;
 		NonNullList<ItemStack> armorArray = null;
 		try {
 			handInventory = (NonNullList<ItemStack>) r_handInventory.get(event.getEntityLiving());
@@ -988,7 +989,7 @@ public class ModEventHandler {
 			if(event.getEntityLiving() instanceof EntityPlayer && event.getEntityLiving().getHeldItemOffhand().getItem() instanceof IEquipReceiver && !ItemStack.areItemsEqual(handInventory.get(0), event.getEntityLiving().getHeldItemOffhand())) {
 				((IEquipReceiver)event.getEntityLiving().getHeldItemOffhand().getItem()).onEquip((EntityPlayer) event.getEntityLiving(), EnumHand.OFF_HAND);
 			}
-		} catch(Exception e) { }
+		} catch(Exception ignored) { }
 		
 		for(int i = 2; i < 6; i++) {
 			
@@ -999,7 +1000,7 @@ public class ModEventHandler {
 			
 			if(reapply) {
 				
-				if(prev != null && ArmorModHandler.hasMods(prev)) {
+				if(ArmorModHandler.hasMods(prev)) {
 					
 					for(ItemStack mod : ArmorModHandler.pryMods(prev)) {
 						
@@ -1014,12 +1015,13 @@ public class ModEventHandler {
 				}
 			}
 			
-			if(armor != null && ArmorModHandler.hasMods(armor)) {
+			if(ArmorModHandler.hasMods(armor)) {
 				
 				for(ItemStack mod : ArmorModHandler.pryMods(armor)) {
 					
 					if(mod != null && mod.getItem() instanceof ItemArmorMod) {
 						((ItemArmorMod)mod.getItem()).modUpdate(event.getEntityLiving(), armor);
+						HazardSystem.applyHazards(mod, event.getEntityLiving());
 						
 						if(reapply) {
 							
@@ -1034,6 +1036,9 @@ public class ModEventHandler {
 		}
 		
 		EntityEffectHandler.onUpdate(event.getEntityLiving());
+		if(!event.getEntityLiving().world.isRemote && !(event.getEntityLiving() instanceof EntityPlayer)) {
+			HazardSystem.updateLivingInventory(event.getEntityLiving());
+		}
 	}
 
 	@SubscribeEvent
@@ -1069,9 +1074,8 @@ public class ModEventHandler {
 
 	@SubscribeEvent
 	public void clientJoinServer(PlayerLoggedInEvent e) {
-		if(e.player instanceof EntityPlayerMP){
-			EntityPlayerMP playerMP = (EntityPlayerMP)e.player;
-			PacketDispatcher.sendTo(new AssemblerRecipeSyncPacket(AssemblerRecipes.recipeList, AssemblerRecipes.hidden), playerMP);
+		if(e.player instanceof EntityPlayerMP playerMP){
+            PacketDispatcher.sendTo(new AssemblerRecipeSyncPacket(AssemblerRecipes.recipeList, AssemblerRecipes.hidden), playerMP);
 			JetpackHandler.playerLoggedIn(e);
 			IHBMData props = HbmCapability.getData(e.player);
 
@@ -1086,7 +1090,7 @@ public class ModEventHandler {
 				e.player.sendMessage(new TextComponentTranslation("chat.newver", HTTPHandler.versionNumber));
 				e.player.sendMessage(new TextComponentTranslation("chat.curver", RefStrings.VERSION));
 
-				if(HTTPHandler.changes != ""){
+				if(!Objects.equals(HTTPHandler.changes, "")){
 					String[] lines = HTTPHandler.changes.split("\\$");
 					e.player.sendMessage(new TextComponentString("Changelog:"));//RefStrings.CHANGELOG
 					for(String w: lines){

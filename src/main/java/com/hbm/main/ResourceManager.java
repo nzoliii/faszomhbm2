@@ -46,8 +46,6 @@ public class ResourceManager {
 	public static final IModelCustom assembler_slider = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/assembler_new_slider.obj"));
 	public static final IModelCustom assembler_arm = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/assembler_new_arm.obj"));
 
-	//Chemplant
-	public static final IModelCustom chemplant_new = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/chemplant_main_new.obj"));
 	public static final IModelCustom chemplant_body = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/chemplant_new_body.obj"));
 	public static final IModelCustom chemplant_spinner = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/chemplant_new_spinner.obj"));
 	public static final IModelCustom chemplant_piston = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/chemplant_new_piston.obj"));
@@ -57,6 +55,12 @@ public class ResourceManager {
 	
 	//Mixer
 	public static final IModelCustom mixer = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/mixer.obj"));
+
+	//Arc Welder
+	public static final IModelCustom arc_welder = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/arc_welder.obj"));
+
+	//Solderer
+	public static final IModelCustom soldering_station = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/soldering_station.obj"));
 
 	//F6 TANKS
 	public static final IModelCustom tank = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/tank.obj"));
@@ -311,6 +315,12 @@ public class ResourceManager {
 	public static final IModelCustom fraction_tower = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/fraction_tower.obj"));
 	public static final IModelCustom fraction_spacer = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/fraction_spacer.obj"));
 	public static final IModelCustom cracking_tower = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/cracking_tower.obj"));
+	public static final IModelCustom liquefactor = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/liquefactor.obj"));
+	public static final IModelCustom solidifier = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/solidifier.obj"));
+	public static final IModelCustom vacuum_distill = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/vacuum_distill.obj"));
+	public static final IModelCustom catalytic_reformer = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/catalytic_reformer.obj"));
+	public static final IModelCustom hydrotreater = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/hydrotreater.obj"));
+	public static final IModelCustom coker = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/coker.obj"));
 
 	//Flare Stack
 	public static final IModelCustom oilflare = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/flare_stack.obj"));
@@ -344,9 +354,12 @@ public class ResourceManager {
 	public static final IModelCustom heater_electric = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/electric_heater.obj"));
 	public static final IModelCustom heater_heatex = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/heatex.obj"));
 	public static final IModelCustom furnace_iron = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/furnace_iron.obj"));
+	
+	//Heat-Based Machines
 	public static final IModelCustom furnace_steel = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/furnace_steel.obj"));
 	public static final IModelCustom heat_boiler = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/boiler.obj"));
-	//Heat-Based Machines
+	public static final IModelCustom crucible_heat = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/crucible.obj"));
+	public static final IModelCustom combination_oven = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/machines/combination_oven.obj"));
 	
 	//Bombs
 	public static final IModelCustom bomb_solinium = AdvancedModelLoader.loadModel(new ResourceLocation(RefStrings.MODID, "models/bombs/ufp.obj"));
@@ -648,6 +661,12 @@ public class ResourceManager {
 	public static final ResourceLocation fraction_tower_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/fraction_tower.png");
 	public static final ResourceLocation fraction_spacer_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/fraction_spacer.png");
 	public static final ResourceLocation cracking_tower_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/cracking_tower.png");
+	public static final ResourceLocation liquefactor_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/liquefactor.png");
+	public static final ResourceLocation solidifier_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/solidifier.png");
+	public static final ResourceLocation vacuum_distill_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/vacuum_distill.png");
+	public static final ResourceLocation catalytic_reformer_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/catalytic_reformer.png");
+	public static final ResourceLocation hydrotreater_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/hydrotreater.png");
+	public static final ResourceLocation coker_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/coker.png");
 	
 	//Flare Stack
 	public static final ResourceLocation oilflare_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/flare_stack.png");
@@ -695,11 +714,14 @@ public class ResourceManager {
 	public static final ResourceLocation heater_oven_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/heating_oven.png");
 	public static final ResourceLocation heater_oilburner_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/oilburner.png");
 	public static final ResourceLocation heater_radiothermal_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/radiothermal.png");
-	public static final ResourceLocation heat_boiler_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/boiler.png");
 	public static final ResourceLocation heater_electric_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/electric_heater.png");
 	public static final ResourceLocation heater_heatex_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/heater_heatex.png");
 	public static final ResourceLocation furnace_iron_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/furnace_iron.png");
 	public static final ResourceLocation furnace_steel_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/furnace_steel.png");
+	public static final ResourceLocation heat_boiler_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/boiler.png");
+	public static final ResourceLocation crucible_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/crucible_heat.png");
+	public static final ResourceLocation combination_oven_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/combination_oven.png");
+
 	//Selenium Engine
 	public static final ResourceLocation selenium_body_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/selenium_engine_body.png");
 	public static final ResourceLocation selenium_piston_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/selenium_engine_piston.png");
@@ -729,6 +751,12 @@ public class ResourceManager {
 	//Mixer
 	public static final ResourceLocation mixer_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/mixer.png");
 	public static final ResourceLocation mixer_uu_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/mixer_uu.png");
+
+	//Welder
+	public static final ResourceLocation arc_welder_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/arc_welder.png");
+
+	//Solderer
+	public static final ResourceLocation soldering_station_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/soldering_station.png");
 
 	//F6 TANKS
     public static final ResourceLocation uf6_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/UF6Tank.png");

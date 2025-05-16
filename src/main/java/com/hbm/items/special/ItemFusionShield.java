@@ -3,6 +3,7 @@ package com.hbm.items.special;
 import java.util.List;
 
 import com.hbm.items.ModItems;
+import com.hbm.lib.Library;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -19,7 +20,7 @@ public class ItemFusionShield extends Item {
 	public ItemFusionShield(long maxDamage, int maxTemp, String s) {
 		this.maxDamage = maxDamage;
 		this.maxTemp = maxTemp;
-		this.setUnlocalizedName(s);
+		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		
 		ModItems.ALL_ITEMS.add(this);
@@ -45,10 +46,8 @@ public class ItemFusionShield extends Item {
 	
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-		long damage = getShieldDamage(stack);
-		int percent = (int) ((maxDamage - damage) * 100 / maxDamage);
 
-		tooltip.add("Durability: " + (maxDamage - damage) + "/" + maxDamage + " (" + percent + "%)");
+		tooltip.add(Library.getColoredDurabilityPercent(maxDamage - getShieldDamage(stack), maxDamage));
 
 		tooltip.add("Maximum Plasma Heat: " + TextFormatting.RED + "" + maxTemp + "°C");
 	}

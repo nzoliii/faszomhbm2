@@ -2,7 +2,7 @@ package com.hbm.items.weapon;
 
 import java.util.List;
 
-import com.hbm.blocks.generic.EntityGrenadeTau;
+import com.hbm.entity.grenade.EntityGrenadeTau;
 import com.hbm.entity.grenade.EntityGrenadeASchrab;
 import com.hbm.entity.grenade.EntityGrenadeBlackHole;
 import com.hbm.entity.grenade.EntityGrenadeBreach;
@@ -64,7 +64,7 @@ public class ItemGrenade extends Item {
 	protected int fuse = 4;
 	
 	public ItemGrenade(int fuse, String s) {
-		this.setUnlocalizedName(s);
+		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.maxStackSize = 16;
 		this.fuse = fuse;

@@ -7,7 +7,7 @@ import java.util.List;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
-import com.hbm.inventory.FluidCombustionRecipes;
+import com.hbm.inventory.FluidFlameRecipes;
 import com.hbm.items.tool.ItemTooling;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityProxyCombo;
@@ -101,6 +101,6 @@ public class HeaterRadioThermal extends BlockDummyable implements ITooltipProvid
         text.add(String.format("%,d", heater.heatEnergy) + " TU");
         text.add("§c<- §r"+String.format("%,d", heater.heatGen) + " TU/t");
 
-        ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getUnlocalizedName() + ".name"), 0xffff00, 0x404000, text);
+        ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);
     }
 }

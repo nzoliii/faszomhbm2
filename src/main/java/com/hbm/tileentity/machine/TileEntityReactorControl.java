@@ -142,21 +142,21 @@ public class TileEntityReactorControl extends TileEntity implements ITickable {
         		isOn = !reactor.retracting;
         		isLinked = true;
         		
-        		if(reactor.tankTypes[2] == ModForgeFluids.hotsteam){
+        		if(reactor.tankTypes[2] == ModForgeFluids.HOTSTEAM){
         			compression = 1;
-        		} else if(reactor.tankTypes[2] == ModForgeFluids.superhotsteam){
+        		} else if(reactor.tankTypes[2] == ModForgeFluids.SUPERHOTSTEAM){
         			compression = 2;
         		} else {
         			compression = 0;
         		}
         		
         		if(!redstoned) {
-        			if(world.isBlockIndirectlyGettingPowered(pos) > 0) {
+        			if(world.getStrongPower(pos) > 0) {
         				redstoned = true;
         				reactor.retracting = !reactor.retracting;
         			}
         		} else {
-        			if(world.isBlockIndirectlyGettingPowered(pos) == 0) {
+        			if(world.getStrongPower(pos) == 0) {
         				redstoned = false;
         			}
         		}
@@ -181,9 +181,9 @@ public class TileEntityReactorControl extends TileEntity implements ITickable {
         		isOn = reactor.rods > 0;
         		isLinked = true;
         		
-        		if(reactor.tankTypes[2] == ModForgeFluids.hotsteam){
+        		if(reactor.tankTypes[2] == ModForgeFluids.HOTSTEAM){
         			compression = 1;
-        		} else if(reactor.tankTypes[2] == ModForgeFluids.superhotsteam){
+        		} else if(reactor.tankTypes[2] == ModForgeFluids.SUPERHOTSTEAM){
         			compression = 2;
         		} else {
         			compression = 0;
@@ -192,7 +192,7 @@ public class TileEntityReactorControl extends TileEntity implements ITickable {
         			lastRods = rods;
         		
         		if(!redstoned) {
-        			if(world.isBlockIndirectlyGettingPowered(pos) > 0) {
+        			if(world.getStrongPower(pos) > 0) {
         				redstoned = true;
         				
         				if(rods == 0)
@@ -201,7 +201,7 @@ public class TileEntityReactorControl extends TileEntity implements ITickable {
         					rods = 0;
         			}
         		} else {
-        			if(world.isBlockIndirectlyGettingPowered(pos) == 0) {
+        			if(world.getStrongPower(pos) == 0) {
         				redstoned = false;
         			}
         		}

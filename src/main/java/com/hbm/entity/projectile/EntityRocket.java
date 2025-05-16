@@ -375,7 +375,7 @@ public class EntityRocket extends Entity implements IProjectile {
 
                     if (newState.getMaterial() != Material.AIR)
                     {
-                        this.field_145790_g.onEntityCollidedWithBlock(this.world, newPos, newState, this);
+                        this.field_145790_g.onEntityCollision(this.world, newPos, newState, this);
                     }
                 }
             }
@@ -500,7 +500,7 @@ public class EntityRocket extends Entity implements IProjectile {
         {
             boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && entityIn.capabilities.isCreativeMode;
 
-            if (this.canBePickedUp == 1 && !entityIn.inventory.addItemStackToInventory(new ItemStack(ModItems.gun_rpg_ammo, 1)))
+            if (this.canBePickedUp == 1 && !entityIn.inventory.addItemStackToInventory(new ItemStack(ModItems.ammo_rocket, 1)))
             {
                 flag = false;
             }

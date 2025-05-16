@@ -176,7 +176,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 				for(int x = -1; x <= 1; x++) {
 					for(int z = -1; z <= 1; z++) {
 
-						if(world.isBlockIndirectlyGettingPowered(mPos.setPos(pos.getX() + x, pos.getY(), pos.getZ() + z)) > 0) {
+						if(world.getStrongPower(mPos.setPos(pos.getX() + x, pos.getY(), pos.getZ() + z)) > 0) {
 							launch();
 							break outer;
 						}
@@ -420,19 +420,19 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 
 		switch((FuelType) fuselage.attributes[0]) {
 		case KEROSENE:
-			tankTypes[0] = ModForgeFluids.kerosene;
-			tankTypes[1] = ModForgeFluids.acid;
+			tankTypes[0] = ModForgeFluids.KEROSENE;
+			tankTypes[1] = ModForgeFluids.ACID;
 			break;
 		case HYDROGEN:
-			tankTypes[0] = ModForgeFluids.hydrogen;
-			tankTypes[1] = ModForgeFluids.oxygen;
+			tankTypes[0] = ModForgeFluids.HYDROGEN;
+			tankTypes[1] = ModForgeFluids.OXYGEN;
 			break;
 		case XENON:
-			tankTypes[0] = ModForgeFluids.xenon;
+			tankTypes[0] = ModForgeFluids.XENON;
 			break;
 		case BALEFIRE:
-			tankTypes[0] = ModForgeFluids.balefire;
-			tankTypes[1] = ModForgeFluids.acid;
+			tankTypes[0] = ModForgeFluids.BALEFIRE;
+			tankTypes[1] = ModForgeFluids.ACID;
 			break;
 		default:
 			break;

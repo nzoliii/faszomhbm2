@@ -1,32 +1,22 @@
 package com.hbm.tileentity.machine;
 
-import java.util.List;
-
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.StorageDrumRecipes;
-import com.hbm.interfaces.IItemHazard;
 import com.hbm.interfaces.ITankPacketAcceptor;
-import com.hbm.items.ModItems;
+import com.hbm.hazard.HazardSystem;
 
 import com.hbm.packet.FluidTankPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ContaminationUtil.ContaminationType;
-import com.hbm.util.ContaminationUtil.HazardType;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -71,10 +61,10 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements ITic
 				
 				if(!inventory.getStackInSlot(i).isEmpty()) {
 					
-					Item item = inventory.getStackInSlot(i).getItem();
+					ItemStack itemStack = inventory.getStackInSlot(i);
 					
-					if(item instanceof IItemHazard && world.getTotalWorldTime() % 20 == 0) {
-						rad += ((IItemHazard)item).getModule().radiation;
+					if(world.getTotalWorldTime() % 20 == 0) {
+						rad += HazardSystem.getRawRadsFromStack(itemStack);
 					}
 
 					int[] wasteData = StorageDrumRecipes.getWaste(inventory.getStackInSlot(i));
@@ -102,8 +92,8 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements ITic
 				}
 			}
 			
-			this.tanks[0].fill(new FluidStack(ModForgeFluids.wastefluid, liquid), true);
-			this.tanks[1].fill(new FluidStack(ModForgeFluids.wastegas, gas), true);
+			this.tanks[0].fill(new FluidStack(ModForgeFluids.WASTEFLUID, liquid), true);
+			this.tanks[1].fill(new FluidStack(ModForgeFluids.WASTEGAS, gas), true);
 			
 			age++;
 			
