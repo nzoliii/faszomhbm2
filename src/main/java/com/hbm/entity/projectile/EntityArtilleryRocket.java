@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityArtilleryRocket extends EntityThrowableNT
+public class EntityArtilleryRocket extends EntityThrowableInterp
     implements IChunkLoader, IRadarDetectable {
 
   private Ticket loaderTicket;
@@ -82,7 +82,7 @@ public class EntityArtilleryRocket extends EntityThrowableNT
   }
 
   public EntityArtilleryRocket setTarget(double x, double y, double z) {
-    this.lastTargetPos =  new Vec3d(x, y, z);
+    this.lastTargetPos = new Vec3d(x, y, z);
     return this;
   }
 
@@ -111,7 +111,8 @@ public class EntityArtilleryRocket extends EntityThrowableNT
       }
 
       if (this.targetEntity == null) {
-        Vec3d delta = new Vec3d(
+        Vec3d delta =
+            new Vec3d(
                 this.lastTargetPos.x - this.posX,
                 this.lastTargetPos.y - this.posY,
                 this.lastTargetPos.z - this.posZ);
@@ -136,13 +137,8 @@ public class EntityArtilleryRocket extends EntityThrowableNT
       int offset = 6;
       if (velocity > 1) {
         for (int i = offset; i < velocity + offset; i++) {
-//          NBTTagCompound data = new NBTTagCompound();
-//          data.setDouble("posX", posX + v.x * i);
-//          data.setDouble("posY", posY + v.y * i);
-//          data.setDouble("posZ", posZ + v.z * i);
-//          data.setString("type", "exKerosene");
-//          MainRegistry.proxy.effectNT(data);
-           MainRegistry.proxy.spawnParticle(posX + v.x * i, posY + v.y * i, posZ + v.z * i, "exKerosene", null);
+          MainRegistry.proxy.spawnParticle(
+              posX + v.x * i, posY + v.y * i, posZ + v.z * i, "exKerosene", null);
         }
       }
     }
@@ -204,7 +200,7 @@ public class EntityArtilleryRocket extends EntityThrowableNT
   public void writeEntityToNBT(NBTTagCompound nbt) {
     super.writeEntityToNBT(nbt);
 
-    if(this.lastTargetPos == null) {
+    if (this.lastTargetPos == null) {
       this.lastTargetPos = new Vec3d(posX, posY, posZ);
     }
 
@@ -219,7 +215,8 @@ public class EntityArtilleryRocket extends EntityThrowableNT
   public void readEntityFromNBT(NBTTagCompound nbt) {
     super.readEntityFromNBT(nbt);
 
-    this.lastTargetPos = new Vec3d(nbt.getDouble("targetX"), nbt.getDouble("targetY"), nbt.getDouble("targetZ"));
+    this.lastTargetPos =
+        new Vec3d(nbt.getDouble("targetX"), nbt.getDouble("targetY"), nbt.getDouble("targetZ"));
     this.setType(nbt.getInteger("type"));
   }
 
