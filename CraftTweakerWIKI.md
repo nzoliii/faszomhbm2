@@ -1,10 +1,11 @@
 
 
 
-# FaszomHBM 3 CraftTweaker Integration
+# **HBM Nuclear Tech Mod - 1.12.2 Extended Edition**
+
+# CraftTweaker Integration
 Removing of oreDict recipes is currently not supported.
 
-<br>
 
 ## Anvil
 
@@ -22,6 +23,7 @@ mods.ntm.Anvil.addRecipe(IItemStack output, IIngredient[] inputs, int tier);<br>
 mods.ntm.Anvil.addRecipe(IItemStack output, IIngredient input, int tier);<br>
 ``mods.ntm.Anvil.addRecipe(<minecraft:beef>, <minecraft:cooked_beef>, 5);``
 
+
 mods.ntm.Anvil.replaceRecipe(IItemStack output, IIngredient[] inputs, int tier);<br>
 ``mods.ntm.Anvil.replaceRecipe(<hbm:machine_silex>, [<minecraft:glass>, <minecraft:cobblestone>], 4);``
 
@@ -31,7 +33,6 @@ mods.ntm.Anvil.removeRecipe(IItemStack[] outputs);<br>
 mods.ntm.Anvil.removeRecipeByInput(IIngredient[] inputs);<br>
 ``mods.ntm.Anvil.removeRecipeByInput([<minecraft:cooked_beef>]);``
 
-<br>
 
 ## Assembler
 
@@ -46,7 +47,6 @@ mods.ntm.Assembler.replaceRecipe(IItemStack output, IItemStack[] inputs, int dur
 mods.ntm.Assembler.removeRecipe(IItemStack output);<br>
 ``mods.ntm.Assembler.removeRecipe(<hbm:machine_silex>);``
 
-<br>
 
 ## Chemplant
 
@@ -55,12 +55,12 @@ mods.ntm.Assembler.removeRecipe(IItemStack output);<br>
 mods.ntm.Chemplant.addChemplantRecipe(int index, String name, IItemStack[] inputItems, String[] inputFluids, int[] inputFluidAmounts, IItemStack[] outputItems, String[] outputFluids, int[] outputFluidAmounts, int duration);<br>
 ``mods.ntm.Chemplant.addChemplantRecipe(371, "NTM_BEEF", null, ["coolant"], [500], [<minecraft:snowball>], ["water", "petroleum"], [1000, 2000], 50);``
 
+
 > **index** must be > 0 and is the item meta value
 
 mods.ntm.Chemplant.removeChemplantRecipe(int index);<br>
 ``mods.ntm.Chemplant.removeChemplantRecipe(370);``
 
-<br>
 
 ## Blast Furnace
 
@@ -78,7 +78,6 @@ mods.ntm.BlastFurnace.addFuel(IItemStack fuel, int fuelAmount);<br>
 mods.ntm.BlastFurnace.removeFuel(IItemStack fuel);<br>
 ``mods.ntm.BlastFurnace.removeFuel(<hbm:solid_fuel>);``
 
-<br>
 
 ## Breeding Reactor
 
@@ -90,8 +89,8 @@ mods.ntm.BreedingReactor.addRecipe(IItemStack input, IItemStack output, int heat
 mods.ntm.BreedingReactor.removeRecipe(IItemStack input);<br>
 ``mods.ntm.BreedingReactor.removeRecipe(<hbm:rod_pu239>);``
 
-> **heat** must be > 0 and <= 4<br>
 
+> **heat** must be > 0 and <= 4<br>
 >  **usesInNuclearFurnace** must be > 0
 
 mods.ntm.BreedingReactor.addRecipe(IItemStack fuel, int heat, int usesInNuclearFurnace);<br>
@@ -100,7 +99,6 @@ mods.ntm.BreedingReactor.addRecipe(IItemStack fuel, int heat, int usesInNuclearF
 mods.ntm.BreedingReactor.removeRecipe(IItemStack fuel);<br>
 ``mods.ntm.BreedingReactor.removeFuel(<hbm:rod_polonium>);``
 
-<br>
 
 ## Centrifuge
 
@@ -112,7 +110,6 @@ mods.ntm.Centrifuge.addRecipe(IItemStack input, IItemStack[] outputs);<br>
 mods.ntm.Centrifuge.removeRecipe(IItemStack input);<br>
 ``mods.ntm.Centrifuge.removeRecipe(<hbm:crystal_phosphorus>);``
 
-<br>
 
 ## DFC
 
@@ -124,7 +121,6 @@ mods.ntm.DFC.addRecipe(IItemStack input, IItemStack output, long requiredSpark);
 mods.ntm.DFC.removeRecipe(IItemStack input);<br>
 ``mods.ntm.DFC.removeRecipe(<minecraft:stick>);``
 
-<br>
 
 ## RBMK Irradiation Channel
 
@@ -135,8 +131,6 @@ mods.ntm.IrradiationChannel.addRecipe(IItemStack input, IItemStack output, int r
 
 mods.ntm.IrradiationChannel.removeRecipe(IItemStack input);<br>
 ``mods.ntm.IrradiationChannel.removeRecipe(<hbm:ingot_strontium>);``
-
-<br>
 
 ## Press
 
@@ -153,7 +147,6 @@ mods.ntm.IrradiationChannel.removeRecipe(IItemStack input);<br>
 mods.ntm.Press.addRecipe(IItemStack output, IIngredient input, int type);<br>
 ``mods.ntm.Press.addRecipe(<minecraft:cooked_beef>, <minecraft:beef>);``
 
-<br>
 
 ## SILEX
 
@@ -183,7 +176,6 @@ mods.ntm.SILEX.addRecipe(int wavelengthNr, int fluidAmount, int fluidConsumption
 mods.ntm.SILEX.removeRecipe(IItemStack input);<br>
 ``mods.ntm.SILEX.removeRecipe(<hbm:waste_dirt>);``
 
-<br>
 
 ## Shredder
 mods.ntm.Shredder.addRecipe(IItemStack input, IItemStack output);<br>
@@ -192,13 +184,11 @@ mods.ntm.Shredder.addRecipe(IItemStack input, IItemStack output);<br>
 mods.ntm.Shredder.removeRecipe(IItemStack input);<br>
 ``mods.ntm.Shredder.removeRecipe(<minecraft:tnt>);``
 
-<br>
 
 ## Waste Drum
 mods.ntm.WasteDrum.addRecipe(IItemStack input, IItemStack output);<br>
 ``mods.ntm.WasteDrum.addRecipe(<minecraft:cooked_beef>, <minecraft:beef>);``
 
-<br>
 
 ## Fluid Heat Recipes
 
@@ -222,7 +212,6 @@ mods.ntm.FluidHeating.removeBoilRecipe(String inputFluid);<br>
 mods.ntm.FluidHeating.removeCoolRecipe(String inputFluid);<br>
 ``mods.ntm.FluidHeating.removeCoolRecipe("ic2hot_coolant");``
 
-<br>
 
 ## Fluid Combustion
 
@@ -234,3 +223,4 @@ Burn 1mB of experience fluid and get 5 TU<br>mods.ntm.FluidCombustion.addBurnabl
 
 mods.ntm.FluidCombustion.removeBurnableFluid(String inputFluid);<br>
 ``mods.ntm.FluidCombustion.removeBurnableFluid("experience");``
+
