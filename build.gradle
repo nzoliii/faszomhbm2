@@ -48,7 +48,6 @@ plugins {
 
 def out = services.get(StyledTextOutputFactory).create('an-output')
 
-
 // Project properties
 
 // Required properties: we don't know how to handle these being missing gracefully
@@ -102,7 +101,6 @@ propertyDefaultIfUnset("enableModernJavaSyntax", false)
 propertyDefaultIfUnset("enableSpotless", false)
 propertyDefaultIfUnset("enableJUnit", false)
 propertyDefaultIfUnsetWithEnvVar("deploymentDebug", false, "DEPLOYMENT_DEBUG")
-
 
 // Project property assertions
 
@@ -171,7 +169,6 @@ if (coreModClass) {
         throw new GradleException("Could not resolve \"coreModClass\"! Could not find ${targetFileJava} or ${targetFileScala} or ${targetFileScalaJava} or ${targetFileKotlin}")
     }
 }
-
 
 // Plugin application
 
@@ -487,7 +484,6 @@ repositories {
     mavenLocal() // Must be last for caching to work
 }
 
-
 // Dependencies
 
 // Configure dependency configurations
@@ -604,7 +600,6 @@ if (getFile('dependencies.gradle').exists()) {
     apply from: 'dependencies.gradle.kts'
 }
 
-
 // Test configuration
 
 // Ensure tests have access to minecraft classes
@@ -636,7 +631,6 @@ test {
         useJUnitPlatform()
     }
 }
-
 
 // Resource processing and jar building
 
@@ -844,7 +838,6 @@ def getManifestAttributes() {
     }
     return attributes
 }
-
 
 // LWJGL3ify setup
 if (enableJava17RunTasks.toBoolean()) {
@@ -1057,7 +1050,6 @@ abstract class SetupHotswapAgentTask extends DefaultTask {
     }
 }
 
-
 // IDE Configuration
 
 eclipse {
@@ -1139,7 +1131,6 @@ idea {
         }
     }
 }
-
 
 // Deployment
 def final modrinthApiKey = providers.environmentVariable('MODRINTH_API_KEY')
@@ -1388,7 +1379,6 @@ def getChangelog() {
     return getFile('CHANGELOG.md')
 }
 
-
 // Buildscript updating
 
 def buildscriptGradleVersion = '8.9'
@@ -1463,7 +1453,6 @@ static String getVersionHash(String buildScriptContent) {
     return ""
 }
 
-
 // Faq
 
 tasks.register('faq') {
@@ -1480,7 +1469,6 @@ tasks.register('faq') {
                 "Report any issues or feature requests you have for this build script to https://github.com/GregTechCEu/Buildscripts/issues\n")
     }
 }
-
 
 // Helpers
 
