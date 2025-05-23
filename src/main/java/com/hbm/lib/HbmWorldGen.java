@@ -392,7 +392,13 @@ public class HbmWorldGen implements IWorldGenerator {
 					int y = world.getHeight(x, z);
 
 					if (world.getBlockState(new BlockPos(x, y-1, z)).isSideSolid(world, new BlockPos(x, y-1, z), EnumFacing.UP)) {
-						world.setBlockState(new BlockPos(x, y, z), ModBlocks.mine_ap.getDefaultState());
+
+						Random random = new Random();
+						if (random.nextBoolean()) {
+							world.setBlockState(new BlockPos(x, y, z), ModBlocks.mine_ap.getDefaultState());
+						} else {
+							world.setBlockState(new BlockPos(x, y, z), ModBlocks.mine_fat.getDefaultState());
+						}
 
 						if (GeneralConfig.enableDebugMode)
 							MainRegistry.logger.info("[Debug] Successfully spawned landmine at x=" + x + " y=" + y + " z=" + z);

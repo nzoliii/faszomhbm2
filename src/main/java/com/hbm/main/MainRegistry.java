@@ -16,6 +16,8 @@ import com.hbm.dim.SolarSystem;
 import com.hbm.entity.effect.*;
 import com.hbm.entity.item.EntityMovingPackage;
 import com.hbm.entity.projectile.*;
+import com.hbm.fhbm2CustomMainMenu;
+import com.hbm.fhbm2MenuStateManager;
 import com.hbm.handler.*;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.interfaces.Spaghetti;
@@ -31,8 +33,17 @@ import com.hbm.tileentity.network.*;
 import com.hbm.tileentity.turret.*;
 import com.hbm.world.ModBiomes;
 import com.hbm.world.PlanetGen;
+import com.hbm.world.fhbm2GenerateHorrorTowers;
+import com.hbm.world.fhbm2GenerateUncleTedShed;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Logger;
 
 import com.hbm.blocks.ModBlocks;
@@ -238,6 +249,8 @@ import net.minecraftforge.fml.relauncher.Side;
 @Mod(modid = RefStrings.MODID, version = RefStrings.VERSION, name = RefStrings.NAME)
 @Spaghetti("Total cluserfuck")
 public class MainRegistry {
+
+	private boolean customMenuDisplayed = false;
 
 	static {
 		HBMSoundHandler.init();
@@ -445,6 +458,11 @@ public class MainRegistry {
 		aMatDNS.setRepairItem(new ItemStack(ModItems.plate_armor_dnt));
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+
+		// fhbm2
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
+
 		GameRegistry.registerTileEntity(TileEntityDummy.class, new ResourceLocation(RefStrings.MODID, "tileentity_dummy"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssembler.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assembler"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssemfac.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assemfac"));
@@ -931,6 +949,41 @@ public class MainRegistry {
 		registerReactorFuels();
 		ControlRegistry.init();
 		OreDictManager.registerOres();
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event) {
+		if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
+				&& fhbm2MenuStateManager.isCustomMenuEnabled()
+				&& !customMenuDisplayed) {
+
+			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+			customMenuDisplayed = true;
+		}
+
+		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
+			customMenuDisplayed = false;
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+		if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
+			int yOffset = event.getGui().height / 4 + 48;
+			event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
+		if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
+			fhbm2MenuStateManager.setCustomMenuEnabled(true);
+			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+		}
 	}
 
 	@EventHandler
