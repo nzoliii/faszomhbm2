@@ -93,14 +93,14 @@ public abstract class GUITurretBase extends GuiInfoContainer {
 			}
 			
 			if(draw) {
-				List<ItemStack> list = new ArrayList(turret.getAmmoTypesForDisplay());
-				List<Object[]> lines = new ArrayList();
+				List<ItemStack> list = new ArrayList<>(turret.getAmmoTypesForDisplay());
+				List<Object[]> lines = new ArrayList<>();
 				try {
 					ItemStack selected = list.get(0);
 					int highLight = 0;
 					if (list.size() > 1) {
 						int cycle = (int) ((System.currentTimeMillis() % (1000 * list.size())) / 1000);
-						selected = ((ItemStack) list.get(cycle)).copy();
+						selected = list.get(cycle).copy();
 						highLight = cycle;
 						list.set(cycle, selected);
 					}

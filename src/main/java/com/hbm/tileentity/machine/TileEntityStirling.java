@@ -34,9 +34,6 @@ public class TileEntityStirling extends TileEntityLoadedBase implements INBTPack
     public static int maxHeatNormal = 300;
     public static int maxHeatSteel = 1500;
     public static int overspeedLimit = 300;
-    private final float xCoord = this.pos.getX();
-    private final float yCoord = this.pos.getY();
-    private final float zCoord = this.pos.getZ();
     public long powerBuffer;
     public int heat;
     public boolean hasCog = true;

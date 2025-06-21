@@ -30,4 +30,29 @@ public class BufferUtil {
         return new String(bytes, CHARSET);
     }
 
+    /**
+     * Writes an integer array to a buffer.
+     */
+    public static void writeIntArray(ByteBuf buf, int[] array) {
+        buf.writeInt(array.length);
+        for (int value : array) {
+            buf.writeInt(value);
+        }
+    }
+
+    /**
+     * Reads an integer array from a buffer.
+     */
+    public static int[] readIntArray(ByteBuf buf) {
+        int length = buf.readInt();
+
+        int[] array = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            array[i] = buf.readInt();
+        }
+
+        return array;
+    }
+
 }

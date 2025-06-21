@@ -58,7 +58,7 @@ public class BlockBedrockOreTE extends BlockContainer implements ILookOverlay {
 
 		TileEntityBedrockOre ore = (TileEntityBedrockOre) te;
 
-		List<String> text = new ArrayList();
+		List<String> text = new ArrayList<>();
 		text.add(I18nUtil.resolveKey("desc.ore", BedrockOreRegistry.getOreName(ore.oreName)));
 		text.add(I18nUtil.resolveKey("desc.tier", ore.tier));
 

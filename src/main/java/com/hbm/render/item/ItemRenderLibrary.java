@@ -10,10 +10,13 @@ import com.hbm.items.weapon.ItemAmmoHIMARS;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.tileentity.RenderDemonLamp;
 import com.hbm.render.tileentity.RenderSawmill;
+import com.hbm.render.tileentity.RenderSteamEngine;
+import com.hbm.tileentity.machine.TileEntityMachineSteamEngine;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -242,6 +245,25 @@ public class ItemRenderLibrary {
                 bindTexture(ResourceManager.crystallizer_spinner_tex);
                 ResourceManager.crystallizer.renderPart("Spinner");
                 GlStateManager.shadeModel(GL11.GL_FLAT);
+            }
+        });
+
+        renderers.put(Item.getItemFromBlock(ModBlocks.machine_steam_engine), new ItemRenderBase() {
+            public void renderInventory() {
+                GlStateManager.rotate(90, 0F, -1F, 0F);
+                GlStateManager.translate(0, -1.5, 0);
+                GlStateManager.scale(2, 2, 2);
+            }
+
+            public void renderCommon(ItemStack item) {
+                GlStateManager.rotate(90, 0F, 1F, 0F);
+                bindTexture(ResourceManager.steam_engine_tex);
+
+                boolean cog = item.getItemDamage() != 1;
+                // TODO: Refactor this
+                // Temp shit code
+                RenderSteamEngine renderSteamEngine = (RenderSteamEngine) TileEntityRendererDispatcher.instance.renderers.get(TileEntityMachineSteamEngine.class);
+                renderSteamEngine.renderCommon(cog ? System.currentTimeMillis() % 3600 * 0.1F : 0);
             }
         });
 
@@ -1775,20 +1797,20 @@ public class ItemRenderLibrary {
 
         renderers.put(Item.getItemFromBlock(ModBlocks.turret_himars), new ItemRenderBase( ) {
             public void renderInventory() {
-                GL11.glTranslatef(0F, -2F, 0F);
-                GL11.glScaled(3.5, 3.5, 3.5);
+                GlStateManager.translate(0, -2, 0);
+                GlStateManager.scale(3.5, 3.5, 3.5);
             }
             public void renderCommon() {
-                GL11.glRotatef(-45F, 0F, 0F, 0F);
-                GL11.glScaled(0.5, 0.5, 0.5);
+                GlStateManager.rotate(-90, 0, 1, 0);
+                GlStateManager.scale(0.5, 0.5, 0.5);
                 GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                bindTexture(ResourceManager.turret_himars_tex);
-                ResourceManager.turret_himars.renderPart("Base");
+                bindTexture(ResourceManager.turret_arty_tex);
+                ResourceManager.turret_arty.renderPart("Base");
                 bindTexture(ResourceManager.turret_himars_tex);
                 ResourceManager.turret_himars.renderPart("Carriage");
                 ResourceManager.turret_himars.renderPart("Launcher");
                 ResourceManager.turret_himars.renderPart("Crane");
-                bindTexture(ResourceManager.turret_himars_tex);
+                bindTexture(ResourceManager.himars_standard_tex);
                 ResourceManager.turret_himars.renderPart("TubeStandard");
                 GlStateManager.shadeModel(GL11.GL_FLAT);
             }});
@@ -2627,10 +2649,9 @@ public class ItemRenderLibrary {
 
         renderers.put(ModItems.ammo_himars, new ItemRenderBase( ) {
             public void renderInventory() {
-                GL11.glTranslated(0, -2, 0);
-                double scale = 2.75D;
-                GL11.glScaled(scale, scale, scale);
-                GL11.glRotated(System.currentTimeMillis() % 3600 / 10D, 0, 1, 0);
+                GlStateManager.translate(0, -2, 0);
+                GlStateManager.scale(2.75, 2.75, 2.75);
+                GlStateManager.rotate((float) (System.currentTimeMillis() % 3600) / 10, 0, 1, 0);
             }
             public void renderCommon(ItemStack item) {
                 GlStateManager.translate(0, 1.5, 0);
@@ -2654,8 +2675,6 @@ public class ItemRenderLibrary {
                 }
                 GlStateManager.shadeModel(GL11.GL_FLAT);
             }});
-
-
     }
 
     private static void bindTexture(ResourceLocation res) {

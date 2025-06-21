@@ -5,6 +5,7 @@ import com.hbm.lib.RefStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public abstract class GuiInfoContainer extends GuiContainer {
 	
-	ResourceLocation guiUtil =  new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_utility.png");
+	ResourceLocation guiUtil = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_utility.png");
 
 	public GuiInfoContainer(Container p_i1072_1_) {
 		super(p_i1072_1_);
@@ -101,10 +102,11 @@ public abstract class GuiInfoContainer extends GuiContainer {
 		protected void drawStackText(List lines, int x, int y, FontRenderer font, int highLightIndex) {
 		
 		if(!lines.isEmpty()) {
-			GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.color(1F, 1F, 1F, 1F);
+			GlStateManager.disableRescaleNormal();
 			RenderHelper.disableStandardItemLighting();
-			GL11.glDisable(GL11.GL_LIGHTING);
-			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepth();
 
 			int height = 0;
 			int longestline = 0;
@@ -192,11 +194,12 @@ public abstract class GuiInfoContainer extends GuiContainer {
 							this.drawGradientRect(minX + indent - 1, minY - 1, minX + indent + 17, minY + 17, 0xffff0000, 0xffff0000);
 							this.drawGradientRect(minX + indent, minY, minX + indent + 16, minY + 16, 0xff808080, 0xff808080);
 						}
-						GL11.glEnable(GL11.GL_DEPTH_TEST);
+						GlStateManager.enableDepth();
+						RenderHelper.enableGUIStandardItemLighting();
 						itemRender.renderItemAndEffectIntoGUI(stack, minX + indent, minY);
 						itemRender.renderItemOverlayIntoGUI(this.fontRenderer, stack, minX + indent, minY, "");
 						RenderHelper.disableStandardItemLighting();
-						GL11.glDisable(GL11.GL_DEPTH_TEST);
+						GlStateManager.disableDepth();
 						indent += 18;
 					}
 				}
@@ -210,10 +213,10 @@ public abstract class GuiInfoContainer extends GuiContainer {
 
 			this.zLevel = 0.0F;
 			itemRender.zLevel = 0.0F;
-			GL11.glEnable(GL11.GL_LIGHTING);
-			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepth();
 			RenderHelper.enableStandardItemLighting();
-			GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+			GlStateManager.enableRescaleNormal();
 		}
 	}
 

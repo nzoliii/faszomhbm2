@@ -1,6 +1,13 @@
 package com.hbm.inventory.container;
 
+import api.hbm.energymk2.IBatteryItem;
+import com.blamejared.ctgui.api.SlotRecipeOutput;
 import com.hbm.inventory.SlotMachineOutput;
+import com.hbm.inventory.SlotMachineOutputVanilla;
+import com.hbm.inventory.SlotUpgrade;
+import com.hbm.items.ModItems;
+import com.hbm.items.machine.IItemFluidIdentifier;
+import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.tileentity.machine.TileEntityMachineGasCent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -8,82 +15,80 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerMachineGasCent extends Container {
 
-	private TileEntityMachineGasCent diFurnace;
-	
-	public ContainerMachineGasCent(InventoryPlayer invPlayer, TileEntityMachineGasCent tedf) {
-		
-		diFurnace = tedf;
+  private final TileEntityMachineGasCent gasCent;
 
-		//Battery
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 8, 53));
-		//Fluid ID IO
-		//Drillgon200 - Don't need you anymore.
-		//this.addSlotToContainer(new Slot(tedf, 1, 35, 17));
-		//this.addSlotToContainer(new SlotMachineOutput(invPlayer.player, tedf, 2, 35, 53));
-		//Fluid IO
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 3, 62, 17));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 4, 62, 53));
-		//Output
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 5, 134, 17));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 6, 152, 17));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 7, 134, 53));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 8, 152, 53));
-		
-		for(int i = 0; i < 3; i++)
-		{
-			for(int j = 0; j < 9; j++)
-			{
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-			}
-		}
-		
-		for(int i = 0; i < 9; i++)
-		{
-			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
-		}
-	}
-	
-	@Override
-    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2)
-    {
-		ItemStack var3 = ItemStack.EMPTY;
-		Slot var4 = (Slot) this.inventorySlots.get(par2);
-		
-		if (var4 != null && var4.getHasStack())
-		{
-			ItemStack var5 = var4.getStack();
-			var3 = var5.copy();
-			
-            if (par2 <= 8) {
-				if (!this.mergeItemStack(var5, 9, this.inventorySlots.size(), true))
-				{
-					return ItemStack.EMPTY;
-				}
-			}
-			else if (!this.mergeItemStack(var5, 0, 2, false))
-			{
-				if (!this.mergeItemStack(var5, 3, 4, false))
-					return ItemStack.EMPTY;
-			}
-			
-			if (var5.isEmpty())
-			{
-				var4.putStack(ItemStack.EMPTY);
-			}
-			else
-			{
-				var4.onSlotChanged();
-			}
-		}
-		
-		return var3;
+  public ContainerMachineGasCent(InventoryPlayer invPlayer, TileEntityMachineGasCent teGasCent) {
+
+    gasCent = teGasCent;
+
+    // Output
+    for (int i = 0; i < 2; i++) {
+      for (int j = 0; j < 2; j++) {
+        this.addSlotToContainer(
+            new SlotMachineOutput(gasCent.inventory, j + i * 2, 71 + j * 18, 53 + i * 18));
+      }
     }
 
-	@Override
-	public boolean canInteractWith(EntityPlayer player) {
-		return diFurnace.isUseableByPlayer(player);
-	}
+    // Battery
+    this.addSlotToContainer(new SlotItemHandler(gasCent.inventory, 4, 182, 71));
+
+    // Fluid ID IO
+    this.addSlotToContainer(new SlotItemHandler(gasCent.inventory, 5, 91, 15));
+
+    // Upgrade
+    this.addSlotToContainer(new SlotUpgrade(gasCent.inventory, 6, 69, 15));
+
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 9; j++) {
+        this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 122 + i * 18));
+      }
+    }
+
+    for (int i = 0; i < 9; i++) {
+      this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 180));
+    }
+  }
+
+  @Override
+  public @NotNull ItemStack transferStackInSlot(@NotNull EntityPlayer player, int index) {
+    ItemStack rStack = ItemStack.EMPTY;
+    Slot slot = this.inventorySlots.get(index);
+
+    if (slot != null && slot.getHasStack()) {
+      ItemStack stack = slot.getStack();
+      rStack = stack.copy();
+
+      if (index <= 6) {
+        if (!this.mergeItemStack(stack, 7, this.inventorySlots.size(), true)) {
+          return ItemStack.EMPTY;
+        }
+      } else {
+        if (rStack.getItem() instanceof IBatteryItem
+            || rStack.getItem() == ModItems.battery_creative) {
+          if (!this.mergeItemStack(stack, 4, 5, false)) return ItemStack.EMPTY;
+        } else if (rStack.getItem() instanceof IItemFluidIdentifier) {
+          if (!this.mergeItemStack(stack, 5, 6, false)) return ItemStack.EMPTY;
+        } else if (rStack.getItem() instanceof ItemMachineUpgrade) {
+          if (!this.mergeItemStack(stack, 6, 7, false)) return ItemStack.EMPTY;
+        } else return ItemStack.EMPTY;
+      }
+
+      if (stack.isEmpty()) {
+        slot.putStack(ItemStack.EMPTY);
+      } else {
+        slot.onSlotChanged();
+      }
+    }
+
+    return rStack;
+  }
+
+  @Override
+  public boolean canInteractWith(@NotNull EntityPlayer player) {
+    return gasCent.isUseableByPlayer(player);
+  }
 }

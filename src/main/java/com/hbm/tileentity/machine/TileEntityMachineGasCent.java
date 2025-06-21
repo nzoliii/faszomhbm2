@@ -6,39 +6,46 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.GasCentrifugeRecipes;
+import com.hbm.inventory.container.ContainerMachineGasCent;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUIMachineGasCent;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.BufferUtil;
 import com.hbm.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
-public class TileEntityMachineGasCent extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardReceiver, IFFtoNTMF {
+public class TileEntityMachineGasCent extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IFFtoNTMF {
 
-	
-	public long power;
 	public int progress;
+	public long power;
 	public boolean isProgressing;
 	public static final int maxPower = 100000;
 	public static final int processingSpeed = 150;
 	public boolean needsUpdate = false;
-	
+
 	public FluidTankNTM tankNew;
 	public FluidTank tank;
 	public Fluid oldFluid;
@@ -46,7 +53,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	public PseudoFluidTank outputTank;
 
 	private static boolean converted = false;
-	
+
 	public TileEntityMachineGasCent() {
 		super(9);
 		tank = new FluidTank(8000);
@@ -56,11 +63,11 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 		converted = true;
 	}
-	
+
 	public String getName() {
 		return "container.gasCentrifuge";
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		power = nbt.getLong("power");
@@ -73,10 +80,10 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		outputTank.readFromNBT(nbt, "outputTank");
 		if(nbt.hasKey("inventory"))
 			inventory.deserializeNBT(nbt.getCompoundTag("inventory"));
-		
+
 		super.readFromNBT(nbt);
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setLong("power", power);
@@ -87,11 +94,11 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		nbt.setTag("inventory", inventory.serializeNBT());
 		return super.writeToNBT(nbt);
 	}
-	
+
 	public int getCentrifugeProgressScaled(int i) {
 		return (progress * i) / processingSpeed;
 	}
-	
+
 	public long getPowerRemainingScaled(int i) {
 		return (power * i) / maxPower;
 	}
@@ -107,8 +114,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 			if(list.length < 1)
 				return false;
 
-			if(InventoryUtil.doesArrayHaveSpace(inventory, 0, 3, list))
-				return true;
+            return InventoryUtil.doesArrayHaveSpace(inventory, 0, 3, list);
 		}
 
 		return false;
@@ -121,8 +127,8 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		inputTank.setFill(inputTank.getFill() - inputTank.getTankType().getFluidConsumed());
 		outputTank.setFill(outputTank.getFill() + inputTank.getTankType().getFluidProduced());
 
-		for(byte i = 0; i < output.length; i++)
-			InventoryUtil.tryAddItemToInventory(inventory, 0, 3, output[i].copy()); //reference types almost got me again
+        for (ItemStack itemStack : output)
+			InventoryUtil.tryAddItemToInventory(inventory, 0, 3, itemStack.copy());
 	}
 
 	private void attemptConversion() {
@@ -135,10 +141,9 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	}
 
 	private boolean attemptTransfer(TileEntity te) {
-		if(te instanceof TileEntityMachineGasCent) {
-			TileEntityMachineGasCent cent = (TileEntityMachineGasCent) te;
+		if(te instanceof TileEntityMachineGasCent cent) {
 
-			if(cent.tankNew.getFill() == 0 && cent.tankNew.getTankType() == tankNew.getTankType()) {
+            if(cent.tankNew.getFill() == 0 && cent.tankNew.getTankType() == tankNew.getTankType()) {
 				if(cent.inputTank.getTankType() != outputTank.getTankType() && outputTank.getTankType() != GasCentrifugeRecipes.PseudoFluidType.NONE) {
 					cent.inputTank.setTankType(outputTank.getTankType());
 					cent.outputTank.setTankType(outputTank.getTankType().getOutputType());
@@ -158,10 +163,10 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 		return false;
 	}
-	
+
 	@Override
 	public void update() {
-		
+
 		if(!world.isRemote) {
 			if(!converted){
 				convertAndSetFluid(oldFluid, tank, tankNew);
@@ -213,8 +218,6 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 			this.networkPackNT(50);
 		}
-
-		
 	}
 
 	@Override
@@ -226,7 +229,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		//pseudofluids can be refactored another day
 		buf.writeInt(inputTank.getFill());
 		buf.writeInt(outputTank.getFill());
-		BufferUtil.writeString(buf, inputTank.getTankType().name); //cough cough
+		BufferUtil.writeString(buf, inputTank.getTankType().name);
 		BufferUtil.writeString(buf, outputTank.getTankType().name);
 
 		tankNew.serialize(buf);
@@ -248,11 +251,11 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	}
 
 	private void updateConnections() {
-		for(DirPos pos : getConPos()) {
-			this.trySubscribe(world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
+		for(DirPos dirPos : getConPos()) {
+			this.trySubscribe(world, dirPos.getPos().getX(), dirPos.getPos().getY(), dirPos.getPos().getZ(), dirPos.getDir());
 
 			if(GasCentrifugeRecipes.fluidConversions.containsValue(inputTank.getTankType())) {
-				this.trySubscribe(tankNew.getTankType(), world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
+				this.trySubscribe(tankNew.getTankType(), world, dirPos.getPos().getX(), dirPos.getPos().getY(), dirPos.getPos().getZ(), dirPos.getDir());
 			}
 		}
 	}
@@ -269,9 +272,8 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 
 	public void setTankType(int in) {
 
-		if(inventory.getStackInSlot(in) != ItemStack.EMPTY && inventory.getStackInSlot(in).getItem() instanceof IItemFluidIdentifier) {
-			IItemFluidIdentifier id = (IItemFluidIdentifier) inventory.getStackInSlot(in).getItem();
-			FluidType newType = id.getType(world, pos.getX(), pos.getY(), pos.getZ(), inventory.getStackInSlot(in));
+		if(inventory.getStackInSlot(in) != ItemStack.EMPTY && inventory.getStackInSlot(in).getItem() instanceof IItemFluidIdentifier id) {
+            FluidType newType = id.getType(world, pos.getX(), pos.getY(), pos.getZ(), inventory.getStackInSlot(in));
 
 			if(tankNew.getTankType() != newType) {
 				GasCentrifugeRecipes.PseudoFluidType pseudo = GasCentrifugeRecipes.fluidConversions.get(newType);
@@ -295,12 +297,12 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	public int[] getAccessibleSlotsFromSide(EnumFacing e){
 		return new int[]{0, 3, 4, 5, 6, 7, 8};
 	}
-	
+
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
+	public @NotNull AxisAlignedBB getRenderBoundingBox() {
 		return new AxisAlignedBB(pos, pos.add(1, 4, 1));
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared()
@@ -316,7 +318,6 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	@Override
 	public long getPower() {
 		return power;
-		
 	}
 
 	@Override
@@ -334,7 +335,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		return new FluidTankNTM[] {tankNew};
 	}
 
-	public class PseudoFluidTank {
+	public static class PseudoFluidTank {
 		GasCentrifugeRecipes.PseudoFluidType type;
 		int fluid;
 		int maxFluid;
@@ -440,5 +441,16 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 		 *that's sick af..
 		 *
 		 */
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineGasCent(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineGasCent(player.inventory, this);
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.hbm.config.BombConfig;
 import com.hbm.config.CompatibilityConfig;
+import com.hbm.interfaces.IExplosionRay;
 import com.hbm.render.amlfrom1710.Vec3;
 
 import net.minecraft.util.math.BlockPos;
@@ -23,30 +24,30 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
-public class ExplosionNukeRayBatched {
+public class ExplosionNukeRayBatched implements IExplosionRay {
 
-	public HashMap<ChunkPos, BitSet> perChunk = new HashMap<ChunkPos, BitSet>();
-	public List<ChunkPos> orderedChunks = new ArrayList();
-	private CoordComparator comparator = new CoordComparator();
-	public boolean isContained = true;
-	int posX;
-	int posY;
-	int posZ;
-	World world;
+	private final HashMap<ChunkPos, BitSet> perChunk = new HashMap<>();
+	private final List<ChunkPos> orderedChunks = new ArrayList<>();
+	private final CoordComparator comparator = new CoordComparator();
+	private boolean isContained = true;
+	private int posX;
+	private int posY;
+	private int posZ;
+	private final World world;
 
-	int strength;
-	int radius;
+	private int strength;
+	private int radius;
 
-	int gspNumMax;
-	int gspNum;
-	double gspX;
-	double gspY;
+	private int gspNumMax;
+	private int gspNum;
+	private double gspX;
+	private double gspY;
 
 	private static final int maxY = 255;
 	private static final int minY = 0;
 
-	public boolean isAusf3Complete = false;
-	public int rayCheckInterval = 100;
+	private boolean isAusf3Complete = false;
+	private int rayCheckInterval = 100;
 
 	public ExplosionNukeRayBatched(World world, int x, int y, int z, int strength, int radius) {
 		this.world = world;
@@ -93,17 +94,16 @@ public class ExplosionNukeRayBatched {
 
 	public void addPos(int x, int y, int z){
 		chunk = new ChunkPos(x >> 4, z >> 4);
-		BitSet hitPositions = perChunk.get(chunk);
-				
-		if(hitPositions == null) {
-			hitPositions = new BitSet(65536);
-			perChunk.put(chunk, hitPositions); //we re-use the same pos instead of using individualized per-chunk ones to save on RAM
-		}
-		hitPositions.set(((255-y) << 8) + ((x - chunk.getXStart()) << 4) + (z - chunk.getZStart()));
+        BitSet hitPositions = perChunk.computeIfAbsent(chunk, k -> new BitSet(65536));
+
+        //we re-use the same pos instead of using individualized per-chunk ones to save on RAM
+        hitPositions.set(((255-y) << 8) + ((x - chunk.getXStart()) << 4) + (z - chunk.getZStart()));
 	}
 
 	int age = 0;
-	public void collectTip(int time) {
+
+	@Override
+	public void cacheChunksTick(int time) {
 		if(!CompatibilityConfig.isWarDim(world)){
 			isAusf3Complete = true;
 			return;
@@ -126,7 +126,7 @@ public class ExplosionNukeRayBatched {
 			// Get Cartesian coordinates for spherical coordinates
 			vec = this.getSpherical2cartesian();
 
-			radius = (int)Math.ceil(this.radius);
+			radius = this.radius;
 			rayStrength = strength * 0.3F;
 
 			//Finding the end of the ray
@@ -190,7 +190,24 @@ public class ExplosionNukeRayBatched {
 			return b.getExplosionResistance(null);
 		}
 	}
-	
+
+	@Override
+	public void cancel() {
+		isAusf3Complete = true;
+		orderedChunks.clear();
+		perChunk.clear();
+	}
+
+	@Override
+	public boolean isComplete() {
+		return isAusf3Complete && perChunk.isEmpty();
+	}
+
+	@Override
+	public boolean isContained() {
+		return isContained;
+	}
+
 	/** little comparator for roughly sorting chunks by distance to the center */
 	public class CoordComparator implements Comparator<ChunkPos> {
 
@@ -200,14 +217,15 @@ public class ExplosionNukeRayBatched {
 			int chunkX = ExplosionNukeRayBatched.this.posX >> 4;
 			int chunkZ = ExplosionNukeRayBatched.this.posZ >> 4;
 
-			int diff1 = Math.abs((chunkX - (int) (o1.getXStart() >> 4))) + Math.abs((chunkZ - (int) (o1.getZStart() >> 4)));
-			int diff2 = Math.abs((chunkX - (int) (o2.getXStart() >> 4))) + Math.abs((chunkZ - (int) (o2.getZStart() >> 4)));
+			int diff1 = Math.abs((chunkX - (o1.getXStart() >> 4))) + Math.abs((chunkZ - (o1.getZStart() >> 4)));
+			int diff2 = Math.abs((chunkX - (o2.getXStart() >> 4))) + Math.abs((chunkZ - (o2.getZStart() >> 4)));
 			
-			return diff1 > diff2 ? 1 : diff1 < diff2 ? -1 : 0;
+			return Integer.compare(diff1, diff2);
 		}
 	}
 
-	public void processChunk(int time){
+	@Override
+	public void destructionTick(int time){
 		long start = System.currentTimeMillis();
 		while(System.currentTimeMillis() < start + time){
 			processChunkBlocks(start, time);

@@ -4,34 +4,23 @@ import api.hbm.block.IToolable;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.IPersistentInfoProvider;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.projectile.EntityBombletZeta;
-import com.hbm.handler.MultiblockHandler;
-import com.hbm.interfaces.IMultiBlock;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.lib.InventoryHelper;
 import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.IRepairable;
 import com.hbm.tileentity.TileEntityProxyCombo;
-import com.hbm.tileentity.machine.TileEntityDummy;
-import com.hbm.tileentity.machine.TileEntityMachineAssembler;
 import com.hbm.tileentity.machine.oil.TileEntityMachineRefinery;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -45,9 +34,9 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Random;
 
 public class MachineRefinery extends BlockDummyable implements IPersistentInfoProvider, IToolable, ILookOverlay {
 
@@ -56,7 +45,7 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(@NotNull World world, int meta) {
 		if(meta >= 12) return new TileEntityMachineRefinery();
 		if(meta >= 6) return new TileEntityProxyCombo(true, true, true);
 		return null;
@@ -83,42 +72,7 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 	}
 
 	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return Item.getItemFromBlock(ModBlocks.machine_refinery);
-	}
-
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isBlockNormalCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isNormalCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return false;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return false;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(world.isRemote) {
 			return true;
 		} else if(!player.isSneaking()) {
@@ -129,7 +83,7 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 
 			TileEntityMachineRefinery refinery = (TileEntityMachineRefinery) world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
 
-			if(refinery.hasExploded) return false;
+			if(refinery != null && refinery.hasExploded) return false;
 
 			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, posC[0], posC[1], posC[2]);
 			return true;
@@ -139,20 +93,7 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 	}
 
 	@Override
-	public void breakBlock(World world, BlockPos pos, IBlockState state) {
-		TileEntity tileentity = world.getTileEntity(pos);
-
-		if(tileentity instanceof TileEntityMachineAssembler) {
-			InventoryHelper.dropInventoryItems(world, pos, (TileEntityMachineAssembler) tileentity);
-
-			world.updateComparatorOutputLevel(pos, this);
-		}
-
-		super.breakBlock(world, pos, state);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+	public @NotNull List<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
 		return IPersistentNBT.getDrops(world, pos, this);
 	}
 
@@ -167,26 +108,25 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 	}
 
 	@Override
-	public boolean canDropFromExplosion(Explosion explosion) {
+	public boolean canDropFromExplosion(@NotNull Explosion explosion) {
 		return false;
 	}
 
 	@Override
-	public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {
+	public void onBlockExploded(@NotNull World world, BlockPos pos, @NotNull Explosion explosion) {
 
 		int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
 		if(posC == null) return;
 		TileEntity core = world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
-		if(!(core instanceof TileEntityMachineRefinery)) return;
+		if(!(core instanceof TileEntityMachineRefinery refinery)) return;
 
-		TileEntityMachineRefinery refinery = (TileEntityMachineRefinery) core;
 		if(refinery.lastExplosion == explosion) return;
 		refinery.lastExplosion = explosion;
 
 		if(!refinery.hasExploded) {
 			refinery.explode(world, pos.getX(), pos.getY(), pos.getZ());
 			Entity exploder = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77283_e");
-			if(exploder != null && exploder instanceof EntityBombletZeta) {
+			if(exploder instanceof EntityBombletZeta) {
 				List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class,
 						new AxisAlignedBB(pos.add(0.5, 0.5, 0.5), pos.add(0.5, 0.5, 0.5)).expand(100, 100, 100));
 

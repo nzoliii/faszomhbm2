@@ -2,7 +2,6 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.IPersistentInfoProvider;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.vanillant.ExplosionVNT;
@@ -14,7 +13,6 @@ import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.lib.InventoryHelper;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.machine.oil.TileEntityMachineOilWell;
@@ -22,24 +20,21 @@ import com.hbm.util.BobMathUtil;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MachineOilWell extends BlockDummyable implements IPersistentInfoProvider {
 
@@ -48,7 +43,7 @@ public class MachineOilWell extends BlockDummyable implements IPersistentInfoPro
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
+	public TileEntity createNewTileEntity(@NotNull World world, int meta) {
 		if(meta >= 12) return new TileEntityMachineOilWell();
 		return null;
 	}
@@ -64,47 +59,7 @@ public class MachineOilWell extends BlockDummyable implements IPersistentInfoPro
 	}
 	
 	@Override
-	public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-		return Item.getItemFromBlock(ModBlocks.machine_well);
-	}
-	
-	@Override
-	public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-		return new ItemStack(ModBlocks.machine_well);
-	}
-	
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
-		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-	}
-
-	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isBlockNormalCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isNormalCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return false;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
-		return false;
-	}
-	
-	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(world.isRemote)
 		{
 			return true;
@@ -120,12 +75,6 @@ public class MachineOilWell extends BlockDummyable implements IPersistentInfoPro
 		} else {
 			return false;
 		}
-	}
-	
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		InventoryHelper.dropInventoryItems(worldIn, pos, worldIn.getTileEntity(pos));
-		super.breakBlock(worldIn, pos, state);
 	}
 
 	@Override
@@ -149,7 +98,7 @@ public class MachineOilWell extends BlockDummyable implements IPersistentInfoPro
 	}
 
 	@Override
-	public ArrayList<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+	public @NotNull ArrayList<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
 		return IPersistentNBT.getDrops(world, pos, this);
 	}
 
@@ -164,17 +113,16 @@ public class MachineOilWell extends BlockDummyable implements IPersistentInfoPro
 	}
 
 	@Override
-	public void onBlockExploded(World world, BlockPos pos, Explosion explosion) {
+	public void onBlockExploded(@NotNull World world, BlockPos pos, @NotNull Explosion explosion) {
 
 		int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
 		if(posC == null) return;
 		TileEntity core = world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
-		if(!(core instanceof TileEntityMachineOilWell)) return;
+		if(!(core instanceof TileEntityMachineOilWell well)) return;
 
 		world.setBlockToAir(pos);
 		onBlockExploded(world, pos, explosion);
 
-		TileEntityMachineOilWell well = (TileEntityMachineOilWell) core;
 		if(well.tanks[0].getFill() > 0 || well.tanks[1].getFill() > 0) {
 			well.tanks[0].setFill(0);
 			well.tanks[1].setFill(0);

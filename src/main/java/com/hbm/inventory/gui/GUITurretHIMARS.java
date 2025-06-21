@@ -17,8 +17,8 @@ public class GUITurretHIMARS extends GUITurretBase {
   private static final ResourceLocation texture =
       new ResourceLocation(RefStrings.MODID + ":textures/gui/weapon/gui_turret_himars.png");
 
-  public GUITurretHIMARS(InventoryPlayer invPlayer, TileEntityTurretBaseNT tedf) {
-    super(invPlayer, tedf);
+  public GUITurretHIMARS(InventoryPlayer invPlayer, TileEntityTurretBaseNT turretBaseNT) {
+    super(invPlayer, turretBaseNT);
   }
 
   @Override
@@ -54,8 +54,8 @@ public class GUITurretHIMARS extends GUITurretBase {
   }
 
   @Override
-  protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int mX, int mY) {
-    super.drawGuiContainerBackgroundLayer(p_146976_1_, mX, mY);
+  protected void drawGuiContainerBackgroundLayer(float partialTicks, int mX, int mY) {
+    super.drawGuiContainerBackgroundLayer(partialTicks, mX, mY);
 
     TileEntityTurretHIMARS.FiringMode mode = ((TileEntityTurretHIMARS) turret).mode;
     if (mode == TileEntityTurretHIMARS.FiringMode.MANUAL)

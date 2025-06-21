@@ -98,13 +98,13 @@ public abstract class FoundryCastingBase extends BlockContainer implements ICruc
 		int y = pos.getY();
 		int z = pos.getZ();
 		//remove casted item
-		if(!Objects.requireNonNull(cast).inventory.getStackInSlot(1).isEmpty()) {
-			if(!player.inventory.addItemStackToInventory(cast.inventory.getStackInSlot(1).copy())) {
-				world.spawnEntity(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, cast.inventory.getStackInSlot(1).copy()));
+		if(!Objects.requireNonNull(cast).inventory.getStackInSlot(0).isEmpty()) {
+			if(!player.inventory.addItemStackToInventory(cast.inventory.getStackInSlot(0).copy())) {
+				world.spawnEntity(new EntityItem(world, x + 0.5, y + 0.5, z + 0.5, cast.inventory.getStackInSlot(0).copy()));
 			} else {
 				player.inventoryContainer.detectAndSendChanges();
 			}
-			cast.inventory.setStackInSlot(1, ItemStack.EMPTY);
+			cast.inventory.setStackInSlot(0, ItemStack.EMPTY);
 			cast.markDirty();
 			world.markBlockRangeForRenderUpdate(pos, pos);
 			world.notifyBlockUpdate(pos, state, state, 3);

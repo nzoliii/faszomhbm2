@@ -1,7 +1,6 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.inventory.container.ContainerMachineRadGen;
-import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineRadGen;
 import net.minecraft.client.Minecraft;
@@ -20,26 +19,26 @@ public class GUIMachineRadGen extends GuiInfoContainer {
 		radgen = tedf;
 		
 		this.xSize = 176;
-		this.ySize = 166;
+		this.ySize = 184;
 	}
 	
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 35, guiTop + 69 - 52, 16, 52, new String[] { "Fuel: " + Library.roundFloat(radgen.fuel * 100D/radgen.maxFuel, 3) + "%" });
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 143, guiTop + 69 - 52, 16, 52, radgen.power, TileEntityMachineRadGen.maxPower);
-		
-		String[] text = new String[] { "Accepted Fuels:",
-				"  ANYTHING radioactive",
-				"  so even waste like dead grass and contaminated items!",
-				"  fuel amount of an item is sqrt(item radiation)" };
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, text);
-		
-		String[] text1 = new String[] { "Power generation rate:",
-				"  up to 200k HE/s",
-				"(Generation rate depends on how much fuel there is)" };
-		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36 + 16, 16, 16, guiLeft - 8, guiTop + 36 + 16, text1);
+		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 64, guiTop + 83, 48, 4, radgen.power, radgen.maxPower);
+
+		for(int i = 0; i < 12; i++) {
+
+			if(radgen.maxProgress[i] <= 0)
+				continue;
+
+			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 65, guiTop + 18 + i * 5, 46, 5, new String[] {
+					"Slot " + (i + 1) + ":",
+					radgen.production[i] + "HE/t for",
+					(radgen.maxProgress[i] - radgen.progress[i]) + " ticks (" + ((radgen.maxProgress[i] - radgen.progress[i]) * 100 / radgen.maxProgress[i]) + "%)"
+			});
+		}
 		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 	
@@ -56,33 +55,17 @@ public class GUIMachineRadGen extends GuiInfoContainer {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-		
-		int i = (int)radgen.getPowerScaled(52);
-		drawTexturedModalRect(guiLeft + 143, guiTop + 69 - i, 16, 218 - i, 16, i);
-		
-		int j = radgen.getFuelScaled(52);
-		drawTexturedModalRect(guiLeft + 35, guiTop + 69 - j, 0, 218 - j, 16, j);
-		
-		int k = radgen.mode;
-		if(k == 1)
-			drawTexturedModalRect(guiLeft + 106, guiTop + 16, 32, 166, 18, 18);
-		if(k == 2)
-			drawTexturedModalRect(guiLeft + 106, guiTop + 16, 32, 184, 18, 18);
-		
-		int l = radgen.getStrengthScaled(12);
-		int sx = 140;
-		int sy = 166;
-		if(l > 0 && l < 7) {
-			sx = 176;
-			sy = (l - 1) * 36;
+
+		for(int i = 0; i < 12; i++) {
+
+			if(radgen.maxProgress[i] <= 0)
+				continue;
+
+			int j = radgen.progress[i] * 44 / radgen.maxProgress[i];
+			drawTexturedModalRect(guiLeft + 66, guiTop + 19 + i * 5, 176, 0, j, 3);
 		}
-		if(l > 6) {
-			sx = 212;
-			sy = (l - 7) * 36;
-		}
-		drawTexturedModalRect(guiLeft + 70, guiTop + 25, sx, sy, 36, 36);
-		
-		this.drawInfoPanel(guiLeft - 16, guiTop + 36, 16, 16, 2);
-		this.drawInfoPanel(guiLeft - 16, guiTop + 36 + 16, 16, 16, 3);
+
+		int j = (int)(radgen.power * 48 / radgen.maxPower);
+		drawTexturedModalRect(guiLeft + 64, guiTop + 83, 176, 3, j, 4);
 	}
 }

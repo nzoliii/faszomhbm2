@@ -20,34 +20,34 @@ public class RenderTurretHIMARS extends TileEntitySpecialRenderer<TileEntityTurr
       float alpha) {
     Vec3d pos = turret.byHorizontalIndexOffset();
 
-    GL11.glPushMatrix();
-    GL11.glTranslated(x + pos.x, y, z + pos.z);
+    GlStateManager.pushMatrix();
+    GlStateManager.translate(x + pos.x, y, z + pos.z);
     GlStateManager.enableLighting();
     GlStateManager.enableCull();
     GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
     bindTexture(ResourceManager.turret_arty_tex);
-    ResourceManager.turret_himars.renderPart("Base");
-    double yaw =
-        -Math.toDegrees(
-                turret.lastRotationYaw + (turret.rotationYaw - turret.lastRotationYaw) * interp)
-            - 90D;
-    double pitch =
-        Math.toDegrees(
-            turret.lastRotationPitch + (turret.rotationPitch - turret.lastRotationPitch) * interp);
+    ResourceManager.turret_arty.renderPart("Base");
+    float yaw =
+            (float) (-Math.toDegrees(
+                            turret.lastRotationYaw + (turret.rotationYaw - turret.lastRotationYaw) * interp)
+                        - 90F);
+    float pitch =
+            (float) Math.toDegrees(
+                turret.lastRotationPitch + (turret.rotationPitch - turret.lastRotationPitch) * interp);
 
     bindTexture(ResourceManager.turret_himars_tex);
-    GL11.glRotated(yaw - 90, 0, 1, 0);
+    GlStateManager.rotate(yaw - 90, 0, 1, 0);
     ResourceManager.turret_himars.renderPart("Carriage");
 
-    GL11.glTranslated(0, 2.25, 2);
-    GL11.glRotated(pitch, 1, 0, 0);
-    GL11.glTranslated(0, -2.25, -2);
+    GlStateManager.translate(0, 2.25, 2);
+    GlStateManager.rotate(pitch, 1, 0, 0);
+    GlStateManager.translate(0, -2.25, -2);
     ResourceManager.turret_himars.renderPart("Launcher");
 
     double barrel = turret.lastCrane + (turret.crane - turret.lastCrane) * interp;
     double length = -5D;
-    GL11.glTranslated(0, 0, barrel * length);
+    GlStateManager.translate(0, 0, barrel * length);
     ResourceManager.turret_himars.renderPart("Crane");
 
     if (turret.typeLoaded >= 0) {
@@ -69,7 +69,7 @@ public class RenderTurretHIMARS extends TileEntitySpecialRenderer<TileEntityTurr
       }
     }
 
-    GL11.glShadeModel(GL11.GL_FLAT);
-    GL11.glPopMatrix();
+    GlStateManager.shadeModel(GL11.GL_FLAT);
+    GlStateManager.popMatrix();
   }
 }

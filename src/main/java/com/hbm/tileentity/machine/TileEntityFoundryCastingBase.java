@@ -55,33 +55,33 @@ public abstract class TileEntityFoundryCastingBase extends TileEntityFoundryBase
 		super.update();
 		
 		if(!world.isRemote) {
-			
+
 			if(this.amount > this.getCapacity()) {
 				this.amount = this.getCapacity();
 			}
-			
+
 			if(this.amount == 0) {
 				this.type = null;
 			}
-			
+
 			Mold mold = this.getInstalledMold();
-			
-			if(mold != null && this.amount == this.getCapacity() && inventory.getStackInSlot(1).isEmpty()) {
+
+			if(mold != null && this.amount == this.getCapacity() && inventory.getStackInSlot(0).isEmpty()) {
 				cooloff--;
-				
+
 				if(cooloff <= 0) {
 					this.amount = 0;
-					
+
 					ItemStack out = mold.getOutput(type);
-					
+
 					if(out != null && !out.isEmpty()) {
-						inventory.setStackInSlot(1, out.copy());
+						inventory.setStackInSlot(0, out.copy());
 					}
-					
+
 					cooloff = 200;
 					this.markDirty();
 				}
-				
+
 			} else {
 				cooloff = 200;
 			}
@@ -124,7 +124,7 @@ public abstract class TileEntityFoundryCastingBase extends TileEntityFoundryBase
 	 */
 	public boolean standardCheck(World world, BlockPos p, ForgeDirection side, MaterialStack stack) {
 		if(!super.standardCheck(world, p, side, stack)) return false; //reject if base conditions are not met
-		if(!inventory.getStackInSlot(1).isEmpty()) return false; //reject if a freshly casted item is still present
+		if(!inventory.getStackInSlot(0).isEmpty()) return false; //reject if a freshly casted item is still present
 		Mold mold = this.getInstalledMold();
 		if(mold == null) return false;
 		
