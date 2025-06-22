@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "normal": { "model": "hbm:burning_earth" },
+        "meta=0": { "model": "hbm:burning_earth" }
+    }
+}
