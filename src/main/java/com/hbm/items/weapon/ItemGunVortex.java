@@ -1,9 +1,5 @@
 package com.hbm.items.weapon;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.lib.Library;
@@ -14,16 +10,10 @@ import com.hbm.packet.GunAnimationPacket;
 import com.hbm.packet.GunFXPacket;
 import com.hbm.packet.GunFXPacket.FXType;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.particle.vortex.ParticleVortexBeam;
-import com.hbm.particle.vortex.ParticleVortexCircle;
-import com.hbm.particle.vortex.ParticleVortexFireFlash;
-import com.hbm.particle.vortex.ParticleVortexGlow;
-import com.hbm.particle.vortex.ParticleVortexHit;
-import com.hbm.particle.vortex.ParticleVortexParticle;
-import com.hbm.render.RenderHelper;
+import com.hbm.particle.vortex.*;
+import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.anim.HbmAnimations.AnimType;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
@@ -49,6 +39,9 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class ItemGunVortex extends ItemGunBase {
 
@@ -235,7 +228,7 @@ public class ItemGunVortex extends ItemGunBase {
 		GlStateManager.color(0.4F, 0.9F, 0.9F, 1.0F);
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-		RenderHelper.drawGuiRect(x - 11F, y - 11F, 0, 0, 22, 22, 1, 1);
+		NTMRenderHelper.drawGuiRect(x - 11F, y - 11F, 0, 0, 22, 22, 1, 1);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceManager.vortex_hud_circle);
 		
 		//Running off of system time gives less wonky results than relying on server updating the nbt tag.

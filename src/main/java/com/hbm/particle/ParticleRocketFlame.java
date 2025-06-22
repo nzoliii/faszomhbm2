@@ -18,18 +18,46 @@ public class ParticleRocketFlame extends Particle {
 	private int age;
 	private int maxAge;
 	private int randSeed;
-	
+
+	public void updateInterpPos(){
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
+	}
+
+
 	public ParticleRocketFlame(World worldIn, double posXIn, double posYIn, double posZIn) {
 		super(worldIn, posXIn, posYIn, posZIn);
 		maxAge = 300 + rand.nextInt(50);
 		this.particleTexture = ModEventHandlerClient.particle_base;
 		this.randSeed = worldIn.rand.nextInt();
 	}
-	
+
+
+	public void setMaxAge(int maxAge) {
+		this.maxAge = maxAge;
+	}
+
+
 	public void setMotionY(double y){
 		this.motionY = y;
 	}
-	
+
+	public void setMotion(double x, double y, double z){
+		this.motionX = x;
+		this.motionY = y;
+		this.motionZ = z;
+	}
+
+	public ParticleRocketFlame setScale(float scale) {
+		this.particleScale = scale;
+		return this;
+	}
+
+	public void setCollision(boolean bool){
+		this.canCollide = bool;
+	}
+
 	@Override
 	public void onUpdate() {
 		this.prevPosX = this.posX;

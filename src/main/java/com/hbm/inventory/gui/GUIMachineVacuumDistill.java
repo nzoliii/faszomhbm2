@@ -1,6 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.container.ContainerMachineVacuumDistill;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.oil.TileEntityMachineVacuumDistill;
@@ -27,14 +26,12 @@ public class GUIMachineVacuumDistill extends GuiInfoContainer {
     public void drawScreen(int mouseX, int mouseY, float f) {
         super.drawScreen(mouseX, mouseY, f);
         super.renderHoveredToolTip(mouseX, mouseY);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 44, guiTop + 69 - 52, 16, 52, refinery.tanks[0]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 69 - 52, 16, 52, refinery.tanks[1]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 98, guiTop + 69 - 52, 16, 52, refinery.tanks[2]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 116, guiTop + 69 - 52, 16, 52, refinery.tanks[3]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 69 - 52, 16, 52, refinery.tanks[4]);
-        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 69 - 52, 16, 52, refinery.power, TileEntityMachineVacuumDistill.maxPower);
-        
-        super.renderHoveredToolTip(mouseX, mouseY);
+        refinery.tanks[0].renderTankInfo(this, mouseX, mouseY, guiLeft + 44, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[1].renderTankInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[2].renderTankInfo(this, mouseX, mouseY, guiLeft + 98, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[3].renderTankInfo(this, mouseX, mouseY, guiLeft + 116, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[4].renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 70 - 52, 16, 52);
+        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 70 - 52, 16, 52, refinery.power, refinery.maxPower);
     }
 
     @Override
@@ -52,13 +49,13 @@ public class GUIMachineVacuumDistill extends GuiInfoContainer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        int j = (int) (refinery.power * 54 / TileEntityMachineVacuumDistill.maxPower);
+        int j = (int) (refinery.power * 54 / refinery.maxPower);
         drawTexturedModalRect(guiLeft + 26, guiTop + 70 - j, 176, 52 - j, 16, j);
 
-        FFUtils.drawLiquid(refinery.tanks[0], guiLeft, guiTop, this.zLevel, 16, 52, 44, 98);
-        FFUtils.drawLiquid(refinery.tanks[1], guiLeft, guiTop, this.zLevel, 16, 52, 80, 98);
-        FFUtils.drawLiquid(refinery.tanks[2], guiLeft, guiTop, this.zLevel, 16, 52, 98, 98);
-        FFUtils.drawLiquid(refinery.tanks[3], guiLeft, guiTop, this.zLevel, 16, 52, 116, 98);
-        FFUtils.drawLiquid(refinery.tanks[4], guiLeft, guiTop, this.zLevel, 16, 52, 134, 98);
+        refinery.tanks[0].renderTank(guiLeft + 44, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[1].renderTank(guiLeft + 80, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[2].renderTank(guiLeft + 98, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[3].renderTank(guiLeft + 116, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[4].renderTank(guiLeft + 134, guiTop + 70, this.zLevel, 16, 52);
     }
 }

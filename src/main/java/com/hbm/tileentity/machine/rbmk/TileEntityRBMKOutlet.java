@@ -4,7 +4,6 @@ import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.lib.ForgeDirection;
-
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +25,7 @@ public class TileEntityRBMKOutlet extends TileEntity implements IFluidHandler, I
 	
 	public TileEntityRBMKOutlet() {
 		steam = new FluidTank(32000);
-		steamType = ModForgeFluids.SUPERHOTSTEAM;
+		steamType = ModForgeFluids.superhotsteam;
 	}
 	
 	@Override

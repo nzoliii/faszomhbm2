@@ -1,26 +1,16 @@
 package com.hbm.render.tileentity;
 
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
-
 import com.hbm.handler.HbmShaderManager2;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
-import com.hbm.render.RenderHelper;
+import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.render.misc.BeamPronter;
 import com.hbm.render.util.ModelRendererUtil;
 import com.hbm.render.util.ModelRendererUtil.VertexData;
 import com.hbm.render.util.RenderMiscEffects;
 import com.hbm.tileentity.deco.TileEntityObjTester;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBox;
@@ -37,6 +27,14 @@ import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
+
+import java.util.List;
 
 public class RenderObjTester extends TileEntitySpecialRenderer<TileEntityObjTester> {
 	
@@ -185,7 +183,7 @@ public class RenderObjTester extends TileEntitySpecialRenderer<TileEntityObjTest
         GlStateManager.depthMask(false);
         GL11.glTranslatef(0, 1, 0);
         font.drawString("00:15", 0, 0, 0xff0000);
-        RenderHelper.resetColor();
+        NTMRenderHelper.resetColor();
         GlStateManager.depthMask(true);
 
         GlStateManager.shadeModel(GL11.GL_FLAT);

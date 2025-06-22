@@ -15,8 +15,7 @@ import net.minecraft.world.World;
 public class fhbm2Mail extends Item {
 
     public fhbm2Mail(String s) {
-        this.setUnlocalizedName(s);
-        this.setRegistryName(s);
+        this.setTranslationKey(s);this.setRegistryName(s);
         this.setCreativeTab(MainRegistry.weaponTab);
         ModItems.ALL_ITEMS.add(this);
     }

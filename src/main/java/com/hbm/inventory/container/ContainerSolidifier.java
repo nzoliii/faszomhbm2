@@ -17,12 +17,14 @@ public class ContainerSolidifier extends Container {
         solidifier = tile;
 
         //Input
-        this.addSlotToContainer(new SlotItemHandler(tile.inventory, 0, 71, 54));
+        this.addSlotToContainer(new SlotItemHandler(tile.inventory, 0, 71, 45));
         //Battery
         this.addSlotToContainer(new SlotItemHandler(tile.inventory, 1, 134, 72));
         //Upgrades
         this.addSlotToContainer(new SlotUpgrade(tile.inventory, 2, 98, 36));
         this.addSlotToContainer(new SlotUpgrade(tile.inventory, 3, 98, 54));
+        //ID
+        this.addSlotToContainer(new SlotItemHandler(tile.inventory, 4, 71, 72));
 
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 9; j++) {

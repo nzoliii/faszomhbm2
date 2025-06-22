@@ -25,86 +25,8 @@ import com.hbm.tileentity.bomb.TileEntityNukePrototype;
 import com.hbm.tileentity.bomb.TileEntityNukeSolinium;
 import com.hbm.tileentity.bomb.TileEntityNukeTsar;
 import com.hbm.tileentity.bomb.TileEntityRailgun;
-import com.hbm.tileentity.machine.TileEntityAMSBase;
-import com.hbm.tileentity.machine.TileEntityAMSEmitter;
-import com.hbm.tileentity.machine.TileEntityAMSLimiter;
-import com.hbm.tileentity.machine.TileEntityBarrel;
-import com.hbm.tileentity.machine.TileEntityControlPanel;
-import com.hbm.tileentity.machine.TileEntityCore;
-import com.hbm.tileentity.machine.TileEntityCoreAdvanced;
-import com.hbm.tileentity.machine.TileEntityCoreEmitter;
-import com.hbm.tileentity.machine.TileEntityCoreInjector;
-import com.hbm.tileentity.machine.TileEntityCoreReceiver;
-import com.hbm.tileentity.machine.TileEntityCoreStabilizer;
-import com.hbm.tileentity.machine.TileEntityCoreTitanium;
-import com.hbm.tileentity.machine.TileEntityCrateIron;
-import com.hbm.tileentity.machine.TileEntityCrateSteel;
-import com.hbm.tileentity.machine.TileEntityCrateTungsten;
-import com.hbm.tileentity.machine.TileEntityCrateDesh;
-import com.hbm.tileentity.machine.TileEntityDiFurnace;
-import com.hbm.tileentity.machine.TileEntityDiFurnaceRTG;
-import com.hbm.tileentity.machine.TileEntityFWatzCore;
-import com.hbm.tileentity.machine.TileEntityForceField;
-import com.hbm.tileentity.machine.TileEntityHadron;
-import com.hbm.tileentity.machine.TileEntityHeaterFirebox;
-import com.hbm.tileentity.machine.TileEntityITER;
-import com.hbm.tileentity.machine.TileEntityMachineArcFurnace;
-import com.hbm.tileentity.machine.TileEntityMachineAssembler;
-import com.hbm.tileentity.machine.TileEntityMachineBattery;
-import com.hbm.tileentity.machine.TileEntityMachineBoiler;
-import com.hbm.tileentity.machine.TileEntityMachineBoilerElectric;
-import com.hbm.tileentity.machine.TileEntityMachineBoilerRTG;
-import com.hbm.tileentity.machine.TileEntityMachineCMBFactory;
-import com.hbm.tileentity.machine.TileEntityMachineCentrifuge;
-import com.hbm.tileentity.machine.TileEntityMachineChemplant;
-import com.hbm.tileentity.machine.TileEntityMachineCoal;
-import com.hbm.tileentity.machine.TileEntityMachineCrystallizer;
-import com.hbm.tileentity.machine.TileEntityMachineCyclotron;
-import com.hbm.tileentity.machine.TileEntityMachineDiesel;
-import com.hbm.tileentity.machine.TileEntityMachineEPress;
-import com.hbm.tileentity.machine.TileEntityMachineElectricFurnace;
-import com.hbm.tileentity.machine.TileEntityMachineFluidTank;
-import com.hbm.tileentity.machine.TileEntityMachineGasCent;
-import com.hbm.tileentity.machine.TileEntityMachineUUCreator;
+import com.hbm.tileentity.machine.*;
 import com.hbm.tileentity.machine.oil.*;
-import com.hbm.tileentity.machine.TileEntityMachineGenerator;
-import com.hbm.tileentity.machine.TileEntityMachineIGenerator;
-import com.hbm.tileentity.machine.TileEntityMachineKeyForge;
-import com.hbm.tileentity.machine.TileEntityMachineLargeTurbine;
-import com.hbm.tileentity.machine.TileEntityMachineMiningLaser;
-import com.hbm.tileentity.machine.TileEntityMachineMissileAssembly;
-import com.hbm.tileentity.machine.TileEntityMachinePlasmaHeater;
-import com.hbm.tileentity.machine.TileEntityMachinePress;
-import com.hbm.tileentity.machine.TileEntityMachinePuF6Tank;
-import com.hbm.tileentity.machine.TileEntityMachineRTG;
-import com.hbm.tileentity.machine.TileEntityMachineRadGen;
-import com.hbm.tileentity.machine.TileEntityMachineRadar;
-import com.hbm.tileentity.machine.TileEntityMachineReactor;
-import com.hbm.tileentity.machine.TileEntityMachineReactorLarge;
-import com.hbm.tileentity.machine.TileEntityMachineReactorSmall;
-import com.hbm.tileentity.machine.TileEntityMachineSatDock;
-import com.hbm.tileentity.machine.TileEntityMachineSatLinker;
-import com.hbm.tileentity.machine.TileEntityMachineSchrabidiumTransmutator;
-import com.hbm.tileentity.machine.TileEntityMachineSeleniumEngine;
-import com.hbm.tileentity.machine.TileEntityMachineShredder;
-import com.hbm.tileentity.machine.TileEntityMachineSiren;
-import com.hbm.tileentity.machine.TileEntityMachineTeleLinker;
-import com.hbm.tileentity.machine.TileEntityMachineTeleporter;
-import com.hbm.tileentity.machine.TileEntityMachineTurbine;
-import com.hbm.tileentity.machine.TileEntityMachineTurbofan;
-import com.hbm.tileentity.machine.TileEntityMachineUF6Tank;
-import com.hbm.tileentity.machine.TileEntityMicrowave;
-import com.hbm.tileentity.machine.TileEntityNukeFurnace;
-import com.hbm.tileentity.machine.TileEntityReactorControl;
-import com.hbm.tileentity.machine.TileEntityRtgFurnace;
-import com.hbm.tileentity.machine.TileEntitySILEX;
-import com.hbm.tileentity.machine.TileEntityFEL;
-import com.hbm.tileentity.machine.TileEntitySafe;
-import com.hbm.tileentity.machine.TileEntitySoyuzCapsule;
-import com.hbm.tileentity.machine.TileEntitySoyuzLauncher;
-import com.hbm.tileentity.machine.TileEntityStorageDrum;
-import com.hbm.tileentity.machine.TileEntityWasteDrum;
-import com.hbm.tileentity.machine.TileEntityWatzCore;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBoiler;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControlAuto;
@@ -177,11 +99,6 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerMachineAssembler(player.inventory, (TileEntityMachineAssembler) entity);
 			}
 			return null;
-		case ModBlocks.guiID_machine_chemplant:
-			if(entity instanceof TileEntityMachineChemplant) {
-				return new ContainerMachineChemplant(player.inventory, (TileEntityMachineChemplant) entity);
-			}
-			return null;
 		case ModBlocks.guiID_nuke_man:
 			if(entity instanceof TileEntityNukeMan) {
 				return new ContainerNukeMan(player.inventory, (TileEntityNukeMan) entity);
@@ -190,21 +107,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_nuke_fleija:
 			if(entity instanceof TileEntityNukeFleija) {
 				return new ContainerNukeFleija(player.inventory, (TileEntityNukeFleija) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_coal:
-			if(entity instanceof TileEntityMachineCoal) {
-				return new ContainerMachineCoal(player.inventory, (TileEntityMachineCoal) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_generator:
-			if(entity instanceof TileEntityMachineGenerator) {
-				return new ContainerMachineGenerator(player, (TileEntityMachineGenerator) entity);
-			}
-			return null;
-		case ModBlocks.guiID_reactor_small:
-			if(entity instanceof TileEntityMachineReactorSmall) {
-				return new ContainerMachineReactorSmall(player.inventory, (TileEntityMachineReactorSmall) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_rtg:
@@ -247,16 +149,6 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerMachineEPress(player.inventory, (TileEntityMachineEPress) entity);
 			}
 			return null;
-		case ModBlocks.guiID_centrifuge:
-			if(entity instanceof TileEntityMachineCentrifuge) {
-				return new ContainerCentrifuge(player.inventory, (TileEntityMachineCentrifuge) entity);
-			}
-			return null;
-		case ModBlocks.guiID_gascent:
-			if(entity instanceof TileEntityMachineGasCent) {
-				return new ContainerMachineGasCent(player.inventory, (TileEntityMachineGasCent) entity);
-			}
-			return null;
 		case ModBlocks.guiID_uf6_tank:
 			if(entity instanceof TileEntityMachineUF6Tank) {
 				return new ContainerUF6Tank(player.inventory, (TileEntityMachineUF6Tank) entity);
@@ -272,24 +164,9 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerRailgun(player.inventory, (TileEntityRailgun) entity);
 			}
 			return null;
-		case ModBlocks.guiID_reactor:
-			if(entity instanceof TileEntityMachineReactor) {
-				return new ContainerReactor(player.inventory, (TileEntityMachineReactor) entity);
-			}
-			return null;
 		case ModBlocks.guiID_machine_shredder:
 			if(entity instanceof TileEntityMachineShredder) {
 				return new ContainerMachineShredder(player.inventory, (TileEntityMachineShredder) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_fluidtank:
-			if(entity instanceof TileEntityMachineFluidTank) {
-				return new ContainerMachineFluidTank(player.inventory, (TileEntityMachineFluidTank) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_refinery:
-			if(entity instanceof TileEntityMachineRefinery) {
-				return new ContainerMachineRefinery(player.inventory, (TileEntityMachineRefinery) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_cyclotron:
@@ -342,24 +219,9 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerRtgFurnace(player.inventory, (TileEntityRtgFurnace) entity);
 			}
 			return null;
-		case ModBlocks.guiID_uu_creator:
-			if(entity instanceof TileEntityMachineUUCreator) {
-				return new ContainerMachineUUCreator(player.inventory, (TileEntityMachineUUCreator) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_selenium:
-			if(entity instanceof TileEntityMachineSeleniumEngine) {
-				return new ContainerMachineSelenium(player.inventory, (TileEntityMachineSeleniumEngine) entity);
-			}
-			return null;
 		case ModBlocks.guiID_machine_controller:
 			if(entity instanceof TileEntityReactorControl) {
 				return new ContainerReactorControl(player.inventory, (TileEntityReactorControl) entity);
-			}
-			return null;
-		case ModBlocks.guiID_radgen:
-			if(entity instanceof TileEntityMachineRadGen) {
-				return new ContainerMachineRadGen(player.inventory, (TileEntityMachineRadGen) entity);
 			}
 			return null;
 		case ModBlocks.guiID_electric_furnace:
@@ -375,26 +237,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_waste_drum:
 			if(entity instanceof TileEntityWasteDrum) {
 				return new ContainerWasteDrum(player.inventory, (TileEntityWasteDrum) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_well:
-			if(entity instanceof TileEntityMachineOilWell) {
-				return new ContainerMachineOilWell(player.inventory, (TileEntityMachineOilWell) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_pumpjack:
-			if(entity instanceof TileEntityMachinePumpjack) {
-				return new ContainerMachinePumpjack(player.inventory, (TileEntityMachinePumpjack) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_fracking_tower:
-			if(entity instanceof TileEntityMachineFrackingTower) {
-				return new ContainerMachineFrackingTower(player.inventory, (TileEntityMachineFrackingTower) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_turbofan:
-			if(entity instanceof TileEntityMachineTurbofan) {
-				return new ContainerMachineTurbofan(player.inventory, (TileEntityMachineTurbofan) entity);
 			}
 			return null;
 		case ModBlocks.guiID_combine_factory:
@@ -415,16 +257,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_reactor_multiblock:
 			if(entity instanceof TileEntityMachineReactorLarge) {
 				return new ContainerReactorMultiblock(player.inventory, (TileEntityMachineReactorLarge) entity);
-			}
-			return null;
-		case ModBlocks.guiID_watz_multiblock:
-			if(entity instanceof TileEntityWatzCore) {
-				return new ContainerWatzCore(player, (TileEntityWatzCore) entity);
-			}
-			return null;
-		case ModBlocks.guiID_fwatz_multiblock:
-			if(entity instanceof TileEntityFWatzCore) {
-				return new ContainerFWatzCore(player.inventory, (TileEntityFWatzCore) entity);
 			}
 			return null;
 		case ModBlocks.guiID_nuke_gadget:
@@ -497,21 +329,6 @@ public class GuiHandler implements IGuiHandler {
 				return new ContainerSoyuzLauncher(player.inventory, (TileEntitySoyuzLauncher) entity);
 			}
 			return null;
-		case ModBlocks.guiID_ams_base:
-			if(entity instanceof TileEntityAMSBase) {
-				return new ContainerAMSBase(player.inventory, (TileEntityAMSBase) entity);
-			}
-			return null;
-		case ModBlocks.guiID_ams_emitter:
-			if(entity instanceof TileEntityAMSEmitter) {
-				return new ContainerAMSEmitter(player.inventory, (TileEntityAMSEmitter) entity);
-			}
-			return null;
-		case ModBlocks.guiID_ams_limiter:
-			if(entity instanceof TileEntityAMSLimiter) {
-				return new ContainerAMSLimiter(player.inventory, (TileEntityAMSLimiter) entity);
-			}
-			return null;
 		case ModBlocks.guiID_satlinker:
 			if(entity instanceof TileEntityMachineSatLinker) {
 				return new ContainerMachineSatLinker(player.inventory, (TileEntityMachineSatLinker) entity);
@@ -530,11 +347,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_forcefield:
 			if(entity instanceof TileEntityForceField) {
 				return new ContainerForceField(player.inventory, (TileEntityForceField) entity);
-			}
-			return null;
-		case ModBlocks.guiID_radar:
-			if(entity instanceof TileEntityMachineRadar) {
-				return new ContainerMachineRadar(player.inventory, (TileEntityMachineRadar) entity);
 			}
 			return null;
 		case ModBlocks.guiID_barrel:
@@ -786,11 +598,6 @@ public class GuiHandler implements IGuiHandler {
 				return new GUIMachineAssembler(player.inventory, (TileEntityMachineAssembler) entity);
 			}
 			return null;
-		case ModBlocks.guiID_machine_chemplant:
-			if(entity instanceof TileEntityMachineChemplant) {
-				return new GUIMachineChemplant(player.inventory, (TileEntityMachineChemplant) entity);
-			}
-			return null;
 		case ModBlocks.guiID_nuke_man:
 			if(entity instanceof TileEntityNukeMan) {
 				return new GUINukeMan(player.inventory, (TileEntityNukeMan) entity);
@@ -799,21 +606,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_nuke_fleija:
 			if(entity instanceof TileEntityNukeFleija) {
 				return new GUINukeFleija(player.inventory, (TileEntityNukeFleija) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_coal:
-			if(entity instanceof TileEntityMachineCoal) {
-				return new GUIMachineCoal(player.inventory, (TileEntityMachineCoal) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_generator:
-			if(entity instanceof TileEntityMachineGenerator) {
-				return new GUIMachineGenerator(player, (TileEntityMachineGenerator) entity);
-			}
-			return null;
-		case ModBlocks.guiID_reactor_small:
-			if(entity instanceof TileEntityMachineReactorSmall) {
-				return new GUIMachineReactorSmall(player.inventory, (TileEntityMachineReactorSmall) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_rtg:
@@ -856,16 +648,6 @@ public class GuiHandler implements IGuiHandler {
 				return new GUIMachineEPress(player.inventory, (TileEntityMachineEPress) entity);
 			}
 			return null;
-		case ModBlocks.guiID_centrifuge:
-			if(entity instanceof TileEntityMachineCentrifuge) {
-				return new GUIMachineCentrifuge(player.inventory, (TileEntityMachineCentrifuge) entity);
-			}
-			return null;
-		case ModBlocks.guiID_gascent:
-			if(entity instanceof TileEntityMachineGasCent) {
-				return new GUIMachineGasCent(player.inventory, (TileEntityMachineGasCent) entity);
-			}
-			return null;
 		case ModBlocks.guiID_uf6_tank:
 			if(entity instanceof TileEntityMachineUF6Tank) {
 				return new GUIMachineUF6Tank(player.inventory, (TileEntityMachineUF6Tank) entity);
@@ -881,24 +663,9 @@ public class GuiHandler implements IGuiHandler {
 				return new GUIRailgun(player.inventory, (TileEntityRailgun) entity);
 			}
 			return null;
-		case ModBlocks.guiID_reactor:
-			if(entity instanceof TileEntityMachineReactor) {
-				return new GUIMachineReactor(player.inventory, (TileEntityMachineReactor) entity);
-			}
-			return null;
 		case ModBlocks.guiID_machine_shredder:
 			if(entity instanceof TileEntityMachineShredder) {
 				return new GUIMachineShredder(player.inventory, (TileEntityMachineShredder) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_fluidtank:
-			if(entity instanceof TileEntityMachineFluidTank) {
-				return new GUIMachineFluidTank(player.inventory, (TileEntityMachineFluidTank) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_refinery:
-			if(entity instanceof TileEntityMachineRefinery) {
-				return new GUIMachineRefinery(player.inventory, (TileEntityMachineRefinery) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_cyclotron:
@@ -926,6 +693,11 @@ public class GuiHandler implements IGuiHandler {
 				return new GUICrateSteel(player.inventory, (TileEntityCrateSteel) entity);
 			}
 			return null;
+		case ModBlocks.guiID_crate_template:
+			if(entity instanceof TileEntityCrateTemplate) {
+				return new GUICrateTemplate(player.inventory, (TileEntityCrateTemplate) entity);
+			}
+			return null;
 		case ModBlocks.guiID_crate_desh:
 			if(entity instanceof TileEntityCrateDesh) {
 				return new GUICrateDesh(player.inventory, (TileEntityCrateDesh) entity);
@@ -951,24 +723,9 @@ public class GuiHandler implements IGuiHandler {
 				return new GUIRtgFurnace(player.inventory, (TileEntityRtgFurnace) entity);
 			}
 			return null;
-		case ModBlocks.guiID_uu_creator:
-			if(entity instanceof TileEntityMachineUUCreator) {
-				return new GUIMachineUUCreator(player.inventory, (TileEntityMachineUUCreator) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_selenium:
-			if(entity instanceof TileEntityMachineSeleniumEngine) {
-				return new GUIMachineSelenium(player.inventory, (TileEntityMachineSeleniumEngine) entity);
-			}
-			return null;
 		case ModBlocks.guiID_machine_controller:
 			if(entity instanceof TileEntityReactorControl) {
 				return new GUIReactorControl(player.inventory, (TileEntityReactorControl) entity);
-			}
-			return null;
-		case ModBlocks.guiID_radgen:
-			if(entity instanceof TileEntityMachineRadGen) {
-				return new GUIMachineRadGen(player.inventory, (TileEntityMachineRadGen) entity);
 			}
 			return null;
 		case ModBlocks.guiID_electric_furnace:
@@ -984,26 +741,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_waste_drum:
 			if(entity instanceof TileEntityWasteDrum) {
 				return new GUIWasteDrum(player.inventory, (TileEntityWasteDrum) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_well:
-			if(entity instanceof TileEntityMachineOilWell) {
-				return new GUIMachineOilWell(player.inventory, (TileEntityMachineOilWell) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_pumpjack:
-			if(entity instanceof TileEntityMachinePumpjack) {
-				return new GUIMachinePumpjack(player.inventory, (TileEntityMachinePumpjack) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_fracking_tower:
-			if (entity instanceof TileEntityMachineFrackingTower) {
-				return new GUIMachineFrackingTower(player.inventory, (TileEntityMachineFrackingTower) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_turbofan:
-			if(entity instanceof TileEntityMachineTurbofan) {
-				return new GUIMachineTurbofan(player.inventory, (TileEntityMachineTurbofan) entity);
 			}
 			return null;
 		case ModBlocks.guiID_combine_factory:
@@ -1024,16 +761,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_reactor_multiblock:
 			if(entity instanceof TileEntityMachineReactorLarge) {
 				return new GUIReactorMultiblock(player.inventory, (TileEntityMachineReactorLarge) entity);
-			}
-			return null;
-		case ModBlocks.guiID_watz_multiblock:
-			if(entity instanceof TileEntityWatzCore) {
-				return new GUIWatzCore(player, (TileEntityWatzCore) entity);
-			}
-			return null;
-		case ModBlocks.guiID_fwatz_multiblock:
-			if(entity instanceof TileEntityFWatzCore) {
-				return new GUIFWatzCore(player.inventory, (TileEntityFWatzCore) entity);
 			}
 			return null;
 		case ModBlocks.guiID_nuke_gadget:
@@ -1106,21 +833,6 @@ public class GuiHandler implements IGuiHandler {
 				return new GUISoyuzLauncher(player.inventory, (TileEntitySoyuzLauncher) entity);
 			}
 			return null;
-		case ModBlocks.guiID_ams_base:
-			if(entity instanceof TileEntityAMSBase) {
-				return new GUIAMSBase(player.inventory, (TileEntityAMSBase) entity);
-			}
-			return null;
-		case ModBlocks.guiID_ams_emitter:
-			if(entity instanceof TileEntityAMSEmitter) {
-				return new GUIAMSEmitter(player.inventory, (TileEntityAMSEmitter) entity);
-			}
-			return null;
-		case ModBlocks.guiID_ams_limiter:
-			if(entity instanceof TileEntityAMSLimiter) {
-				return new GUIAMSLimiter(player.inventory, (TileEntityAMSLimiter) entity);
-			}
-			return null;
 		case ModBlocks.guiID_satlinker:
 			if(entity instanceof TileEntityMachineSatLinker) {
 				return new GUIMachineSatLinker(player.inventory, (TileEntityMachineSatLinker) entity);
@@ -1139,11 +851,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_forcefield:
 			if(entity instanceof TileEntityForceField) {
 				return new GUIForceField(player.inventory, (TileEntityForceField) entity);
-			}
-			return null;
-		case ModBlocks.guiID_radar:
-			if(entity instanceof TileEntityMachineRadar) {
-				return new GUIMachineRadar(player.inventory, (TileEntityMachineRadar) entity);
 			}
 			return null;
 		case ModBlocks.guiID_barrel:

@@ -1,48 +1,20 @@
 package com.hbm.entity.effect;
 
-import java.util.*;
-
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.WasteLog;
 import com.hbm.config.BombConfig;
+import com.hbm.config.CompatibilityConfig;
 import com.hbm.config.RadiationConfig;
 import com.hbm.config.VersatileConfig;
-import com.hbm.config.CompatibilityConfig;
-import com.hbm.interfaces.IConstantRenderer;
-import com.hbm.entity.effect.EntityFalloutUnderGround;
-import com.hbm.render.amlfrom1710.Vec3;
-import com.hbm.saveddata.AuxSavedData;
-
-//Chunkloading stuff
-import java.util.ArrayList;
-import java.util.List;
 import com.hbm.entity.logic.IChunkLoader;
+import com.hbm.interfaces.IConstantRenderer;
 import com.hbm.main.MainRegistry;
-import com.hbm.blocks.generic.WasteLog;
-import net.minecraftforge.common.ForgeChunkManager;
-import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
-import net.minecraft.util.math.ChunkPos;
-
-
-import net.minecraft.block.BlockHugeMushroom;
-import net.minecraft.block.BlockSand;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.BlockBush;
-import net.minecraft.block.BlockGrass;
-import net.minecraft.block.BlockGravel;
-import net.minecraft.block.BlockOre;
-import net.minecraft.block.BlockIce;
-import net.minecraft.block.BlockSnow;
-import net.minecraft.block.BlockSnowBlock;
+import com.hbm.saveddata.AuxSavedData;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.init.Blocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStone;
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.material.Material;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -51,8 +23,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.ForgeChunkManager.Ticket;
+import net.minecraftforge.common.ForgeChunkManager.Type;
+
+import java.util.*;
 
 public class EntityFalloutRain extends Entity implements IConstantRenderer, IChunkLoader {
 	private static final DataParameter<Integer> SCALE = EntityDataManager.createKey(EntityFalloutRain.class, DataSerializers.VARINT);
@@ -183,14 +161,14 @@ public class EntityFalloutRain extends Entity implements IConstantRenderer, IChu
 		// So yea, I mathematically worked out that 20 is a good value for this, with the minimum possible being 18 in order to reach all chunks
 		int adjustedMaxAngle = 20 * outerRange / 32; // step size = 20 * chunks / 2
 		for (int angle = 0; angle <= adjustedMaxAngle; angle++) {
-			Vec3 vector = Vec3.createVectorHelper(outerRange, 0, 0);
-			vector.rotateAroundY((float) (angle * Math.PI / 180.0 / (adjustedMaxAngle / 360.0))); // Ugh, mutable data classes (also, ugh, radians; it uses degrees in 1.18; took me two hours to debug)
-			outerChunks.add(ChunkPos.asLong((int) (posX + vector.xCoord) >> 4, (int) (posZ + vector.zCoord) >> 4));
+			Vec3d vector = new Vec3d(outerRange, 0, 0);
+			vector = vector.rotateYaw((float) (angle * Math.PI / 180.0 / (adjustedMaxAngle / 360.0))); // Ugh, mutable data classes (also, ugh, radians; it uses degrees in 1.18; took me two hours to debug)
+			outerChunks.add(ChunkPos.asLong((int) (posX + vector.x) >> 4, (int) (posZ + vector.z) >> 4));
 		}
 		for (int distance = 0; distance <= outerRange; distance += 8) for (int angle = 0; angle <= adjustedMaxAngle; angle++) {
-			Vec3 vector = Vec3.createVectorHelper(distance, 0, 0);
-			vector.rotateAroundY((float) (angle * Math.PI / 180.0 / (adjustedMaxAngle / 360.0)));
-			long chunkCoord = ChunkPos.asLong((int) (posX + vector.xCoord) >> 4, (int) (posZ + vector.zCoord) >> 4);
+			Vec3d vector = new Vec3d(distance, 0, 0);
+			vector = vector.rotateYaw((float) (angle * Math.PI / 180.0 / (adjustedMaxAngle / 360.0)));
+			long chunkCoord = ChunkPos.asLong((int) (posX + vector.x) >> 4, (int) (posZ + vector.z) >> 4);
 			if (!outerChunks.contains(chunkCoord)) chunks.add(chunkCoord);
 		}
 
@@ -370,7 +348,7 @@ public class EntityFalloutRain extends Entity implements IConstantRenderer, IChu
 			}
 
 			if(bblock == Blocks.BEDROCK || bblock == ModBlocks.ore_bedrock_oil || bblock == ModBlocks.ore_bedrock_block){
-				if(world.isAirBlock(pos.up())) world.setBlockState(pos.up(), ModBlocks.toxic_block.getDefaultState());
+				 world.setBlockState(pos, ModBlocks.sellafield_bedrock.getDefaultState());
 				break;
 			}
 
@@ -486,7 +464,7 @@ public class EntityFalloutRain extends Entity implements IConstantRenderer, IChu
 				placeBlockFromDist(dist, ModBlocks.waste_sandstone, pos);
 				continue;
 			} else if(bblock == Blocks.RED_SANDSTONE) {
-				placeBlockFromDist(dist, ModBlocks.waste_sandstone_red, pos);
+				placeBlockFromDist(dist, ModBlocks.waste_red_sandstone, pos);
 				continue;
 			} else if(bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) {
 				placeBlockFromDist(dist, ModBlocks.waste_terracotta, pos);

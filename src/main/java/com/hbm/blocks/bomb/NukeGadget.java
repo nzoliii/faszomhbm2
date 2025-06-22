@@ -1,20 +1,15 @@
 package com.hbm.blocks.bomb;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import com.hbm.lib.HBMSoundHandler;
-import com.hbm.util.I18nUtil;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.hbm.interfaces.IBomb;
+import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.InventoryHelper;
 import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.bomb.TileEntityNukeGadget;
-
-import net.minecraft.client.util.ITooltipFlag;
+import com.hbm.util.I18nUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
@@ -23,20 +18,19 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class NukeGadget extends BlockContainer implements IBomb {
 
@@ -88,7 +82,7 @@ public class NukeGadget extends BlockContainer implements IBomb {
 			}
 		}
 	}
-
+	
 	public boolean igniteTestBomb(World world, int x, int y, int z) {
 		if (!world.isRemote) {
 
@@ -100,9 +94,9 @@ public class NukeGadget extends BlockContainer implements IBomb {
 				throw new RuntimeException(e);
 			}
 
-			world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 1.0f, world.rand.nextFloat() * 0.1F + 0.9F); // x,y,z,sound,volume,pitch
-
-			world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
+			// world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 1.0f, world.rand.nextFloat() * 0.1F + 0.9F); // x,y,z,sound,volume,pitch
+			
+	    	world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
 			if (BombConfig.enableNukeClouds) {
 				EntityNukeTorex.statFac(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.gadgetRadius);
 			}
@@ -117,17 +111,22 @@ public class NukeGadget extends BlockContainer implements IBomb {
 	}
 
 	@Override
-	public void explode(World world, BlockPos pos) {
-		TileEntityNukeGadget entity = (TileEntityNukeGadget) world.getTileEntity(pos);
-		// if (p_149695_1_.getStrongPower(x, y, z))
-		{
-			if (entity.isReady()) {
-				this.onPlayerDestroy(world, pos, world.getBlockState(pos));
-				entity.clearSlots();
-				world.setBlockToAir(pos);
-				igniteTestBomb(world, pos.getX(), pos.getY(), pos.getZ());
-			}
+	public BombReturnCode explode(World world, BlockPos pos) {
+		if(!world.isRemote) {
+			TileEntityNukeGadget entity = (TileEntityNukeGadget) world.getTileEntity(pos);
+			// if (p_149695_1_.getStrongPower(x, y, z))
+				if (entity.isReady()) {
+					this.onPlayerDestroy(world, pos, world.getBlockState(pos));
+					entity.clearSlots();
+					world.setBlockToAir(pos);
+					igniteTestBomb(world, pos.getX(), pos.getY(), pos.getZ());
+					return BombReturnCode.DETONATED;
+				}
+
+			return BombReturnCode.ERROR_MISSING_COMPONENT;
 		}
+
+		return BombReturnCode.UNDEFINED;
 	}
 	
 	@Override

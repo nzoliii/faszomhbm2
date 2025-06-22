@@ -270,14 +270,14 @@ public class ExplosionLarge {
 		}
 	}
 	
-	public static void buster(World world, double x, double y, double z, Vec3 vector, float strength, float depth) {
+	public static void buster(World world, double x, double y, double z, Vec3d vector, float strength, float depth) {
 		
 		vector = vector.normalize();
 		if(CompatibilityConfig.isWarDim(world)){
 			for(int i = 0; i <= depth; i += 3) {
 				
-				ContaminationUtil.radiate(world, x + vector.xCoord * i, y + vector.yCoord * i, z + vector.zCoord * i, strength, 0, 0, 0, strength*10F);
-				world.spawnEntity(EntityNukeExplosionMK5.statFacNoRad(world, (int)strength, x + vector.xCoord * i, y + vector.yCoord * i, z + vector.zCoord * i));
+				ContaminationUtil.radiate(world, x + vector.x * i, y + vector.y * i, z + vector.z * i, strength, 0, 0, 0, strength*10F);
+				world.spawnEntity(EntityNukeExplosionMK5.statFacNoRad(world, (int)strength, x + vector.x * i, y + vector.y * i, z + vector.z * i));
 			}
 		}
 		spawnParticles(world, x, y+2, z, cloudFunction((int)strength));

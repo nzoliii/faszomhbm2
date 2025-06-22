@@ -1,13 +1,10 @@
 package com.hbm.blocks.bomb;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.ExplosionNT.ExAttrib;
 import com.hbm.interfaces.IBomb;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -16,6 +13,8 @@ import net.minecraft.item.Item;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class DetMiner extends Block implements IBomb {
 
@@ -33,7 +32,7 @@ public class DetMiner extends Block implements IBomb {
 	}
 	
 	@Override
-	public void explode(World world, BlockPos pos) {
+	public BombReturnCode explode(World world, BlockPos pos) {
 		if(!world.isRemote) {
 
 			world.destroyBlock(pos, false);
@@ -44,6 +43,8 @@ public class DetMiner extends Block implements IBomb {
 
 			ExplosionLarge.spawnParticles(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 30);
 		}
+
+		return BombReturnCode.DETONATED;
 	}
 	
 	@Override

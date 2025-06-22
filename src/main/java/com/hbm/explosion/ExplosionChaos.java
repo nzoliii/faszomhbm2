@@ -961,11 +961,11 @@ public class ExplosionChaos {
 		} 
 		
 		else if((bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) && random.nextInt(3) != 0) {
-			world.setBlockState(pos, ModBlocks.waste_sandstone_red.getDefaultState());
+			world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
 		}
 
 		else if(bblock == Blocks.RED_SANDSTONE && random.nextInt(3) != 0) {
-			world.setBlockState(pos, ModBlocks.waste_sandstone_red.getDefaultState());
+			world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
 		}
 		
 		else if(bblock == ModBlocks.waste_grass_tall && random.nextInt(3) != 0) {

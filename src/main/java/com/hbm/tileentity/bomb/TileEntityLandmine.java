@@ -1,14 +1,13 @@
 package com.hbm.tileentity.bomb;
 
-import java.util.List;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.bomb.Landmine;
 import com.hbm.lib.HBMSoundHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityBat;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
@@ -17,55 +16,68 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.List;
+
 public class TileEntityLandmine extends TileEntity implements ITickable {
 
 	private boolean isPrimed = false;
+	public boolean waitingForPlayer = false;
 
 	@Override
 	public void update() {
-		if(!world.isRemote) {
-			Block block = world.getBlockState(pos).getBlock();
-			double range = 1;
-			double height = 1;
+		if (world.isRemote) return;
 
-			if (block == ModBlocks.mine_ap) {
-				range = 1.5D;
-			}
-			if (block == ModBlocks.mine_he) {
-				range = 2;
-				height = 5;
-			}
-			if (block == ModBlocks.mine_shrap) {
-				range = 1.5D;
-			}
-			if (block == ModBlocks.mine_fat) {
-				range = 2.5D;
-			}
-	
-			List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos.getX() - range, pos.getY() - height, pos.getZ() - range, pos.getX() + range, pos.getY() + height, pos.getZ() + range));
-	
-			boolean flag = false;
-			for (Entity e : list) {
-	
-				if (e instanceof EntityLivingBase) {
-	
-					flag = true;
-					
-					if(isPrimed) {
-						
-						((Landmine)block).explode(world, pos);
+		Block block = world.getBlockState(pos).getBlock();
+
+		if (!(block instanceof Landmine)) return;
+		Landmine landmine = (Landmine) block;
+
+		double range = landmine.range;
+		double height = landmine.height;
+
+		if (waitingForPlayer) {
+			range = 25;
+			height = 25;
+		} else if (!isPrimed) {
+			range *= 2;
+			height *= 2;
+		}
+
+		AxisAlignedBB box = new AxisAlignedBB(
+				pos.getX() - range, pos.getY() - height, pos.getZ() - range,
+				pos.getX() + range + 1, pos.getY() + height, pos.getZ() + range + 1
+		);
+
+		List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(null, box);
+
+		for (Entity entity : list) {
+			if (entity instanceof EntityBat) continue;
+
+			if (waitingForPlayer) {
+				if (entity instanceof EntityPlayer) {
+					waitingForPlayer = false;
+					return;
+				}
+			} else {
+				if (entity instanceof EntityLivingBase) {
+					if (isPrimed) {
+						landmine.explode(world, pos);
+
+						if (entity instanceof EntityPlayer) {
+							//((EntityPlayer) entity).addStat(MainRegistry.statMines, 1); //FIXME Unsure what this is
+						}
 					}
-	
 					return;
 				}
 			}
-			
-			if(!isPrimed && !flag) {
-	
-				this.world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.techBoop, SoundCategory.BLOCKS, 2.0F, 1.0F);
+		}
+
+
+			if(!isPrimed && !waitingForPlayer) {
+
+				this.world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.fstbmbStart, SoundCategory.BLOCKS, 2.0F, 1.0F);
 				isPrimed = true;
 			}
-		}
 	}
 	
 	@Override

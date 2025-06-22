@@ -1,17 +1,16 @@
 package com.hbm.items.armor;
 
-import java.util.List;
-
-import com.hbm.items.ModItems;
 import com.hbm.handler.ArmorModHandler;
-import com.hbm.render.amlfrom1710.Vec3;
-
+import com.hbm.items.ModItems;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemModLodestone extends ItemArmorMod {
 
@@ -44,14 +43,13 @@ public class ItemModLodestone extends ItemArmorMod {
 		
 		for(EntityItem item : items) {
 			
-			Vec3 vec = Vec3.createVectorHelper(entity.posX - item.posX, entity.posY - item.posY, entity.posZ - item.posZ);
-			vec = vec.normalize();
+			Vec3d vec = new Vec3d(entity.posX - item.posX, entity.posY - item.posY, entity.posZ - item.posZ).normalize();
 
-			item.motionX += vec.xCoord * 0.05;
-			item.motionY += vec.yCoord * 0.05;
-			item.motionZ += vec.zCoord * 0.05;
+			item.motionX += vec.x * 0.05;
+			item.motionY += vec.y * 0.05;
+			item.motionZ += vec.z * 0.05;
 			
-			if(vec.yCoord > 0 && item.motionY < 0.04)
+			if(vec.y > 0 && item.motionY < 0.04)
 				item.motionY += 0.2;
 		}
 	}

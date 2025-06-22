@@ -1,6 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.container.ContainerMachineCatalyticReformer;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
@@ -32,14 +31,14 @@ public class GUIMachineCatalyticReformer extends GuiInfoContainer {
     public void drawScreen(int mouseX, int mouseY, float f) {
         super.drawScreen(mouseX, mouseY, f);
 
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 35, guiTop + 69 - 52, 16, 52, refinery.tanks[0]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 107, guiTop + 69 - 52, 16, 52, refinery.tanks[1]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 125, guiTop + 69 - 52, 16, 52, refinery.tanks[2]);
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 143, guiTop + 69 - 52, 16, 52, refinery.tanks[3]);
-        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 17, guiTop + 69 - 52, 16, 52, refinery.power, refinery.maxPower);
+        refinery.tanks[0].renderTankInfo(this, mouseX, mouseY, guiLeft + 35, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[1].renderTankInfo(this, mouseX, mouseY, guiLeft + 107, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[2].renderTankInfo(this, mouseX, mouseY, guiLeft + 125, guiTop + 70 - 52, 16, 52);
+        refinery.tanks[3].renderTankInfo(this, mouseX, mouseY, guiLeft + 143, guiTop + 70 - 52, 16, 52);
+        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 17, guiTop + 70 - 52, 16, 52, refinery.power, refinery.maxPower);
 
         if(this.mc.player.inventory.getItemStack() == ItemStack.EMPTY && this.isMouseOverSlot(this.inventorySlots.getSlot(10), mouseX, mouseY) && !this.inventorySlots.getSlot(10).getHasStack()) {
-            List<Object[]> lines = new ArrayList<>();
+            List<Object[]> lines = new ArrayList();
             ItemStack converter = new ItemStack(ModItems.catalytic_converter);
             lines.add(new Object[] {converter});
             lines.add(new Object[] {converter.getDisplayName()});
@@ -63,12 +62,12 @@ public class GUIMachineCatalyticReformer extends GuiInfoContainer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        int j = (int) (refinery.power * 54 / TileEntityMachineCatalyticReformer.maxPower);
+        int j = (int) (refinery.power * 54 / refinery.maxPower);
         drawTexturedModalRect(guiLeft + 17, guiTop + 70 - j, 176, 52 - j, 16, j);
 
-        FFUtils.drawLiquid(refinery.tanks[0], guiLeft, guiTop, this.zLevel, 16, 52, 35, 98);
-        FFUtils.drawLiquid(refinery.tanks[1], guiLeft, guiTop, this.zLevel, 16, 52, 107, 98);
-        FFUtils.drawLiquid(refinery.tanks[2], guiLeft, guiTop, this.zLevel, 16, 52, 125, 98);
-        FFUtils.drawLiquid(refinery.tanks[3], guiLeft, guiTop, this.zLevel, 16, 52, 143, 98);
+        refinery.tanks[0].renderTank(guiLeft + 35, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[1].renderTank(guiLeft + 107, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[2].renderTank(guiLeft + 125, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[3].renderTank(guiLeft + 143, guiTop + 70, this.zLevel, 16, 52);
     }
 }

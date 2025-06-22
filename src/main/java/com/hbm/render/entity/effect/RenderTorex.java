@@ -1,41 +1,31 @@
 package com.hbm.render.entity.effect;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Random;
-
-import com.hbm.lib.HBMSoundHandler;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.effect.EntityNukeTorex.Cloudlet;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
+import com.hbm.main.ModEventHandlerClient;
 import com.hbm.render.amlfrom1710.Vec3;
-
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
 
 public class RenderTorex extends Render<EntityNukeTorex> {
 
 	public static final IRenderFactory<EntityNukeTorex> FACTORY = man -> new RenderTorex(man);
-
+	
 	private static final ResourceLocation cloudlet = new ResourceLocation(RefStrings.MODID + ":textures/particle/particle_base.png");
 	private static final ResourceLocation flare = new ResourceLocation(RefStrings.MODID + ":textures/particle/flare.png");
 
@@ -51,9 +41,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		float scale = (float)cloud.getScale();
 		float flashDuration = scale * flashBaseDuration;
 		float flareDuration = scale * flareBaseDuration;
-
-		doScreenShake(cloud, x, y, z, scale * 100);
-
+		
 		GL11.glPushMatrix();
 		GL11.glTranslated(x, y, z);
 
@@ -63,44 +51,25 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 
 		cloudletWrapper(cloud, partialTicks);
 
-		if(cloud.ticksExisted < flareDuration+1)
-			flareWrapper(cloud, partialTicks, flareDuration);
-
-		if(cloud.ticksExisted < flashDuration+1)
-			flashWrapper(cloud, partialTicks, flashDuration);
+		if(cloud.ticksExisted < flareDuration+1) flareWrapper(cloud, partialTicks, flareDuration);
+		if(cloud.ticksExisted < flashDuration+1) flashWrapper(cloud, partialTicks, flashDuration);
+		if(cloud.ticksExisted < (flashDuration / 10) && System.currentTimeMillis() - ModEventHandlerClient.flashTimestamp > 1_000) ModEventHandlerClient.flashTimestamp = System.currentTimeMillis();
+		if(cloud.didPlaySound && !cloud.didShake && System.currentTimeMillis() - ModEventHandlerClient.shakeTimestamp > 1_000) {
+			ModEventHandlerClient.shakeTimestamp = System.currentTimeMillis();
+			cloud.didShake = true;
+			EntityPlayer player = MainRegistry.proxy.me();
+			float dist = player.getDistance(cloud);
+			player.hurtTime = (100 - (int) dist) > 0 ? (int) ((float) (100 - (int) dist) * 1.5F) : 0;
+			player.maxHurtTime = (100 - (int) dist) > 0 ? (100 - (int) dist) : 0;
+			player.attackedAtYaw = 0F;
+		}
 
 		if(fog)
 			GL11.glEnable(GL11.GL_FOG);
 
 		GL11.glPopMatrix();
 	}
-
-	private void doScreenShake(EntityNukeTorex cloud, double x, double y, double z, float amplitude){
-		if(cloud.ticksExisted > 300) return;
-		EntityPlayer player = MainRegistry.proxy.me();
-
-		double dist = player.getDistance(cloud);
-		double shockwaveDistance = dist - cloud.ticksExisted * 1.5;
-		if(shockwaveDistance > 10 || shockwaveDistance < 0) return;
-		amplitude = Math.min(amplitude, 125);
-		int duration = ((int)(amplitude * Math.min(1, (amplitude * amplitude)/(dist * dist))));
-		int swingTimer = duration<<1;
-
-		if (!cloud.explosionSoundPlayed) {
-			cloud.world.playSound(player, cloud.posX, cloud.posY, cloud.posZ, HBMSoundHandler.fhbm2_nuclear_explosion, SoundCategory.AMBIENT, amplitude * 10F, 0.8F + cloud.world.rand.nextFloat() * 0.2F);
-			cloud.explosionSoundPlayed = true;
-		}
-
-		if(player.getDisplayName().equals("Vic4Games")) {
-			player.hurtTime = swingTimer<<1;
-			player.maxHurtTime = duration<<1;
-		} else {
-			player.hurtTime = swingTimer;
-			player.maxHurtTime = duration;
-		}
-		player.attackedAtYaw = 0F;
-	}
-
+	
 	private Comparator cloudSorter = new Comparator() {
 
 		@Override
@@ -110,7 +79,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 			EntityPlayer player = MainRegistry.proxy.me();
 			double dist1 = player.getDistanceSq(first.posX, first.posY, first.posZ);
 			double dist2 = player.getDistanceSq(second.posX, second.posY, second.posZ);
-
+			
 			return dist1 > dist2 ? -1 : dist1 == dist2 ? 0 : 1;
 		}
 	};
@@ -125,16 +94,16 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDepthMask(false);
 		RenderHelper.disableStandardItemLighting();
-
+		
 		bindTexture(cloudlet);
 
 		Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-
+		
 		ArrayList<Cloudlet> cloudlets = new ArrayList(cloud.cloudlets);
 		cloudlets.sort(cloudSorter);
-
+		
 		for(Cloudlet cloudlet : cloudlets) {
 			Vec3 vec = cloudlet.getInterpPos(partialTicks);
 			tessellateCloudlet(buf, vec.xCoord - cloud.posX, vec.yCoord - cloud.posY, vec.zCoord - cloud.posZ, cloudlet, partialTicks);
@@ -149,7 +118,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glPopMatrix();
 	}
-
+	
 	private void flareWrapper(EntityNukeTorex cloud, float partialTicks, float flareDuration) {
 
 		GL11.glPushMatrix();
@@ -159,18 +128,18 @@ public class RenderTorex extends Render<EntityNukeTorex> {
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glDepthMask(false);
 		RenderHelper.disableStandardItemLighting();
-
+			
 		bindTexture(flare);
 
 		Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-
+		
 		double age = Math.min(cloud.ticksExisted + partialTicks, flareDuration);
 		float alpha = (float) Math.min(1, (flareDuration - age) / flareDuration);
-
+		
 		Random rand = new Random(cloud.getEntityId());
-
+		
 		for(int i = 0; i < 3; i++) {
 			float x = (float) (rand.nextGaussian() * 0.5F * cloud.rollerSize);
 			float y = (float) (rand.nextGaussian() * 0.5F * cloud.rollerSize);
@@ -271,7 +240,7 @@ public class RenderTorex extends Render<EntityNukeTorex> {
         GlStateManager.enableCull();
         GlStateManager.depthMask(false);
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-
+		
         GL11.glPushMatrix();
 
         for(int i = 0; i < 300; i++) {

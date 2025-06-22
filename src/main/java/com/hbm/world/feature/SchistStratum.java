@@ -1,5 +1,7 @@
 package com.hbm.world.feature;
 
+import com.hbm.blocks.ModBlocks;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.Block;
@@ -13,13 +15,13 @@ public class SchistStratum {
 
 	NoiseGeneratorPerlin noise;
 
-	Block b;
+	IBlockState b;
 	double scale;
 	double threshold;
 	double thickness;
 	int heigth;
 
-	public SchistStratum(Block s, double scale, double threshold, double thickness, int heigth){
+	public SchistStratum(IBlockState s, double scale, double threshold, double thickness, int heigth){
 		this.b = s;
 		this.scale = scale;
 		this.threshold = threshold;
@@ -58,11 +60,11 @@ public class SchistStratum {
 					int r = (int)range;
 					
 					for(int y = heigth - r; y <= heigth + r; y++) {
-						BlockPos pos = new BlockPos(x, y, z);
-						IBlockState target = world.getBlockState(pos);
+						
+						IBlockState target = world.getBlockState(new BlockPos(x, y, z));
 						
 						if(target.isNormalCube() && target.getMaterial() == Material.ROCK) {
-							world.setBlockState(pos, b.getDefaultState());
+							world.setBlockState(new BlockPos(x, y, z), b);
 						}
 					}
 				}

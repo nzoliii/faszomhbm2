@@ -3,18 +3,19 @@ package com.hbm.blocks.network;
 import api.hbm.block.IConveyorBelt;
 import api.hbm.block.IEnterableBlock;
 import com.hbm.entity.item.EntityMovingItem;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class BlockConveyorLift extends BlockConveyorChute {
+    public static final PropertyInteger TYPE = PropertyInteger.create("type", 0, 2); //Bottom 0, Middle 1, Input 2
 
     public BlockConveyorLift(Material materialIn, String s) {
         super(materialIn, s);

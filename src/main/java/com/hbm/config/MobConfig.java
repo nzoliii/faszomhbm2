@@ -10,7 +10,7 @@ public class MobConfig {
 	public static int maskmanMinRad = 50;
 	public static boolean maskmanUnderground = true;
 
-	public static boolean enableRaids = true;
+	public static boolean enableRaids = false;
 	public static int raidDelay = 30 * 60 * 60;
 	public static int raidChance = 3;
 	public static int raidAmount = 15;
@@ -23,6 +23,7 @@ public class MobConfig {
 	public static int elementalChance = 2;
 	public static int elementalAmount = 10;
 	public static int elementalDistance = 32;
+	public static double pollutionMult = 3;
 	
 	public static void loadFromConfig(Configuration config) {
 
@@ -32,7 +33,7 @@ public class MobConfig {
 		maskmanDelay = CommonConfig.createConfigInt(config, CATEGORY, "12.M01_maskmanDelay", "How many world ticks need to pass for a check to be performed", 60 * 60 * 60);
 		maskmanChance = CommonConfig.createConfigInt(config, CATEGORY, "12.M02_maskmanChance", "1:x chance to spawn mask man, must be at least 1", 3);
 		maskmanMinRad = CommonConfig.createConfigInt(config, CATEGORY, "12.M03_maskmanMinRad", "The amount of radiation needed for mask man to spawn", 50);
-		maskmanUnderground = CommonConfig.createConfigBool(config, CATEGORY, "12.M04_maskmanUnderound", "Whether players need to be underground for mask man to spawn", true);
+		maskmanUnderground = CommonConfig.createConfigBool(config, CATEGORY, "12.M04_maskmanUnderound", "Whether players need to be underground for mask man to spawn", false);
 
 		enableRaids = CommonConfig.createConfigBool(config, CATEGORY, "12.F00_enableFBIRaids", "Whether there should be FBI raids", true);
 		raidDelay = CommonConfig.createConfigInt(config, CATEGORY, "12.F01_raidDelay", "How many world ticks need to pass for a check to be performed", 30 * 60 * 60);
@@ -47,6 +48,8 @@ public class MobConfig {
 		elementalChance = CommonConfig.createConfigInt(config, CATEGORY, "12.E02_elementalChance", "1:x chance to spawn elementals, must be at least 1", 2);
 		elementalAmount = CommonConfig.createConfigInt(config, CATEGORY, "12.E03_elementalAmount", "How many elementals are spawned each raid", 10);
 		elementalDistance = CommonConfig.createConfigInt(config, CATEGORY, "12.E04_elementalAttackDistance", "How far away elementals will spawn from the targeted player", 32);
+
+		pollutionMult = CommonConfig.createConfigDouble(config, CATEGORY, "12.R08_pollutionMult", "A multiplier for soot emitted, whether you want to increase or decrease it", 1);
 
 	}
 }

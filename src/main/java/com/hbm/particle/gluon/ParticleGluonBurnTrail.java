@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.hbm.items.weapon.ItemGunEgon;
 import com.hbm.main.ResourceManager;
-import com.hbm.render.RenderHelper;
+import com.hbm.render.NTMRenderHelper;
 import com.hbm.util.BobMathUtil;
 
 import net.minecraft.client.Minecraft;
@@ -104,7 +104,7 @@ public class ParticleGluonBurnTrail extends Particle {
 	
 	@Override
 	public void renderParticle(BufferBuilder buf, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-		RenderHelper.resetParticleInterpPos(entityIn, partialTicks);
+		NTMRenderHelper.resetParticleInterpPos(entityIn, partialTicks);
 		//GL11.glTranslated(-interpPosX, -interpPosY, -interpPosZ);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(ResourceManager.gluon_burn);
 		GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);

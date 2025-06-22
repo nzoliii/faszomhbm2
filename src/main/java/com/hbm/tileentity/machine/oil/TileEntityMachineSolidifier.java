@@ -1,20 +1,20 @@
 package com.hbm.tileentity.machine.oil;
 
-import api.hbm.energy.IEnergyUser;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.inventory.SolidificationRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerSolidifier;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.gui.GUISolidifier;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
-import com.hbm.util.Tuple.Pair;
-
+import com.hbm.util.Tuple;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -24,19 +24,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-
-public class TileEntityMachineSolidifier extends TileEntityMachineBase implements ITickable, IGUIProvider, IEnergyUser, IFluidHandler, ITankPacketAcceptor {
+public class TileEntityMachineSolidifier extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IFluidCopiable {
 
     public long power;
     public static final long maxPower = 100000;
@@ -46,12 +37,12 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
     public static final int processTimeBase = 100;
     public int processTime;
 
-    public FluidTank tank;
+    public FluidTankNTM tank;
     public UpgradeManager manager = new UpgradeManager();
 
     public TileEntityMachineSolidifier() {
-        super(4);
-        tank = new FluidTank(24_000);
+        super(5);
+        tank = new FluidTankNTM(Fluids.NONE, 24_000);
     }
 
     @Override
@@ -61,9 +52,10 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 
     @Override
     public void update() {
+        manager.eval(inventory, 2, 3);
         if(!world.isRemote) {
-            manager.eval(inventory, 2, 3);
             this.power = Library.chargeTEFromItems(inventory, 1, power, maxPower);
+            tank.setType(4, inventory);
 
             this.updateConnections();
             int speed = Math.min(manager.getLevel(ItemMachineUpgrade.UpgradeType.SPEED), 3);
@@ -77,21 +69,20 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
             else
                 this.progress = 0;
 
-            PacketDispatcher.wrapper.sendToAllTracking(new FluidTankPacket(pos.getX(), pos.getY(), pos.getZ(), new FluidTank[]{tank}), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 10));
-
             NBTTagCompound data = new NBTTagCompound();
             data.setLong("power", this.power);
             data.setInteger("progress", this.progress);
             data.setInteger("usage", this.usage);
             data.setInteger("processTime", this.processTime);
-            tank.writeToNBT(data);
+            tank.writeToNBT(data, "t");
             this.networkPack(data, 50);
         }
     }
 
     private void updateConnections() {
         for(DirPos pos : getConPos()) {
-            this.trySubscribe(world, pos.getPos(), pos.getDir());
+            this.trySubscribe(world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
+            this.trySubscribe(tank.getTankType(), world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
         }
     }
 
@@ -118,10 +109,10 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 
     public boolean canProcess() {
 
-        if(this.power < usage || tank.getFluid() == null)
+        if(this.power < usage)
             return false;
 
-        Pair<Integer, ItemStack> out = SolidificationRecipes.getOutput(tank.getFluid().getFluid());
+        Tuple.Pair<Integer, ItemStack> out = SolidificationRecipes.getOutput(tank.getTankType());
 
         if(out == null)
             return false;
@@ -129,7 +120,7 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
         int req = out.getKey();
         ItemStack stack = out.getValue();
 
-        if(req > tank.getFluidAmount())
+        if(req > tank.getFill())
             return false;
 
         if(!inventory.getStackInSlot(0).isEmpty()) {
@@ -140,7 +131,8 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
             if(inventory.getStackInSlot(0).getItemDamage() != stack.getItemDamage())
                 return false;
 
-            return inventory.getStackInSlot(0).getCount() + stack.getCount() <= inventory.getStackInSlot(0).getMaxStackSize();
+            if(inventory.getStackInSlot(0).getCount() + stack.getCount() > inventory.getStackInSlot(0).getMaxStackSize())
+                return false;
         }
 
         return true;
@@ -152,12 +144,12 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 
         progress++;
 
-        if(progress >= processTime && tank.getFluid() != null) {
+        if(progress >= processTime) {
 
-            Pair<Integer, ItemStack> out = SolidificationRecipes.getOutput(tank.getFluid().getFluid());
+            Tuple.Pair<Integer, ItemStack> out = SolidificationRecipes.getOutput(tank.getTankType());
             int req = out.getKey();
             ItemStack stack = out.getValue();
-            tank.drain(req, true);
+            tank.setFill(tank.getFill() - req);
 
             if(inventory.getStackInSlot(0).isEmpty()) {
                 inventory.setStackInSlot(0, stack.copy());
@@ -173,22 +165,24 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
 
     @Override
     public void networkUnpack(NBTTagCompound nbt) {
+        super.networkUnpack(nbt);
+
         this.power = nbt.getLong("power");
         this.progress = nbt.getInteger("progress");
         this.usage = nbt.getInteger("usage");
         this.processTime = nbt.getInteger("processTime");
-        tank.readFromNBT(nbt);
+        tank.readFromNBT(nbt, "t");
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        tank.readFromNBT(nbt);
+        tank.readFromNBT(nbt, "tank");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        tank.writeToNBT(nbt);
+        tank.writeToNBT(nbt, "tank");
         return super.writeToNBT(nbt);
     }
 
@@ -227,62 +221,19 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
     }
 
     @Override
-    public void recievePacket(NBTTagCompound[] tags) {
-        if(tags.length != 1) {
-            return;
-
-        }
-        tank.readFromNBT(tags[0]);
-    }
-
-    @Override
-    public IFluidTankProperties[] getTankProperties() {
-        return new IFluidTankProperties[]{tank.getTankProperties()[0]};
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        if(resource != null && resource.amount > 0 && (tank.getFluid() == null || tank.getFluid().getFluid() == resource.getFluid()) && SolidificationRecipes.hasRecipe(resource.getFluid())) {
-            return tank.fill(resource, doFill);
-        } else {
-            return 0;
-        }
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-        } else {
-            return super.getCapability(capability, facing);
-        }
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return true;
-        } else {
-            return super.hasCapability(capability, facing);
-        }
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public double getMaxRenderDistanceSquared() {
         return 65536.0D;
+    }
+
+    @Override
+    public FluidTankNTM[] getReceivingTanks() {
+        return new FluidTankNTM[] { tank };
+    }
+
+    @Override
+    public FluidTankNTM[] getAllTanks() {
+        return new FluidTankNTM[] { tank };
     }
 
     @Override
@@ -294,5 +245,10 @@ public class TileEntityMachineSolidifier extends TileEntityMachineBase implement
     @SideOnly(Side.CLIENT)
     public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return new GUISolidifier(player.inventory, this);
+    }
+
+    @Override
+    public FluidTankNTM getTankToPaste() {
+        return tank;
     }
 }

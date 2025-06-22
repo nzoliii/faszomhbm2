@@ -1,73 +1,136 @@
 package com.hbm.items;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import com.hbm.interfaces.IHasCustomMetaModels;
+import com.google.common.collect.ImmutableMap;
 import com.hbm.lib.RefStrings;
-import com.hbm.main.MainRegistry;
 import com.hbm.util.EnumUtil;
-
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.renderer.block.model.ModelRotation;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemEnumMulti extends Item implements IHasCustomMetaModels {
-	
-	//hell yes, now we're thinking with enums!
-	protected Class<? extends Enum> theEnum;
+import java.util.*;
 
-	public ItemEnumMulti(Class<? extends Enum> theEnum, String s) {
-		this.setHasSubtypes(true);
-		this.theEnum = theEnum;
+public class ItemEnumMulti extends ItemBase implements IDynamicModels {
 
-		this.setTranslationKey(s);
-		this.setRegistryName(s);
-		this.setMaxDamage(0);
-		ModItems.ALL_ITEMS.add(this);
-	}
+    public static final String ROOT_PATH = "items/";
+    protected final String[] textures;
+    //hell yes, now we're thinking with enums!
+    protected Class<? extends Enum> theEnum;
+    protected boolean multiName;
+    protected boolean multiTexture;
 
-	@Override
-	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
-		if (tab == this.getCreativeTab() || tab == CreativeTabs.SEARCH){
-			for (Enum e: theEnum.getEnumConstants()) {
-				list.add(new ItemStack(this, 1, e.ordinal()));
-			}
-		}
-	}
+    public ItemEnumMulti(String registryName, Class<? extends Enum> theEnum, boolean multiName, boolean multiTexture) {
+        super(registryName);
+        this.setHasSubtypes(true);
+        this.theEnum = theEnum;
+        this.multiName = multiName;
+        this.multiTexture = multiTexture;
+        INSTANCES.add(this);
+        this.textures = Arrays.stream(theEnum.getEnumConstants())
+                .sorted(Comparator.comparing(Enum::ordinal))
+                .map(Enum::name)
+                .map(name -> registryName + "." + name.toLowerCase(Locale.US))
+                .toArray(String[]::new);
+    }
 
-	@Override
-	public Set<Integer> getMetaValues(){
-		Set<Integer> meta = new HashSet<Integer>();
-		for (Enum e: theEnum.getEnumConstants()) {
-			meta.add(e.ordinal());
-		}
-		return meta;
-	}
 
-	@Override
-	public int getItemBurnTime(ItemStack itemStack) {
-		Enum type = theEnum.getEnumConstants()[itemStack.getItemDamage()];
-		if(type instanceof ItemEnums.IEnumFurnaceFuel fuel) return fuel.getBurnTime();
-		return 0;
-	}
+    @SideOnly(Side.CLIENT)
+    public void registerSprite(TextureMap map) {
+        for (String texture : textures) {
+            map.registerSprite(new ResourceLocation(RefStrings.MODID, ROOT_PATH + texture));
+        }
+    }
 
-	@Override
-	public ModelResourceLocation getResourceLocation(int meta) {
-		Enum type = theEnum.getEnumConstants()[meta];
-		return new ModelResourceLocation(RefStrings.MODID + ":"+this.getTranslationKey().substring(5)+"_" + type.toString().toLowerCase(), "inventory");
-	}
+    @SideOnly(Side.CLIENT)
+    public void registerModel() {
+        for (int i = 0; i < theEnum.getEnumConstants().length; i++) {
+            ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(new ResourceLocation(RefStrings.MODID, ROOT_PATH + textures[i]), "inventory"));
+        }
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public String getItemStackDisplayName(ItemStack stack) {
-		return (I18n.format(stack.getTranslationKey() + "_" + theEnum.getEnumConstants()[stack.getItemDamage()].toString().toLowerCase() + ".name")).trim();
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if (tab == this.getCreativeTab() || tab == CreativeTabs.SEARCH) {
+            for (int i = 0; i < theEnum.getEnumConstants().length; i++) {
+                items.add(new ItemStack(this, 1, i));
+            }
+        }
+    }
+
+
+    @SideOnly(Side.CLIENT)
+    public void bakeModel(ModelBakeEvent event) {
+        try {
+            IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation("minecraft", "item/generated"));
+            for (int i = 0; i < theEnum.getEnumConstants().length; i++) {
+                ResourceLocation spriteLoc = new ResourceLocation(RefStrings.MODID, ROOT_PATH + textures[i]);
+                IModel retexturedModel = baseModel.retexture(
+                        ImmutableMap.of(
+                                "layer0", spriteLoc.toString()
+                        )
+
+                );
+                IBakedModel bakedModel = retexturedModel.bake(ModelRotation.X0_Y0, DefaultVertexFormats.ITEM, ModelLoader.defaultTextureGetter());
+                ModelResourceLocation bakedModelLocation = new ModelResourceLocation(spriteLoc, "inventory");
+                event.getModelRegistry().putObject(bakedModelLocation, bakedModel);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Returns null when the wrong enum is passed. Only really used for recipes anyway so it's good.
+     */
+    public ItemStack stackFromEnum(int count, Enum num) {
+
+        if (num.getClass() != this.theEnum)
+            return ItemStack.EMPTY;
+
+        return new ItemStack(this, count, num.ordinal());
+    }
+
+    public ItemStack stackFromEnum(Enum num) {
+        return stackFromEnum(1, num);
+    }
+
+    public boolean isMultiTexture() {
+        return multiTexture;
+    }
+
+    public Class<? extends Enum> getTheEnum() {
+        return theEnum;
+    }
+
+    @Override
+    public Item setTranslationKey(String unlocalizedName) {
+        super.setTranslationKey(unlocalizedName);
+        return this;
+    }
+
+    @Override
+    public String getTranslationKey(ItemStack stack) {
+
+        if (multiName) {
+            Enum num = EnumUtil.grabEnumSafely(theEnum, stack.getItemDamage());
+            return super.getTranslationKey() + "." + num.name().toLowerCase(Locale.US);
+        } else {
+            return super.getTranslationKey(stack);
+        }
+    }
 }

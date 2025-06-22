@@ -27,7 +27,7 @@ public class CompatibilityConfig {
 	public static HashMap asbestosSpawn;
 	public static HashMap rareSpawn;
 	public static HashMap lithiumSpawn;
-	public static HashMap cinnebarSpawn;
+	public static HashMap cinnabarSpawn;
 	public static HashMap oilcoalSpawn;
 	public static HashMap gassshaleSpawn;
 	public static HashMap gasbubbleSpawn;
@@ -59,6 +59,10 @@ public class CompatibilityConfig {
 	public static HashMap endTixiteSpawn;
 
 	public static HashMap bedrockOilSpawn;
+
+	public static HashMap dunaOilSpawn;
+	public static HashMap laytheOilSpawn;
+	public static HashMap eveGasSpawn;
 	
 	public static HashMap radioStructure;
 	public static HashMap antennaStructure;
@@ -211,7 +215,7 @@ public class CompatibilityConfig {
 		gassshaleSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.17_gasShaleSpawnRate", "Amount of oil shale veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:5", "-6:5" }, ":");
 		explosivebubbleSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.18_explosiveBubbleSpawnRate", "Spawns an explosive gas bubble every nTH chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:80", "-6:80" }, ":");
 		gasbubbleSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.19_gasBubbleSpawnRate", "Spawns a gas bubble every nTH chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:40", "-6:40" }, ":");
-		cinnebarSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.20_cinnebarSpawnRate", "Amount of cinnebar ore veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:1", "-6:1" }, ":");
+		cinnabarSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.20_cinnabarSpawnRate", "Amount of cinnabar ore veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:1", "-6:1" }, ":");
 		cobaltSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.21_cobaltSpawnRate", "Amount of cobalt ore veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:2", "-6:2" }, ":");
 		
 		ironClusterSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.22_ironClusterSpawn", "Amount of iron cluster veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:4", "-6:4" }, ":");
@@ -229,7 +233,6 @@ public class CompatibilityConfig {
 		daffergonSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.30_daffergonSpawnRate", "Amount of daffergon ore veins per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-30:1" }, ":");
 		
 		bedrockOilSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "01.31_bedrockOilSpawnRate", "Spawn bedrock oil every nTH chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "0:200", "-6:200" }, ":");
-		
 		netherUraniumSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N00_uraniumSpawnrate", "Amount of nether uranium per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:8" }, ":");
 		netherTungstenSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N01_tungstenSpawnrate", "Amount of nether tungsten per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:10" }, ":");
 		netherSulfurSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N02_sulfurSpawnrate", "Amount of nether sulfur per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:26" }, ":");
@@ -237,7 +240,9 @@ public class CompatibilityConfig {
 		netherCoalSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N04_coalSpawnrate", "Amount of nether coal per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:24" }, ":");
 		netherPlutoniumSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N05_plutoniumSpawnrate", "Amount of nether plutonium per chunk, if enabled - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:8" }, ":");
 		netherCobaltSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "02.N06_cobaltSpawnrate", "Amount of nether cobalt per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "-1:2" }, ":");
-		
+		dunaOilSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "0.2S1_oilSpawnRate", "Spawns an oil bubble every nTH chunk (on Duna) - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "16:100" }, ":");
+		laytheOilSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "0.2S2_oilSpawnRate", "Spawns a DS oil bubble every nTH chunk (on Laythe) - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "22:100" }, ":");
+		eveGasSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "0.2S3_gasSpawnRate", "Spawns a natural gas bubble every nTH chunk (on Eve) - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "18:100" }, ":");
 		endTixiteSpawn = CommonConfig.createConfigHashMap(config, CATEGORY_DIMORE, "03.E01_tixiteSpawnrate", "Amount of end trixite per chunk - <dimID:amount> (Int:Int)", "Int", "Int", new String[]{ "1:8" }, ":");
 		
 

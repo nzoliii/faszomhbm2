@@ -29,7 +29,6 @@ import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.bullet_hit.EntityHitDataHandler;
 import com.hbm.potion.HbmPotion;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.BobMathUtil;
 
 import net.minecraft.block.Block;
@@ -469,7 +468,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 			this.setDead();
 
 		if(world.isRemote && !config.vPFX.isEmpty()) {
-			double motion = Math.min(Vec3.createVectorHelper(motionX, motionY, motionZ).length(), 0.1);
+			double motion = Math.min(new Vec3d(motionX, motionY, motionZ).length(), 0.1);
 
 			for (double d = 0; d < 1; d += 1 / motion) {
 
@@ -593,7 +592,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 		}
 
 		if (config.nuke > 0 && !world.isRemote) {
-			world.spawnEntity(EntityNukeExplosionMK5.statFac(world, config.nuke, posX, posY, posZ).mute());
+			world.spawnEntity(EntityNukeExplosionMK5.statFac(world, config.nuke, posX, posY, posZ));
 			
 			if(BombConfig.enableNukeClouds) {
 				if(MainRegistry.polaroidID == 11 || rand.nextInt(100) == 0){

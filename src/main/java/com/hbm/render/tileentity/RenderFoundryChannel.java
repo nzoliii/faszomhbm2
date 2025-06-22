@@ -5,7 +5,6 @@ import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityFoundryChannel;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -36,6 +35,15 @@ public class RenderFoundryChannel extends TileEntitySpecialRenderer<TileEntityFo
 
         Color color = new Color(tile.type.moltenColor).brighter();
 
+        if(color != null) {
+            double brightener = 0.7D;
+            int nr = (int) (255D - (255D - color.getRed()) * brightener);
+            int ng = (int) (255D - (255D - color.getGreen()) * brightener);
+            int nb = (int) (255D - (255D - color.getBlue()) * brightener);
+
+            color = new Color(nr, ng, nb);
+        }
+
         double level = tile.amount * 0.25D / tile.getCapacity();
 
         bindTexture(LAVA_TEXTURE);
@@ -48,7 +56,6 @@ public class RenderFoundryChannel extends TileEntitySpecialRenderer<TileEntityFo
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
 
         buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
 
@@ -69,7 +76,6 @@ public class RenderFoundryChannel extends TileEntitySpecialRenderer<TileEntityFo
 
         tessellator.draw();
 
-        GlStateManager.resetColor();
         GlStateManager.enableLighting();
         GlStateManager.popMatrix();
     }

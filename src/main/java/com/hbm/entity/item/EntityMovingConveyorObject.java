@@ -2,8 +2,6 @@ package com.hbm.entity.item;
 
 import api.hbm.block.IConveyorBelt;
 import api.hbm.block.IEnterableBlock;
-import com.hbm.lib.ForgeDirection;
-import com.hbm.lib.Library;
 import com.hbm.tileentity.network.TileEntityCraneBase;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -165,7 +163,7 @@ public abstract class EntityMovingConveyorObject extends Entity {
     }
 
     @SideOnly(Side.CLIENT)
-    public void setPositionAndRotation2(double x, double y, double z, float yaw, float pitch, int theNumberThree) {
+    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int theNumberThree) {
         this.syncPosX = x;
         this.syncPosY = y;
         this.syncPosZ = z;

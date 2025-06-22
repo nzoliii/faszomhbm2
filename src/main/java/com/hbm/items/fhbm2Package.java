@@ -16,7 +16,7 @@ import java.util.List;
 public class fhbm2Package extends Item {
 
     public fhbm2Package(String s) {
-        this.setUnlocalizedName(s);
+        this.setTranslationKey(s);
         this.setRegistryName(s);
         this.setCreativeTab(MainRegistry.weaponTab);
         ModItems.ALL_ITEMS.add(this);

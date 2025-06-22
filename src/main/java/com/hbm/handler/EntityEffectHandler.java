@@ -11,6 +11,7 @@ import com.hbm.capability.HbmLivingProps.ContaminationEffect;
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.RadiationConfig;
+import com.hbm.interfaces.Untested;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
@@ -27,7 +28,6 @@ import com.hbm.util.ContaminationUtil.HazardType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -47,7 +47,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class EntityEffectHandler {
 	public static void onUpdate(EntityLivingBase entity) {
-
+		
 		if(!entity.world.isRemote) {
 			
 			if(entity.ticksExisted % 20 == 0) {
@@ -68,6 +68,7 @@ public class EntityEffectHandler {
 		handleRadiation(entity);
 		handleDigamma(entity);
 		handleLungDisease(entity);
+		handleOil(entity);
 	}
 	
 	private static void handleContamination(EntityLivingBase entity) {
@@ -399,6 +400,34 @@ public class EntityEffectHandler {
 			}
 		}
 	}
+	@Untested
+	private static void handleOil(EntityLivingBase entity) {
+
+		if(entity.world.isRemote)
+			return;
+
+		int oil = HbmLivingProps.getOil(entity);
+
+		if(oil > 0) {
+
+			if(entity.isBurning()) {
+				HbmLivingProps.setOil(entity, 0);
+				entity.world.newExplosion(null, entity.posX, entity.posY + entity.height / 2, entity.posZ, 3F, false, true);
+			} else {
+				HbmLivingProps.setOil(entity, oil - 1);
+			}
+
+			if(entity.ticksExisted % 5 == 0) {
+				NBTTagCompound nbt = new NBTTagCompound();
+				nbt.setString("type", "sweat");
+				nbt.setInteger("count", 1);
+				nbt.setInteger("block", Block.getIdFromBlock(Blocks.COAL_BLOCK));
+				nbt.setInteger("entity", entity.getEntityId());
+				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(nbt, 0, 0, 0), new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 25));
+			}
+		}
+	}
+
 
 	private static boolean canVomit(Entity e) {
 		if(e.isCreatureType(EnumCreatureType.WATER_CREATURE, false)) return false;

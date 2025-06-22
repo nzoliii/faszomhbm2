@@ -1,39 +1,37 @@
 package com.hbm.inventory.gui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.RefStrings;
-import com.hbm.util.I18nUtil;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.RBMKColumn;
-
+import com.hbm.util.I18nUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GUIRBMKConsole extends GuiScreen {
 	
@@ -381,13 +379,13 @@ public class GUIRBMKConsole extends GuiScreen {
 
 				Fluid fluid = FluidRegistry.getFluid(col.data.getString("type"));
 				
-				if(fluid == ModForgeFluids.STEAM)
+				if(fluid == ModForgeFluids.steam)
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 1, 44, 183, 2, 2);
-				if(fluid == ModForgeFluids.HOTSTEAM)
+				if(fluid == ModForgeFluids.hotsteam)
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 3, 44, 185, 2, 2);
-				if(fluid == ModForgeFluids.SUPERHOTSTEAM)
+				if(fluid == ModForgeFluids.superhotsteam)
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 5, 44, 187, 2, 2);
-				if(fluid == ModForgeFluids.ULTRAHOTSTEAM)
+				if(fluid == ModForgeFluids.ultrahotsteam)
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 7, 44, 189, 2, 2);
 				
 				break;

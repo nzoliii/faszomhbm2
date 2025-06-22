@@ -7,7 +7,6 @@ import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.material.Mats.MaterialStack;
 import com.hbm.items.ModItems;
-import com.hbm.items.tool.ItemTooling;
 import com.hbm.items.machine.ItemScraps;
 import com.hbm.lib.RefStrings;
 import com.hbm.lib.ForgeDirection;
@@ -124,31 +123,18 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	 	}
 
 	 	if(!player.isSneaking()) {
-	 		if(player.getHeldItem(hand).getItem() instanceof ItemTooling){
-	            ItemTooling tool = (ItemTooling)player.getHeldItem(hand).getItem();
-	            if(tool.getType() == ToolType.SCREWDRIVER || tool.getType() == ToolType.HAND_DRILL)
-	                return false;
-	        }
-
 	 		TileEntityFoundryOutlet tile = (TileEntityFoundryOutlet) world.getTileEntity(pos);
-			boolean didSomething = false;
-
-	 		if (player.getHeldItem(hand).isEmpty()) {
-	 			tile.invertRedstone = !tile.invertRedstone;
-	 			didSomething = true;
-	 			
-	 		} else if (player.getHeldItem(hand).getItem() == ModItems.scraps){
+			
+	 		if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() == ModItems.scraps) {
 	 			MaterialStack mat = ItemScraps.getMats(player.getHeldItem(hand));
 	 			if(mat != null) {
 	 				tile.filter = mat.material;
-	 				didSomething = true;
 	 			}
+	 		} else {
+	 			tile.invertRedstone = !tile.invertRedstone;
 	 		}
-
-	 		if (didSomething){
-		 		tile.markDirty();
-		 		world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 2);
-		 	}
+	 		tile.markDirty();
+	 		world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 2);
 	 	}
 		
 	 	return true;
@@ -156,22 +142,22 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 
 	@Override
     public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, EnumFacing side, float fX, float fY, float fZ, EnumHand hand, ToolType tool) {
-		if(tool == ToolType.SCREWDRIVER || tool == ToolType.HAND_DRILL) {
+    	
+		if(tool == ToolType.SCREWDRIVER) {
 			if(world.isRemote) return true;
-			BlockPos pos = new BlockPos(x, y, z);
-			TileEntityFoundryOutlet tile = (TileEntityFoundryOutlet) world.getTileEntity(pos);
 
-			if(tool == ToolType.SCREWDRIVER) {
-				tile.filter = null;
-				tile.invertFilter = false;
-			} else if(tool == ToolType.HAND_DRILL) {
-				tile.invertFilter = !tile.invertFilter;
-			}
+			TileEntityFoundryOutlet tile = (TileEntityFoundryOutlet) world.getTileEntity(new BlockPos(x, y, z));
+			tile.filter = null;
+			tile.invertFilter = false;
 			tile.markDirty();
-			IBlockState state = world.getBlockState(pos);
-			world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 2);
-			player.swingArm(hand);
-			return true;
+		}
+		
+		if(tool == ToolType.HAND_DRILL) {
+			if(world.isRemote) return true;
+
+			TileEntityFoundryOutlet tile = (TileEntityFoundryOutlet) world.getTileEntity(new BlockPos(x, y, z));
+			tile.invertFilter = !tile.invertFilter;
+			tile.markDirty();
 		}
 		
 		return false;

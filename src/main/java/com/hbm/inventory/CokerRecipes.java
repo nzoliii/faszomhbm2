@@ -1,105 +1,153 @@
 package com.hbm.inventory;
 
-import com.hbm.forgefluid.ModForgeFluids;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+import com.hbm.inventory.fluid.FluidStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.trait.FT_Combustible;
+import com.hbm.inventory.fluid.trait.FT_Flammable;
 import com.hbm.items.ItemEnums;
 import com.hbm.items.ModItems;
-import com.hbm.util.Tuple.Triplet;
+import com.hbm.items.machine.ItemFluidIcon;
+import com.hbm.util.Tuple;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
-public class CokerRecipes {
+import static com.hbm.inventory.fluid.Fluids.*;
 
-    public static HashMap<Fluid, Triplet<Integer, ItemStack, FluidStack>> recipes = new HashMap();
+public class CokerRecipes extends SerializableRecipe {
 
-    public static void registerDefaults() {
+    private static HashMap<FluidType, Tuple.Triplet<Integer, ItemStack, FluidStack>> recipes = new HashMap();
 
-        registerAuto(ModForgeFluids.HEAVYOIL,				ModForgeFluids.OIL_COKER);
-        registerAuto(ModForgeFluids.HEAVYOIL_VACUUM,		ModForgeFluids.REFORMATE);
-        registerAuto(ModForgeFluids.COALCREOSOTE,			ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.SMEAR,					ModForgeFluids.OIL_COKER);
-        registerAuto(ModForgeFluids.HEATINGOIL,			    ModForgeFluids.OIL_COKER);
-        registerAuto(ModForgeFluids.HEATINGOIL_VACUUM,	    ModForgeFluids.OIL_COKER);
-        registerAuto(ModForgeFluids.RECLAIMED,			    ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.NAPHTHA,				ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.NAPHTHA_DS,			    ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.NAPHTHA_CRACK,		    ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.DIESEL,				    ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.DIESEL_REFORM,		    ModForgeFluids.NAPHTHA_COKER);
-        registerAuto(ModForgeFluids.DIESEL_CRACK,			ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.DIESEL_CRACK_REFORM,	ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.LIGHTOIL,				ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.LIGHTOIL_DS,			ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.LIGHTOIL_CRACK,		    ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.LIGHTOIL_VACUUM,		ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.BIOFUEL,				ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.AROMATICS,				ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.REFORMATE,				ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.XYLENE,				ModForgeFluids.GAS_COKER);
-        registerAuto(ModForgeFluids.FISHOIL,				ModForgeFluids.MERCURY);
-        registerAuto(ModForgeFluids.SUNFLOWEROIL,			ModForgeFluids.GAS_COKER);
+    @Override
+    public void registerDefaults() {
 
-        registerSFAuto(ModForgeFluids.WOODOIL, 340_000L, new ItemStack(Items.COAL, 1, 1), ModForgeFluids.GAS_COKER);
+        registerAuto(HEAVYOIL,				OIL_COKER);
+        registerAuto(HEAVYOIL_VACUUM,		REFORMATE);
+        registerAuto(COALCREOSOTE,			NAPHTHA_COKER);
+        registerAuto(SMEAR,					OIL_COKER);
+        registerAuto(HEATINGOIL,			OIL_COKER);
+        registerAuto(HEATINGOIL_VACUUM,		OIL_COKER);
+        registerAuto(RECLAIMED,				NAPHTHA_COKER);
+        registerAuto(NAPHTHA,				NAPHTHA_COKER);
+        registerAuto(NAPHTHA_DS,			NAPHTHA_COKER);
+        registerAuto(NAPHTHA_CRACK,			NAPHTHA_COKER);
+        registerAuto(DIESEL,				NAPHTHA_COKER);
+        registerAuto(DIESEL_REFORM,			NAPHTHA_COKER);
+        registerAuto(DIESEL_CRACK,			GAS_COKER);
+        registerAuto(DIESEL_CRACK_REFORM,	GAS_COKER);
+        registerAuto(LIGHTOIL,				GAS_COKER);
+        registerAuto(LIGHTOIL_DS,			GAS_COKER);
+        registerAuto(LIGHTOIL_CRACK,		GAS_COKER);
+        registerAuto(LIGHTOIL_VACUUM,		GAS_COKER);
+        registerAuto(BIOFUEL,				GAS_COKER);
+        registerAuto(AROMATICS,				GAS_COKER);
+        registerAuto(REFORMATE,				GAS_COKER);
+        registerAuto(XYLENE,				GAS_COKER);
+        registerAuto(FISHOIL,				MERCURY);
+        registerAuto(SUNFLOWEROIL,			GAS_COKER);
 
-//        registerRecipe(REDMUD, 1_000, new ItemStack(Items.IRON_INGOT, 1), new FluidStack(MERCURY, 50));
-        registerRecipe(ModForgeFluids.BITUMEN, 16_000, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), new FluidStack(ModForgeFluids.OIL_COKER, 1_600));
-        registerRecipe(ModForgeFluids.LUBRICANT, 12_000, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), new FluidStack(ModForgeFluids.OIL_COKER, 1_200));
-        //only cookable gas to extract sulfur content
-        registerRecipe(ModForgeFluids.SOURGAS, 1_000, new ItemStack(ModItems.sulfur), new FluidStack(ModForgeFluids.GAS_COKER, 150));
-//        registerRecipe(VITRIOL, 4000, new ItemStack(ModItems.powder_iron), new FluidStack(SULFURIC_ACID, 500));
+        registerSFAuto(WOODOIL, 340_000L, new ItemStack(Items.COAL, 1, 1), GAS_COKER);
+
+        registerRecipe(REDMUD, 1_000, new ItemStack(Items.IRON_INGOT, 1), new FluidStack(MERCURY, 50));
+        registerRecipe(BITUMEN, 16_000, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), new FluidStack(OIL_COKER, 1_600));
+        registerRecipe(LUBRICANT, 12_000, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), new FluidStack(OIL_COKER, 1_200));
+        //only cokable gas to extract sulfur content
+        registerRecipe(SOURGAS, 1_000, new ItemStack(ModItems.sulfur), new FluidStack(GAS_COKER, 150));
+        registerRecipe(VITRIOL, 4000, new ItemStack(ModItems.powder_iron), new FluidStack(SULFURIC_ACID, 500));
     }
 
-    private static void registerAuto(Fluid fluid, Fluid outputFluid) {
-        registerSFAuto(fluid, 820_000L, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), outputFluid); //3200 burntime * 1.25 burntime bonus * 200 TU/t + 20000TU per operation
+    private static void registerAuto(FluidType fluid, FluidType type) {
+        registerSFAuto(fluid, 820_000L, OreDictManager.DictFrame.fromOne(ModItems.coke, ItemEnums.EnumCokeType.PETROLEUM), type); //3200 burntime * 1.25 burntime bonus * 200 TU/t + 20000TU per operation
     }
-    private static void registerSFAuto(Fluid fluid, long tuPerSF, ItemStack fuel, Fluid outputFluid) {
-        long tuFlammable = FluidFlameRecipes.getHeatEnergy(fluid) * 1000L;
-        long tuCombustible = FluidCombustionRecipes.getCombustionEnergy(fluid);
+    private static void registerSFAuto(FluidType fluid, long tuPerSF, ItemStack fuel, FluidType type) {
+        long tuFlammable = fluid.hasTrait(FT_Flammable.class) ? fluid.getTrait(FT_Flammable.class).getHeatEnergy() : 0;
+        long tuCombustible = fluid.hasTrait(FT_Combustible.class) ? fluid.getTrait(FT_Combustible.class).getCombustionEnergy() : 0;
 
-        double tuPerBucket = Math.max(tuFlammable, tuCombustible);
+        long tuPerBucket = Math.max(tuFlammable, tuCombustible);
 
-        int mB = (int) ( 1000 * tuPerSF / tuPerBucket);
+        double penalty = 1;//1.1D; //no penalty
+
+        int mB = (int) (tuPerSF * 1000L * penalty / tuPerBucket);
 
         if(mB > 10_000) mB -= (mB % 1000);
         else if(mB > 1_000) mB -= (mB % 100);
         else if(mB > 100) mB -= (mB % 10);
 
-        FluidStack byproduct = outputFluid == null ? null : new FluidStack(outputFluid, Math.max(10, mB / 10));
-
-        if(mB > 16000) return;
+        FluidStack byproduct = type == null ? null : new FluidStack(type, Math.max(10, mB / 10));
 
         registerRecipe(fluid, mB, fuel, byproduct);
     }
-
-    private static void registerRecipe(Fluid fluid, int quantity, ItemStack output, FluidStack byproduct) {
-
-        recipes.put(fluid, new Triplet<Integer, ItemStack, FluidStack>(quantity, output, byproduct));
+    private static void registerRecipe(FluidType type, int quantity, ItemStack output, FluidStack byproduct) {
+        recipes.put(type, new Tuple.Triplet(quantity, output, byproduct));
     }
 
-    public static Triplet<Integer, ItemStack, FluidStack> getOutput(Fluid type) {
+    public static Tuple.Triplet<Integer, ItemStack, FluidStack> getOutput(FluidType type) {
         return recipes.get(type);
     }
 
-//    public static HashMap<ItemStack, ItemStack[]> getRecipes() {
-//
-//        HashMap<ItemStack, ItemStack[]> recipes = new HashMap<ItemStack, ItemStack[]>();
-//
-//        for(Map.Entry<FluidType, Tuple.Triplet<Integer, ItemStack, FluidStack>> entry : CokerRecipes.recipes.entrySet()) {
-//
-//            FluidType type = entry.getKey();
-//            int amount = entry.getValue().getX();
-//            ItemStack out = entry.getValue().getY().copy();
-//            FluidStack byproduct = entry.getValue().getZ();
-//
-//
-//            if(out != null && byproduct != null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {out, ItemFluidIcon.make(byproduct)});
-//            if(out != null && byproduct == null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {out});
-//            if(out == null && byproduct != null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {ItemFluidIcon.make(byproduct)});
-//        }
-//
-//        return recipes;
-//    }
+    public static HashMap<ItemStack, ItemStack[]> getRecipes() {
+
+        HashMap<ItemStack, ItemStack[]> recipes = new HashMap<ItemStack, ItemStack[]>();
+
+        for(Map.Entry<FluidType, Tuple.Triplet<Integer, ItemStack, FluidStack>> entry : CokerRecipes.recipes.entrySet()) {
+
+            FluidType type = entry.getKey();
+            int amount = entry.getValue().getX();
+            ItemStack out = entry.getValue().getY().copy();
+            FluidStack byproduct = entry.getValue().getZ();
+
+
+            if(out != null && byproduct != null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {out, ItemFluidIcon.make(byproduct)});
+            if(out != null && byproduct == null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {out});
+            if(out == null && byproduct != null) recipes.put(ItemFluidIcon.make(type, amount), new ItemStack[] {ItemFluidIcon.make(byproduct)});
+        }
+
+        return recipes;
+    }
+
+    @Override
+    public String getFileName() {
+        return "hbmCoker.json";
+    }
+
+    @Override
+    public Object getRecipeObject() {
+        return recipes;
+    }
+
+    @Override
+    public void deleteRecipes() {
+        recipes.clear();
+    }
+
+    @Override
+    public void readRecipe(JsonElement recipe) {
+        JsonObject obj = (JsonObject) recipe;
+        FluidStack in = this.readFluidStack(obj.get("input").getAsJsonArray());
+        ItemStack out = obj.has("output") ? this.readItemStack(obj.get("output").getAsJsonArray()) : null;
+        FluidStack byproduct = obj.has("byproduct") ? this.readFluidStack(obj.get("byproduct").getAsJsonArray()) : null;
+        recipes.put(in.type, new Tuple.Triplet(in.fill, out, byproduct));
+    }
+
+    @Override
+    public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
+        Map.Entry<FluidType, Tuple.Triplet<Integer, ItemStack, FluidStack>> rec = (Map.Entry<FluidType, Tuple.Triplet<Integer, ItemStack, FluidStack>>) recipe;
+        FluidStack in = new FluidStack(rec.getKey(), rec.getValue().getX());
+        writer.name("input");
+        this.writeFluidStack(in, writer);
+        if(rec.getValue().getY() != null) {
+            writer.name("output");
+            this.writeItemStack(rec.getValue().getY(), writer);
+        }
+        if(rec.getValue().getZ() != null) {
+            writer.name("byproduct");
+            this.writeFluidStack(rec.getValue().getZ(), writer);
+        }
+    }
 }

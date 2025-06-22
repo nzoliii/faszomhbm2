@@ -1,10 +1,8 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.container.ContainerSolidifier;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.oil.TileEntityMachineSolidifier;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -28,10 +26,8 @@ public class GUISolidifier extends GuiInfoContainer {
     public void drawScreen(int mouseX, int mouseY, float f) {
         super.drawScreen(mouseX, mouseY, f);
 
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 35, guiTop + 35, 16, 52, solidifier.tank);
-        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 17, 16, 52, solidifier.power, TileEntityMachineSolidifier.maxPower);
-        
-        super.renderHoveredToolTip(mouseX, mouseY);
+        solidifier.tank.renderTankInfo(this, mouseX, mouseY, guiLeft + 35, guiTop + 36, 16, 52);
+        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 18, 16, 52, solidifier.power, solidifier.maxPower);
     }
 
     @Override
@@ -45,7 +41,7 @@ public class GUISolidifier extends GuiInfoContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
-        super.drawDefaultBackground();
+        this.drawDefaultBackground();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
@@ -59,6 +55,6 @@ public class GUISolidifier extends GuiInfoContainer {
         if(i > 0)
             drawTexturedModalRect(guiLeft + 138, guiTop + 4, 176, 52, 9, 12);
 
-        FFUtils.drawLiquid(solidifier.tank, guiLeft, guiTop, this.zLevel, 16, 52, 35, 116);
+        solidifier.tank.renderTank(guiLeft + 35, guiTop + 88, this.zLevel, 16, 52);
     }
 }

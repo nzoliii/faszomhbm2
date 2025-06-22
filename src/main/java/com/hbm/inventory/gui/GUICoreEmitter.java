@@ -1,11 +1,5 @@
 package com.hbm.inventory.gui;
 
-import java.io.IOException;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerCoreEmitter;
@@ -14,7 +8,6 @@ import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.TileEntityCoreEmitter;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiTextField;
@@ -23,6 +16,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 public class GUICoreEmitter extends GuiInfoContainer {
 
@@ -64,7 +62,7 @@ public class GUICoreEmitter extends GuiInfoContainer {
 		String[] output = new String[] { "Output: " + Library.getShortNumber(emitter.prev) + "SPK" };
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 79, guiTop + 14, 8, 39, mouseX, mouseY, output);
 
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 13, guiTop + 20, 16, 52, emitter.tank, ModForgeFluids.CRYOGEL);
+		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 13, guiTop + 20, 16, 52, emitter.tank, ModForgeFluids.cryogel);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 49, guiTop + 20, 16, 52, emitter.power, TileEntityCoreEmitter.maxPower);
 		super.renderHoveredToolTip(mouseX, mouseY);
 	}

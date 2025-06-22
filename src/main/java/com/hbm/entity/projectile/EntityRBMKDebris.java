@@ -5,7 +5,6 @@ import java.util.List;
 import com.hbm.items.ModItems;
 import com.hbm.potion.HbmPotion;
 import com.hbm.util.ContaminationUtil;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.machine.rbmk.RBMKDials;
 
 import net.minecraft.block.state.IBlockState;
@@ -23,10 +22,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ReportedException;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -129,9 +125,9 @@ public class EntityRBMKDebris extends Entity {
 		if(!world.isRemote) {
 			if(motionY > 0) {
 
-				Vec3 pos = Vec3.createVectorHelper(posX, posY, posZ);
-				Vec3 next = Vec3.createVectorHelper(posX + motionX * 2, posY + motionY * 2, posZ + motionZ * 2);
-				RayTraceResult mop = world.rayTraceBlocks(pos.toVec3d(), next.toVec3d(), false, false, false);
+				Vec3d pos = new Vec3d(posX, posY, posZ);
+				Vec3d next = new Vec3d(posX + motionX * 2, posY + motionY * 2, posZ + motionZ * 2);
+				RayTraceResult mop = world.rayTraceBlocks(pos, next, false, false, false);
 
 				if(mop != null && mop.typeOfHit == Type.BLOCK) {
 

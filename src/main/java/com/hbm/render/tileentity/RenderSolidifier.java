@@ -1,11 +1,8 @@
 package com.hbm.render.tileentity;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.main.ResourceManager;
 import com.hbm.tileentity.machine.oil.TileEntityMachineSolidifier;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
@@ -34,16 +31,17 @@ public class RenderSolidifier extends TileEntitySpecialRenderer<TileEntityMachin
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
 
-        if(liq.tank.getFluidAmount() > 0 && liq.tank.getFluid() != null) {
-            FFUtils.setRGBFromHex(ModForgeFluids.getFluidColor(liq.tank.getFluid().getFluid()));
-            double height = (double)liq.tank.getFluidAmount() / (double)liq.tank.getCapacity();
+        if(liq.tank.getFill() > 0) {
+            int color = liq.tank.getTankType().getColor();
+            GL11.glColor3ub((byte) ((color & 0xFF0000) >> 16), (byte) ((color & 0x00FF00) >> 8), (byte) ((color & 0x0000FF) >> 0));
+
+            double height = (double)liq.tank.getFill() / (double)liq.tank.getMaxFill();
             GL11.glPushMatrix();
             GL11.glTranslated(0, 1.25, 0);
             GL11.glScaled(1, height, 1);
             GL11.glTranslated(0, -1.25, 0);
             ResourceManager.solidifier.renderPart("Fluid");
             GL11.glPopMatrix();
-            GlStateManager.color(1, 1, 1, 1);
         }
 
         GL11.glEnable(GL11.GL_BLEND);

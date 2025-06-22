@@ -1,46 +1,37 @@
 package com.hbm.tileentity.machine.oil;
 
-import api.hbm.energy.IEnergyUser;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluid.IFluidStandardSender;
+import com.hbm.interfaces.IFluidAcceptor;
+import com.hbm.interfaces.IFluidSource;
 import com.hbm.inventory.LiquefactionRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerLiquefactor;
+import com.hbm.inventory.fluid.FluidStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.gui.GUILiquefactor;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
-
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityMachineLiquefactor extends TileEntityMachineBase implements ITickable, IGUIProvider, IEnergyUser, IFluidHandler, ITankPacketAcceptor {
+public class TileEntityMachineLiquefactor extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidSource, IFluidStandardSender, IGUIProvider, ITickable {
 
     public long power;
     public static final long maxPower = 100000;
@@ -51,14 +42,13 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
     public boolean needsUpdate = false;
     public int processTime;
 
-    public Fluid fluidType = null;
-    public FluidTank tank;
+    public FluidTankNTM tank;
 
     private final UpgradeManager upgradeManager = new UpgradeManager();
 
     public TileEntityMachineLiquefactor() {
         super(4);
-        tank = new FluidTank(24000);
+        tank = new FluidTankNTM(Fluids.NONE, 24000, 0);
     }
 
     @Override
@@ -71,6 +61,7 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
 
         if(!world.isRemote) {
             this.power = Library.chargeTEFromItems(inventory, 1, power, maxPower);
+            tank.updateTank(this);
 
             this.updateConnections();
 
@@ -87,30 +78,29 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
                 this.progress = 0;
 
             if(world.getTotalWorldTime() % 10 == 0) {
-                sendFluid();
+                this.fillFluidInit(tank.getTankType());
             }
 
+            this.sendFluid();
+
             NBTTagCompound data = new NBTTagCompound();
-            if(fluidType != null) data.setString("fluidType", fluidType.getName());
             data.setLong("power", this.power);
             data.setInteger("progress", this.progress);
             data.setInteger("usage", this.usage);
             data.setInteger("processTime", this.processTime);
-            tank.writeToNBT(data);
             this.networkPack(data, 50);
         }
     }
 
     private void updateConnections() {
         for(DirPos pos : getConPos()) {
-            this.trySubscribe(world, pos.getPos(), pos.getDir());
+            this.trySubscribe(world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
         }
     }
 
     private void sendFluid() {
         for(DirPos pos : getConPos()) {
-            if(tank.getFluidAmount() > 0)
-                FFUtils.fillFluid(this, tank, world, pos.getPos(), 8000);
+            this.sendFluid(tank, world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
         }
     }
 
@@ -123,6 +113,11 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
                 new DirPos(pos.getX(), pos.getY() + 1, pos.getZ() + 2, Library.POS_Z),
                 new DirPos(pos.getX(), pos.getY() + 1, pos.getZ() - 2, Library.NEG_Z)
         };
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack itemStack) {
+        return i == 0 && LiquefactionRecipes.getOutput(itemStack) != null;
     }
 
     public boolean canProcess() {
@@ -138,11 +133,13 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
         if(out == null)
             return false;
 
-        if(tank.getFluidAmount() > 0 && tank.getFluid() != null && out.getFluid() != tank.getFluid().getFluid())
+        if(out.type != tank.getTankType() && tank.getFill() > 0)
             return false;
-        fluidType = out.getFluid();
 
-        return out.amount + tank.getFluidAmount() <= tank.getCapacity();
+        if(out.fill + tank.getFill() > tank.getMaxFill())
+            return false;
+
+        return true;
     }
 
     public void process() {
@@ -154,10 +151,9 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
         if(progress >= processTime) {
 
             FluidStack out = LiquefactionRecipes.getOutput(inventory.getStackInSlot(0));
-            tank.fill(out.copy(), true);
-            inventory.getStackInSlot(0).shrink(1);
-            if(inventory.getStackInSlot(0).isEmpty())
-                inventory.setStackInSlot(0, ItemStack.EMPTY);
+            tank.setTankType(out.type);
+            tank.setFill(tank.getFill() + out.fill);
+            this.inventory.getStackInSlot(0).shrink(1);
 
             progress = 0;
 
@@ -166,67 +162,26 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
     }
 
     @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        if (resource == null || !resource.isFluidEqual(tank.getFluid())) {
-            return null;
-        }
-        return tank.drain(resource.amount, doDrain);
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        return tank.drain(maxDrain, doDrain);
-    }
-
-    @Override
-    public void recievePacket(NBTTagCompound[] tags) {
-        if(tags.length != 1) {
-            return;
-        }
-        tank.readFromNBT(tags[0]);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemStack) {
-        return i == 0 && LiquefactionRecipes.getOutput(itemStack) != null;
-    }
-
-    @Override
-    public boolean canExtractItem(int i, ItemStack itemStack, int j) {
-        return LiquefactionRecipes.getOutput(itemStack) == null;
-    }
-
-    @Override
     public void networkUnpack(NBTTagCompound nbt) {
+        super.networkUnpack(nbt);
+
         this.power = nbt.getLong("power");
         this.progress = nbt.getInteger("progress");
         this.usage = nbt.getInteger("usage");
         this.processTime = nbt.getInteger("processTime");
-        if(nbt.hasKey("fluidType"))
-           this.fluidType  = FluidRegistry.getFluid(nbt.getString("fluidType"));
-        tank.readFromNBT(nbt);
-    }
-
-    @Override
-    public IFluidTankProperties[] getTankProperties() {
-        return new IFluidTankProperties[] { tank.getTankProperties()[0] };
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        this.tank.readFromNBT(nbt.getCompoundTag("tank"));
+        tank.readFromNBT(nbt, "tank");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
-        return super.writeToNBT(nbt);
+        super.writeToNBT(nbt);
+        tank.writeToNBT(nbt, "tank");
+        return nbt;
     }
 
     @Override
@@ -242,6 +197,59 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
     @Override
     public long getMaxPower() {
         return maxPower;
+    }
+
+    @Override
+    public void setFillForSync(int fill, int index) {
+        tank.setFill(fill);
+    }
+
+    @Override
+    public void setFluidFill(int fill, FluidType type) {
+        if(type == tank.getTankType())
+            tank.setFill(fill);
+    }
+
+    @Override
+    public void setTypeForSync(FluidType type, int index) {
+        tank.setTankType(type);
+    }
+
+    @Override
+    public int getFluidFill(FluidType type) {
+        return type == tank.getTankType() ? tank.getFill() : 0;
+    }
+
+    @Override
+    public void fillFluidInit(FluidType type) {
+        fillFluid(pos.getX(), pos.getY() - 1, pos.getZ(), getTact(), type);
+        fillFluid(pos.getX(), pos.getY() + 4, pos.getZ(), getTact(), type);
+        fillFluid(pos.getX() + 2, pos.getY() + 1, pos.getZ(), getTact(), type);
+        fillFluid(pos.getX() - 2, pos.getY() + 1, pos.getZ(), getTact(), type);
+        fillFluid(pos.getX(), pos.getY() + 1, pos.getZ() + 2, getTact(), type);
+        fillFluid(pos.getX(), pos.getY() + 1, pos.getZ() - 2, getTact(), type);
+    }
+
+    @Override
+    public void fillFluid(int x, int y, int z, boolean newTact, FluidType type) {
+        Library.transmitFluid(x, y, z, newTact, this, world, type);
+    }
+
+    @Override
+    public boolean getTact() {
+        return world.getTotalWorldTime() % 20 < 10;
+    }
+
+    private List<IFluidAcceptor> consumers = new ArrayList();
+
+    @Override
+    public List<IFluidAcceptor> getFluidList(FluidType type) {
+        return consumers;
+    }
+
+    @Override
+    public void clearFluidList(FluidType type) {
+        consumers.clear();
     }
 
     AxisAlignedBB bb = null;
@@ -269,6 +277,16 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
         return 65536.0D;
     }
 
+    @Override
+    public FluidTankNTM[] getSendingTanks() {
+        return new FluidTankNTM[] { tank };
+    }
+
+    @Override
+    public FluidTankNTM[] getAllTanks() {
+        return new FluidTankNTM[] { tank };
+    }
+
 
     @Override
     public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -279,23 +297,5 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
     @SideOnly(Side.CLIENT)
     public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return new GUILiquefactor(player.inventory, this);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-        } else {
-            return super.getCapability(capability, facing);
-        }
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-            return true;
-        } else {
-            return super.hasCapability(capability, facing);
-        }
     }
 }

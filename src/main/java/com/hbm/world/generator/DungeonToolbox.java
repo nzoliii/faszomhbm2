@@ -3,13 +3,16 @@ package com.hbm.world.generator;
 import java.util.List;
 import java.util.Random;
 
+import com.hbm.blocks.generic.BlockPlantEnumMeta;
 import com.hbm.render.amlfrom1710.Vec3;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenFlowers;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
 public class DungeonToolbox {
@@ -86,5 +89,32 @@ public class DungeonToolbox {
 			}
 		}
 	}
-	
+
+//	public static void generateFlowers(World world, Random rand, int chunkX, int chunkZ, IBlockState flowerState){
+//		int x = chunkX + rand.nextInt(16);
+//		int z = chunkZ + rand.nextInt(16);
+//		int y = world.getHeight(new BlockPos(x, 0, z)).getY();
+//		BlockPos pos = new BlockPos(x, y, z);
+//
+//		new WorldGenNTMPlant(flowerState).generate(world, rand, pos);
+//	}
+	private static final WorldGenFlowers dummyGen = new WorldGenFlowers(Blocks.RED_FLOWER, BlockFlower.EnumFlowerType.ALLIUM); // Unused dummy to extend class
+
+	public static void generateFlowers(World world, Random rand, int chunkX, int chunkZ, IBlockState state) {
+		int x = chunkX + rand.nextInt(16);
+		int z = chunkZ + rand.nextInt(16);
+		BlockPos pos = new BlockPos(x, world.getHeight(x, z), z);
+
+		// Only place if air and plant can stay (if applicable)
+		if (world.isAirBlock(pos)) {
+			boolean canStay = !(state.getBlock() instanceof BlockPlantEnumMeta)
+					|| ((BlockPlantEnumMeta) state.getBlock()).canBlockStay(world, pos, state);
+
+			if (canStay) {
+				world.setBlockState(pos, state, 2);
+			}
+		}
+	}
+
+
 }

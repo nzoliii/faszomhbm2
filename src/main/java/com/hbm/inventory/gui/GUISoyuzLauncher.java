@@ -1,9 +1,5 @@
 package com.hbm.inventory.gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerSoyuzLauncher;
@@ -11,7 +7,6 @@ import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.machine.TileEntitySoyuzLauncher;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,6 +14,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 public class GUISoyuzLauncher extends GuiInfoContainer {
 
@@ -37,8 +35,8 @@ public class GUISoyuzLauncher extends GuiInfoContainer {
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 36, 16, 52, launcher.tanks[0], ModForgeFluids.KEROSENE);
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 36, 16, 52, launcher.tanks[1], ModForgeFluids.OXYGEN);
+		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 36, 16, 52, launcher.tanks[0], ModForgeFluids.kerosene);
+		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 36, 16, 52, launcher.tanks[1], ModForgeFluids.oxygen);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 49, guiTop + 72, 6, 34, launcher.power, TileEntitySoyuzLauncher.maxPower);
 
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 43, guiTop + 17, 18, 18, mouseX, mouseY, new String[]{"The Soyuz goes here"} );

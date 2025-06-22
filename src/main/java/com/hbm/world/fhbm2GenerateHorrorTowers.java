@@ -15,13 +15,13 @@ import java.util.Random;
 public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
 
     private static final int STRUCTURE_SIZE = 18;
-    private static final String FIRST_TOWER = "digamma_tower";
-    private static final String SECOND_TOWER = "horror_tower";
+    private static final String DIGAMMA_TOWER = "digamma_tower";
     private static final int BASE_SPAWN_CHANCE = 1;
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, net.minecraft.world.gen.IChunkGenerator chunkGenerator, net.minecraft.world.chunk.IChunkProvider chunkProvider) {
         if (world.provider.getDimension() != 0) return;
+        if (world.getWorldType() == WorldType.FLAT) return;
 
         int spawnChance = BASE_SPAWN_CHANCE;
 
@@ -32,7 +32,7 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
 
         if (isFlatAndClear(world, origin, STRUCTURE_SIZE)) {
             if (random.nextInt(100) < spawnChance) {
-                this.spawnStructure(world, origin);
+                spawnStructure(world, origin);
             }
         }
     }
@@ -57,12 +57,8 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
     }
 
     private void spawnStructure(World world, BlockPos pos) {
-        Random random = new Random();
-
-        String structureToSpawn = random.nextBoolean() ? FIRST_TOWER : SECOND_TOWER;
-
         Template template = world.getSaveHandler().getStructureTemplateManager()
-                .getTemplate(world.getMinecraftServer(), new ResourceLocation(RefStrings.MODID, structureToSpawn));
+                .getTemplate(world.getMinecraftServer(), new ResourceLocation(RefStrings.MODID, DIGAMMA_TOWER));
 
         if (template != null) {
             PlacementSettings settings = new PlacementSettings();
@@ -70,9 +66,9 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
             BlockPos adjustedPos = pos.add((STRUCTURE_SIZE - structureSize.getX()) / 2, 0, (STRUCTURE_SIZE - structureSize.getZ()) / 2);
 
             template.addBlocksToWorld(world, adjustedPos, settings);
-            System.out.println("Generated structure: " + structureToSpawn + " at " + adjustedPos);
+            System.out.println("Generated structure: " + DIGAMMA_TOWER + " at " + adjustedPos);
         } else {
-            System.err.println("Could not find structure: " + structureToSpawn);
+            System.err.println("Could not find structure: " + DIGAMMA_TOWER);
         }
     }
 }

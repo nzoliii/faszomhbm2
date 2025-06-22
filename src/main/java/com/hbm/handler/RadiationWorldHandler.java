@@ -77,7 +77,7 @@ public class RadiationWorldHandler {
 									} else if(bblock == Blocks.SANDSTONE) {
 										world.setBlockState(pos, ModBlocks.waste_sandstone.getDefaultState());
 									} else if(bblock == Blocks.RED_SANDSTONE) {
-										world.setBlockState(pos, ModBlocks.waste_sandstone_red.getDefaultState());
+										world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
 									} else if(bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) {
 										world.setBlockState(pos, ModBlocks.waste_terracotta.getDefaultState());
 									} else if(bblock == Blocks.SAND) {
@@ -173,7 +173,7 @@ public class RadiationWorldHandler {
 						} else if(bblock == Blocks.SANDSTONE) {
 							world.setBlockState(pos, ModBlocks.waste_sandstone.getDefaultState());
 						} else if(bblock == Blocks.RED_SANDSTONE) {
-							world.setBlockState(pos, ModBlocks.waste_sandstone_red.getDefaultState());
+							world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
 						} else if(bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) {
 										world.setBlockState(pos, ModBlocks.waste_terracotta.getDefaultState());
 						} else if(bblock == Blocks.GRAVEL) {

@@ -1,54 +1,33 @@
 package com.hbm.lib;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
 import com.hbm.blocks.generic.BlockStorageCrate;
 import com.hbm.blocks.machine.PinkCloudBroadcaster;
 import com.hbm.blocks.machine.SoyuzCapsule;
-import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
-import com.hbm.config.GeneralConfig;
-import com.hbm.config.CompatibilityConfig;
 import com.hbm.config.BedrockOreJsonConfig;
+import com.hbm.config.CompatibilityConfig;
+import com.hbm.config.GeneralConfig;
 import com.hbm.handler.WeightedRandomChestContentFrom1710;
+import com.hbm.inventory.BedrockOreRegistry;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
-import com.hbm.inventory.BedrockOreRegistry;
+import com.hbm.saveddata.TomSaveData;
 import com.hbm.tileentity.machine.TileEntitySafe;
 import com.hbm.tileentity.machine.TileEntitySoyuzCapsule;
-import com.hbm.world.Antenna;
-import com.hbm.world.Barrel;
-import com.hbm.world.Bunker;
-import com.hbm.world.CrashedVertibird;
-import com.hbm.world.DesertAtom001;
-import com.hbm.world.Dud;
-import com.hbm.world.Factory;
-import com.hbm.world.Geyser;
-import com.hbm.world.GeyserLarge;
-import com.hbm.world.LibraryDungeon;
-import com.hbm.world.OilBubble;
-import com.hbm.world.OilSandBubble;
-import com.hbm.world.Radio01;
-import com.hbm.world.Relay;
-import com.hbm.world.Satellite;
-import com.hbm.world.Sellafield;
-import com.hbm.world.Silo;
-import com.hbm.world.Spaceship;
-import com.hbm.world.Vertibird;
+import com.hbm.world.*;
 import com.hbm.world.dungeon.AncientTomb;
 import com.hbm.world.dungeon.ArcticVault;
 import com.hbm.world.feature.DepthDeposit;
 import com.hbm.world.feature.OilSpot;
 import com.hbm.world.generator.CellularDungeonFactory;
 import com.hbm.world.generator.DungeonToolbox;
-
 import net.minecraft.block.BlockOldLog;
 import net.minecraft.block.BlockPlanks;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.BlockSkull;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockMatcher;
-import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -61,8 +40,14 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.feature.WorldGenMinable;
-import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fml.common.IWorldGenerator;
+
+import java.util.Random;
+
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.*;
+import static com.hbm.blocks.generic.BlockMeta.META;
 
 public class HbmWorldGen implements IWorldGenerator {
 
@@ -74,15 +59,52 @@ public class HbmWorldGen implements IWorldGenerator {
 
 	@Override
 	public void generate(Random rand, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+		//TODO: Report this from 1.7, this is a mess
 		try{
 			generateOres(world, rand, chunkX * 16, chunkZ * 16);
 			if(world.getWorldInfo().isMapFeaturesEnabled())
 				generateStructures(world, rand, chunkX * 16, chunkZ * 16);
+
+			generatePlants(world, rand, chunkX * 16, chunkZ * 16);
 		} catch(final Throwable t){
 			System.out.println("NTM Worldgen Error "+t);
 			t.printStackTrace();
 		}
 	}
+
+	//TEMPORARY
+	public void generatePlants(World world, Random rand, int i, int j){
+		Biome biome = world.getBiome(new BlockPos(i, 0, j));
+
+		if(!TomSaveData.forWorld(world).impact) {
+			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.FOREST) && rand.nextInt(16) == 0) {
+				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.plant_flower.getDefaultState().withProperty(META, FOXGLOVE.ordinal()));
+			}
+
+			if (biome == Biomes.ROOFED_FOREST && rand.nextInt(8) == 0) {
+				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.plant_flower.getDefaultState().withProperty(META, NIGHTSHADE.ordinal()));
+			}
+
+			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.JUNGLE) && rand.nextInt(8) == 0) {
+				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.plant_flower.getDefaultState().withProperty(META, TOBACCO.ordinal()));
+			}
+
+			if (rand.nextInt(64) == 0) {
+				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.plant_flower.getDefaultState().withProperty(META, HEMP.ordinal()));
+			}
+//			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.RIVER) && rand.nextInt(4) == 0) {
+//				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.reeds, 0);
+//			}
+//
+//			if (BiomeDictionary.hasType(biome, BiomeDictionary.Type.BEACH) && rand.nextInt(8) == 0) {
+//				DungeonToolbox.generateFlowers(world, rand, i, j, ModBlocks.reeds, 0);
+//			}
+
+		}
+
+
+	}
+
 
 	public void generateOres(World world, Random rand, int i, int j){
 		int dimID = world.provider.getDimension();
@@ -107,7 +129,7 @@ public class HbmWorldGen implements IWorldGenerator {
 			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.6D, ModBlocks.cluster_depth_iron, rand, 24);
 			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.6D, ModBlocks.cluster_depth_titanium, rand, 32);
 			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.6D, ModBlocks.cluster_depth_tungsten, rand, 32);
-			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.8D, ModBlocks.ore_depth_cinnebar, rand, 16);
+			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.8D, ModBlocks.ore_depth_cinnabar, rand, 16);
 			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.8D, ModBlocks.ore_depth_zirconium, rand, 16);
 			DepthDeposit.generateConditionOverworld(world, i, 0, 3, j, 5, 0.8D, ModBlocks.ore_depth_borax, rand, 16);
 		}
@@ -123,8 +145,8 @@ public class HbmWorldGen implements IWorldGenerator {
 				int d = 16 + rand.nextInt(96);
 
 				for(int y = d - 5; y <= d; y++)
-					if(world.getBlockState(new BlockPos(x, y + 1, z)).getBlock() == Blocks.AIR && world.getBlockState(new BlockPos(x, y, z)).getBlock() == Blocks.NETHERRACK)
-						world.setBlockState(new BlockPos(x, y, z), ModBlocks.ore_nether_smoldering.getDefaultState());
+				if(world.getBlockState(new BlockPos(x, y + 1, z)).getBlock() == Blocks.AIR && world.getBlockState(new BlockPos(x, y, z)).getBlock() == Blocks.NETHERRACK)
+					world.setBlockState(new BlockPos(x, y, z), ModBlocks.ore_nether_smoldering.getDefaultState());
 			}
 		}
 
@@ -153,7 +175,7 @@ public class HbmWorldGen implements IWorldGenerator {
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.rareSpawn.get(dimID)), 5, 5, 20, ModBlocks.ore_rare);
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.ligniteSpawn.get(dimID)), 24, 35, 25, ModBlocks.ore_lignite);
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.asbestosSpawn.get(dimID)), 4, 16, 16, ModBlocks.ore_asbestos);
-		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.cinnebarSpawn.get(dimID)), 4, 8, 16, ModBlocks.ore_cinnebar);
+		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.cinnabarSpawn.get(dimID)), 4, 8, 16, ModBlocks.ore_cinnabar);
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.cobaltSpawn.get(dimID)), 4, 4, 8, ModBlocks.ore_cobalt);
 		
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.ironClusterSpawn.get(dimID)), 6, 15, 45, ModBlocks.cluster_iron);
@@ -162,7 +184,7 @@ public class HbmWorldGen implements IWorldGenerator {
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.copperClusterSpawn.get(dimID)), 6, 15, 20, ModBlocks.cluster_copper);
 		
 		//Stone ores
-		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.malachiteSpawn.get(dimID)), 7, 6, 40, ModBlocks.ore_malachite);
+		//DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.malachiteSpawn.get(dimID)), 16, 6, 40, ModBlocks.ore_malachite);
 		
 		//Special ores
 		DungeonToolbox.generateOre(world, rand, i, j, parseInt(CompatibilityConfig.reiiumSpawn.get(dimID)), 3, 14, 18, ModBlocks.ore_reiium);
@@ -297,7 +319,7 @@ public class HbmWorldGen implements IWorldGenerator {
 			}
 
 			DungeonToolbox.generateOre(world, rand, i, j, 16, 8, 10, 50, ModBlocks.stone_porous);
-			OilSpot.generateOilSpot(world, randPosX, randPosZ, 5, 50);
+			OilSpot.generateOilSpot(world, randPosX, randPosZ, 5, 50, true);
 		}
 	}
 
@@ -379,7 +401,7 @@ public class HbmWorldGen implements IWorldGenerator {
 						}
 
 						if (GeneralConfig.enableDebugMode)
-							MainRegistry.logger.info("[Debug] Successfully spawned (nuclear) landmine at x=" + x + " y=" + y + " z=" + z);
+							MainRegistry.logger.info("[Debug] Successfully spawned landmine at x=" + x + " y=" + y + " z=" + z);
 					}
 				}
 			}

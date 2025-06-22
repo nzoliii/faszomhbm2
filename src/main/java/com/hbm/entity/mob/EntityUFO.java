@@ -1,8 +1,7 @@
 package com.hbm.entity.mob;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.hbm.entity.effect.EntityNukeTorex;
+import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.interfaces.IRadiationImmune;
@@ -12,13 +11,9 @@ import com.hbm.lib.ModDamageSource;
 import com.hbm.main.AdvancementManager;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
-import com.hbm.entity.effect.EntityNukeTorex;
-import com.hbm.entity.logic.EntityNukeExplosionMK5;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,6 +34,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.EnumDifficulty;
@@ -46,6 +42,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityUFO extends EntityFlying implements IMob, IRadiationImmune {
 
@@ -163,16 +162,16 @@ public class EntityUFO extends EntityFlying implements IMob, IRadiationImmune {
 		
 		if(this.target != null && this.courseChangeCooldown <= 0) {
 			
-			Vec3 vec = Vec3.createVectorHelper(this.posX - this.target.posX, 0, this.posZ - this.target.posZ);
+			Vec3d vec = new Vec3d(this.posX - this.target.posX, 0, this.posZ - this.target.posZ);
 			
 			if(rand.nextInt(3) > 0)
-				vec.rotateAroundY((float)Math.PI * 2 * rand.nextFloat());
+				vec = vec.rotateYaw((float)Math.PI * 2 * rand.nextFloat());
 			
 			double length = vec.length();
 			double overshoot = 35;
 			
-			int wX = (int)Math.floor(this.target.posX - vec.xCoord / length * overshoot);
-			int wZ = (int)Math.floor(this.target.posZ - vec.zCoord / length * overshoot);
+			int wX = (int)Math.floor(this.target.posX - vec.x / length * overshoot);
+			int wZ = (int)Math.floor(this.target.posZ - vec.z / length * overshoot);
 			
 			this.setWaypoint(wX, Math.max(this.world.getHeight(wX, wZ) + 20 + rand.nextInt(15), (int) this.target.posY + 15),  wZ);
 			
@@ -286,15 +285,15 @@ public class EntityUFO extends EntityFlying implements IMob, IRadiationImmune {
 			double deltaX = this.getX() - this.posX;
 			double deltaY = this.getY() - this.posY;
 			double deltaZ = this.getZ() - this.posZ;
-			Vec3 delta = Vec3.createVectorHelper(deltaX, deltaY, deltaZ);
+			Vec3d delta = new Vec3d(deltaX, deltaY, deltaZ);
 			double len = delta.length();
 			double speed = this.target instanceof EntityPlayer ? 5D : 2D;
 			
 			if(len > 5) {
 				if(isCourseTraversable(this.getX(), this.getY(), this.getZ(), len)) {
-					this.motionX = delta.xCoord * speed / len;
-					this.motionY = delta.yCoord * speed / len;
-					this.motionZ = delta.zCoord * speed / len;
+					this.motionX = delta.x * speed / len;
+					this.motionY = delta.y * speed / len;
+					this.motionZ = delta.z * speed / len;
 				} else {
 					this.courseChangeCooldown = 0;
 				}
@@ -329,41 +328,40 @@ public class EntityUFO extends EntityFlying implements IMob, IRadiationImmune {
 	
 	private void laserAttack(Entity e) {
 		
-		Vec3 vec = Vec3.createVectorHelper(this.posX - e.posX, 0, this.posZ - e.posZ);
-		vec.rotateAroundY((float) Math.toRadians(-80 + rand.nextInt(160)));
-		vec = vec.normalize();
+		Vec3d vec = new Vec3d(this.posX - e.posX, 0, this.posZ - e.posZ);
+		vec = vec.rotateYaw((float) Math.toRadians(-80 + rand.nextInt(160))).normalize();
 
-		double pivotX = this.posX - vec.xCoord * 10;
+		double pivotX = this.posX - vec.x * 10;
 		double pivotY = this.posY + 0.5;
-		double pivotZ = this.posZ - vec.zCoord * 10;
+		double pivotZ = this.posZ - vec.z * 10;
 
-		Vec3 heading = Vec3.createVectorHelper(e.posX - pivotX, e.posY + e.height / 2 - pivotY, e.posZ - pivotZ);
+		Vec3d heading = new Vec3d(e.posX - pivotX, e.posY + e.height / 2 - pivotY, e.posZ - pivotZ);
 		heading = heading.normalize();
 
 		EntityBulletBase bullet = new EntityBulletBase(this.world, BulletConfigSyncingUtil.WORM_LASER);
 		bullet.shooter = this;
 		bullet.setPosition(pivotX, pivotY, pivotZ);
-		bullet.shoot(heading.xCoord, heading.yCoord, heading.zCoord, 2F, 0.02F);
+		bullet.shoot(heading.x, heading.y, heading.z, 2F, 0.02F);
 		this.world.spawnEntity(bullet);
 		this.playSound(HBMSoundHandler.ballsLaser, 5.0F, 1.0F);
 	}
 	
 	private void rocketAttack(Entity e) {
-		Vec3 heading = Vec3.createVectorHelper(e.posX - this.posX, e.posY + e.height / 2 - posY - 0.5D, e.posZ - this.posZ);
+		Vec3d heading = new Vec3d(e.posX - this.posX, e.posY + e.height / 2 - posY - 0.5D, e.posZ - this.posZ);
 		heading = heading.normalize();
 
 		EntityBulletBase bullet = new EntityBulletBase(this.world, BulletConfigSyncingUtil.UFO_ROCKET);
 		bullet.shooter = this;
 		bullet.setPosition(this.posX, this.posY - 0.5D, this.posZ);
-		bullet.shoot(heading.xCoord, heading.yCoord, heading.zCoord, 2F, 0.02F);
+		bullet.shoot(heading.x, heading.y, heading.z, 2F, 0.02F);
 		bullet.getEntityData().setInteger("homingTarget", e.getEntityId());
 		this.world.spawnEntity(bullet);
 		this.playSound(HBMSoundHandler.richard_fire, 5.0F, 1.0F);
 	}
 	
 	@Override
-	public boolean canAttackClass(Class clazz) {
-		return clazz != this.getClass() && clazz != EntityBulletBase.class;
+	public boolean canAttackClass(Class entityClass) {
+		return entityClass != this.getClass() && entityClass != EntityBulletBase.class;
 	}
 
 	@Override

@@ -56,11 +56,8 @@ public class ModDamageSource extends DamageSource {
     public static DamageSource asbestos = (new DamageSource("asbestos")).setDamageIsAbsolute().setDamageBypassesArmor();
     public static DamageSource blacklung = (new DamageSource("blacklung")).setDamageIsAbsolute().setDamageBypassesArmor();
     public static DamageSource mku = (new DamageSource("mku")).setDamageIsAbsolute().setDamageBypassesArmor();
-
-    //fhbm2
-    public static DamageSource unabomber = (new DamageSource("unabomber")).setExplosion();
-
-    public ModDamageSource(String p_i1566_1_) {
+	
+	public ModDamageSource(String p_i1566_1_) {
 		super(p_i1566_1_);
 	}
     public static DamageSource causeBulletDamage(EntityBullet p_76353_0_, Entity p_76353_1_)
@@ -224,4 +221,7 @@ public class ModDamageSource extends DamageSource {
     	}
     	return false;
     }
+
+    //fhbm2
+    public static DamageSource unabomber = (new DamageSource("unabomber")).setExplosion();
 }

@@ -1,11 +1,11 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.energymk2.IEnergyProviderMK2;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.ILaserable;
 import com.hbm.interfaces.ITankPacketAcceptor;
+import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityMachineBase;
-
-import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +21,7 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IEnergyGenerator, IFluidHandler, ILaserable, ITankPacketAcceptor {
+public class TileEntityCoreReceiver extends TileEntityMachineBase implements ITickable, IEnergyProviderMK2, IFluidHandler, ILaserable, ITankPacketAcceptor {
 
 	public long power;
 	public long joules;
@@ -43,7 +43,8 @@ public class TileEntityCoreReceiver extends TileEntityMachineBase implements ITi
 			else
 				power += joules * 5000L;
 
-			this.sendPower(world, pos);
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+				this.tryProvide(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
 
 			if(joules > 0) {
 
@@ -73,7 +74,7 @@ public class TileEntityCoreReceiver extends TileEntityMachineBase implements ITi
 
 	@Override
 	public int fill(FluidStack resource, boolean doFill) {
-		if(resource == null || resource.getFluid() != ModForgeFluids.CRYOGEL)
+		if(resource == null || resource.getFluid() != ModForgeFluids.cryogel)
 			return 0;
 		return tank.fill(resource, doFill);
 	}
@@ -161,6 +162,6 @@ public class TileEntityCoreReceiver extends TileEntityMachineBase implements ITi
 
 	@Override
 	public long getMaxPower() {
-		return 0;
+		return this.power;
 	}
 }

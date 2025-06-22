@@ -1,79 +1,82 @@
 package com.hbm.inventory;
 
-import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
-
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FusionRecipes {
 
-	public static int getByproductChance(Fluid plasma) {
-		if(plasma == ModForgeFluids.PLASMA_DT){
-			return 1200; 
-		} else if(plasma == ModForgeFluids.PLASMA_HD){
-			return 1200;
-		} else if(plasma == ModForgeFluids.PLASMA_HT){
-			return 1200;
-		} else if(plasma == ModForgeFluids.PLASMA_MX){
-			return 2400;
-		} else if(plasma == ModForgeFluids.PLASMA_PUT){
-			return 2400;
-		} else if(plasma == ModForgeFluids.PLASMA_BF){
-			return 150;
-		}
-		return 0;
+	public static HashMap<FluidType, Integer> chances = new HashMap();
+	static {
+		chances.put(Fluids.PLASMA_DT, 1200);
+		chances.put(Fluids.PLASMA_DH3, 600);
+		chances.put(Fluids.PLASMA_HD, 1200);
+		chances.put(Fluids.PLASMA_HT, 1200);
+		chances.put(Fluids.PLASMA_XM, 1200);
+		chances.put(Fluids.PLASMA_BF, 150);
 	}
 
-	public static ItemStack getByproduct(Fluid plasma) {
-		if(plasma == ModForgeFluids.PLASMA_DT){
-			return new ItemStack(ModItems.pellet_charged); 
-		} else if(plasma == ModForgeFluids.PLASMA_HD){
-			return new ItemStack(ModItems.pellet_charged);
-		} else if(plasma == ModForgeFluids.PLASMA_HT){
-			return new ItemStack(ModItems.pellet_charged);
-		} else if(plasma == ModForgeFluids.PLASMA_MX){
-			return new ItemStack(ModItems.powder_chlorophyte);
-		} else if(plasma == ModForgeFluids.PLASMA_PUT){
-			return new ItemStack(ModItems.powder_xe135);
-		} else if(plasma == ModForgeFluids.PLASMA_BF){
-			return new ItemStack(ModItems.powder_balefire);
-		}
-		return ItemStack.EMPTY;
+	public static int getByproductChance(FluidType plasma) {
+		Integer chance = chances.get(plasma);
+		return chance != null ? chance : 0;
 	}
-	
-	public static int getBreedingLevel(Fluid plasma) {
-		if(plasma == ModForgeFluids.PLASMA_DT){
-			return 2;
-		} else if(plasma == ModForgeFluids.PLASMA_HD){
-			return 1;
-		} else if(plasma == ModForgeFluids.PLASMA_HT){
-			return 1;
-		} else if(plasma == ModForgeFluids.PLASMA_MX){
-			return 3;
-		} else if(plasma == ModForgeFluids.PLASMA_PUT){
-			return 4;
-		} else if(plasma == ModForgeFluids.PLASMA_BF){
-			return 5;
-		}
-		return 0;
+
+	public static HashMap<FluidType, Integer> levels = new HashMap();
+	static {
+		levels.put(Fluids.PLASMA_DT, 1000);
+		levels.put(Fluids.PLASMA_DH3, 2000);
+		levels.put(Fluids.PLASMA_HD, 1000);
+		levels.put(Fluids.PLASMA_HT, 1000);
+		levels.put(Fluids.PLASMA_XM, 3000);
+		levels.put(Fluids.PLASMA_BF, 4000);
 	}
-	
-	public static int getSteamProduction(Fluid plasma) {
-		if(plasma == ModForgeFluids.PLASMA_DT){
-			return 225;
-		} else if(plasma == ModForgeFluids.PLASMA_HD){
-			return 150;
-		} else if(plasma == ModForgeFluids.PLASMA_HT){
-			return 188;
-		} else if(plasma == ModForgeFluids.PLASMA_MX){
-			return 450;
-		} else if(plasma == ModForgeFluids.PLASMA_PUT){
-			return 600;
-		} else if(plasma == ModForgeFluids.PLASMA_BF){
-			return 1200;
+
+	public static int getBreedingLevel(FluidType plasma) {
+		Integer level = levels.get(plasma);
+		return level != null ? level : 0;
+	}
+
+	public static HashMap<FluidType, ItemStack> byproducts = new HashMap();
+	static {
+		byproducts.put(Fluids.PLASMA_DT, new ItemStack(ModItems.pellet_charged));
+		byproducts.put(Fluids.PLASMA_DH3, new ItemStack(ModItems.pellet_charged));
+		byproducts.put(Fluids.PLASMA_HD, new ItemStack(ModItems.pellet_charged));
+		byproducts.put(Fluids.PLASMA_HT, new ItemStack(ModItems.pellet_charged));
+		byproducts.put(Fluids.PLASMA_XM, new ItemStack(ModItems.powder_chlorophyte));
+		byproducts.put(Fluids.PLASMA_BF, new ItemStack(ModItems.powder_balefire));
+	}
+
+	public static ItemStack getByproduct(FluidType plasma) {
+		ItemStack byproduct = byproducts.get(plasma);
+		return byproduct != null ? byproduct.copy() : null;
+	}
+
+	public static HashMap<FluidType, Integer> steamprod = new HashMap();
+	static {
+		steamprod.put(Fluids.PLASMA_DT, 30);
+		steamprod.put(Fluids.PLASMA_DH3, 50);
+		steamprod.put(Fluids.PLASMA_HD, 20);
+		steamprod.put(Fluids.PLASMA_HT, 25);
+		steamprod.put(Fluids.PLASMA_XM, 60);
+		steamprod.put(Fluids.PLASMA_BF, 160);
+	}
+
+	public static int getSteamProduction(FluidType plasma) {
+		Integer steam = steamprod.get(plasma);
+		return steam != null ? steam : 0;
+	}
+
+	public static HashMap<ItemStack, ItemStack> getRecipes() {
+
+		HashMap<ItemStack, ItemStack> map = new HashMap();
+		for(Map.Entry<FluidType, ItemStack> entry : byproducts.entrySet()) {
+			map.put(new ItemStack(ModItems.fluid_icon, 1, entry.getKey().getID()), entry.getValue().copy());
 		}
-		return 0;
+		return map;
 	}
 
 }

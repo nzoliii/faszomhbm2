@@ -1,16 +1,12 @@
 package com.hbm.render.entity;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
 import com.hbm.entity.particle.EntityModFX;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -19,6 +15,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 public class MultiCloudRenderer extends Render<EntityModFX> {
 
@@ -71,7 +70,7 @@ public class MultiCloudRenderer extends Render<EntityModFX> {
 
 				GL11.glPushMatrix();
 				Tessellator tessellator = Tessellator.getInstance();
-				this.func_77026_a(tessellator, tex);
+				this.render(tessellator, tex);
 				GL11.glPopMatrix();
 
 				GL11.glScaled(1/size, 1/size, 1/size);
@@ -124,7 +123,7 @@ public class MultiCloudRenderer extends Render<EntityModFX> {
 		return TextureMap.LOCATION_BLOCKS_TEXTURE;
 	}
 
-	private void func_77026_a(Tessellator tes, TextureAtlasSprite tas) {
+	private void render(Tessellator tes, TextureAtlasSprite tas) {
 		BufferBuilder buf = tes.getBuffer();
 		float f = tas.getMinU();
 		float f1 = tas.getMaxU();

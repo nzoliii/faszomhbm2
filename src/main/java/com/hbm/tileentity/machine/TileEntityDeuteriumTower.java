@@ -1,11 +1,10 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.lib.DirPos;
-import com.hbm.lib.ForgeDirection;
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
-
+import com.hbm.lib.DirPos;
+import com.hbm.lib.ForgeDirection;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
@@ -17,14 +16,14 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 	public TileEntityDeuteriumTower() {
 		super();
 		tanks[0] = new FluidTank(FluidRegistry.WATER, 0, 50000);
-		tanks[1] = new FluidTank(ModForgeFluids.HEAVYWATER, 0, 5000);
+		tanks[1] = new FluidTank(ModForgeFluids.heavywater, 0, 5000);
 	}
 
 	@Override
 	protected void updateConnections() {
 
 		for(DirPos pos : getConPos()) {
-			this.trySubscribe(world, pos.getPos(), pos.getDir());
+			this.trySubscribe(world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
 		}
 	}
 	

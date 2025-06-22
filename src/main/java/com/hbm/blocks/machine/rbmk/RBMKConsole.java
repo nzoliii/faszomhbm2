@@ -1,37 +1,34 @@
 package com.hbm.blocks.machine.rbmk;
 
-import java.util.List;
-
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.ITooltipProvider;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.BossSpawnHandler;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemGuideBook.BookType;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.NBTControlPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+
+import java.util.List;
 
 public class RBMKConsole extends BlockDummyable implements ITooltipProvider {
 
@@ -74,22 +71,22 @@ public class RBMKConsole extends BlockDummyable implements ITooltipProvider {
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isBlockNormalCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isNormalCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
 		return false;
@@ -98,13 +95,13 @@ public class RBMKConsole extends BlockDummyable implements ITooltipProvider {
 	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos bpos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
 		if(!player.isSneaking()) {
-			
+
 			BossSpawnHandler.markFBI(player);
-			
+
 			int[] pos = this.findCore(world, bpos.getX(), bpos.getY(), bpos.getZ());
 
 			if(pos == null)
@@ -112,39 +109,41 @@ public class RBMKConsole extends BlockDummyable implements ITooltipProvider {
 
 			TileEntityRBMKConsole entity = (TileEntityRBMKConsole) world.getTileEntity(new BlockPos(pos[0], pos[1], pos[2]));
 			if(entity != null) {
-				
+
 				if(facing.ordinal() == 1) {
-					Vec3 vec = Vec3.createVectorHelper(1.375D, 0, 0.75D);
-					
-					switch(entity.getBlockMetadata() - offset) {
-					case 2: vec.rotateAroundY((float)Math.toRadians(90)); break;
-					case 3: vec.rotateAroundY((float)Math.toRadians(270)); break;
-					case 4: vec.rotateAroundY((float)Math.toRadians(180)); break;
-					case 5: vec.rotateAroundY((float)Math.toRadians(0)); break;
+					Vec3d vec = new Vec3d(1.375, 0, 0.75);
+					int angle = 0;
+
+					switch (entity.getBlockMetadata() - offset) {
+						case 2: angle = 90; break;
+						case 3: angle = 270; break;
+						case 4: angle = 180; break;
+						case 5:
+                            break;
 					}
+
+					vec = vec.rotateYaw((float) Math.toRadians(angle));
 
 					float hX = bpos.getX() + hitX;
 					float hZ = bpos.getZ() + hitZ;
-					double rX = entity.getPos().getX() + 0.5D + vec.xCoord;
-					double rZ = entity.getPos().getZ() + 0.5D + vec.zCoord;
+					double rX = entity.getPos().getX() + 0.5D + vec.x;
+					double rZ = entity.getPos().getZ() + 0.5D + vec.z;
 					double size = 0.1875D;
-					
+
 					if(Math.abs(hX - rX) < size && Math.abs(hZ - rZ) < size && !player.inventory.hasItemStack(new ItemStack(ModItems.book_guide, 1, BookType.RBMK.ordinal()))) {
 						player.inventory.addItemStackToInventory(new ItemStack(ModItems.book_guide, 1, BookType.RBMK.ordinal()));
 						player.inventoryContainer.detectAndSendChanges();
 						return true;
 					}
 				}
-				
+
 				if(world.isRemote)
 					FMLNetworkHandler.openGui(player, MainRegistry.instance, ModBlocks.guiID_rbmk_console, world, pos[0], pos[1], pos[2]);
 			}
-			return true;
-			
-		} else {
-			return true;
-		}
-	}
+
+        }
+        return true;
+    }
 
 	@Override
 	public int[] getDimensions() {
@@ -162,12 +161,12 @@ public class RBMKConsole extends BlockDummyable implements ITooltipProvider {
 
 		MultiblockHandlerXR.fillSpace(world, x + dir.offsetX * o , y, z + dir.offsetZ * o, new int[] {0, 0, 0, 1, 2, 2}, this, dir);
 	}
-	
+
 	@Override
 	protected boolean checkRequirement(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		if(!MultiblockHandlerXR.checkSpace(world, x + dir.offsetX * o , y + dir.offsetY * o, z + dir.offsetZ * o, new int[] {0, 0, 0, 1, 2, 2}, x, y, z, dir))
 			return false;
-		
+
 		return super.checkRequirement(world, x, y, z, dir, o);
 	}
 

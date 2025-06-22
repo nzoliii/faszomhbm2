@@ -1,11 +1,14 @@
 package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.blocks.IPersistentInfoProvider;
 import com.hbm.handler.MultiblockHandlerXR;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.oil.TileEntityMachineCatalyticReformer;
-
+import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +22,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class MachineCatalyticReformer extends BlockDummyable {
+public class MachineCatalyticReformer extends BlockDummyable implements IPersistentInfoProvider {
 
     public MachineCatalyticReformer(Material mat, String s) {
         super(mat, s);
@@ -70,13 +73,13 @@ public class MachineCatalyticReformer extends BlockDummyable {
         return 1;
     }
 
-//    @Override
-//    public void addInformation(ItemStack stack, NBTTagCompound persistentTag, EntityPlayer player, List list, boolean ext) {
-//
-//        for(int i = 0; i < 4; i++) {
-//            FluidTankNTM tank = new FluidTankNTM(Fluids.NONE, 0);
-//            tank.readFromNBT(persistentTag, "" + i);
-//            list.add(ChatFormatting.YELLOW + "" + tank.getFill() + "/" + tank.getMaxFill() + "mB " + tank.getTankType().getLocalizedName());
-//        }
-//    }
+    @Override
+    public void addInformation(ItemStack stack, NBTTagCompound persistentTag, EntityPlayer player, List list, boolean ext) {
+
+        for(int i = 0; i < 4; i++) {
+            FluidTankNTM tank = new FluidTankNTM(Fluids.NONE, 0);
+            tank.readFromNBT(persistentTag, "" + i);
+            list.add(ChatFormatting.YELLOW + "" + tank.getFill() + "/" + tank.getMaxFill() + "mB " + tank.getTankType().getLocalizedName());
+        }
+    }
 }

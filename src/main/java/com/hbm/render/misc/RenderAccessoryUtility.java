@@ -1,16 +1,15 @@
 package com.hbm.render.misc;
 
-import java.util.Map;
-
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+
+import java.util.Map;
 
 public class RenderAccessoryUtility {
 
@@ -40,9 +39,7 @@ public class RenderAccessoryUtility {
 	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capecringebait.png");
 	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capeandor2121.png");
 	private static ResourceLocation tuzvarazslo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capetuzvarazslo.png");
-
-
-
+	
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player) {
 		String uuid = player.getUniqueID().toString();
 		String name = player.getDisplayName().getUnformattedText();
@@ -134,6 +131,7 @@ public class RenderAccessoryUtility {
 			Map<Type, ResourceLocation> playerTextures = ReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, info, "playerTextures", "field_187107_a");
 
 			playerTextures.put(Type.CAPE, rl);
-		} catch(Exception x) {}
+		} catch(Exception x) {
+		}
 	}
 }

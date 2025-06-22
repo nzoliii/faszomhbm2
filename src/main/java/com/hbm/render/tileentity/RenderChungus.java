@@ -1,14 +1,12 @@
 package com.hbm.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.main.ResourceManager;
 import com.hbm.tileentity.machine.TileEntityChungus;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import org.lwjgl.opengl.GL11;
 
 public class RenderChungus extends TileEntitySpecialRenderer<TileEntityChungus> {
 
@@ -51,11 +49,11 @@ public class RenderChungus extends TileEntitySpecialRenderer<TileEntityChungus> 
 		GL11.glPushMatrix();
 		GL11.glTranslated(0, 0, 4.5);
 		int rot = 0;
-		if(turbine.types[0] == ModForgeFluids.HOTSTEAM){
+		if(turbine.types[0] == ModForgeFluids.hotsteam){
 			rot = 1;
-		} else if(turbine.types[0] == ModForgeFluids.SUPERHOTSTEAM){
+		} else if(turbine.types[0] == ModForgeFluids.superhotsteam){
 			rot = 2;
-		} else if(turbine.types[0] == ModForgeFluids.ULTRAHOTSTEAM){
+		} else if(turbine.types[0] == ModForgeFluids.ultrahotsteam){
 			rot = 3;
 		}
 		GL11.glRotatef(15 - rot * 10, 1, 0, 0);

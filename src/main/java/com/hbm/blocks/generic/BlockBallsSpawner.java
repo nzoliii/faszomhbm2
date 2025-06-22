@@ -3,7 +3,6 @@ package com.hbm.blocks.generic;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.mob.botprime.EntityBOTPrimeHead;
 import com.hbm.items.ModItems;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -19,10 +18,10 @@ public class BlockBallsSpawner extends Block {
 		super(materialIn);
 		this.setTranslationKey(s);
 		this.setRegistryName(s);
-		
+
 		ModBlocks.ALL_BLOCKS.add(this);
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(player.getHeldItem(hand) != null && player.getHeldItem(hand).getItem() == ModItems.mech_key) {

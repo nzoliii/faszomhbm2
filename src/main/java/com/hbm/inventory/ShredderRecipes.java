@@ -1,16 +1,9 @@
 package com.hbm.inventory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map.Entry;
-
 import com.hbm.blocks.ModBlocks;
-import com.hbm.items.special.ItemBedrockOre;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.BedrockOreRegistry;
 import com.hbm.items.ModItems;
-
+import com.hbm.items.special.ItemBedrockOre;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IRecipeWrapper;
@@ -20,6 +13,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class ShredderRecipes {
 
@@ -229,7 +227,7 @@ public class ShredderRecipes {
 		ShredderRecipes.setRecipe(ModItems.crystal_lithium, new ItemStack(ModItems.powder_lithium, 3));
 		ShredderRecipes.setRecipe(ModItems.crystal_starmetal, new ItemStack(ModItems.powder_dura_steel, 6));
 		ShredderRecipes.setRecipe(ModItems.crystal_cobalt, new ItemStack(ModItems.powder_cobalt, 3));
-		ShredderRecipes.setRecipe(ModItems.crystal_cinnebar, new ItemStack(ModItems.cinnebar, 3));
+		ShredderRecipes.setRecipe(ModItems.crystal_cinnabar, new ItemStack(ModItems.cinnabar, 3));
 		ShredderRecipes.setRecipe(ModItems.crystal_asbestos, new ItemStack(ModItems.powder_asbestos, 3));
 		
 		ShredderRecipes.setRecipe(ModBlocks.steel_poles, new ItemStack(ModItems.powder_steel_tiny, 3));
@@ -280,20 +278,8 @@ public class ShredderRecipes {
 		ShredderRecipes.setRecipe(ModItems.ingot_polymer, new ItemStack(ModItems.powder_polymer, 1));
 		ShredderRecipes.setRecipe(ModItems.ingot_bakelite, new ItemStack(ModItems.powder_bakelite, 1));
 
-		ShredderRecipes.setRecipe(ModBlocks.turret_light, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModBlocks.turret_heavy, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModBlocks.turret_flamer, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModBlocks.turret_rocket, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModBlocks.turret_cwis, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModBlocks.turret_tau, new ItemStack(ModItems.powder_steel, 16));
-		ShredderRecipes.setRecipe(ModItems.turret_light_ammo, new ItemStack(Items.GUNPOWDER, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_heavy_ammo, new ItemStack(Items.GUNPOWDER, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_flamer_ammo, new ItemStack(Items.GUNPOWDER, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_rocket_ammo, new ItemStack(Items.GUNPOWDER, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_cwis_ammo, new ItemStack(Items.GUNPOWDER, 4));
-		ShredderRecipes.setRecipe(ModItems.turret_tau_ammo, new ItemStack(ModItems.powder_uranium, 4));
 		ShredderRecipes.setRecipe(ModBlocks.ore_nether_coal, new ItemStack(ModItems.coal_infernal, 2));
-		ShredderRecipes.setRecipe(ModBlocks.ore_cinnebar, new ItemStack(ModItems.cinnebar, 2));
+		ShredderRecipes.setRecipe(ModBlocks.ore_cinnabar, new ItemStack(ModItems.cinnabar, 2));
 		
 		for(int i = 0; i < 16; i++) {
 			ShredderRecipes.setRecipe(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, i), new ItemStack(Items.CLAY_BALL, 4));

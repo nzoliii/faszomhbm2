@@ -1,30 +1,29 @@
 package com.hbm.inventory.gui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.inventory.container.ContainerTurretBase;
 import com.hbm.lib.RefStrings;
-import com.hbm.util.I18nUtil;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.turret.TileEntityTurretBaseNT;
-
+import com.hbm.util.I18nUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class GUITurretBase extends GuiInfoContainer {
 
@@ -46,11 +45,22 @@ public abstract class GUITurretBase extends GuiInfoContainer {
 		super.initGui();
 
 		Keyboard.enableRepeatEvents(true);
+		if (mc.player != null) {
+			TileEntityTurretBaseNT.openInventory(mc.player);
+		}
 		this.field = new GuiTextField(0, this.fontRenderer, guiLeft + 10, guiTop + 65, 50, 14);
 		this.field.setTextColor(-1);
 		this.field.setDisabledTextColour(-1);
 		this.field.setEnableBackgroundDrawing(false);
 		this.field.setMaxStringLength(25);
+	}
+
+	@Override
+	public void onGuiClosed() {
+		super.onGuiClosed();
+		if (mc.player != null) {
+			TileEntityTurretBaseNT.closeInventory(mc.player);
+		}
 	}
 	
 	@Override
@@ -83,74 +93,80 @@ public abstract class GUITurretBase extends GuiInfoContainer {
 			}
 			
 			if(draw) {
-				List<ItemStack> list = new ArrayList(turret.getAmmoTypesForDisplay());
-				List<Object[]> lines = new ArrayList();
-				ItemStack selected = list.get(0);
-				int highLight = 0;
-				if(list.size() > 1) {
-					int cycle = (int) ((System.currentTimeMillis() % (1000 * list.size())) / 1000);
-					selected = ((ItemStack) list.get(cycle)).copy();
-					highLight = cycle;
-					list.set(cycle, selected);
+				List<ItemStack> list = new ArrayList<>(turret.getAmmoTypesForDisplay());
+				List<Object[]> lines = new ArrayList<>();
+				try {
+					ItemStack selected = list.get(0);
+					int highLight = 0;
+					if (list.size() > 1) {
+						int cycle = (int) ((System.currentTimeMillis() % (1000 * list.size())) / 1000);
+						selected = list.get(cycle).copy();
+						highLight = cycle;
+						list.set(cycle, selected);
+					}
+
+					if (list.size() < 10) {
+						lines.add(list.toArray());
+					} else if (list.size() < 24) {
+						lines.add(list.subList(0, list.size() / 2).toArray());
+						lines.add(list.subList(list.size() / 2, list.size()).toArray());
+					} else {
+						int bound0 = (int) Math.ceil(list.size() / 3D);
+						int bound1 = (int) Math.ceil(list.size() / 3D * 2D);
+						lines.add(list.subList(0, bound0).toArray());
+						lines.add(list.subList(bound0, bound1).toArray());
+						lines.add(list.subList(bound1, list.size()).toArray());
+					}
+
+					lines.add(new Object[]{I18nUtil.resolveKey(selected.getDisplayName())});
+					this.drawStackText(lines, mouseX, mouseY, this.fontRenderer, highLight);
+				} catch (IndexOutOfBoundsException e) {
+					e.printStackTrace();
 				}
-				
-				if(list.size() < 10) {
-					lines.add(list.toArray());
-				} else if(list.size() < 24) {
-					lines.add(list.subList(0, list.size() / 2).toArray());
-					lines.add(list.subList(list.size() / 2, list.size()).toArray());
-				} else {
-					int bound0 = (int) Math.ceil(list.size() / 3D);
-					int bound1 = (int) Math.ceil(list.size() / 3D * 2D);
-					lines.add(list.subList(0, bound0).toArray());
-					lines.add(list.subList(bound0, bound1).toArray());
-					lines.add(list.subList(bound1, list.size()).toArray());
-				}
-				
-				lines.add(new Object[] {I18nUtil.resolveKey(selected.getDisplayName())});
-				this.drawStackText(lines, mouseX, mouseY, this.fontRenderer, highLight);
 			}
 		}
 	}
 
 	protected void mouseClicked(int x, int y, int i) throws IOException {
 		super.mouseClicked(x, y, i);
-		
+
+		final BlockPos turretPos = turret.getPos();
+
 		boolean flag = x >= this.field.x && x < this.field.x + this.field.width && y >= this.field.y && y < this.field.y + this.field.height;
 		this.field.setFocused(flag);
 
 		if(guiLeft + 115 <= x && guiLeft + 115 + 18 > x && guiTop + 25 < y && guiTop + 25 + 18 >= y) {
 
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 0));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turretPos, 0, 0));
 			return;
 		}
 
 		if(guiLeft + 8 <= x && guiLeft + 8 + 10 > x && guiTop + 29 < y && guiTop + 29 + 10 >= y) {
 
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 1));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turretPos, 0, 1));
 			return;
 		}
 
 		if(guiLeft + 22 <= x && guiLeft + 22 + 10 > x && guiTop + 29 < y && guiTop + 29 + 10 >= y) {
 
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 2));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turretPos, 0, 2));
 			return;
 		}
 
 		if(guiLeft + 36 <= x && guiLeft + 36 + 10 > x && guiTop + 29 < y && guiTop + 29 + 10 >= y) {
 
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 3));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turretPos, 0, 3));
 			return;
 		}
 
 		if(guiLeft + 50 <= x && guiLeft + 50 + 10 > x && guiTop + 29 < y && guiTop + 29 + 10 >= y) {
 
 			mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 4));
+			PacketDispatcher.wrapper.sendToServer(new AuxButtonPacket(turretPos, 0, 4));
 			return;
 		}
 		
@@ -185,7 +201,7 @@ public abstract class GUITurretBase extends GuiInfoContainer {
 			
 			NBTTagCompound data = new NBTTagCompound();
 			data.setString("name", this.field.getText());
-			PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ()));
+			PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, turretPos));
 			
 			this.field.setText("");
 			return;
@@ -197,8 +213,7 @@ public abstract class GUITurretBase extends GuiInfoContainer {
 			
 			NBTTagCompound data = new NBTTagCompound();
 			data.setInteger("del", this.index);
-			PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ()));
-			return;
+			PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, turretPos));
 		}
 	}
 

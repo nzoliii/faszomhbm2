@@ -1,18 +1,14 @@
 package com.hbm.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
-import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControl;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 
 public class RenderRBMKControlRod extends TileEntitySpecialRenderer<TileEntityRBMKControl>{
 
@@ -22,36 +18,48 @@ public class RenderRBMKControlRod extends TileEntitySpecialRenderer<TileEntityRB
 	public boolean isGlobalRenderer(TileEntityRBMKControl te){
 		return true;
 	}
-	
+
 	@Override
-	public void render(TileEntityRBMKControl control, double x, double y, double z, float partialTicks, int destroyStage, float alpha){
-		GL11.glPushMatrix();
-		
-		GL11.glTranslated(x + 0.5, y, z + 0.5);
-		
-		bindTexture(((RBMKBase)control.getBlockType()).columnTexture);
-		com.hbm.render.amlfrom1710.Tessellator tes = com.hbm.render.amlfrom1710.Tessellator.instance;
-		tes.startDrawing(GL11.GL_TRIANGLES);
+	public void render(TileEntityRBMKControl control, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(x + 0.5, y, z + 0.5);
 
-		ResourceManager.rbmk_rods.tessellatePartSplit(tes, "Column", 0.5F, TileEntityRBMKBase.rbmkHeight);
-		
-		tes.draw();
-		
-		GlStateManager.enableLighting();
-		GlStateManager.enableCull();
+		// Render column stack
+		renderControlColumn(control);
 
-		
-		if(control.getBlockType() instanceof RBMKBase) {
-			bindTexture(((RBMKBase)control.getBlockType()).coverTexture);
-		} else {
-			bindTexture(texture);
+		// Render animated lid
+		renderControlLid(control, partialTicks);
+
+		GlStateManager.popMatrix();
+	}
+
+	private void renderControlColumn(TileEntityRBMKControl control) {
+		Minecraft.getMinecraft().getTextureManager().bindTexture(((RBMKBase) control.getBlockType()).columnTexture);
+
+		GlStateManager.pushMatrix();
+		for(int i = 0; i < 4; i++) {
+			ResourceManager.rbmk_rods.renderPart("Column");
+			GlStateManager.translate(0, 1, 0);
 		}
-		
+		GlStateManager.popMatrix();
+	}
+
+	private void renderControlLid(TileEntityRBMKControl control, float partialTicks) {
+		GlStateManager.pushMatrix();
+
+		// Calculate animated lid position
 		double level = control.lastLevel + (control.level - control.lastLevel) * partialTicks;
-		
-		GL11.glTranslated(0, TileEntityRBMKBase.rbmkHeight+level, 0);
+		GlStateManager.translate(0, TileEntityRBMKBase.rbmkHeight + level, 0);
+
+		// Bind lid texture
+		ResourceLocation lidTexture = (control.getBlockType() instanceof RBMKBase)
+				? ((RBMKBase) control.getBlockType()).coverTexture
+				: texture;
+		Minecraft.getMinecraft().getTextureManager().bindTexture(lidTexture);
+
+		// Render lid
 		ResourceManager.rbmk_rods.renderPart("Lid");
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 	}
 }

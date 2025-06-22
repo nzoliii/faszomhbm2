@@ -1,7 +1,7 @@
 {   "parent": "block/thin_block",
     "textures": {
-        "particle": "hbm:blocks/contamination/snow/waste_snow_5",
-        "texture": "hbm:blocks/contamination/snow/waste_snow_5"
+        "particle": "hbm:blocks/contamination/snow/waste_snow_block_5",
+        "texture": "hbm:blocks/contamination/snow/waste_snow_block_5"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

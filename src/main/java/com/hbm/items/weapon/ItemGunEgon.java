@@ -1,11 +1,5 @@
 package com.hbm.items.weapon;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.items.ModItems;
@@ -20,11 +14,10 @@ import com.hbm.particle.gluon.ParticleGluonBurnTrail;
 import com.hbm.particle.gluon.ParticleGluonFlare;
 import com.hbm.particle.gluon.ParticleGluonMuzzleSmoke;
 import com.hbm.particle.tau.ParticleTauParticle;
-import com.hbm.render.RenderHelper;
+import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.item.weapon.ItemRenderGunEgon;
 import com.hbm.sound.GunEgonSoundHandler;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
@@ -44,6 +37,11 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class ItemGunEgon extends ItemGunBase {
 
@@ -215,8 +213,8 @@ public class ItemGunEgon extends ItemGunBase {
 		GlStateManager.color(0.9F, 0.9F, 0F, 1F);
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-		RenderHelper.drawGuiRect(x - 2F, y - 2F, 0, 0, 4, 4, 1, 1);
-		RenderHelper.resetColor();
+		NTMRenderHelper.drawGuiRect(x - 2F, y - 2F, 0, 0, 4, 4, 1, 1);
+		NTMRenderHelper.resetColor();
 		GlStateManager.disableBlend();
 	}
 }

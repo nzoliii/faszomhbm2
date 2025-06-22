@@ -1,22 +1,29 @@
 package com.hbm.inventory;
 
-
-import java.util.HashMap;
-
-import com.hbm.forgefluid.ModForgeFluids;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+import com.hbm.blocks.ModBlocks;
+import com.hbm.inventory.fluid.FluidStack;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.trait.FT_Flammable;
 import com.hbm.items.ItemEnums;
 import com.hbm.items.ModItems;
-import com.hbm.util.Tuple.Pair;
-
-import net.minecraftforge.fluids.Fluid;
+import com.hbm.items.machine.ItemFluidIcon;
+import com.hbm.util.Tuple;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidRegistry;
 
-public class SolidificationRecipes {
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.hbm.inventory.fluid.Fluids.*;
+
+public class SolidificationRecipes extends SerializableRecipe {
 
     public static final int SF_OIL =		200;
     public static final int SF_CRACK =		200;
@@ -46,108 +53,135 @@ public class SolidificationRecipes {
     //aromatics can be idfk wax or soap or sth, perhaps artificial lubricant?
     //on that note, add more leaded variants
 
-    public static HashMap<Fluid, Pair<Integer, ItemStack>> recipes = new HashMap<>();
+    private static HashMap<FluidType, Tuple.Pair<Integer, ItemStack>> recipes = new HashMap();
 
+    @Override
+    public void registerDefaults() {
 
-    public static void registerDefaults() {
+        registerRecipe(WATER,		1000,			Blocks.ICE);
+        registerRecipe(LAVA,		1000,			Blocks.OBSIDIAN);
+        registerRecipe(MERCURY,		125,			ModItems.nugget_mercury);
+        registerRecipe(BIOGAS,		250,			ModItems.biomass_compressed);
+        registerRecipe(SALIENT,		1280,			new ItemStack(ModItems.bio_wafer, 8)); //4 (food val) * 2 (sat mod) * 2 (constant) * 10 (quanta) * 8 (batch size)
+        registerRecipe(ENDERJUICE,	100,			Items.ENDER_PEARL);
+        registerRecipe(REDMUD,		1000,			Items.IRON_INGOT);
+        registerRecipe(SLOP,		250,			ModBlocks.ore_oil_sand);
 
-        registerRecipe(FluidRegistry.WATER,		    1000,			Blocks.ICE);
-        registerRecipe(FluidRegistry.LAVA,		    1000,			Blocks.OBSIDIAN);
-        registerRecipe(ModForgeFluids.MERCURY,		125,			ModItems.nugget_mercury);
-        registerRecipe(ModForgeFluids.BIOGAS,		250,			ModItems.biomass_compressed);
-//        registerRecipe(SALIENT,		1280,			new ItemStack(ModItems.bio_wafer, 8)); //4 (food val) * 2 (sat mod) * 2 (constant) * 10 (quanta) * 8 (batch size)
-        registerRecipe(ModForgeFluids.ENDERJUICE,	250,			Items.ENDER_PEARL);
-//        registerRecipe(REDMUD,		1000,			Items.IRON_INGOT);
-//        registerRecipe(SLOP,		250,			ModBlocks.ore_oil_sand);
+        registerRecipe(OIL,				SF_OIL,			OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
+        registerRecipe(CRACKOIL,		SF_CRACK,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRACK));
+        registerRecipe(COALOIL,			SF_COALOIL,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.COAL));
+        registerRecipe(HEAVYOIL,		SF_HEAVY,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
+        registerRecipe(HEAVYOIL_VACUUM,	SF_HEAVY,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
+        registerRecipe(BITUMEN,			SF_BITUMEN,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
+        registerRecipe(COALCREOSOTE,	SF_CREOSOTE,	OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.COAL));
+        registerRecipe(WOODOIL,			SF_WOOD,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.WOOD));
+        registerRecipe(LUBRICANT,		SF_LUBE,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.PARAFFIN));
 
-        registerRecipe(ModForgeFluids.OIL,				SF_OIL,			OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
-        registerRecipe(ModForgeFluids.CRACKOIL,		    SF_CRACK,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRACK));
-        registerRecipe(ModForgeFluids.COALOIL,			SF_COALOIL,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.COAL));
-        registerRecipe(ModForgeFluids.HEAVYOIL,		    SF_HEAVY,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
-        registerRecipe(ModForgeFluids.HEAVYOIL_VACUUM,	SF_HEAVY,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
-        registerRecipe(ModForgeFluids.BITUMEN,			SF_BITUMEN,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.CRUDE));
-        registerRecipe(ModForgeFluids.COALCREOSOTE,	    SF_CREOSOTE,	OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.COAL));
-        registerRecipe(ModForgeFluids.WOODOIL,			SF_WOOD,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.WOOD));
-        registerRecipe(ModForgeFluids.LUBRICANT,		SF_LUBE,		OreDictManager.DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.PARAFFIN));
-
-        registerSFAuto(ModForgeFluids.SMEAR);
-        registerSFAuto(ModForgeFluids.HEATINGOIL);
-        registerSFAuto(ModForgeFluids.HEATINGOIL_VACUUM);
-        registerSFAuto(ModForgeFluids.RECLAIMED);
-        registerSFAuto(ModForgeFluids.PETROIL);
-        registerSFAuto(ModForgeFluids.NAPHTHA);
-        registerSFAuto(ModForgeFluids.NAPHTHA_CRACK);
-        registerSFAuto(ModForgeFluids.DIESEL);
-        registerSFAuto(ModForgeFluids.DIESEL_REFORM);
-        registerSFAuto(ModForgeFluids.DIESEL_CRACK);
-        registerSFAuto(ModForgeFluids.DIESEL_CRACK_REFORM);
-        registerSFAuto(ModForgeFluids.LIGHTOIL);
-        registerSFAuto(ModForgeFluids.LIGHTOIL_CRACK);
-        registerSFAuto(ModForgeFluids.LIGHTOIL_VACUUM);
-        registerSFAuto(ModForgeFluids.KEROSENE);
-        registerSFAuto(ModForgeFluids.KEROSENE_REFORM);
-        registerSFAuto(ModForgeFluids.GAS);
-        registerSFAuto(ModForgeFluids.SOURGAS);
-        registerSFAuto(ModForgeFluids.REFORMGAS);
-        registerSFAuto(ModForgeFluids.SYNGAS);
-        registerSFAuto(ModForgeFluids.PETROLEUM);
-//        registerSFAuto(LPG);
-        registerSFAuto(ModForgeFluids.BIOGAS);
-        registerSFAuto(ModForgeFluids.BIOGAS);
-        registerSFAuto(ModForgeFluids.AROMATICS);
-        registerSFAuto(ModForgeFluids.UNSATURATEDS);
-        registerSFAuto(ModForgeFluids.REFORMATE);
-        registerSFAuto(ModForgeFluids.XYLENE);
-        registerSF(ModForgeFluids.BALEFIRE, 24_000L, ModItems.solid_fuel_bf); //holy shit this is energy dense*/
+        registerSFAuto(SMEAR);
+        registerSFAuto(HEATINGOIL);
+        registerSFAuto(HEATINGOIL_VACUUM);
+        registerSFAuto(RECLAIMED);
+        registerSFAuto(PETROIL);
+        registerSFAuto(NAPHTHA);
+        registerSFAuto(NAPHTHA_CRACK);
+        registerSFAuto(DIESEL);
+        registerSFAuto(DIESEL_REFORM);
+        registerSFAuto(DIESEL_CRACK);
+        registerSFAuto(DIESEL_CRACK_REFORM);
+        registerSFAuto(LIGHTOIL);
+        registerSFAuto(LIGHTOIL_CRACK);
+        registerSFAuto(LIGHTOIL_VACUUM);
+        registerSFAuto(KEROSENE);
+        registerSFAuto(KEROSENE_REFORM);
+        //registerSFAuto(GAS);
+        registerSFAuto(SOURGAS);
+        registerSFAuto(REFORMGAS);
+        registerSFAuto(SYNGAS);
+        registerSFAuto(PETROLEUM);
+        registerSFAuto(LPG);
+        //registerSFAuto(BIOGAS);
+        registerSFAuto(BIOFUEL);
+        registerSFAuto(AROMATICS);
+        registerSFAuto(UNSATURATEDS);
+        registerSFAuto(REFORMATE);
+        registerSFAuto(XYLENE);
 
     }
 
-    private static void registerSFAuto(Fluid fluid) {
-        registerSF(fluid, 900L, ModItems.solid_fuel); //3200 burntime * 1.5 burntime bonus * 300 TU/t
+    private static void registerSFAuto(FluidType fluid) {
+        registerSFAuto(fluid, 1_440_000L, ModItems.solid_fuel); //3200 burntime * 1.5 burntime bonus * 300 TU/t
     }
-    private static void registerSF(Fluid fluid, long tuPerSF, Item fuel) {
-        long tuPermBucket = FluidFlameRecipes.getHeatEnergy(fluid);
-        if(tuPermBucket == 0) return;
+    private static void registerSFAuto(FluidType fluid, long tuPerSF, Item fuel) {
+        long tuPerBucket = fluid.getTrait(FT_Flammable.class).getHeatEnergy();
         double penalty = 1.25D;
 
-        int mB = (int) (1000L * tuPerSF * penalty / tuPermBucket);
+        int mB = (int) (tuPerSF * 1000L * penalty / tuPerBucket);
 
         if(mB > 10_000) mB -= (mB % 1000);
         else if(mB > 1_000) mB -= (mB % 100);
         else if(mB > 100) mB -= (mB % 10);
 
         mB = Math.max(mB, 1);
-        if(mB > 24000) return;
+
         registerRecipe(fluid, mB, fuel);
     }
 
-    private static void registerRecipe(Fluid type, int quantity, Item output) { registerRecipe(type, quantity, new ItemStack(output)); }
-    private static void registerRecipe(Fluid type, int quantity, Block output) { registerRecipe(type, quantity, new ItemStack(output)); }
-    private static void registerRecipe(Fluid type, int quantity, ItemStack output) {
-        recipes.put(type, new Pair<Integer, ItemStack>(quantity, output));
+    private static void registerRecipe(FluidType type, int quantity, Item output) { registerRecipe(type, quantity, new ItemStack(output)); }
+    private static void registerRecipe(FluidType type, int quantity, Block output) { registerRecipe(type, quantity, new ItemStack(output)); }
+    private static void registerRecipe(FluidType type, int quantity, ItemStack output) {
+        recipes.put(type, new Tuple.Pair<Integer, ItemStack>(quantity, output));
     }
 
-    public static boolean hasRecipe(Fluid type){
-        return getOutput(type) != null;
-    }
-
-    public static Pair<Integer, ItemStack> getOutput(Fluid type) {
+    public static Tuple.Pair<Integer, ItemStack> getOutput(FluidType type) {
         return recipes.get(type);
     }
 
-//    public static HashMap<ItemStack, ItemStack> getRecipes() {
-//
-//        HashMap<ItemStack, ItemStack> recipes = new HashMap<ItemStack, ItemStack>();
-//
-//        for(Map.Entry<Fluid, Pair<Integer, ItemStack>> entry : SolidificationRecipes.recipes.entrySet()) {
-//
-//            Fluid type = entry.getKey();
-//            int amount = entry.getValue().getKey();
-//            ItemStack out = entry.getValue().getValue().copy();
-//
-//            recipes.put(ItemFluidIcon.make(type, amount), out);
-//        }
-//
-//        return recipes;
-//    }
+    public static HashMap<ItemStack, ItemStack> getRecipes() {
+
+        HashMap<ItemStack, ItemStack> recipes = new HashMap<ItemStack, ItemStack>();
+
+        for(Map.Entry<FluidType, Tuple.Pair<Integer, ItemStack>> entry : SolidificationRecipes.recipes.entrySet()) {
+
+            FluidType type = entry.getKey();
+            int amount = entry.getValue().getKey();
+            ItemStack out = entry.getValue().getValue().copy();
+
+            recipes.put(ItemFluidIcon.make(type, amount), out);
+        }
+
+        return recipes;
+    }
+
+    @Override
+    public String getFileName() {
+        return "hbmSolidifier.json";
+    }
+
+    @Override
+    public Object getRecipeObject() {
+        return recipes;
+    }
+
+    @Override
+    public void deleteRecipes() {
+        recipes.clear();
+    }
+
+    @Override
+    public void readRecipe(JsonElement recipe) {
+        JsonObject obj = (JsonObject) recipe;
+        FluidStack in = this.readFluidStack(obj.get("input").getAsJsonArray());
+        ItemStack out = this.readItemStack(obj.get("output").getAsJsonArray());
+        recipes.put(in.type, new Tuple.Pair(in.fill, out));
+    }
+
+    @Override
+    public void writeRecipe(Object recipe, JsonWriter writer) throws IOException {
+        Map.Entry<FluidType, Tuple.Pair<Integer, ItemStack>> rec = (Map.Entry<FluidType, Tuple.Pair<Integer, ItemStack>>) recipe;
+        FluidStack in = new FluidStack(rec.getKey(), rec.getValue().getKey());
+        writer.name("input");
+        this.writeFluidStack(in, writer);
+        writer.name("output");
+        this.writeItemStack(rec.getValue().getValue(), writer);
+    }
 }

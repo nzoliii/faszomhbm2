@@ -1,13 +1,10 @@
 package com.hbm.items.gear;
 
-import java.util.List;
-
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.JetpackHandler;
 import com.hbm.interfaces.IItemFluidHandler;
 import com.hbm.items.armor.ItemArmorMod;
-
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -20,6 +17,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class JetpackGlider extends ItemArmorMod implements IItemFluidHandler {
 
@@ -70,7 +69,7 @@ public class JetpackGlider extends ItemArmorMod implements IItemFluidHandler {
 	public int fill(ItemStack stack, FluidStack fluid, boolean doFill) {
 		if(fluid == null)
 			return 0;
-		if(fluid.getFluid() == ModForgeFluids.KEROSENE || fluid.getFluid() == ModForgeFluids.BALEFIRE || fluid.getFluid() == ModForgeFluids.NITAN){
+		if(fluid.getFluid() == ModForgeFluids.kerosene || fluid.getFluid() == ModForgeFluids.balefire || fluid.getFluid() == ModForgeFluids.nitan){
 			FluidTank tank = getTank(stack);
 			int fill = tank.fill(fluid, doFill);
 			if(doFill)

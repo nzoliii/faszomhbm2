@@ -9,7 +9,6 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.modules.ModulePatternMatcher;
 import com.hbm.tileentity.IGUIProvider;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;

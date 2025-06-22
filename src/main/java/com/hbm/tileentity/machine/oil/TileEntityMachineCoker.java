@@ -1,18 +1,20 @@
 package com.hbm.tileentity.machine.oil;
 
+import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IHeatSource;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.interfaces.ITankPacketAcceptor;
 import com.hbm.inventory.CokerRecipes;
 import com.hbm.inventory.container.ContainerMachineCoker;
+import com.hbm.inventory.fluid.FluidStack;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.gui.GUIMachineCoker;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
+import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
-import com.hbm.util.Tuple.Triplet;
-
+import com.hbm.util.Tuple;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -23,16 +25,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityMachineCoker extends TileEntityMachineBase implements ITickable, IGUIProvider, IFluidHandler, ITankPacketAcceptor {
+public class TileEntityMachineCoker extends TileEntityMachineBase implements IFluidStandardTransceiver, IGUIProvider, IFluidCopiable, ITickable {
 
     public boolean wasOn;
     public int progress;
@@ -42,13 +38,13 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
     public static int maxHeat = 100_000;
     public static double diffusion = 0.25D;
 
-    public FluidTank[] tanks;
+    public FluidTankNTM[] tanks;
 
     public TileEntityMachineCoker() {
-        super(1);
-        tanks = new FluidTank[2];
-        tanks[0] = new FluidTank(16_000); //Input
-        tanks[1] = new FluidTank(8_000); //Output
+        super(2);
+        tanks = new FluidTankNTM[2];
+        tanks[0] = new FluidTankNTM(Fluids.HEAVYOIL, 16_000);
+        tanks[1] = new FluidTankNTM(Fluids.OIL_COKER, 8_000);
     }
 
     @Override
@@ -62,6 +58,13 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
         if(!world.isRemote) {
 
             this.tryPullHeat();
+            this.tanks[0].setType(0, inventory);
+
+            if(world.getTotalWorldTime() % 20 == 0) {
+                for(DirPos pos : getConPos()) {
+                    this.trySubscribe(tanks[0].getTankType(), world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
+                }
+            }
 
             this.wasOn = false;
 
@@ -75,42 +78,40 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
 
                     if(progress >= processTime) {
                         this.markDirty();
-                        progress -= processTime;
+                        progress -= this.processTime;
 
-                        if (tanks[0].getFluid() != null){
-                            Triplet<Integer, ItemStack, FluidStack> recipe = CokerRecipes.getOutput(tanks[0].getFluid().getFluid());
-                            int fillReq = recipe.getX();
-                            ItemStack output = recipe.getY();
-                            FluidStack byproduct = recipe.getZ();
+                        Tuple.Triplet<Integer, ItemStack, FluidStack> recipe = CokerRecipes.getOutput(tanks[0].getTankType());
+                        int fillReq = recipe.getX();
+                        ItemStack output = recipe.getY();
+                        FluidStack byproduct = recipe.getZ();
 
-                            if (output != null) {
-                                if (inventory.getStackInSlot(0).isEmpty()) {
-                                    inventory.setStackInSlot(0, output.copy());
-                                } else {
-                                    inventory.getStackInSlot(0).grow(output.getCount());
-                                }
+                        if(output != null) {
+                            if(inventory.getStackInSlot(1).isEmpty()) {
+                                inventory.setStackInSlot(1, output.copy());
+                            } else {
+                                inventory.getStackInSlot(1).grow(output.getCount());
                             }
-
-                            if (byproduct != null) {
-                                tanks[1].fill(byproduct, true);
-                            }
-
-                            tanks[0].drain(fillReq, true);
                         }
+
+                        if(byproduct != null) {
+                            tanks[1].setFill(tanks[1].getFill() + byproduct.fill);
+                        }
+
+                        tanks[0].setFill(tanks[0].getFill() - fillReq);
                     }
                 }
             }
 
             for(DirPos pos : getConPos()) {
-                if(tanks[1].getFluidAmount() > 0)
-                    FFUtils.fillFluid(this, tanks[1], world, pos.getPos(), 4000);
+                if(this.tanks[1].getFill() > 0) this.sendFluid(tanks[1], world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
             }
 
             NBTTagCompound data = new NBTTagCompound();
             data.setBoolean("wasOn", this.wasOn);
             data.setInteger("heat", this.heat);
             data.setInteger("progress", this.progress);
-            data.setTag("tanks", FFUtils.serializeTankArray(tanks));
+            tanks[0].writeToNBT(data, "t0");
+            tanks[1].writeToNBT(data, "t1");
             this.networkPack(data, 25);
         } else {
 
@@ -148,8 +149,7 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
     }
 
     public boolean canProcess() {
-        if(tanks[0].getFluid() == null) return false;
-        Triplet<Integer, ItemStack, FluidStack> recipe = CokerRecipes.getOutput(tanks[0].getFluid().getFluid());
+        Tuple.Triplet<Integer, ItemStack, FluidStack> recipe = CokerRecipes.getOutput(tanks[0].getTankType());
 
         if(recipe == null) return false;
 
@@ -157,15 +157,15 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
         ItemStack output = recipe.getY();
         FluidStack byproduct = recipe.getZ();
 
-        if(tanks[0].getFluidAmount() < fillReq) return false;
-        if(byproduct != null && tanks[1].getFluid() != null) {
-            if(byproduct.getFluid() != tanks[1].getFluid().getFluid()) return false;
-            if(byproduct.amount + tanks[1].getFluidAmount() > tanks[1].getCapacity()) return false;
-        }
-        if(output != null && !inventory.getStackInSlot(0).isEmpty()) {
-            if(output.getItem() != inventory.getStackInSlot(0).getItem()) return false;
-            if(output.getItemDamage() != inventory.getStackInSlot(0).getItemDamage()) return false;
-            return output.getCount() + inventory.getStackInSlot(0).getCount() <= output.getMaxStackSize();
+        if(byproduct != null) tanks[1].setTankType(byproduct.type);
+
+        if(tanks[0].getFill() < fillReq) return false;
+        if(byproduct != null && byproduct.fill + tanks[1].getFill() > tanks[1].getMaxFill()) return false;
+
+        if(output != null && !inventory.getStackInSlot(1).isEmpty()) {
+            if(output.getItem() != inventory.getStackInSlot(1).getItem()) return false;
+            if(output.getItemDamage() != inventory.getStackInSlot(1).getItemDamage()) return false;
+            return output.getCount() + inventory.getStackInSlot(1).getCount() <= output.getMaxStackSize();
         }
 
         return true;
@@ -178,18 +178,18 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
         this.wasOn = nbt.getBoolean("wasOn");
         this.heat = nbt.getInteger("heat");
         this.progress = nbt.getInteger("progress");
-        if(nbt.hasKey("tanks")){
-            FFUtils.deserializeTankArray(nbt.getTagList("tanks", 10), tanks);
-        }
+        tanks[0].readFromNBT(nbt, "t0");
+        tanks[1].readFromNBT(nbt, "t1");
     }
 
     protected void tryPullHeat() {
 
-        if(this.heat >= maxHeat) return;
+        if(this.heat >= this.maxHeat) return;
 
         TileEntity con = world.getTileEntity(pos.add(0, -1, 0));
 
-        if(con instanceof IHeatSource source) {
+        if(con instanceof IHeatSource) {
+            IHeatSource source = (IHeatSource) con;
             int diff = source.getHeatStored() - this.heat;
 
             if(diff == 0) {
@@ -200,13 +200,18 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
                 diff = (int) Math.ceil(diff * diffusion);
                 source.useUpHeat(diff);
                 this.heat += diff;
-                if(this.heat > maxHeat)
-                    this.heat = maxHeat;
+                if(this.heat > this.maxHeat)
+                    this.heat = this.maxHeat;
                 return;
             }
         }
 
         this.heat = Math.max(this.heat - Math.max(this.heat / 1000, 1), 0);
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side) {
+        return true;
     }
 
     @Override
@@ -217,24 +222,53 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        if(nbt.hasKey("tanks")){
-            FFUtils.deserializeTankArray(nbt.getTagList("tanks", 10), tanks);
-        }
+        this.tanks[0].readFromNBT(nbt, "t0");
+        this.tanks[1].readFromNBT(nbt, "t1");
         this.progress = nbt.getInteger("prog");
         this.heat = nbt.getInteger("heat");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        nbt.setTag("tanks", FFUtils.serializeTankArray(tanks));
+        this.tanks[0].writeToNBT(nbt, "t0");
+        this.tanks[1].writeToNBT(nbt, "t1");
         nbt.setInteger("prog", progress);
         nbt.setInteger("heat", heat);
         return super.writeToNBT(nbt);
     }
 
     @Override
+    public FluidTankNTM[] getAllTanks() {
+        return tanks;
+    }
+
+    @Override
+    public FluidTankNTM[] getSendingTanks() {
+        return new FluidTankNTM[] { tanks[1] };
+    }
+
+    @Override
+    public FluidTankNTM[] getReceivingTanks() {
+        return new FluidTankNTM[] { tanks[0] };
+    }
+
+    AxisAlignedBB bb = null;
+
+    @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return TileEntity.INFINITE_EXTENT_AABB;
+
+        if(bb == null) {
+            bb = new AxisAlignedBB(
+                    pos.getX() - 2,
+                    pos.getY(),
+                    pos.getZ() - 2,
+                    pos.getX() + 3,
+                    pos.getY() + 23,
+                    pos.getZ() + 3
+            );
+        }
+
+        return bb;
     }
 
     @Override
@@ -252,60 +286,5 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements ITi
     @SideOnly(Side.CLIENT)
     public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
         return new GUIMachineCoker(player.inventory, this);
-    }
-
-    @Override
-    public void recievePacket(NBTTagCompound[] tags) {
-        if(tags.length == 2) {
-            tanks[0].readFromNBT(tags[0]);
-            tanks[1].readFromNBT(tags[1]);
-        }
-    }
-
-    @Override
-    public IFluidTankProperties[] getTankProperties() {
-        return new IFluidTankProperties[] { tanks[0].getTankProperties()[0], tanks[1].getTankProperties()[0] };
-    }
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        if(resource == null) return 0;
-
-        if(CokerRecipes.getOutput(resource.getFluid()) != null && (tanks[0].getFluid() == null || resource.isFluidEqual(tanks[0].getFluid()))) {
-            return tanks[0].fill(resource, doFill);
-        }
-
-        return 0;
-    }
-
-    @Override
-    public FluidStack drain(FluidStack resource, boolean doDrain) {
-        if(resource == null || tanks[1].getFluid() == null || resource.isFluidEqual(tanks[1].getFluid())) {
-            return null;
-        }
-        return tanks[1].drain(resource.amount, doDrain);
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        return tanks[1].drain(maxDrain, doDrain);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-        } else {
-            return super.getCapability(capability, facing);
-        }
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return true;
-        } else {
-            return super.hasCapability(capability, facing);
-        }
     }
 }

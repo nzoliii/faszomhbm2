@@ -1,30 +1,29 @@
 package com.hbm.entity.effect;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.ExplosionNT.ExAttrib;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.init.MobEffects;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntitySpear extends Entity {
 	
@@ -41,7 +40,6 @@ public class EntitySpear extends Entity {
 	protected void entityInit() {
 		world.playSound(null, posX, posY, posZ, HBMSoundHandler.fhbm2_ameno, SoundCategory.HOSTILE, 25000.0F, 1.0F);
 	}
-
 
 	@Override
 	public void onUpdate() {
@@ -66,7 +64,7 @@ public class EntitySpear extends Entity {
 				double iz = posZ + rand.nextGaussian() * 25;
 				double iy = world.getHeight((int)Math.floor(ix), (int)Math.floor(iz)) + 2;
 				
-				ExAttrib at = Vec3.createVectorHelper(ix - posX, 0, iz - posZ).length() < 20 ? ExAttrib.DIGAMMA_CIRCUIT : ExAttrib.DIGAMMA;
+				ExAttrib at = new Vec3d(ix - posX, 0, iz - posZ).length() < 20 ? ExAttrib.DIGAMMA_CIRCUIT : ExAttrib.DIGAMMA;
 				
 				new ExplosionNT(world, this, ix, iy, iz, 7.5F)
 				.addAttrib(ExAttrib.NOHURT)

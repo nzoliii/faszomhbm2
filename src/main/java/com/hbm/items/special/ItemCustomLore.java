@@ -1,15 +1,12 @@
 package com.hbm.items.special;
 
-import java.util.List;
-import java.util.Random;
-
 import com.hbm.config.GeneralConfig;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.ArmorUtil;
+import com.hbm.inventory.material.Mats;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +17,9 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
+import java.util.Random;
 
 public class ItemCustomLore extends Item {
 
@@ -205,6 +205,14 @@ public class ItemCustomLore extends Item {
 				list.add("Explore the other side.");
 			}
 		}
+		if(this == ModItems.crystal_energy) {
+			list.add("Densely packed energy powder.");
+			list.add("Not edible.");
+		}
+		if(this == ModItems.pellet_coolant) {
+			list.add("Required for cyclotron operation.");
+			list.add("Do NOT operate cyclotron without it!");
+		}
 		if(this == ModItems.fuse) {
 			list.add("This item is needed for every large");
 			list.add("nuclear reactor, as it allows the");
@@ -251,18 +259,6 @@ public class ItemCustomLore extends Item {
 				list.add("Contains ~100% Pu238 oxide.");
 			else
 				list.add("RTG fuel pellet for infinite energy! (almost)");
-		}
-
-		if(this == ModItems.rod_lithium) {
-			list.add("Turns into Tritium Rod");
-		}
-
-		if(this == ModItems.rod_dual_lithium) {
-			list.add("Turns into Dual Tritium Rod");
-		}
-
-		if(this == ModItems.rod_quad_lithium) {
-			list.add("Turns into Quad Tritium Rod");
 		}
 		if(this == ModItems.ingot_combine_steel) {
 			/*list.add("\"I mean, it's a verb for crying out loud.");
@@ -462,6 +458,8 @@ public class ItemCustomLore extends Item {
 			this == ModItems.powder_schrabidate || 
 			this == ModItems.powder_schrabidium || 
 
+			this == new ItemStack(ModItems.wire_fine, 1, Mats.MAT_SCHRABIDIUM.id).getItem() ||
+
 			this == ModItems.plate_schrabidium || 
 			this == ModItems.plate_saturnite || 
 			
@@ -480,13 +478,8 @@ public class ItemCustomLore extends Item {
 			this == ModItems.crystal_schrabidium ||
     		this == ModItems.crystal_schraranium ||
     		this == ModItems.crystal_trixite ||
-    		ItemCell.hasFluid(stack, ModForgeFluids.SAS3) ||
-    		this == ModItems.rod_unobtainium || 
-    		this == ModItems.rod_schrabidium || 
-			this == ModItems.rod_dual_schrabidium || 
-			this == ModItems.rod_quad_schrabidium ||
-			this == ModItems.rod_dual_solinium || 
-			this == ModItems.rod_quad_solinium) {
+    		ItemCell.hasFluid(stack, ModForgeFluids.sas3) || 
+    		this == ModItems.rod_unobtainium) {
 			return EnumRarity.RARE;
 		}
 

@@ -1,6 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.container.ContainerLiquefactor;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.oil.TileEntityMachineLiquefactor;
@@ -27,8 +26,8 @@ public class GUILiquefactor extends GuiInfoContainer {
     public void drawScreen(int mouseX, int mouseY, float f) {
         super.drawScreen(mouseX, mouseY, f);
 
-        FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 71, guiTop + 35, 16, 52, liquefactor.tank, liquefactor.fluidType);
-        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 17, 16, 52, liquefactor.power, TileEntityMachineLiquefactor.maxPower);
+        liquefactor.tank.renderTankInfo(this, mouseX, mouseY, guiLeft + 71, guiTop + 36, 16, 52);
+        this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 18, 16, 52, liquefactor.power, liquefactor.maxPower);
         super.renderHoveredToolTip(mouseX, mouseY);
     }
 
@@ -57,6 +56,6 @@ public class GUILiquefactor extends GuiInfoContainer {
         if(i > 0)
             drawTexturedModalRect(guiLeft + 138, guiTop + 4, 176, 52, 9, 12);
 
-        FFUtils.drawLiquid(liquefactor.tank, guiLeft, guiTop, this.zLevel, 16, 52, 71, 116);
+        liquefactor.tank.renderTank(guiLeft + 71, guiTop + 88, this.zLevel, 16, 52);
     }
 }

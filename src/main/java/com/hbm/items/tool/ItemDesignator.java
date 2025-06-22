@@ -1,12 +1,11 @@
 package com.hbm.items.tool;
 
-import java.util.List;
-
+import api.hbm.item.IDesignatorItem;
 import com.hbm.blocks.bomb.LaunchPad;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
-
+import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.I18nUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,11 +17,14 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-public class ItemDesignator extends Item {
+import java.util.List;
+
+public class ItemDesignator extends Item implements IDesignatorItem {
 
 	public ItemDesignator(String s) {
 		this.setTranslationKey(s);
@@ -76,5 +78,15 @@ public class ItemDesignator extends Item {
 		}
     	
         return EnumActionResult.PASS;
+	}
+
+	@Override
+	public boolean isReady(World world, ItemStack stack, int x, int y, int z) {
+		return stack.hasTagCompound();
+	}
+
+	@Override
+	public Vec3d getCoords(World world, ItemStack stack, int x, int y, int z) {
+		return new Vec3d(stack.getTagCompound().getInteger("xCoord"), 0, stack.getTagCompound().getInteger("zCoord"));
 	}
 }

@@ -41,6 +41,9 @@ public class BombConfig {
 	public static boolean disableNuclear = false;
 	public static boolean enableNukeClouds = true;
 	public static boolean enableNukeNBTSaving = true;
+	public static boolean chunkloading = true;
+	public static int explosionAlgorithm = 2;
+
 	
 	public static void loadFromConfig(Configuration config) {
 		final String CATEGORY_NUKES = "03_nukes";
@@ -152,7 +155,7 @@ public class BombConfig {
 		falloutMSProp.setComment("Maximum amount of milliseconds per tick allocated for fallout chunk processing");
 		falloutMS = falloutMSProp.getInt();
 		Property spawnFireP = config.get(CATEGORY_NUKE, "6.05_falloutFireSpawn", false);
-		spawnFireP.setComment("Weither to spawn fire after the nuke. Is off to increase TPS");
+		spawnFireP.setComment("Whether to spawn fire after the nuke. Is off to increase TPS");
 		spawnFire = spawnFireP.getBoolean();
 		//Whether fallout and nuclear radiation is enabled at all
 		Property disableNuclearP = config.get(CATEGORY_NUKE, "6.06_disableNuclear", false);
@@ -164,5 +167,13 @@ public class BombConfig {
 		Property enableNukeNBTSavingP = config.get(CATEGORY_NUKE, "6.08_enableNukeNBTSaving", true);
 		enableNukeNBTSavingP.setComment("If true then nukes will save the blocks they want to destroy so they can resume work rather then restart after a crash/reload. For big nukes this can take a while tho.");
 		enableNukeNBTSaving = enableNukeNBTSavingP.getBoolean();
+
+		Property chunkloadingP = config.get(CATEGORY_NUKE, "6.09_enableMushroomClouds", true);
+		chunkloadingP.setComment("Allows mk5 explosion to generate new chunks.");
+		chunkloading = chunkloadingP.getBoolean(true);
+
+		Property explosionAlgorithmP = config.get(CATEGORY_NUKE, "6.10_explosionAlgorithm", 2);
+		explosionAlgorithmP.setComment("0 = Legacy, 1 = Threaded DDA, 2: Threaded DDA with damage accumulation");
+		explosionAlgorithm = explosionAlgorithmP.getInt();
 	}
 }

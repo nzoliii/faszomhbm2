@@ -1,9 +1,9 @@
 package com.hbm.inventory.container;
 
-
+import api.hbm.energymk2.IBatteryItem;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.items.ModItems;
-
+import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.tileentity.machine.oil.TileEntityMachineCatalyticReformer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -55,31 +55,44 @@ public class ContainerMachineCatalyticReformer extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2)
-    {
+    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2) {
         ItemStack var3 = ItemStack.EMPTY;
         Slot var4 = (Slot) this.inventorySlots.get(par2);
 
-        if (var4 != null && var4.getHasStack())
-        {
+        if(var4 != null && var4.getHasStack()) {
             ItemStack var5 = var4.getStack();
             var3 = var5.copy();
 
-            if (par2 <= 9) {
-                if (!this.mergeItemStack(var5, 10, this.inventorySlots.size(), true))
-                {
+            if(par2 <= 10) {
+                if(!this.mergeItemStack(var5, 11, this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                return ItemStack.EMPTY;
+
+                if(var3.getItem() instanceof IBatteryItem) {
+                    if(!this.mergeItemStack(var5, 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if(var3.getItem() instanceof IItemFluidIdentifier) {
+                    if(!this.mergeItemStack(var5, 9, 10, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else if(var3.getItem() == ModItems.catalytic_converter) {
+                    if(!this.mergeItemStack(var5, 10, 11, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    if(!this.mergeItemStack(var5, 1, 2, false))
+                        if(!this.mergeItemStack(var5, 3, 4, false))
+                            if(!this.mergeItemStack(var5, 5, 6, false))
+                                if(!this.mergeItemStack(var5, 7, 8, false))
+                                    return ItemStack.EMPTY;
+                }
             }
 
-            if (var5.isEmpty())
-            {
+            if(var5.getCount() == 0) {
                 var4.putStack(ItemStack.EMPTY);
-            }
-            else
-            {
+            } else {
                 var4.onSlotChanged();
             }
         }

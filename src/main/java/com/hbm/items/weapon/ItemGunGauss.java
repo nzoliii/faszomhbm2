@@ -1,12 +1,5 @@
 package com.hbm.items.weapon;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.items.ModItems;
@@ -18,20 +11,14 @@ import com.hbm.main.ModEventHandlerClient;
 import com.hbm.main.ResourceManager;
 import com.hbm.packet.GunAnimationPacket;
 import com.hbm.packet.GunFXPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.GunFXPacket.FXType;
-import com.hbm.particle.tau.ParticleTauBeam;
-import com.hbm.particle.tau.ParticleTauHit;
-import com.hbm.particle.tau.ParticleTauLightning;
-import com.hbm.particle.tau.ParticleTauMuzzleLightning;
-import com.hbm.particle.tau.ParticleTauParticleFirstPerson;
-import com.hbm.particle.tau.ParticleTauRay;
-import com.hbm.render.RenderHelper;
+import com.hbm.packet.PacketDispatcher;
+import com.hbm.particle.tau.*;
+import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.render.anim.HbmAnimations.AnimType;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
@@ -53,6 +40,11 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemGunGauss extends ItemGunBase {
 	
@@ -436,8 +428,8 @@ public class ItemGunGauss extends ItemGunBase {
 		GlStateManager.color(0.9F, 0.9F, 0F, 1F);
 		GlStateManager.enableBlend();
 		GlStateManager.tryBlendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE, SourceFactor.ONE, DestFactor.ZERO);
-		RenderHelper.drawGuiRect(x - 2F, y - 2F, 0, 0, 4, 4, 1, 1);
-		RenderHelper.resetColor();
+		NTMRenderHelper.drawGuiRect(x - 2F, y - 2F, 0, 0, 4, 4, 1, 1);
+		NTMRenderHelper.resetColor();
 		GlStateManager.disableBlend();
 	}
 	

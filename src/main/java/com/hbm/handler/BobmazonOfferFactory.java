@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.PlantEnums;
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.gui.GUIScreenBobmazon.Offer;
 import com.hbm.inventory.gui.GUIScreenBobmazon.Requirement;
 import com.hbm.items.ModItems;
@@ -12,7 +14,11 @@ import com.hbm.items.machine.ItemBattery;
 import com.hbm.items.tool.ItemFluidCanister;
 import com.hbm.items.tool.ItemGasCanister;
 
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+
+import static com.hbm.blocks.PlantEnums.*;
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.*;
 
 public class BobmazonOfferFactory {
 
@@ -21,7 +27,7 @@ public class BobmazonOfferFactory {
 	public static List<Offer> weapons = new ArrayList<Offer>();
 	public static List<Offer> tools = new ArrayList<Offer>();
 	public static List<Offer> special = new ArrayList<Offer>();
-	
+
 	public static void reset(){
 		materials.clear();
 		machines.clear();
@@ -29,7 +35,7 @@ public class BobmazonOfferFactory {
 		tools.clear();
 		special.clear();
 	}
-	
+
 	public static void init() {
 
 		int inflation = 5;
@@ -53,12 +59,11 @@ public class BobmazonOfferFactory {
 		materials.add(new Offer(new ItemStack(ModItems.lithium), Requirement.CHEMICS, 6 * inflation));
 		materials.add(new Offer(new ItemStack(ModItems.solid_fuel), Requirement.OIL, 4 * inflation));
 		materials.add(new Offer(new ItemStack(ModItems.lignite), Requirement.STEEL, 2 * inflation));
-		materials.add(new Offer(ItemFluidCanister.getFullCanister(ModForgeFluids.OIL), Requirement.OIL, 4 * inflation));
-		materials.add(new Offer(ItemFluidCanister.getFullCanister(ModForgeFluids.DIESEL), Requirement.OIL, 16 * inflation));
-		materials.add(new Offer(ItemFluidCanister.getFullCanister(ModForgeFluids.PETROIL), Requirement.OIL, 12 * inflation));
-		materials.add(new Offer(ItemFluidCanister.getFullCanister(ModForgeFluids.KEROSENE), Requirement.OIL, 20 * inflation));
-		materials.add(new Offer(ItemFluidCanister.getFullCanister(ModForgeFluids.NITAN), Requirement.OIL, 100 * inflation));
-		materials.add(new Offer(ItemGasCanister.getFullCanister(ModForgeFluids.GAS), Requirement.OIL, 8 * inflation));
+		materials.add(new Offer(new ItemStack(ModItems.canister_generic, 1, Fluids.OIL.getID()), Requirement.OIL, 4 * inflation));
+		materials.add(new Offer(new ItemStack(ModItems.canister_generic, 1, Fluids.DIESEL.getID()), Requirement.OIL, 16 * inflation));
+		materials.add(new Offer(new ItemStack(ModItems.canister_generic, 1, Fluids.PETROIL.getID()), Requirement.OIL, 12 * inflation));
+		materials.add(new Offer(new ItemStack(ModItems.canister_generic, 1, Fluids.KEROSENE.getID()), Requirement.OIL, 20 * inflation));
+		materials.add(new Offer(new ItemStack(ModItems.canister_generic, 1, Fluids.NITAN.getID()), Requirement.OIL, 100 * inflation));
 		materials.add(new Offer(new ItemStack(ModItems.motor), Requirement.ASSEMBLY, 12 * inflation));
 		materials.add(new Offer(new ItemStack(ModItems.rtg_unit), Requirement.NUCLEAR, 25 * inflation));
 		materials.add(new Offer(new ItemStack(ModItems.circuit_aluminium), Requirement.ASSEMBLY, 4 * inflation));
@@ -106,8 +111,6 @@ public class BobmazonOfferFactory {
 		weapons.add(new Offer(new ItemStack(ModItems.designator), Requirement.CHEMICS, 35 * inflation));
 		weapons.add(new Offer(new ItemStack(ModItems.designator_range), Requirement.CHEMICS, 50 * inflation));
 		weapons.add(new Offer(new ItemStack(ModItems.sat_chip), Requirement.CHEMICS, 35 * inflation));
-		weapons.add(new Offer(new ItemStack(ModBlocks.turret_cheapo), Requirement.CHEMICS, 70 * inflation));
-		weapons.add(new Offer(new ItemStack(ModItems.turret_cheapo_ammo), Requirement.ASSEMBLY, 20 * inflation));
 		weapons.add(new Offer(new ItemStack(ModItems.turret_control), Requirement.CHEMICS, 35 * inflation));
 		weapons.add(new Offer(new ItemStack(ModItems.turret_chip), Requirement.CHEMICS, 80 * inflation));
 		weapons.add(new Offer(new ItemStack(ModItems.turret_biometry), Requirement.CHEMICS, 15 * inflation));
@@ -169,6 +172,15 @@ public class BobmazonOfferFactory {
 		tools.add(new Offer(new ItemStack(ModItems.hazmat_red_kit), Requirement.CHEMICS, 100 * inflation));
 		tools.add(new Offer(new ItemStack(ModItems.hazmat_grey_kit), Requirement.OIL, 160 * inflation));
 
+		//Plants
+
+		special.add(new Offer(new ItemStack(Blocks.SAPLING, 1, 3), Requirement.STEEL, 12));
+		special.add(new Offer(new ItemStack(ModBlocks.plant_flower, 1, FOXGLOVE.ordinal()), Requirement.STEEL, 16));
+		special.add(new Offer(new ItemStack(ModBlocks.plant_flower, 1, TOBACCO.ordinal()), Requirement.STEEL, 16));
+		special.add(new Offer(new ItemStack(ModBlocks.plant_flower, 1, NIGHTSHADE.ordinal()), Requirement.STEEL, 16));
+		special.add(new Offer(new ItemStack(ModBlocks.plant_flower, 1, HEMP.ordinal()), Requirement.STEEL, 4));
+		special.add(new Offer(new ItemStack(ModBlocks.plant_flower, 1, MUSTARD_WILLOW_0.ordinal()), Requirement.NUCLEAR, 64));
+
 		special.add(new Offer(new ItemStack(ModItems.nuke_starter_kit), Requirement.HIDDEN, 20 * inflation));
 		special.add(new Offer(new ItemStack(ModItems.nuke_advanced_kit), Requirement.HIDDEN, 30 * inflation));
 		special.add(new Offer(new ItemStack(ModItems.boy_kit), Requirement.HIDDEN, 35 * inflation));
@@ -222,9 +234,9 @@ public class BobmazonOfferFactory {
 		special.add(new Offer(new ItemStack(ModBlocks.ntm_dirt, 1), Requirement.HIDDEN, 160 * inflation));
 		special.add(new Offer(new ItemStack(ModItems.euphemium_kit, 1), Requirement.HIDDEN, 640 * inflation));
 	}
-	
+
 	public static List<Offer> getOffers(ItemStack stack) {
-		
+
 		if(stack != null) {
 			if(stack.getItem() == ModItems.bobmazon_materials)
 				return materials;
@@ -237,7 +249,7 @@ public class BobmazonOfferFactory {
 			if(stack.getItem() == ModItems.bobmazon_hidden)
 				return special;
 		}
-		
+
 		return null;
 	}
 

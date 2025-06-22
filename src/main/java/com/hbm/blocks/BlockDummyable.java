@@ -5,7 +5,6 @@ import com.hbm.interfaces.ICopiable;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.InventoryHelper;
 import com.hbm.main.MainRegistry;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -13,6 +12,7 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,13 +28,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BlockDummyable extends BlockContainer implements ICopiable {
+public abstract class BlockDummyable extends BlockContainer implements ICustomBlockHighlight, ICopiable {
 
 	//Drillgon200: I'm far to lazy to figure out what all the meta values should be translated to in properties
 	public static final PropertyInteger META = PropertyInteger.create("meta", 0, 15);
@@ -227,7 +230,11 @@ public abstract class BlockDummyable extends BlockContainer implements ICopiable
     protected ForgeDirection getDirModified(ForgeDirection dir) {
 		return dir;
 	}
-    
+
+	protected EnumFacing getDirModified(EnumFacing dir) {
+		return dir;
+	}
+
     protected boolean checkRequirement(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		return MultiblockHandlerXR.checkSpace(world, x + dir.offsetX * o , y + dir.offsetY * o, z + dir.offsetZ * o, getDimensions(), x, y, z, dir);
 	}
@@ -409,6 +416,37 @@ public abstract class BlockDummyable extends BlockContainer implements ICopiable
 	
 	public int getHeightOffset() {
 		return 0;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean shouldDrawHighlight(World world, BlockPos pos) {
+		return !this.bounding.isEmpty();
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void drawHighlight(DrawBlockHighlightEvent event, World world, BlockPos pos) {
+
+		int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
+		if(posC == null) return;
+
+		int coreX = posC[0];
+		int coreY = posC[1];
+		int coreZ = posC[2];
+
+		EntityPlayer player = event.getPlayer();
+		float interp = event.getPartialTicks();
+		double dX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) interp;
+		double dY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) interp;
+		double dZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)interp;
+		float exp = 0.002F;
+
+		int meta = world.getBlockState(new BlockPos(coreX, coreY, coreZ)).getValue(META);
+
+		ICustomBlockHighlight.setup();
+		for(AxisAlignedBB aabb : this.bounding) RenderGlobal.drawSelectionBoundingBox(getAABBRotationOffset(aabb.expand(exp, exp, exp), 0, 0, 0, ForgeDirection.getOrientation(meta - offset).getRotation(ForgeDirection.UP)).offset(coreX - dX + 0.5, coreY - dY, coreZ - dZ + 0.5), 0,0,0,1.0F);
+		ICustomBlockHighlight.cleanup();
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.ITankPacketAcceptor;
 import com.hbm.packet.FluidTankPacket;
 import com.hbm.packet.PacketDispatcher;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -45,7 +44,7 @@ public class TileEntityMachineUF6Tank extends TileEntity implements ITickable, I
 			}
 		};
 		tank = new FluidTank(64000);
-		tankType = ModForgeFluids.UF6;
+		tankType = ModForgeFluids.uf6;
 	}
 	
 	public String getInventoryName() {
@@ -72,7 +71,7 @@ public class TileEntityMachineUF6Tank extends TileEntity implements ITickable, I
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		tank.readFromNBT(compound);
-		tankType = ModForgeFluids.UF6;
+		tankType = ModForgeFluids.uf6;
 		if(compound.hasKey("inventory"))
 			inventory.deserializeNBT(compound);
 		super.readFromNBT(compound);

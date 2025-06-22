@@ -1,18 +1,16 @@
 package com.hbm.tileentity.machine;
 
-import java.util.HashMap;
-
+import api.hbm.energymk2.IEnergyProviderMK2;
 import com.hbm.forgefluid.FFUtils;
-import com.hbm.interfaces.ITankPacketAcceptor;
-import com.hbm.lib.Library;
 import com.hbm.forgefluid.ModForgeFluids;
-import com.hbm.inventory.FluidCombustionRecipes;
-import com.hbm.inventory.FluidCombustionRecipes.FuelGrade;
+import com.hbm.interfaces.ITankPacketAcceptor;
+import com.hbm.inventory.EngineRecipes;
+import com.hbm.inventory.EngineRecipes.FuelGrade;
+import com.hbm.lib.ForgeDirection;
+import com.hbm.lib.Library;
 import com.hbm.packet.FluidTankPacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.TileEntityMachineBase;
-
-import api.hbm.energy.IEnergyGenerator;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -29,7 +27,9 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityMachineDiesel extends TileEntityMachineBase implements ITickable, IEnergyGenerator, IFluidHandler, ITankPacketAcceptor {
+import java.util.HashMap;
+
+public class TileEntityMachineDiesel extends TileEntityMachineBase implements ITickable, IEnergyProviderMK2, IFluidHandler, ITankPacketAcceptor {
 
 	public long power;
 	public int soundCycle = 0;
@@ -95,7 +95,9 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 			if (needsUpdate) {
 				needsUpdate = false;
 			}
-			this.sendPower(world, pos);
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+				this.tryProvide(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
+			}
 
 
 			//Tank Management
@@ -104,7 +106,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 					needsUpdate = true;
 
 			Fluid type = tank.getFluid() == null ? null : tank.getFluid().getFluid();
-			if(type != null && type == ModForgeFluids.NITAN)
+			if(type != null && type == ModForgeFluids.nitan)
 				powerCap = maxPower * 10;
 			else
 				powerCap = maxPower;
@@ -139,10 +141,10 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	}
 	
 	public static long getHEFromFuel(Fluid type) {
-		if(FluidCombustionRecipes.hasFuelRecipe(type)) {
-			FuelGrade grade = FluidCombustionRecipes.getFuelGrade(type);
+		if(EngineRecipes.hasFuelRecipe(type)) {
+			FuelGrade grade = EngineRecipes.getFuelGrade(type);
 			double efficiency = fuelEfficiency.containsKey(grade) ? fuelEfficiency.get(grade) : 0;
-			return (long) (FluidCombustionRecipes.getCombustionEnergy(type) / 1000L * efficiency);
+			return (long) (EngineRecipes.getEnergy(type) / 1000L * efficiency);
 		}
 		
 		return 0;

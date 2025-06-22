@@ -19,12 +19,15 @@ public class WorldConfig {
 	public static int asbestosSpawn = 4;
 	public static int rareSpawn = 6;
 	public static int lithiumSpawn = 6;
-	public static int cinnebarSpawn = 1;
+	public static int cinnabarSpawn = 1;
 	public static int oilcoalSpawn = 128;
 	public static int gassshaleSpawn = 5;
 	public static int gasbubbleSpawn = 4;
 	public static int explosivebubbleSpawn = 8;
 	public static int cobaltSpawn = 2;
+	public static int dunaOilSpawn = 100;
+	public static int eveGasSpawn = 100;
+	public static int laytheOilSpawn = 100;
 	
 	public static int ironClusterSpawn = 4;
 	public static int titaniumClusterSpawn = 2;
@@ -97,7 +100,7 @@ public class WorldConfig {
 		gassshaleSpawn = convertToInt(CompatibilityConfig.gassshaleSpawn.get(0));
 		explosivebubbleSpawn = convertToInt(CompatibilityConfig.explosivebubbleSpawn.get(0));
 		gasbubbleSpawn = convertToInt(CompatibilityConfig.gasbubbleSpawn.get(0));
-		cinnebarSpawn = convertToInt(CompatibilityConfig.cinnebarSpawn.get(0));
+		cinnabarSpawn = convertToInt(CompatibilityConfig.cinnabarSpawn.get(0));
 		cobaltSpawn = convertToInt(CompatibilityConfig.cobaltSpawn.get(0));
 		
 		ironClusterSpawn = convertToInt(CompatibilityConfig.ironClusterSpawn.get(0));
@@ -130,6 +133,9 @@ public class WorldConfig {
 		barrelStructure = convertToInt(CompatibilityConfig.barrelStructure.get(0));
 		broadcaster = convertToInt(CompatibilityConfig.broadcaster.get(0));
 		minefreq = convertToInt(CompatibilityConfig.minefreq.get(0));
+		dunaOilSpawn = convertToInt(CompatibilityConfig.dunaOilSpawn.get(0));
+		laytheOilSpawn = convertToInt(CompatibilityConfig.laytheOilSpawn.get(0));
+		eveGasSpawn = convertToInt(CompatibilityConfig.eveGasSpawn.get(0));
 		radfreq = convertToInt(CompatibilityConfig.radfreq.get(0));
 		vaultfreq = convertToInt(CompatibilityConfig.vaultfreq.get(0));
 		geyserWater = convertToInt(CompatibilityConfig.geyserWater.get(0));

@@ -2,7 +2,7 @@
 
 # Description
 The sequel to [FaszomHBM](https://github.com/nzoliii/faszomhbm).<br>
-This mod is based off of [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
+This mod is based off of [MrNorwood's Community Edition mod](https://codeberg.org/MrNorwood/Hbm-s-Nuclear-Tech-CE) which is based off of<br> [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
 which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).<br>
 Due to the amount and complexity of the recipes of this mod [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei) is strongly recommended.
 
@@ -15,13 +15,35 @@ This version of the HBM mods takes things to the next level. You can now hear re
 friends. There are new items exclusive to the FaszomHBM series including nicotine pouches, abált szalonna,<br>
 my pálinka Som, and The Copper Pig. The main menu has been retextured inspired by the Terraria Calamity Mod.<br>
 In summary, this mod aims to be the funniest version of the HBM mods. You can find out the rest of the features by<br>
-downloading this mod from [Curseforge](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
+downloading this mod from [Curseforge (I don't really update the Curseforge page)](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
 
-# Planning
-You can see all of my NTM-related plans [here.](https://github.com/users/nzoliii/projects/3)
+# Development guide:
+For development Java 17 / 21 is used.
 
-# Build Guide
-Download the repository, then open a shell prompt in that folder, then type the following: ```./gradlew build```<br>
-Press enter.<br>
-Wait for gradlew to finish building.<br>
-The build will be located in the ```faszomhbm2/build/libs``` folder.
+We use [Jabel](https://github.com/bsideup/jabel) to target Java 8 bytecode seamlessly (make sure you don't use APIs introduced in Java 9+)
+
+**General quickstart:**
+1. Clone this repository.
+2. Prepare JDK (preferably 17+).
+3. Run task `setupDecompWorkspace` (this will prepare the workspace, including MC sources deobfuscation)
+4. Ensure everything is OK. Run task `runClient` (should open minecraft client with mod loaded)
+
+- Always use `gradlew` (Linux/MACOS) or `gradlew.bat` (Win) and not `gradle` for tasks. So each dev will have consistent environment.
+
+**Development quirks for Apple M-chip machines:**
+
+Since there are no natives for ARM arch, therefore you will have to use x86_64 JDK (the easiest way to get the right one is IntelliJ SDK manager)
+
+You can use one of the following methods:
+- GRADLE_OPTS env variable `export GRADLE_OPTS="-Dorg.gradle.java.home=/path/to/your/desired/jdk"`
+- additional property in gradle.properties (~/.gradle or pwd) `org.gradle.java.home=/path/to/your/desired/jdk`
+- direct usage with -D param in terminal `./gradlew -Dorg.gradle.java.home=/path/to/your/desired/jdk wantedTask`
+
+**Troubleshooting:**
+
+1. If you see that even when using x86_64 JDK in logs gradle treats you as ARM machine. Do following:
+    1. Clear workspace `git fetch; git clean -fdx; git reset --hard HEAD` (IMPORTANT: will sync local to git, and remove all progress)
+    2. Clear gradle cache `rm -rf ~/.gradle` (IMPORTANT: will erase WHOLE gradle cache)
+    3. Clear downloaded JVMs `rm -rf /path/to/used/jvm`
+       (path to used jvm can be found in /run/logs/latest.log like this `Java is OpenJDK 64-Bit Server VM, version 1.8.0_442, running on Mac OS X:x86_64:15.3.2, installed at /this/is/the/path`)
+    4. Repeat quickstart.

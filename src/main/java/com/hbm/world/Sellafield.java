@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@Deprecated()
 public class Sellafield {
 	
 	private double depthFunc(double x, double rad, double depth) {

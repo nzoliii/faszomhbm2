@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import com.hbm.items.weapon.ItemGunGauss;
 import com.hbm.main.ResourceManager;
 import com.hbm.particle.ParticleFirstPerson;
-import com.hbm.render.RenderHelper;
+import com.hbm.render.NTMRenderHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -107,7 +107,7 @@ public class ParticleTauMuzzleLightning extends ParticleFirstPerson {
 		}
 		Tessellator.getInstance().draw();
 		
-		RenderHelper.resetColor();
+		NTMRenderHelper.resetColor();
 		GlStateManager.enableCull();
 		GlStateManager.enableAlpha();
 		GlStateManager.depthMask(true);

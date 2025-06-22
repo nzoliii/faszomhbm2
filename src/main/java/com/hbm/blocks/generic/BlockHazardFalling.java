@@ -1,24 +1,22 @@
 package com.hbm.blocks.generic;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
-import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.hazard.HazardSystem;
-import net.minecraft.item.Item;
-
+import com.hbm.saveddata.RadiationSavedData;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class BlockHazardFalling extends BlockFalling {
-	
+
 	private float rad = 0.0F;
 
 	private boolean beaconable = false;
@@ -28,6 +26,7 @@ public class BlockHazardFalling extends BlockFalling {
 		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.setHarvestLevel("shovel", 0);
+
 		ModBlocks.ALL_BLOCKS.add(this);
 	}
 
@@ -62,9 +61,10 @@ public class BlockHazardFalling extends BlockFalling {
 		}
 		super.updateTick(world, pos, state, rand);
 	}
-	
+
 	@Override
 	public int tickRate(World world) {
+
 		if(this.rad > 0)
 			return 20;
 

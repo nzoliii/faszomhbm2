@@ -18,15 +18,14 @@ public class BedrockOreJsonConfig {
 
 	public static final String bedrockOreJsonConfigFile = "hbm_bedrock_ores.json";
 
-	public static HashMap<Integer, HashSet<String>> dimOres = new HashMap();
-	public static HashMap<Integer, Boolean> dimWhiteList = new HashMap();
-	public static HashMap<Integer, Integer> dimOreRarity = new HashMap();
+	public static HashMap<Integer, HashSet<String>> dimOres = new HashMap<>();
+	public static HashMap<Integer, Boolean> dimWhiteList = new HashMap<>();
+	public static HashMap<Integer, Integer> dimOreRarity = new HashMap<>();
 
 	public static void init(){
 		if(!loadFromJson()){
 			clear();
 			setDefaults();
-			writeToJson();
 		}
 	}
 
@@ -36,31 +35,29 @@ public class BedrockOreJsonConfig {
 		dimOreRarity.clear();
 	}
 
-	public static boolean isOreAllowed(int dimID, String ore){
-		HashSet<String> ores = dimOres.get(dimID);
-		boolean isInList = ores.contains(ore);
-		if(!dimWhiteList.get(dimID)) isInList = !isInList;
-		return isInList;
+	public static boolean isOreAllowed(int dimID, String ore) {
+		if (!dimWhiteList.containsKey(dimID)) return true;
+		return dimOres.get(dimID).contains(ore);
 	}
 
 	public static void setDefaults() {
 		addEntry(0, 15, Arrays.asList(
-			"orePlutonium", 
-			"oreQuartz", 
-			"oreInfernalCoal", 
-			"oreRedPhosphorus", 
-			"oreSchrabidium", 
-			"oreNeodymium", 
+			"orePlutonium",
+			"oreQuartz",
+			"oreInfernalCoal",
+			"oreRedPhosphorus",
+			"oreSchrabidium",
+			"oreNeodymium",
 			"oreNitanium",
 			"oreDesh",
 			"oreCheese",
 			"oreMercury",
-			"oreCarbon", 
-			"oreCrystal", 
+			"oreCarbon",
+			"oreCrystal",
 			"oreWhiteGem",
 			"oreRedGem",
-			"oreBlueGem", 
-			"oreDarkIron", 
+			"oreBlueGem",
+			"oreDarkIron",
 			"oreDenseCoal",
 			"oreBlueDiamond",
 			"oreRedDiamond",
@@ -113,14 +110,12 @@ public class BedrockOreJsonConfig {
 	}
 
 	public static void addEntry(int dimID, int rarity, List<String> ores, Boolean isWhiteList){
-		HashSet<String> set = new HashSet();
-		for(String ore : ores)
-			set.add(ore);
-		dimOres.put(dimID, set);
+		dimOres.put(dimID, new HashSet<>(ores));
 		dimOreRarity.put(dimID, rarity);
 		dimWhiteList.put(dimID, isWhiteList);
 	}
 
+	// foont: who would ever overwrite config if it's wrong. I don't see a reason to have this, in release mod definitely
 	public static void writeToJson(){
 		try {
 			JsonWriter writer = JsonConfig.startWriting(bedrockOreJsonConfigFile);
@@ -176,7 +171,7 @@ public class BedrockOreJsonConfig {
 
 			return true;
 		} catch(Exception ex) {
-			MainRegistry.logger.error("Loading the bedrock ore config resulted in an error");
+			MainRegistry.logger.error("Loading the bedrock ore config resulted in an error. Falling back to defaults.");
 			ex.printStackTrace();
 			return false;
 		}

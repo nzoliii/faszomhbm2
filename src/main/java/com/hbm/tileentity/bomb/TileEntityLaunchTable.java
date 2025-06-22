@@ -1,31 +1,27 @@
 package com.hbm.tileentity.bomb;
 
-import java.util.List;
-
+import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.entity.missile.EntityMissileCustom;
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MissileStruct;
-import com.hbm.interfaces.ITankPacketAcceptor;
 import com.hbm.interfaces.IBomb;
+import com.hbm.interfaces.ITankPacketAcceptor;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.items.weapon.ItemMissile;
 import com.hbm.items.weapon.ItemMissile.FuelType;
 import com.hbm.items.weapon.ItemMissile.PartSize;
+import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
-import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.AuxElectricityPacket;
-import com.hbm.packet.AuxGaugePacket;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.packet.TEMissileMultipartPacket;
+import com.hbm.packet.*;
 import com.hbm.tileentity.TileEntityLoadedBase;
-import net.minecraftforge.fml.common.Optional;
-
-import api.hbm.energy.IEnergyUser;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,27 +33,21 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-import li.cil.oc.api.machine.Arguments;
-import li.cil.oc.api.machine.Callback;
-import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SimpleComponent;
+import java.util.List;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityLaunchTable extends TileEntityLoadedBase implements ITickable, IEnergyUser, IFluidHandler, ITankPacketAcceptor, SimpleComponent {
+public class TileEntityLaunchTable extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, IFluidHandler, ITankPacketAcceptor, SimpleComponent {
 
 	public ItemStackHandler inventory;
 
@@ -199,10 +189,10 @@ public class TileEntityLaunchTable extends TileEntityLoadedBase implements ITick
 	private void updateConnections() {
 
 		for(int i = -4; i <= 4; i++) {
-			this.trySubscribe(world, pos.add(5, 0, i), ForgeDirection.EAST);
-			this.trySubscribe(world, pos.add(-5, 0, i), ForgeDirection.WEST);
-			this.trySubscribe(world, pos.add(i, 0, 5), ForgeDirection.SOUTH);
-			this.trySubscribe(world, pos.add(i, 0, -5), ForgeDirection.NORTH);
+			this.trySubscribe(world, pos.getX() + 5, pos.getY(), pos.getZ() + i, ForgeDirection.EAST);
+			this.trySubscribe(world, pos.getX() - 5, pos.getY(), pos.getZ() + i, ForgeDirection.WEST);
+			this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() + 5, ForgeDirection.SOUTH);
+			this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() - 5, ForgeDirection.NORTH);
 		}
 	}
 	
@@ -377,19 +367,19 @@ public class TileEntityLaunchTable extends TileEntityLoadedBase implements ITick
 		
 		switch((FuelType)fuselage.attributes[0]) {
 			case KEROSENE:
-				tankTypes[0] = ModForgeFluids.KEROSENE;
-				tankTypes[1] = ModForgeFluids.ACID;
+				tankTypes[0] = ModForgeFluids.kerosene;
+				tankTypes[1] = ModForgeFluids.acid;
 				break;
 			case HYDROGEN:
-				tankTypes[0] = ModForgeFluids.HYDROGEN;
-				tankTypes[1] = ModForgeFluids.OXYGEN;
+				tankTypes[0] = ModForgeFluids.hydrogen;
+				tankTypes[1] = ModForgeFluids.oxygen;
 				break;
 			case XENON:
-				tankTypes[0] = ModForgeFluids.XENON;
+				tankTypes[0] = ModForgeFluids.xenon;
 				break;
 			case BALEFIRE:
-				tankTypes[0] = ModForgeFluids.BALEFIRE;
-				tankTypes[1] = ModForgeFluids.ACID;
+				tankTypes[0] = ModForgeFluids.balefire;
+				tankTypes[1] = ModForgeFluids.acid;
 				break;
 			default: break;
 		}

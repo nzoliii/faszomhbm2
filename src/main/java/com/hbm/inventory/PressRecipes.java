@@ -1,28 +1,24 @@
 package com.hbm.inventory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import static com.hbm.inventory.OreDictManager.*;
-import static com.hbm.inventory.material.Mats.*;
-
+import com.hbm.inventory.RecipesCommon.AStack;
+import com.hbm.inventory.RecipesCommon.ComparableStack;
+import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.NTMMaterial;
-import com.hbm.items.machine.ItemCircuit;
-import com.hbm.util.Tuple.Pair;
 import com.hbm.items.ModItems;
-import com.hbm.inventory.RecipesCommon.AStack;
-import com.hbm.inventory.RecipesCommon.NbtComparableStack;
-import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.RecipesCommon.OreDictStack;
-
+import com.hbm.util.Tuple.Pair;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import static com.hbm.inventory.OreDictManager.*;
 
 //TODO: clean this shit up
 //Alcater: on it
@@ -77,12 +73,15 @@ public class PressRecipes {
 		addRecipe(PressType.PLATE, new OreDictStack(BIGMT.ingot()), new ItemStack(ModItems.plate_saturnite));
 
 		for(NTMMaterial mat : Mats.orderedList) {
-			if(mat.shapes.contains(MaterialShapes.WIRE) && OreDictionary.doesOreNameExist(MaterialShapes.INGOT.make(mat))) {
-				addRecipe(PressType.WIRE, new OreDictStack(MaterialShapes.INGOT.make(mat)), new ItemStack(ModItems.wire, 8, mat.id));
+			if(mat.autogen.contains(MaterialShapes.WIRE) && OreDictionary.doesOreNameExist(MaterialShapes.INGOT.make(mat))) {
+				addRecipe(PressType.WIRE, new OreDictStack(MaterialShapes.INGOT.make(mat)), new ItemStack(ModItems.wire_fine, 8, mat.id));
 			}
 		}
 
-		addRecipe(PressType.CIRCUIT, new OreDictStack(SI.billet()),						DictFrame.fromOne(ModItems.circuit, ItemCircuit.EnumCircuitType.SILICON));
+		addRecipe(PressType.CIRCUIT, new ComparableStack(ModItems.circuit_raw), new ItemStack(ModItems.circuit_aluminium));
+		addRecipe(PressType.CIRCUIT, new ComparableStack(ModItems.circuit_bismuth_raw), new ItemStack(ModItems.circuit_bismuth));
+		addRecipe(PressType.CIRCUIT, new ComparableStack(ModItems.circuit_arsenic_raw), new ItemStack(ModItems.circuit_arsenic));
+		addRecipe(PressType.CIRCUIT, new ComparableStack(ModItems.circuit_tantalium_raw), new ItemStack(ModItems.circuit_tantalium));
 
 		addRecipe(PressType.THREEFIFESEVEN, new ComparableStack(ModItems.assembly_iron), new ItemStack(ModItems.gun_revolver_iron_ammo));
 		addRecipe(PressType.THREEFIFESEVEN, new ComparableStack(ModItems.assembly_steel), new ItemStack(ModItems.gun_revolver_ammo));

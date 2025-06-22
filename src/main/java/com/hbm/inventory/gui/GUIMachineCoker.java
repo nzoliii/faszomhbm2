@@ -1,6 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.container.ContainerMachineCoker;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.oil.TileEntityMachineCoker;
@@ -29,13 +28,11 @@ public class GUIMachineCoker extends GuiInfoContainer {
     public void drawScreen(int x, int y, float f) {
         super.drawScreen(x, y, f);
 
-        FFUtils.renderTankInfo(this, x, y, guiLeft + 35, guiTop + 17, 16, 52, refinery.tanks[0]);
-        FFUtils.renderTankInfo(this, x, y, guiLeft + 125, guiTop + 17, 16, 52, refinery.tanks[1]);
+        refinery.tanks[0].renderTankInfo(this, x, y, guiLeft + 35, guiTop + 18, 16, 52);
+        refinery.tanks[1].renderTankInfo(this, x, y, guiLeft + 125, guiTop + 18, 16, 52);
 
-        this.drawCustomInfoStat(x, y, guiLeft + 60, guiTop + 45, 54, 7, x, y, new String[] { String.format(Locale.US, "%,d", refinery.progress) + " / " + String.format(Locale.US, "%,d", TileEntityMachineCoker.processTime) + "TU" });
-        this.drawCustomInfoStat(x, y, guiLeft + 60, guiTop + 54, 54, 7, x, y, new String[] { String.format(Locale.US, "%,d", refinery.heat) + " / " + String.format(Locale.US, "%,d", TileEntityMachineCoker.maxHeat) + "TU" });
-
-        super.renderHoveredToolTip(x, y);
+        this.drawCustomInfoStat(x, y, guiLeft + 60, guiTop + 45, 54, 7, x, y, new String[] { String.format(Locale.US, "%,d", refinery.progress) + " / " + String.format(Locale.US, "%,d", refinery.processTime) + "TU" });
+        this.drawCustomInfoStat(x, y, guiLeft + 60, guiTop + 54, 54, 7, x, y, new String[] { String.format(Locale.US, "%,d", refinery.heat) + " / " + String.format(Locale.US, "%,d", refinery.maxHeat) + "TU" });
     }
 
     @Override
@@ -53,13 +50,13 @@ public class GUIMachineCoker extends GuiInfoContainer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-        int p = refinery.progress * 53 / TileEntityMachineCoker.processTime;
+        int p = refinery.progress * 53 / refinery.processTime;
         drawTexturedModalRect(guiLeft + 61, guiTop + 46, 176, 0, p, 5);
 
-        int h = refinery.heat * 52 / TileEntityMachineCoker.maxHeat;
+        int h = refinery.heat * 52 / refinery.maxHeat;
         drawTexturedModalRect(guiLeft + 61, guiTop + 55, 176, 5, h, 5);
 
-        FFUtils.drawLiquid(refinery.tanks[0], guiLeft, guiTop, this.zLevel, 16, 52, 35, 98);
-        FFUtils.drawLiquid(refinery.tanks[1], guiLeft, guiTop, this.zLevel, 16, 52, 125, 98);
+        refinery.tanks[0].renderTank(guiLeft + 35, guiTop + 70, this.zLevel, 16, 52);
+        refinery.tanks[1].renderTank(guiLeft + 125, guiTop + 70, this.zLevel, 16, 52);
     }
 }

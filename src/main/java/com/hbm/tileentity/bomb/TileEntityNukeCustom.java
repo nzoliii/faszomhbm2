@@ -1,16 +1,12 @@
 package com.hbm.tileentity.bomb;
 
-import java.util.HashMap;
-
-import com.hbm.config.BombConfig;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.config.BombConfig;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.NbtComparableStack;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemCell;
-import com.hbm.items.tool.ItemFluidCanister;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -22,6 +18,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.HashMap;
 
 public class TileEntityNukeCustom extends TileEntity implements ITickable {
 
@@ -84,9 +82,9 @@ public class TileEntityNukeCustom extends TileEntity implements ITickable {
 		entries.put(new ComparableStack(ModItems.ball_dynamite), new CustomNukeEntry(EnumBombType.TNT, 4F));
 		entries.put(new ComparableStack(ModItems.ball_tnt), new CustomNukeEntry(EnumBombType.TNT, 6F));
 		entries.put(new ComparableStack(ModBlocks.det_charge), new CustomNukeEntry(EnumBombType.TNT, 15F));
-		entries.put(new NbtComparableStack(ItemFluidCanister.getFullCanister(ModForgeFluids.DIESEL)), new CustomNukeEntry(EnumBombType.TNT, 0.5F));
+		entries.put(new ComparableStack(ModItems.canister_generic, 1, Fluids.DIESEL.getID()), new CustomNukeEntry(EnumBombType.TNT, 0.5F));
 		entries.put(new ComparableStack(ModItems.canister_napalm), new CustomNukeEntry(EnumBombType.TNT, 2.5F));
-		entries.put(new NbtComparableStack(ItemFluidCanister.getFullCanister(ModForgeFluids.KEROSENE)), new CustomNukeEntry(EnumBombType.TNT, 0.8F));
+		entries.put(new ComparableStack(ModItems.canister_generic, 1, Fluids.KEROSENE.getID()), new CustomNukeEntry(EnumBombType.TNT, 0.8F));
 		entries.put(new ComparableStack(ModBlocks.red_barrel), new CustomNukeEntry(EnumBombType.TNT, 2.5F));
 		entries.put(new ComparableStack(ModBlocks.pink_barrel), new CustomNukeEntry(EnumBombType.TNT, 4F));
 		entries.put(new ComparableStack(ModItems.custom_tnt), new CustomNukeEntry(EnumBombType.TNT, 10F));
@@ -123,8 +121,8 @@ public class TileEntityNukeCustom extends TileEntity implements ITickable {
 		
 
 		//SUPER
-		entries.put(new NbtComparableStack(ItemCell.getFullCell(ModForgeFluids.DEUTERIUM)), new CustomNukeEntry(EnumBombType.HYDRO, 20F));
-		entries.put(new NbtComparableStack(ItemCell.getFullCell(ModForgeFluids.TRITIUM)), new CustomNukeEntry(EnumBombType.HYDRO, 30F));
+		entries.put(new NbtComparableStack(ItemCell.getFullCell(Fluids.DEUTERIUM)), new CustomNukeEntry(EnumBombType.HYDRO, 20F));
+		entries.put(new NbtComparableStack(ItemCell.getFullCell(Fluids.TRITIUM)), new CustomNukeEntry(EnumBombType.HYDRO, 30F));
 		entries.put(new ComparableStack(ModItems.powder_lithium_tiny), new CustomNukeEntry(EnumBombType.HYDRO, 2F));
 		entries.put(new ComparableStack(ModItems.powder_lithium), new CustomNukeEntry(EnumBombType.HYDRO, 20F));
 		entries.put(new ComparableStack(ModItems.lithium), new CustomNukeEntry(EnumBombType.HYDRO, 20F));
@@ -134,7 +132,7 @@ public class TileEntityNukeCustom extends TileEntity implements ITickable {
 
 
 		//ANTIMATTER
-		entries.put(new NbtComparableStack(ItemCell.getFullCell(ModForgeFluids.AMAT)), new CustomNukeEntry(EnumBombType.BALE, 1.05F, EnumEntryType.MULT));
+		entries.put(new NbtComparableStack(ItemCell.getFullCell(Fluids.AMAT)), new CustomNukeEntry(EnumBombType.BALE, 1.05F, EnumEntryType.MULT));
 		entries.put(new ComparableStack(ModItems.particle_amat), new CustomNukeEntry(EnumBombType.BALE, 1.05F, EnumEntryType.MULT));
 		entries.put(new ComparableStack(ModItems.pellet_antimatter), new CustomNukeEntry(EnumBombType.BALE, 1.5F, EnumEntryType.MULT));
 		entries.put(new ComparableStack(ModItems.egg_balefire_shard), new CustomNukeEntry(EnumBombType.BALE, 15F));
@@ -198,8 +196,8 @@ public class TileEntityNukeCustom extends TileEntity implements ITickable {
 		entries.put(new ComparableStack(ModItems.billet_schrabidium), new CustomNukeEntry(EnumBombType.SCHRAB, 3F));
 		entries.put(new ComparableStack(ModItems.nugget_schrabidium), new CustomNukeEntry(EnumBombType.SCHRAB, 0.5F));
 		entries.put(new ComparableStack(ModItems.powder_schrabidium), new CustomNukeEntry(EnumBombType.SCHRAB, 5F));
-		entries.put(new NbtComparableStack(ItemCell.getFullCell(ModForgeFluids.SAS3)), new CustomNukeEntry(EnumBombType.SCHRAB, 7.5F));
-		entries.put(new NbtComparableStack(ItemCell.getFullCell(ModForgeFluids.ASCHRAB)), new CustomNukeEntry(EnumBombType.SCHRAB, 15F));
+		entries.put(new NbtComparableStack(ItemCell.getFullCell(Fluids.SAS3)), new CustomNukeEntry(EnumBombType.SCHRAB, 7.5F));
+		entries.put(new NbtComparableStack(ItemCell.getFullCell(Fluids.ASCHRAB)), new CustomNukeEntry(EnumBombType.SCHRAB, 15F));
 		entries.put(new ComparableStack(ModItems.custom_schrab), new CustomNukeEntry(EnumBombType.SCHRAB, 15F));
 
 		//SOLINIUM

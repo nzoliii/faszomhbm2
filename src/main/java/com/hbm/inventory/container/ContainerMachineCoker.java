@@ -1,5 +1,6 @@
 package com.hbm.inventory.container;
 
+import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.tileentity.machine.oil.TileEntityMachineCoker;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -16,7 +17,8 @@ public class ContainerMachineCoker extends Container {
 
         coker = tedf;
 
-        this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 97, 27));
+        this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 35, 72));
+        this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 1, 97, 27));
 
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 9; j++) {
@@ -30,31 +32,32 @@ public class ContainerMachineCoker extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2)
-    {
+    public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2) {
         ItemStack var3 = ItemStack.EMPTY;
         Slot var4 = (Slot) this.inventorySlots.get(par2);
 
-        if (var4 != null && var4.getHasStack())
-        {
+        if(var4 != null && var4.getHasStack()) {
             ItemStack var5 = var4.getStack();
             var3 = var5.copy();
 
-            if (par2 <= 0) {
-                if (!this.mergeItemStack(var5, 0, this.inventorySlots.size(), true))
-                {
+            if(par2 <= 1) {
+                if(!this.mergeItemStack(var5, 2, this.inventorySlots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
-                return ItemStack.EMPTY;
+
+                if(var3.getItem() instanceof IItemFluidIdentifier) {
+                    if(!this.mergeItemStack(var5, 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    return ItemStack.EMPTY;
+                }
             }
 
-            if (var5.isEmpty())
-            {
-                var4.putStack(ItemStack.EMPTY);
-            }
-            else
-            {
+            if(var5.getCount() == 0) {
+                var4.putStack((ItemStack) ItemStack.EMPTY);
+            } else {
                 var4.onSlotChanged();
             }
         }
