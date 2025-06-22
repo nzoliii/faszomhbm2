@@ -12,7 +12,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -35,7 +37,9 @@ public class EntitySpear extends Entity {
 	}
 
 	@Override
-	protected void entityInit() { }
+	protected void entityInit() {
+		world.playSound(null, posX, posY, posZ, HBMSoundHandler.fhbm2_ameno, SoundCategory.HOSTILE, 25000.0F, 1.0F);
+	}
 
 	@Override
 	public void onUpdate() {
@@ -70,6 +74,7 @@ public class EntitySpear extends Entity {
 				.addAttrib(at).explode();
 				
 				for(EntityPlayer player : world.playerEntities) {
+					player.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 10 * 20, 0));
 					ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 0.05F);
 					AdvancementManager.grantAchievement(player, AdvancementManager.digammaKauaiMoho);
 				}

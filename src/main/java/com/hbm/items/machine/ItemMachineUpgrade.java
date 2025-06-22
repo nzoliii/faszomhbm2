@@ -44,7 +44,7 @@ public class ItemMachineUpgrade extends Item {
 		if(this == ModItems.upgrade_overdrive_1) return 4;
 		if(this == ModItems.upgrade_overdrive_2) return 6;
 		if(this == ModItems.upgrade_overdrive_3) return 8;
-		if(this == ModItems.upgrade_screm) return 10;
+		if(this == ModItems.upgrade_scream) return 10;
 		return 0;
 	}
 
@@ -57,7 +57,7 @@ public class ItemMachineUpgrade extends Item {
 		if(upgrade == ModItems.upgrade_overdrive_1) return 4;
 		if(upgrade == ModItems.upgrade_overdrive_2) return 6;
 		if(upgrade == ModItems.upgrade_overdrive_3) return 8;
-		if(upgrade == ModItems.upgrade_screm) return 10;
+		if(upgrade == ModItems.upgrade_scream) return 10;
 		return 0;
 	}
 
@@ -265,7 +265,7 @@ public class ItemMachineUpgrade extends Item {
 			list.add(" "+I18nUtil.resolveKey("desc.upgrade14"));
 		}
 
-		if(this == ModItems.upgrade_screm)
+		if(this == ModItems.upgrade_scream)
 		{
 			list.add(TextFormatting.GOLD+I18nUtil.resolveKey("desc.upgrade9"));
 			list.add(" "+I18nUtil.resolveKey("desc.upgrade15"));

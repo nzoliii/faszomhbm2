@@ -36,6 +36,9 @@ public class RenderAccessoryUtility {
 	private static ResourceLocation alcater = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capealcater.png");
 	private static ResourceLocation jame = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capejame.png");
 	private static ResourceLocation golem = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/capegolem.png");
+	private static ResourceLocation cringebait = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capecringebait.png");
+	private static ResourceLocation andor2121 = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capeandor2121.png");
+	private static ResourceLocation tuzvarazslo = new ResourceLocation(RefStrings.MODID + ":textures/models/capes/fhbm2_capetuzvarazslo.png");
 	
 	public static ResourceLocation getCloakFromPlayer(EntityPlayer player) {
 		String uuid = player.getUniqueID().toString();
@@ -103,6 +106,15 @@ public class RenderAccessoryUtility {
 		}
 		if(uuid.equals(Library.Golem)) {
 			return golem;
+		}
+		if(uuid.equals(Library.Cringebait)) {
+			return cringebait;
+		}
+		if(uuid.equals(Library.Andor2121)) {
+			return andor2121;
+		}
+		if(uuid.equals(Library.Tuzvarazslo)) {
+			return tuzvarazslo;
 		}
 		if(Library.contributors.contains(uuid)) {
 			return wiki;

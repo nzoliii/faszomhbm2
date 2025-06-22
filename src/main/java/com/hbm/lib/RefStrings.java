@@ -3,7 +3,7 @@ package com.hbm.lib;
 public class RefStrings {
 	public static final String MODID = "hbm";
 	public static final String NAME = "FaszomHBM 2";
-	public static final String VERSION = "V1";
+	public static final String VERSION = "NZCE";
 	public static final String CHANGELOG = "big fucking rebase";
 	//HBM's Beta Naming Convention:
 	//V T (X)

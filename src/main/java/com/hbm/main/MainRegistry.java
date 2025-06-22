@@ -459,7 +459,7 @@ public class MainRegistry {
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 
-		// fhbm2
+		//fhbm2
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
 

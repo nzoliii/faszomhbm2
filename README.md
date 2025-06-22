@@ -2,7 +2,7 @@
 
 # Description
 The sequel to [FaszomHBM](https://github.com/nzoliii/faszomhbm).<br>
-This mod is based off of [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
+This mod is based off of [MrNorwood's Community Edition mod](https://codeberg.org/MrNorwood/Hbm-s-Nuclear-Tech-CE) which is based off of<br> [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
 which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).<br>
 Due to the amount and complexity of the recipes of this mod [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei) is strongly recommended.
 
@@ -15,10 +15,10 @@ This version of the HBM mods takes things to the next level. You can now hear re
 friends. There are new items exclusive to the FaszomHBM series including nicotine pouches, abált szalonna,<br>
 my pálinka Som, and The Copper Pig. The main menu has been retextured inspired by the Terraria Calamity Mod.<br>
 In summary, this mod aims to be the funniest version of the HBM mods. You can find out the rest of the features by<br>
-downloading this mod from [Curseforge](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
+downloading this mod from [Curseforge (I don't really update the Curseforge page)](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
 
 # Development guide:
-For development Java17 / 21 is used.
+For development Java 17 / 21 is used.
 
 We use [Jabel](https://github.com/bsideup/jabel) to target Java 8 bytecode seamlessly (make sure you don't use APIs introduced in Java 9+)
 

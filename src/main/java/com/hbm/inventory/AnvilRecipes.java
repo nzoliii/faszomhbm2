@@ -535,7 +535,7 @@ public class AnvilRecipes {
 		pullFromAssembler(new ComparableStack(ModItems.upgrade_centrifuge), 4);
 		pullFromAssembler(new ComparableStack(ModItems.upgrade_crystallizer), 4);
 		pullFromAssembler(new ComparableStack(ModItems.upgrade_nullifier), 4);
-		pullFromAssembler(new ComparableStack(ModItems.upgrade_screm), 4);
+		pullFromAssembler(new ComparableStack(ModItems.upgrade_scream), 4);
 	}
 
 	public static void registerConstructionRecycling() {

@@ -53,7 +53,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.canister_generic, 1, Fluids.DIESEL.getID()), 1, 2, 2),
 			new WeightedRandomChestContentFrom1710(new ItemStack(ModItems.canister_generic, 1, Fluids.BIOFUEL.getID()), 1, 2, 3),
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_m65, 60, 1, 1, 2),
-			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 3)  };
+			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 3),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] antenna = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.twinkie, 0, 1, 3, 4),
@@ -79,7 +94,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.stealth_boy, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.cap_nuka, 0, 1, 15, 7),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.CARPET), 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 2) };
+			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 2),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] expensive = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.nugget_schrabidium, 0, 1, 1, 1),
@@ -121,7 +151,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.CARPET), 1, 1, 2),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.NAPALM), 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.POISON), 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 4) };
+			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 4),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] nukeTrash = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.nugget_u238, 0, 3, 12, 5),
@@ -138,7 +183,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_m65, 60, 1, 1, 5),
 			new WeightedRandomChestContentFrom1710(ModItems.hazmat_kit, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 5),
-			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.yellow_barrel), 0, 1, 1, 2) };
+			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.yellow_barrel), 0, 1, 1, 2),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] nuclear = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.nugget_u235, 0, 3, 12, 5),
@@ -168,7 +228,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_m65, 60, 1, 1, 5),
 			new WeightedRandomChestContentFrom1710(ModItems.hazmat_kit, 0, 1, 1, 2),
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_filter, 0, 1, 1, 5),
-			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.yellow_barrel), 0, 1, 3, 3) };
+			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.yellow_barrel), 0, 1, 3, 3),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] vertibird = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.t45_helmet, 0, 1, 1, 15),
@@ -196,7 +271,21 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.grenade_nuclear, 0, 1, 2, 2),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.CARPET), 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.NAPALM), 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.POISON), 1, 1, 2) };
+			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.POISON), 1, 1, 2),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),};
 
 	private static WeightedRandomChestContentFrom1710[] missile = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.missile_generic, 0, 1, 1, 4),
@@ -220,7 +309,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.loot_15, 0, 1, 1, 2),
 			new WeightedRandomChestContentFrom1710(ModItems.loot_misc, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.CARPET), 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.ORANGE), 1, 1, 1) };
+			new WeightedRandomChestContentFrom1710(ItemBombCaller.getStack(EnumCallerType.ORANGE), 1, 1, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] spaceship = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.battery_advanced, 0, 1, 1, 5),
@@ -237,7 +341,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.reactor_element), 0, 1, 2, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.block_tungsten), 0, 3, 8, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.red_wire_coated), 0, 4, 8, 5),
-			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.red_cable), 0, 8, 16, 5)};
+			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.red_cable), 0, 8, 16, 5),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] powder = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.powder_neptunium, 0, 1, 32, 1),
@@ -251,7 +370,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.powder_bromine, 0, 1, 32, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.powder_niobium, 0, 1, 32, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.powder_tennessine, 0, 1, 32, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.powder_cerium, 0, 1, 32, 1) };
+			new WeightedRandomChestContentFrom1710(ModItems.powder_cerium, 0, 1, 32, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] vault1 = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(Items.GOLD_INGOT, 0, 3, 14, 1),
@@ -264,7 +398,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.gas_mask_m65, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.grenade_if_he, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.grenade_if_incendiary, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(Items.DIAMOND, 0, 1, 2, 1) };
+			new WeightedRandomChestContentFrom1710(Items.DIAMOND, 0, 1, 2, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] vault2 = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.ingot_desh, 0, 2, 6, 1),
@@ -280,7 +429,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.gun_uzi_silencer, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.clip_uzi, 0, 1, 3, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.circuit_red_copper, 0, 12, 16, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.circuit_gold, 0, 2, 6, 1) };
+			new WeightedRandomChestContentFrom1710(ModItems.circuit_gold, 0, 2, 6, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] vault3 = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.ingot_desh, 0, 6, 16, 1),
@@ -300,7 +464,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.clip_revolver_pip, 0, 2, 4, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.circuit_red_copper, 0, 18, 32, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.circuit_gold, 0, 6, 12, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.nugget_schrabidium, 0, 6, 12, 1) };
+			new WeightedRandomChestContentFrom1710(ModItems.nugget_schrabidium, 0, 6, 12, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 
 	private static WeightedRandomChestContentFrom1710[] vault4 = new WeightedRandomChestContentFrom1710[] {
 			new WeightedRandomChestContentFrom1710(ModItems.ammo_container, 0, 3, 6, 1),
@@ -321,7 +500,22 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.loot_10, 0, 1, 1, 3),
 			new WeightedRandomChestContentFrom1710(ModItems.loot_15, 0, 1, 1, 2),
 			new WeightedRandomChestContentFrom1710(ModItems.loot_misc, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.powder_nitan_mix, 0, 16, 32, 1) };
+			new WeightedRandomChestContentFrom1710(ModItems.powder_nitan_mix, 0, 16, 32, 1),
+
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_arasaka, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_black, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_crazy_mix, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_emerald, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_dragonfire, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_iceberg_sour_berries, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_copper_pig_fragment, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
+	};
 	
 	/**
 	 * @param i

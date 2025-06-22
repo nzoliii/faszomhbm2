@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "hbm:items/upgrade_screm"
+		"layer0": "hbm:items/hard_drive_full"
 	}
 }

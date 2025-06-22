@@ -416,7 +416,7 @@ public class ModItems {
 	public static final Item upgrade_centrifuge = new ItemMachineUpgrade("upgrade_centrifuge").setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
 	public static final Item upgrade_crystallizer = new ItemMachineUpgrade("upgrade_crystallizer").setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
 	public static final Item upgrade_nullifier = new ItemMachineUpgrade("upgrade_nullifier", UpgradeType.NULLIFIER, 1).setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
-	public static final Item upgrade_screm = new ItemMachineUpgrade("upgrade_screm", UpgradeType.SCREAM, 1).setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
+	public static final Item upgrade_scream = new ItemMachineUpgrade("upgrade_scream", UpgradeType.SCREAM, 1).setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
 	public static final Item upgrade_ejector_1 = new ItemMachineUpgrade("upgrade_ejector_1").setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
 	public static final Item upgrade_ejector_2 = new ItemMachineUpgrade("upgrade_ejector_2").setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
 	public static final Item upgrade_ejector_3 = new ItemMachineUpgrade("upgrade_ejector_3").setMaxStackSize(1).setCreativeTab(MainRegistry.controlTab);
@@ -3485,6 +3485,22 @@ public class ModItems {
 	
 	public static final Item mysteryshovel = new ItemMS("mysteryshovel").setFull3D().setMaxStackSize(1).setCreativeTab(CreativeTabs.TOOLS);
 	public static final Item memory = new ItemBattery(Long.MAX_VALUE / 100L, 100000000000000L, 100000000000000L, "memory").setMaxStackSize(1).setCreativeTab(null);
+
+	//fhbm2
+	public static final Item fhbm2_iceberg_arasaka = new fhbm2Consumables(3, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_black = new fhbm2Consumables(3, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_crazy_mix = new fhbm2Consumables(3, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_dragonfire = new fhbm2Consumables(3, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_emerald = new fhbm2Consumables(3, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_sour_berries = new fhbm2Consumables(3, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_mini_pablo = new fhbm2Consumables(3, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_zyn = new fhbm2Consumables(3, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_som = new fhbm2Consumables(3, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_abalt_salonna = new fhbm2Consumables(3, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_copper_pig_fragment = new fhbm2Consumables(3, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_bucket_abale_old = new fhbm2Consumables(3, "fhbm2_bucket_abale_old").setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
+	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 
     public static void preInit(){
 		for(Item item : ALL_ITEMS){

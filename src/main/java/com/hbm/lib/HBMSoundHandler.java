@@ -192,7 +192,7 @@ public final class HBMSoundHandler {
     public static SoundEvent glauncher;
     public static SoundEvent hksShoot;
     public static SoundEvent vice;
-    public static SoundEvent screm;
+    public static SoundEvent scream;
     public static SoundEvent upgradePlug;
     public static SoundEvent quadroReload;
     public static SoundEvent fstbmbStart;
@@ -299,9 +299,13 @@ public final class HBMSoundHandler {
     public static SoundEvent[] geigerSounds;
     public static SoundEvent[] voiceSounds;
 
+    public static SoundEvent fhbm2_ameno;
+    public static SoundEvent fhbm2_chime;
+    public static SoundEvent fhbm2_citadel_alert;
+    public static SoundEvent fhbm2_copper_pig_bewitches_the_clueless_player;
+    public static SoundEvent fhbm2_copper_pig_explosion;
+    public static SoundEvent fhbm2_copper_pig_scream;
     public static SoundEvent fhbm2_oppenheimer;
-
-
 
     public static void init() {
 
@@ -480,7 +484,7 @@ public final class HBMSoundHandler {
         glauncher = register("weapon.glauncher");
         hksShoot = register("weapon.hksShoot");
         vice = register("item.vice");
-        screm = register("block.screm");
+        scream = register("block.scream");
         upgradePlug = register("item.upgradePlug");
         tauChargeLoop = register("weapon.tauChargeLoop");
         quadroReload = register("weapon.quadroReload");
@@ -556,6 +560,12 @@ public final class HBMSoundHandler {
         geigerSounds = new SoundEvent[]{geiger1, geiger2, geiger3, geiger4, geiger5, geiger6, geiger7, geiger8};
         voiceSounds = new SoundEvent[]{voices1, voices2, voices3, voices4, voices5, voices6, voices7, voices8};
 
+        fhbm2_ameno = register("fhbm2_ameno");
+        fhbm2_chime = register("fhbm2_chime");
+        fhbm2_citadel_alert = register("fhbm2_citadel_alert");
+        fhbm2_copper_pig_bewitches_the_clueless_player = register("fhbm2_copper_pig_bewitches_the_clueless_player");
+        fhbm2_copper_pig_explosion = register("fhbm2_copper_pig_explosion");
+        fhbm2_copper_pig_scream = register("fhbm2_copper_pig_scream");
         fhbm2_oppenheimer = register("fhbm2_oppenheimer");
     }
 

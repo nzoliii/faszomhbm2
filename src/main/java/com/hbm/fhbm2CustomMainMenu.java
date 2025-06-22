@@ -45,10 +45,10 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         this.buttonList.add(new GuiButton(106, this.width / 2 - 100, yOffset + 84, 98, 20, "Options..."));
         this.buttonList.add(new GuiButton(107, this.width / 2 + 2, yOffset + 84, 98, 20, "Quit Game"));
         this.buttonList.add(new GuiButton(108, this.width / 2 + 104, yOffset + 84, 20, 20, "SM"));
-        this.buttonList.add(new GuiButton(109, this.width / 2 - 100, yOffset + 120, 98, 20, "Wiki"));
-        this.buttonList.add(new GuiButton(110 , this.width / 2 + 2, yOffset + 120, 98, 20, "Tutorial Videos"));
-        this.buttonList.add(new GuiButton(111, this.width / 2 - 100, yOffset + 144, 200, 20, "Source Code"));
-        this.buttonList.add(new GuiButton(112, this.width / 2 - 100, yOffset + 168, 200, 20, "Copper Pig"));
+        // this.buttonList.add(new GuiButton(109, this.width / 2 - 100, yOffset + 120, 98, 20, "Wiki"));
+        // this.buttonList.add(new GuiButton(110 , this.width / 2 + 2, yOffset + 120, 98, 20, "Tutorial Videos"));
+        // this.buttonList.add(new GuiButton(111, this.width / 2 - 100, yOffset + 144, 200, 20, "Source Code"));
+        // this.buttonList.add(new GuiButton(112, this.width / 2 - 100, yOffset + 168, 200, 20, "Copper Pig"));
     }
 
     @Override

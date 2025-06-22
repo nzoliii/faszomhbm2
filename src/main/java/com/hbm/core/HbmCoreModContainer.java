@@ -15,9 +15,9 @@ public class HbmCoreModContainer extends DummyModContainer {
         ModMetadata meta = getMetadata();
         meta.modId = "hbmcore";
         meta.name = "NTMCore";
-        meta.description = "Hbm core mod";
+        meta.description = "HBM Core Mod";
         meta.version = "1.12.2-1.0";
-        meta.authorList = Arrays.asList("Hbm/TheBobcat", "Drillgon200", "TheOriginalGolem");
+        meta.authorList = Arrays.asList("HBMTheBobcat", "Drillgon200", "TheOriginalGolem");
 	}
 	
 	@Override

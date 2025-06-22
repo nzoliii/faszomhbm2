@@ -374,7 +374,7 @@
 	"block.steamEngineOperate": {"category": "block", "sounds": [{"name": "hbm:block/steamengineoperate", "stream": false}]},
 	"block.chungusTurbineRunning": {"category": "block", "sounds": [{"name": "hbm:block/chungusturbine", "stream": false}]},
 	"block.soyuzReady": {"category": "block", "sounds": [{"name": "hbm:block/soyuzReady", "stream": false}]},
-	"block.screm": {"category": "block", "sounds": ["hbm:screm/scream1", "hbm:screm/scream01", "hbm:screm/scream2", "hbm:screm/scream02", "hbm:screm/scream3", "hbm:screm/scream03", "hbm:screm/scream4", "hbm:screm/scream04", "hbm:screm/scream5", "hbm:screm/scream05", "hbm:screm/scream6", "hbm:screm/scream06", "hbm:screm/scream7", "hbm:screm/scream07", "hbm:screm/scream08", "hbm:screm/scream09", "hbm:screm/scream10", "hbm:screm/scream11", "hbm:screm/scream12", "hbm:screm/scream13", "hbm:screm/scream14", "hbm:screm/scream15", "hbm:screm/scream16", "hbm:screm/scream17", "hbm:screm/scream18", "hbm:screm/scream19", "hbm:screm/scream20", "hbm:screm/scream21", "hbm:screm/scream22", "hbm:screm/scream23", "hbm:screm/scream24", "hbm:screm/scream25"]},
+	"block.scream": {"category": "block", "sounds": ["hbm:scream/scream1", "hbm:scream/scream01", "hbm:scream/scream2", "hbm:scream/scream02", "hbm:scream/scream3", "hbm:scream/scream03", "hbm:scream/scream4", "hbm:scream/scream04", "hbm:scream/scream5", "hbm:scream/scream05", "hbm:scream/scream6", "hbm:scream/scream06", "hbm:scream/scream7", "hbm:scream/scream07", "hbm:scream/scream08", "hbm:scream/scream09", "hbm:scream/scream10", "hbm:scream/scream11", "hbm:scream/scream12", "hbm:scream/scream13", "hbm:scream/scream14", "hbm:scream/scream15", "hbm:scream/scream16", "hbm:scream/scream17", "hbm:scream/scream18", "hbm:scream/scream19", "hbm:scream/scream20", "hbm:scream/scream21", "hbm:scream/scream22", "hbm:scream/scream23", "hbm:scream/scream24", "hbm:scream/scream25"]},
 	"block.rbmk_explosion": {"category": "block", "sounds": [{"name": "hbm:block/rbmk_explosion", "stream": false}]},
     "block.rbmk_az5_cover": {"category": "block", "sounds": [{"name": "hbm:block/rbmk_az5_cover", "stream": false}]},
     "block.chungusLever": {"category": "block", "sounds": [{"name": "hbm:block/chunguslever", "stream": false}]},
@@ -390,5 +390,11 @@
 	"entity.rocketIgnition": {"category": "player", "sounds": [{"name": "hbm:entity/rocketIgnition", "stream": false}]},
 	"entity.pipefail": {"category": "player", "sounds": [{"name": "hbm:entity/pipefail", "stream": false}]},
 
-    "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:player/fhbm2_oppenheimer", "stream": false}]}
+    "fhbm2_ameno": {"category": "music", "sounds": [{"name": "hbm:fhbm2_ameno", "stream": true}]},
+    "fhbm2_chime": {"category": "record", "sounds": [{"name": "hbm:fhbm2_chime", "stream": true}]},
+    "fhbm2_citadel_alert": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_citadel_alert", "stream": false}]},
+    "fhbm2_copper_pig_bewitches_the_clueless_player": {"category": "ambient", "sounds": [{"name": "hbm:fhbm2_copper_pig_bewitches_the_clueless_player", "stream": false}]},
+    "fhbm2_copper_pig_explosion": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_explosion", "stream": false}]},
+    "fhbm2_copper_pig_scream": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_scream", "stream": false}]},
+    "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:fhbm2_oppenheimer", "stream": false}]}
 }

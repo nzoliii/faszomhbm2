@@ -221,4 +221,7 @@ public class ModDamageSource extends DamageSource {
     	}
     	return false;
     }
+
+    //fhbm2
+    public static DamageSource unabomber = (new DamageSource("unabomber")).setExplosion();
 }

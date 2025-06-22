@@ -6,8 +6,11 @@ import com.hbm.entity.logic.EntityTomBlast;
 import com.hbm.interfaces.IConstantRenderer;
 import com.hbm.lib.HBMSoundHandler;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -25,14 +28,17 @@ public class EntityTom extends EntityThrowable implements IConstantRenderer {
 	@Override
 	public void onUpdate() {
 
-
 		this.lastTickPosX = this.prevPosX = posX;
 		this.lastTickPosY = this.prevPosY = posY;
 		this.lastTickPosZ = this.prevPosZ = posZ;
 		this.setPosition(posX + this.motionX, posY + this.motionY, posZ + this.motionZ);
 		
 		if(this.ticksExisted % 100 == 0) {
-			world.playSound(null, posX, posY, posZ, HBMSoundHandler.chime, SoundCategory.HOSTILE, 10000, 1.0F);
+			world.playSound(null, posX, posY, posZ, HBMSoundHandler.fhbm2_chime, SoundCategory.HOSTILE, 10000, 1.0F);
+		}
+
+		for(EntityPlayer player : world.playerEntities) {
+			player.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 60 * 20, 0));
 		}
         
 		motionY = -0.5;

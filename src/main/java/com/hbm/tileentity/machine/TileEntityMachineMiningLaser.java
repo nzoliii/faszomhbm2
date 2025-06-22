@@ -180,7 +180,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 					}
 				}
 				if(doesScream()) {
-					world.playSound(null, targetX + 0.5, targetY + 0.5, targetZ + 0.5, HBMSoundHandler.screm, SoundCategory.BLOCKS, 20.0F, 1.0F);
+					world.playSound(null, targetX + 0.5, targetY + 0.5, targetZ + 0.5, HBMSoundHandler.scream, SoundCategory.BLOCKS, 20.0F, 1.0F);
 				}
 			} else {
 				targetY = pos.getY() - 2;
@@ -539,7 +539,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 
 			if(!inventory.getStackInSlot(i).isEmpty()) {
 
-				if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_screm)
+				if(inventory.getStackInSlot(i).getItem() == ModItems.upgrade_scream)
 					return true;
 			}
 		}

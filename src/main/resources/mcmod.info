@@ -3,7 +3,7 @@
     "modid": "hbm",
     "name": "FaszomHBM 2",
     "description": "A mod that adds all kinds of nukes and some other things.",
-    "version": "V1",
+    "version": "NZCE",
     "credits": "\n\n§9HBMMods:§f Creator of the original HBM's Nuclear Tech Mod.\n§9Drillgon200:§f Creator of the original 1.12.2 port.\n§9TheOriginalGolem:§f Fixing bugs in the original 1.12.2 port.\n§9Alcater:§f Creator of NTM Extended Edition.\n§9Sten89:§f Bug tester.\n§9GB_Doge_9000:§f Bug tester.\n§9Hoboy:§f Textures and Models.\n§9Doctor17:§f Russian translations.\n§9grangerave, nrodolphito, nmexikoedi:§f Log spam fix.\n§9Crowbar Collective:§f Gluon gun sounds.\n§970000HP:§f MIRV and configs.\n§9nzoliii:§f Creator of FaszomHBM, vomit sounds.\n§9Hurvinyek, Bojler Gyula:§f Vomit sounds.\n§9Andor2121:§f Cough and vomit sounds.\n§9Oppenheimer:§f Being skibidi.\n§9DM DOKURO:§f Calamity mod music.\n§9ERA:§f Ameno.\n§9Atomic Heritage Foundation:§f Fat Man bomb picture.\n§9igroglaz:§f Gerald bell sound.\n§9DominicKarma:§f Calamity Wrath of Gods sounds.\n§9RE-LOGIC:§f Terraria music.\n§9unnamed boi:§f Calamity mod music piano covers.\n§9Tuzvarazslo:§f Cough and vomit sounds.\n",
     "logoFile": "assets/hbm/textures/branding/fhbm2_modmenu_title.png",
     "mcversion": "${mcversion}",
