@@ -23,8 +23,7 @@ import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.*;
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.items.machine.ItemFFFluidDuct;
-import com.hbm.items.special.ItemBedrockOreNew;
+import com.hbm.inventory.recipes.SerializableRecipe;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
@@ -250,7 +249,7 @@ import net.minecraftforge.fml.relauncher.Side;
 @Spaghetti("Total cluserfuck")
 public class MainRegistry {
 
-	private boolean customMenuDisplayed = false;
+    private boolean customMenuDisplayed = false;
 
 	static {
 		HBMSoundHandler.init();

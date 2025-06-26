@@ -10,7 +10,7 @@ import com.hbm.config.ToolConfig;
 import com.hbm.explosion.ExplosionNT;
 import com.hbm.explosion.ExplosionNT.ExAttrib;
 import com.hbm.inventory.CentrifugeRecipes;
-import com.hbm.inventory.CrystallizerRecipes;
+import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.ShredderRecipes;
 import com.hbm.blocks.generic.BlockStorageCrate;
 import com.hbm.blocks.machine.MachineBattery;

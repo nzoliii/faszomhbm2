@@ -2,7 +2,7 @@ package com.hbm.tileentity.machine.oil;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
-import com.hbm.inventory.HydrotreatingRecipes;
+import com.hbm.inventory.recipes.HydrotreatingRecipes;
 import com.hbm.inventory.container.ContainerMachineHydrotreater;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;

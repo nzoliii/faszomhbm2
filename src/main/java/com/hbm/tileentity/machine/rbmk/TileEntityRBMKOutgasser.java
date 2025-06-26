@@ -3,7 +3,7 @@ package com.hbm.tileentity.machine.rbmk;
 import api.hbm.fluid.IFluidStandardSender;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
-import com.hbm.inventory.RBMKOutgasserRecipes;
+import com.hbm.inventory.recipes.RBMKOutgasserRecipes;
 import com.hbm.inventory.control_panel.DataValue;
 import com.hbm.inventory.control_panel.DataValueFloat;
 import com.hbm.inventory.fluid.FluidStack;

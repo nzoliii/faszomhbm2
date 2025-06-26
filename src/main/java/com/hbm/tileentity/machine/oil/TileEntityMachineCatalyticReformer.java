@@ -3,7 +3,7 @@ package com.hbm.tileentity.machine.oil;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.inventory.ReformingRecipes;
+import com.hbm.inventory.recipes.ReformingRecipes;
 import com.hbm.inventory.container.ContainerMachineCatalyticReformer;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;

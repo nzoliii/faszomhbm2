@@ -49,7 +49,7 @@ public class RecipesCommon {
 	
 	public static abstract class AStack implements Comparable<AStack> {
 
-		protected int stacksize;
+		public int stacksize;
 
 		public boolean isApplicable(ItemStack stack) {
 			return isApplicable(new NbtComparableStack(stack));
@@ -195,8 +195,7 @@ public class RecipesCommon {
 		
 		public String[] getDictKeys() {
 			
-			int[] ids = OreDictionary.getOreIDs(toStack());
-			
+			int[] ids = toStack().isEmpty() ? null : OreDictionary.getOreIDs(toStack());
 			if(ids == null || ids.length == 0)
 				return new String[0];
 			

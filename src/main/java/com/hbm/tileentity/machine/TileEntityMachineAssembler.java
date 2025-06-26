@@ -31,7 +31,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -113,17 +112,17 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 
             //meta below 12 means that it's an old multiblock configuration
             if (this.getBlockMetadata() < 12) {
-                int meta = this.getBlockMetadata();
-                if (meta == 2 || meta == 14) meta = 4;
-                else if (meta == 4 || meta == 13) meta = 3;
-                else if (meta == 3 || meta == 15) meta = 5;
-                else if (meta == 5 || meta == 12) meta = 2;
-                //get old direction
-                ForgeDirection dir = ForgeDirection.getOrientation(meta);
-                //remove tile from the world to prevent inventory dropping
+                 int meta = switch (this.getBlockMetadata()) {
+                    case 2 -> 14;
+                    case 4 -> 13;
+                    case 3 -> 15;
+                    case 5 -> 12;
+                    default -> this.getBlockMetadata() + 10; // Should never happen
+                };
+                ForgeDirection dir = ForgeDirection.getOrientation(meta - 10);
                 world.removeTileEntity(pos);
                 //use fillspace to create a new multiblock configuration
-                world.setBlockState(pos, ModBlocks.machine_assembler.getStateFromMeta(dir.ordinal() + 10), 3);
+                world.setBlockState(pos, ModBlocks.machine_assembler.getStateFromMeta(meta), 3);
                 MultiblockHandlerXR.fillSpace(world, pos.getX(), pos.getY(), pos.getZ(), ((BlockDummyable) ModBlocks.machine_assembler).getDimensions(), ModBlocks.machine_assembler, dir);
                 //load the tile data to restore the old values
                 NBTTagCompound data = new NBTTagCompound();
@@ -213,58 +212,48 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 
 
             int meta = this.getBlockMetadata();
-            TileEntity te = null;
-            TileEntity te2 = null;
+            TileEntity teContainerIn = null;
+            TileEntity teContainerOut = null;
             boolean canFill;
-            if (meta == 2) {
-                te2 = world.getTileEntity(pos.add(-2, 0, 0));
-                te = world.getTileEntity(pos.add(3, 0, -1));
+            if (meta == 14) {
+                teContainerOut = world.getTileEntity(pos.add(-2, 0, 0));
+                teContainerIn = world.getTileEntity(pos.add(3, 0, -1));
             }
-            if (meta == 3) {
-                te2 = world.getTileEntity(pos.add(2, 0, 0));
-                te = world.getTileEntity(pos.add(-3, 0, 1));
+            if (meta == 15) {
+                teContainerOut = world.getTileEntity(pos.add(2, 0, 0));
+                teContainerIn = world.getTileEntity(pos.add(-3, 0, 1));
             }
-            if (meta == 4) {
-                te2 = world.getTileEntity(pos.add(0, 0, 2));
-                te = world.getTileEntity(pos.add(-1, 0, -3));
+            if (meta == 13) {
+                teContainerOut = world.getTileEntity(pos.add(0, 0, 2));
+                teContainerIn = world.getTileEntity(pos.add(-1, 0, -3));
             }
-            if (meta == 5) {
-                te2 = world.getTileEntity(pos.add(0, 0, -2));
-                te = world.getTileEntity(pos.add(1, 0, 3));
+            if (meta == 12) {
+                teContainerOut = world.getTileEntity(pos.add(0, 0, -2));
+                teContainerIn = world.getTileEntity(pos.add(1, 0, 3));
             }
-            canFill = !(te2 instanceof TileEntityDummyPort);
-
+            canFill = !(teContainerOut instanceof TileEntityDummyPort);
             if (!isProgressing) {
-                tryExchangeTemplates(te, te2);
+                tryExchangeTemplates(teContainerOut, teContainerIn);
             }
 
-            if (te != null) {
-                ICapabilityProvider capte = te;
-                if (capte.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY())) {
-                    IItemHandler cap = capte.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY());
-                    if (cap != null) {
-                        tryFillContainerCap(cap, 5);
-                    }
-                }
+            if (teContainerOut != null) {
+                IItemHandler cap = teContainerOut.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY());
+                if (cap != null) tryFillContainerCap(cap, 5);
             }
 
-            if (te2 != null) {
-                ICapabilityProvider capte = te2;
-                if (capte.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY())) {
-                    IItemHandler cap = capte.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY());
+            if (teContainerIn != null) {
+                IItemHandler cap = teContainerIn.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, MultiblockHandler.intToEnumFacing(meta).rotateY());
+                if (cap != null) {
                     int[] slots;
-                    if (te2 instanceof TileEntityMachineBase) {
-                        slots = ((TileEntityMachineBase) te2).getAccessibleSlotsFromSide(MultiblockHandler.intToEnumFacing(meta).rotateY());
-                        tryFillAssemblerCap(cap, slots, (TileEntityMachineBase) te2);
-                    } else if (cap != null) {
-                        if (canFill) {
-                            slots = new int[cap.getSlots()];
-                            for (int i = 0; i < slots.length; i++)
-                                slots[i] = i;
-                            tryFillAssemblerCap(cap, slots, null);
-                        }
+                    if (teContainerIn instanceof TileEntityMachineBase te) {
+                        slots = te.getAccessibleSlotsFromSide(MultiblockHandler.intToEnumFacing(meta).rotateY());
+                        tryFillAssemblerCap(cap, slots, te);
+                    } else if (canFill) {
+                        slots = new int[cap.getSlots()];
+                        for (int i = 0; i < slots.length; i++)
+                            slots[i] = i;
+                        tryFillAssemblerCap(cap, slots, null);
                     }
-
                 }
             }
 
@@ -300,25 +289,25 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
     private void updateConnections() {
         int meta = this.getBlockMetadata();
 
-        if (meta == 5) {
+        if (meta == 12) {
             this.trySubscribe(world, pos.getX() - 2, pos.getY(), pos.getZ(), Library.NEG_X);
             this.trySubscribe(world, pos.getX() - 2, pos.getY(), pos.getZ() + 1, Library.NEG_X);
             this.trySubscribe(world, pos.getX() + 3, pos.getY(), pos.getZ(), Library.POS_X);
             this.trySubscribe(world, pos.getX() + 3, pos.getY(), pos.getZ() + 1, Library.POS_X);
 
-        } else if (meta == 3) {
+        } else if (meta == 15) {
             this.trySubscribe(world, pos.getX(), pos.getY(), pos.getZ() - 2, Library.NEG_Z);
             this.trySubscribe(world, pos.getX() - 1, pos.getY(), pos.getZ() - 2, Library.NEG_Z);
             this.trySubscribe(world, pos.getX(), pos.getY(), pos.getZ() + 3, Library.POS_Z);
             this.trySubscribe(world, pos.getX() - 1, pos.getY(), pos.getZ() + 3, Library.POS_Z);
 
-        } else if (meta == 4) {
+        } else if (meta == 13) {
             this.trySubscribe(world, pos.getX() + 2, pos.getY(), pos.getZ(), Library.POS_X);
             this.trySubscribe(world, pos.getX() + 2, pos.getY(), pos.getZ() - 1, Library.POS_X);
             this.trySubscribe(world, pos.getX() - 3, pos.getY(), pos.getZ(), Library.NEG_X);
             this.trySubscribe(world, pos.getX() - 3, pos.getY(), pos.getZ() - 1, Library.NEG_X);
 
-        } else if (meta == 2) {
+        } else if (meta == 14) {
             this.trySubscribe(world, pos.getX(), pos.getY(), pos.getZ() + 2, Library.POS_Z);
             this.trySubscribe(world, pos.getX() + 1, pos.getY(), pos.getZ() + 2, Library.POS_Z);
             this.trySubscribe(world, pos.getX(), pos.getY(), pos.getZ() - 3, Library.NEG_Z);
@@ -352,53 +341,44 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
         this.recipe = nbt.getInteger("recipe");
     }
 
-    public boolean tryExchangeTemplates(TileEntity te1, TileEntity te2) {
+    public void tryExchangeTemplates(TileEntity teOut, TileEntity teIn) {
         //validateTe sees if it's a valid inventory tile entity
-        boolean te1Valid = validateTe(te1);
-        boolean te2Valid = validateTe(te2);
-
-        if (te1Valid && te2Valid) {
-            IItemHandlerModifiable iTe1 = (IItemHandlerModifiable) te1.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            IItemHandlerModifiable iTe2 = (IItemHandlerModifiable) te2.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            boolean openSlot = false;
-            boolean existingTemplate = false;
-            boolean filledContainer = false;
-            //Check if there's an existing template and an open slot
-            for (int i = 0; i < iTe1.getSlots(); i++) {
-                if (iTe1.getStackInSlot(i).isEmpty()) {
-                    openSlot = true;
-                    break;
-                }
-
+        if (isTeInvalid(teOut) || isTeInvalid(teIn)) return;
+        IItemHandlerModifiable iTeIn = (IItemHandlerModifiable) teOut.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandlerModifiable iTeOut = (IItemHandlerModifiable) teIn.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        boolean openSlot = false;
+        boolean existingTemplate = false;
+        boolean filledContainer = false;
+        //Check if there's an existing template and an open slot
+        for (int i = 0; i < iTeIn.getSlots(); i++) {
+            if (iTeIn.getStackInSlot(i).isEmpty()) {
+                openSlot = true;
+                break;
             }
-            if (!this.inventory.getStackInSlot(4).isEmpty()) {
-                existingTemplate = true;
-            }
-            //Check if there's a template in input
-            for (int i = 0; i < iTe2.getSlots(); i++) {
-                if (iTe2.getStackInSlot(i).getItem() instanceof ItemAssemblyTemplate) {
-                    if (openSlot && existingTemplate) {
-                        filledContainer = tryFillContainerCap(iTe1, 4);
-                    }
-                    if (filledContainer || !existingTemplate) {
-                        ItemStack copy = iTe2.getStackInSlot(i).copy();
-                        iTe2.setStackInSlot(i, ItemStack.EMPTY);
-                        this.inventory.setStackInSlot(4, copy);
-                        return false;
-                    }
-                }
-
-            }
-
         }
-        return false;
-
+        if (!this.inventory.getStackInSlot(4).isEmpty()) {
+            existingTemplate = true;
+        }
+        //Check if there's a template in input
+        for (int i = 0; i < iTeOut.getSlots(); i++) {
+            if (iTeOut.getStackInSlot(i).getItem() instanceof ItemAssemblyTemplate) {
+                if (openSlot && existingTemplate) {
+                    filledContainer = tryFillContainerCap(iTeIn, 4);
+                }
+                if (filledContainer || !existingTemplate) {
+                    ItemStack copy = iTeOut.getStackInSlot(i).copy();
+                    iTeOut.setStackInSlot(i, ItemStack.EMPTY);
+                    this.inventory.setStackInSlot(4, copy);
+                    return;
+                }
+            }
+        }
     }
 
-    private boolean validateTe(TileEntity te) {
+    private boolean isTeInvalid(TileEntity te) {
         if (te != null && te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) && te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null) instanceof IItemHandlerModifiable)
-            return true;
-        return false;
+            return false;
+        return true;
     }
 
     //I can't believe that worked.
@@ -410,7 +390,6 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
                 stack.setStackInSlot(i, array.getStackInSlot(i).copy());
             else
                 stack.setStackInSlot(i, ItemStack.EMPTY);
-        ;
 
         return stack;
     }
@@ -456,7 +435,6 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
             if (inv.getStackInSlot(i) == null && sta2 != null) {
                 sta2.setCount(1);
                 inventory.getStackInSlot(slot).shrink(1);
-                ;
 
                 if (inventory.getStackInSlot(slot).isEmpty())
                     inventory.setStackInSlot(slot, ItemStack.EMPTY);
@@ -545,19 +523,17 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
 
             for (int slot : allowedSlots) {
                 container.getStackInSlot(slot);
-                if (container.getStackInSlot(slot).isEmpty()) { // check next slot in chest if it is empty
-                    continue;
-                } else { // found an item in chest
+                if (!container.getStackInSlot(slot).isEmpty()) { // found an item in chest
                     itemStackMap.put(slot, container.getStackInSlot(slot).copy());
                 }
             }
-            if (itemStackMap.size() == 0) {
+            if (itemStackMap.isEmpty()) {
                 return true;
             }
 
-            for (int ig = 0; ig < recipeIngredients.size(); ig++) {
+            for (AStack recipeIngredient : recipeIngredients) {
 
-                AStack nextIngredient = recipeIngredients.get(ig).copy(); // getting new ingredient
+                AStack nextIngredient = recipeIngredient.copy(); // getting new ingredient
 
                 int ingredientSlot = getValidSlot(nextIngredient);
 
@@ -612,9 +588,9 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
         if (stack == null)
             return false;
 
-        for (int i = 0; i < stack.size(); i++) {
-            for (int j = 0; j < stack.get(i).count(); j++) {
-                AStack sta = stack.get(i).copy();
+        for (AStack aStack : stack) {
+            for (int j = 0; j < aStack.count(); j++) {
+                AStack sta = aStack.copy();
                 sta.singulize();
                 if (!canRemoveItemFromArray(sta, array)) {
                     return false;
@@ -663,10 +639,9 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
             int[] ids2 = OreDictionary.getOreIDs(stack2);
 
             if (ids1.length > 0 && ids2.length > 0) {
-                for (int i = 0; i < ids1.length; i++)
-                    for (int j = 0; j < ids2.length; j++)
-                        if (ids1[i] == ids2[j])
-                            return true;
+                for (int k : ids1)
+                    for (int i : ids2)
+                        if (k == i) return true;
             }
         }
 

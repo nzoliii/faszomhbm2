@@ -5,7 +5,7 @@ import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.capability.HbmCapability;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
-import com.hbm.inventory.CrystallizerRecipes;
+import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerCrystallizer;
 import com.hbm.inventory.fluid.Fluids;

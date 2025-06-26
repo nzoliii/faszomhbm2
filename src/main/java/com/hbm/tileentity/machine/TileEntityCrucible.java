@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.handler.pollution.PollutionHandler;
-import com.hbm.inventory.CrucibleRecipes;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.inventory.container.ContainerCrucible;
 import com.hbm.inventory.gui.GUICrucible;
 import com.hbm.inventory.material.MaterialShapes;
@@ -41,7 +41,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.ItemStackHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -166,7 +165,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                     data.setByte("dir", (byte) dir.ordinal());
                     data.setFloat("off", 0.625F);
                     data.setFloat("base", 0.625F);
-                    data.setFloat("len", Math.max(1F, pos.getY() - (float) (Math.ceil(impact.toBlockPos().getY()) - 0.875)));
+                    data.setFloat("len", Math.max(1F, pos.getY() - (float) (Math.ceil(impact.yCoord) - 0.875)));
                     PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
 
                 }

@@ -4,7 +4,7 @@ import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardSender;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidSource;
-import com.hbm.inventory.LiquefactionRecipes;
+import com.hbm.inventory.recipes.LiquefactionRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerLiquefactor;
 import com.hbm.inventory.fluid.FluidStack;

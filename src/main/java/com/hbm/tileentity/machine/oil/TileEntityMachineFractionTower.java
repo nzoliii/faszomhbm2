@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine.oil;
 
 import api.hbm.fluid.IFluidStandardTransceiver;
-import com.hbm.inventory.FractionRecipes;
+import com.hbm.inventory.recipes.FractionRecipes;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;

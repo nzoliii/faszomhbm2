@@ -1600,7 +1600,7 @@ public class ModItems {
 	
 	
 	//Fuels
-	public static final Item oil_tar = new ItemBase("oil_tar").setCreativeTab(MainRegistry.partsTab);
+	public static final Item oil_tar = new ItemEnumMulti("oil_tar", EnumTarType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel = new ItemFuel("solid_fuel", 3200).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel_presto = new ItemFuel("solid_fuel_presto", 6400).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel_presto_triplet = new ItemFuel("solid_fuel_presto_triplet", 19200).setCreativeTab(MainRegistry.partsTab);
@@ -1611,7 +1611,7 @@ public class ModItems {
 	public static final Item briquette = new ItemEnumMulti("briquette", EnumBriquetteType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	@Deprecated
 	public static final Item briquette_lignite = new ItemFuel("briquette_lignite", 1600).setCreativeTab(MainRegistry.partsTab);
-	public static final Item coke = new ItemFuel("coke", 3200).setCreativeTab(MainRegistry.partsTab);
+	public static final Item coke = new ItemEnumMulti("coke", EnumCokeType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	public static final Item lignite = new ItemFuel("lignite", 1200).setCreativeTab(MainRegistry.partsTab);
 
 	

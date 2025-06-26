@@ -2,7 +2,7 @@ package com.hbm.tileentity.machine.oil;
 
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IHeatSource;
-import com.hbm.inventory.CokerRecipes;
+import com.hbm.inventory.recipes.CokerRecipes;
 import com.hbm.inventory.container.ContainerMachineCoker;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;

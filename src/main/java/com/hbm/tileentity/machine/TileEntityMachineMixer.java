@@ -5,7 +5,7 @@ import api.hbm.fluid.IFluidStandardTransceiver;
 import com.hbm.forgefluid.FFUtils;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
-import com.hbm.inventory.MixerRecipes;
+import com.hbm.inventory.recipes.MixerRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerMixer;
 import com.hbm.inventory.fluid.Fluids;

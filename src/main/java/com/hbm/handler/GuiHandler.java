@@ -26,7 +26,6 @@ import com.hbm.tileentity.bomb.TileEntityNukeSolinium;
 import com.hbm.tileentity.bomb.TileEntityNukeTsar;
 import com.hbm.tileentity.bomb.TileEntityRailgun;
 import com.hbm.tileentity.machine.*;
-import com.hbm.tileentity.machine.oil.*;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBoiler;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControlAuto;
@@ -46,7 +45,6 @@ import com.hbm.tileentity.turret.TileEntityTurretTauon;
 import com.hbm.tileentity.network.TileEntityRadioTorchSender;
 import com.hbm.tileentity.network.TileEntityRadioTorchReceiver;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -162,11 +160,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_railgun:
 			if(entity instanceof TileEntityRailgun) {
 				return new ContainerRailgun(player.inventory, (TileEntityRailgun) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_shredder:
-			if(entity instanceof TileEntityMachineShredder) {
-				return new ContainerMachineShredder(player.inventory, (TileEntityMachineShredder) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_cyclotron:
@@ -661,11 +654,6 @@ public class GuiHandler implements IGuiHandler {
 		case ModBlocks.guiID_railgun:
 			if(entity instanceof TileEntityRailgun) {
 				return new GUIRailgun(player.inventory, (TileEntityRailgun) entity);
-			}
-			return null;
-		case ModBlocks.guiID_machine_shredder:
-			if(entity instanceof TileEntityMachineShredder) {
-				return new GUIMachineShredder(player.inventory, (TileEntityMachineShredder) entity);
 			}
 			return null;
 		case ModBlocks.guiID_machine_cyclotron:

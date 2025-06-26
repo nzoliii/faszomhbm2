@@ -2,7 +2,7 @@ package com.hbm.tileentity.machine.oil;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
-import com.hbm.inventory.SolidificationRecipes;
+import com.hbm.inventory.recipes.SolidificationRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerSolidifier;
 import com.hbm.inventory.fluid.Fluids;

@@ -4,7 +4,11 @@ import baubles.api.BaublesApi;
 import com.google.common.collect.Queues;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockMeta;
+import com.hbm.blocks.generic.BlockOreMeta;
+import com.hbm.blocks.generic.BlockSellafieldSlaked;
 import com.hbm.blocks.generic.TrappedBrick.Trap;
+import com.hbm.blocks.machine.FoundryChannel;
 import com.hbm.capability.HbmCapability;
 import com.hbm.config.GeneralConfig;
 import com.hbm.entity.mob.EntityHunterChopper;
@@ -18,7 +22,7 @@ import com.hbm.handler.*;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.*;
 import com.hbm.inventory.AssemblerRecipes;
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.NbtComparableStack;
 import com.hbm.inventory.fluid.FluidType;
@@ -159,6 +163,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 import java.util.Map.Entry;
+
 
 public class ModEventHandlerClient {
 

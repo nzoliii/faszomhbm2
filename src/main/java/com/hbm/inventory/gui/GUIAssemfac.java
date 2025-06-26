@@ -1,15 +1,13 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerAssemfac;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineAssemfac;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidRegistry;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -37,33 +35,41 @@ public class GUIAssemfac extends GuiInfoContainer {
         assemfac.water.renderTankInfo(this, mouseX, mouseY, guiLeft + 209, guiTop + 181, 9, 54);
         assemfac.steam.renderTankInfo(this, mouseX, mouseY, guiLeft + 218, guiTop + 181, 9, 54);
 
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
 
-            if(assemfac.maxProgress[i] > 0) {
+            if (assemfac.maxProgress[i] > 0) {
                 int progress = assemfac.progress[i] * 16 / assemfac.maxProgress[i];
 
-                if(progress > 0) {
-                    GL11.glDisable(GL11.GL_LIGHTING);
-                    GL11.glDisable(GL11.GL_DEPTH_TEST);
+                if (progress > 0) {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.disableDepth();
+                    GlStateManager.colorMask(true, true, true, false);
+
                     int x = guiLeft + 234;
                     int y = guiTop + 13 + 16 * i;
-                    GL11.glColorMask(true, true, true, false);
                     this.drawGradientRect(x, y, x + progress + 1, y + 16, -2130706433, -2130706433);
-                    GL11.glColorMask(true, true, true, true);
-                    GL11.glEnable(GL11.GL_LIGHTING);
-                    GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+                    GlStateManager.colorMask(true, true, true, true);
+                    GlStateManager.enableLighting();
+                    GlStateManager.enableDepth();
+                    GlStateManager.disableBlend();
+                    GlStateManager.popMatrix();
+
                 }
             }
         }
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int i, int j) { }
+    protected void drawGuiContainerForegroundLayer(int i, int j) {
+    }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float interp, int mX, int mY) {
         super.drawDefaultBackground();
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
@@ -72,14 +78,14 @@ public class GUIAssemfac extends GuiInfoContainer {
         int p = (int) (assemfac.power * 52 / assemfac.getMaxPower());
         drawTexturedModalRect(guiLeft + 234, guiTop + 216 - p, 0, 219 - p, 16, p);
 
-        if(assemfac.power > 0)
+        if (assemfac.power > 0)
             drawTexturedModalRect(guiLeft + 238, guiTop + 150, 0, 219, 9, 12);
 
         assemfac.water.renderTank(guiLeft + 210, guiTop + 234, this.zLevel, 7, 52);
         assemfac.steam.renderTank(guiLeft + 219, guiTop + 234, this.zLevel, 7, 52);
 
-        if(Keyboard.isKeyDown(Keyboard.KEY_LMENU))
-            for(int i = 0; i < this.inventorySlots.inventorySlots.size(); i++) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_LMENU))
+            for (int i = 0; i < this.inventorySlots.inventorySlots.size(); i++) {
                 Slot s = this.inventorySlots.getSlot(i);
 
                 this.fontRenderer.drawStringWithShadow(i + "", guiLeft + s.xPos + 2, guiTop + s.yPos, 0xffffff);

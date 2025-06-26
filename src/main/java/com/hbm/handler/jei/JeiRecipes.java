@@ -1,72 +1,66 @@
 package com.hbm.handler.jei;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.hbm.forgefluid.SpecialContainerFillLists.EnumCell;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.forgefluid.SpecialContainerFillLists.EnumCanister;
+import com.hbm.forgefluid.SpecialContainerFillLists.EnumCell;
 import com.hbm.inventory.*;
 import com.hbm.inventory.AnvilRecipes.AnvilConstructionRecipe;
 import com.hbm.inventory.AnvilRecipes.AnvilOutput;
 import com.hbm.inventory.AnvilRecipes.OverlayType;
-import com.hbm.inventory.BreederRecipes.BreederRecipe;
-import com.hbm.inventory.MachineRecipes.GasCentOutput;
 import com.hbm.inventory.MagicRecipes.MagicRecipe;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.NbtComparableStack;
-import com.hbm.inventory.ChemplantRecipes;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.trait.FT_Heatable;
+import com.hbm.inventory.recipes.*;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemAssemblyTemplate;
+import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.machine.ItemFluidTank;
-import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.items.special.ItemCell;
-import com.hbm.items.tool.ItemFluidCanister;
-import com.hbm.items.tool.ItemGasCanister;
 import com.hbm.lib.Library;
-import com.hbm.util.WeightedRandomObject;
-import com.hbm.util.Tuple.Pair;
+import com.hbm.lib.RefStrings;
+import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
-
-import mezz.jei.api.gui.IDrawableStatic;
+import com.hbm.util.Tuple.Pair;
+import com.hbm.util.WeightedRandomObject;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.VanillaTypes;
 import mezz.jei.api.recipe.IIngredientType;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class JeiRecipes {
 
 	private static List<ChemRecipe> chemRecipes = null;
-	private static List<MixerRecipe> mixerRecipes = null;
 	private static List<CyclotronRecipe> cyclotronRecipes = null;
 	private static List<PressRecipe> pressRecipes = null;
 	private static List<AlloyFurnaceRecipe> alloyFurnaceRecipes = null;
 	private static List<BoilerRecipe> boilerRecipes = null;
 	private static List<CMBFurnaceRecipe> cmbRecipes = null;
-	private static List<GasCentRecipe> gasCentRecipes = null;
+	private static List<GasCentrifugeRecipe> gasCentRecipes = null;
 	private static List<WasteDrumRecipe> wasteDrumRecipes = null;
 	private static List<StorageDrumRecipe> storageDrumRecipes = null;
 	private static List<RBMKFuelRecipe> rbmkFuelRecipes = null;
 	private static List<RefineryRecipe> refineryRecipes = null;
-	private static List<CrackingRecipe> crackingRecipes = null;
-	private static List<FractioningRecipe> fractioningRecipes = null;
 	private static List<FluidRecipe> fluidEquivalences = null;
 	private static List<BookRecipe> bookRecipes = null;
+	private static List<BreederRecipe> breederRecipes = null;
 	private static List<FusionRecipe> fusionByproducts = null;
 	private static List<HadronRecipe> hadronRecipes = null;
 	private static List<SILEXRecipe> silexRecipes = null;
@@ -103,31 +97,6 @@ public class JeiRecipes {
 			List<List<ItemStack>> in = Library.copyItemStackListList(inputs); // list of inputs and their list of possible items
 			ingredients.setInputLists(VanillaTypes.ITEM, in);
 			ingredients.setOutputs(VanillaTypes.ITEM, outputs);
-		}
-	}
-
-	public static class MixerRecipe implements IRecipeWrapper {
-		
-		private final List<List<ItemStack>> inputs;
-		private final ItemStack output;
-		
-		public MixerRecipe(List<AStack> inputs, ItemStack output) {
-			List<List<ItemStack>> list = new ArrayList<>(inputs.size());
-			for(AStack s : inputs)
-				list.add(s.getStackList());
-			this.inputs = list;
-			this.output = output; 
-		}
-		
-		@Override
-		public void getIngredients(IIngredients ingredients) {
-			List<List<ItemStack>> in = Library.copyItemStackListList(inputs); // list of inputs and their list of possible items
-			ingredients.setInputLists(VanillaTypes.ITEM, in);
-			ingredients.setOutput(VanillaTypes.ITEM, output);
-		}
-
-		public int getInputSize(){
-			return inputs.size();
 		}
 	}
 	
@@ -228,23 +197,48 @@ public class JeiRecipes {
 		}
 		
 	}
-	
-	public static class GasCentRecipe implements IRecipeWrapper {
-		
+
+	public static class GasCentrifugeRecipe implements IRecipeWrapper {
 		private final ItemStack input;
 		private final List<ItemStack> outputs;
-		
-		public GasCentRecipe(ItemStack input, List<ItemStack> outputs) {
-			this.input = input;
-			this.outputs = outputs; 
+		private final boolean isHighSpeed;
+		private final int centNumber;
+
+		public GasCentrifugeRecipe(ItemStack input, ItemStack[] outputs, boolean isHighSpeed, int centNumber) {
+			this.input = input.copy();
+			this.input.setCount(1);
+			this.outputs = Arrays.asList(outputs);
+			this.isHighSpeed = isHighSpeed;
+			this.centNumber = centNumber;
 		}
-		
+
 		@Override
 		public void getIngredients(IIngredients ingredients) {
 			ingredients.setInput(VanillaTypes.ITEM, input);
 			ingredients.setOutputs(VanillaTypes.ITEM, outputs);
 		}
-		
+
+		public ItemStack getInput() {
+			return input;
+		}
+
+		public List<ItemStack> getOutputs() {
+			return outputs;
+		}
+
+		@Override
+		public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+			String centrifuges = centNumber + " G. Cents";
+			int x = (50 - minecraft.fontRenderer.getStringWidth(centrifuges) / 2) - 3;
+			int y = 4;
+			minecraft.fontRenderer.drawString(centrifuges, x, y, 0x00FF00);
+
+			if (isHighSpeed) {
+				minecraft.getTextureManager().bindTexture(new ResourceLocation(RefStrings.MODID, "textures/gui/jei/gui_jei_gas_centrifuge.png"));
+				GL11.glColor4f(1f, 1f, 1f, 1f);
+				Gui.drawModalRectWithCustomSizedTexture(23, 19, 184, 37, 16, 16, 256, 256);
+			}
+		}
 	}
 
 	public static class WasteDrumRecipe implements IRecipeWrapper {
@@ -322,42 +316,6 @@ public class JeiRecipes {
 		private final List<ItemStack> outputs;
 		
 		public RefineryRecipe(ItemStack input, List<ItemStack> outputs) {
-			this.input = input;
-			this.outputs = outputs; 
-		}
-		
-		@Override
-		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInput(VanillaTypes.ITEM, input);
-			ingredients.setOutputs(VanillaTypes.ITEM, outputs);
-		}
-		
-	}
-
-	public static class CrackingRecipe implements IRecipeWrapper {
-		
-		private final List<ItemStack> inputs;
-		public final List<ItemStack> outputs;
-		
-		public CrackingRecipe(List<ItemStack> inputs, List<ItemStack> outputs) {
-			this.inputs = inputs;
-			this.outputs = outputs; 
-		}
-		
-		@Override
-		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInputs(VanillaTypes.ITEM, inputs);
-			ingredients.setOutputs(VanillaTypes.ITEM, outputs);
-		}
-		
-	}
-
-	public static class FractioningRecipe implements IRecipeWrapper {
-		
-		private final ItemStack input;
-		private final List<ItemStack> outputs;
-		
-		public FractioningRecipe(ItemStack input, List<ItemStack> outputs) {
 			this.input = input;
 			this.outputs = outputs; 
 		}
@@ -460,6 +418,35 @@ public class JeiRecipes {
 			ingredients.setOutput(VanillaTypes.ITEM, output);
 		}
 		
+	}
+
+	public static class BreederRecipe implements IRecipeWrapper {
+
+		ItemStack input;
+		ItemStack output;
+		public int flux;
+
+		public BreederRecipe(ItemStack input, ItemStack output, int flux) {
+			input.setCount(1);
+			this.input = input.copy();
+			this.output = output.copy();
+			this.flux = flux;
+		}
+
+		@Override
+		public void getIngredients(IIngredients ingredients) {
+			ingredients.setInput(VanillaTypes.ITEM, input);
+			ingredients.setOutput(VanillaTypes.ITEM, output);
+		}
+
+		@Override
+		public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+			String fluxText = "" + flux;
+			int x = (88 - minecraft.fontRenderer.getStringWidth(fluxText) / 2) - 34;
+			int y = 2;
+			minecraft.fontRenderer.drawString(fluxText, x, y, 0x00FF00);
+		}
+
 	}
 	
 	public static class FusionRecipe implements IRecipeWrapper {
@@ -605,6 +592,67 @@ public class JeiRecipes {
 		}
 		
 	}
+
+	public static class JeiUniversalRecipe implements IRecipeWrapper {
+		private final ItemStack[] inputs;
+		private final ItemStack[] outputs;
+		private final ItemStack[] machines;
+
+		public JeiUniversalRecipe(ItemStack[] inputs, ItemStack[] outputs, ItemStack[] machine) {
+			this.inputs = Arrays.stream(inputs).map(ItemStack::copy).toArray(ItemStack[]::new);
+			this.outputs = Arrays.stream(outputs).map(ItemStack::copy).toArray(ItemStack[]::new);
+			this.machines = Arrays.stream(machine).map(ItemStack::copy).toArray(ItemStack[]::new);
+		}
+
+		@Override
+		public void getIngredients(IIngredients ingredients) {
+			ingredients.setInputs(VanillaTypes.ITEM, Arrays.asList(inputs));
+			ingredients.setOutputs(VanillaTypes.ITEM, Arrays.asList(outputs));
+		}
+
+		public ItemStack[] getMachines() {
+			return machines;
+		}
+
+		@Override
+		public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+			GlStateManager.color(1.0F, 1.0F, 1.0F);
+			ResourceLocation GUI_TEXTURE = new ResourceLocation(RefStrings.MODID, "textures/gui/jei/gui_nei.png");
+			minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
+
+			Gui.drawModalRectWithCustomSizedTexture(74, 14, 59, 87, 18, 36, 256, 256);
+
+			int[][] inCoords = JEIUniversalHandler.getInputCoords(inputs.length);
+			for (int[] coords : inCoords) {
+				Gui.drawModalRectWithCustomSizedTexture(coords[0], coords[1], 5, 87, 18, 18, 256, 256);
+			}
+
+			int[][] outCoords = JEIUniversalHandler.getOutputCoords(outputs.length);
+			for (int[] coords : outCoords) {
+				Gui.drawModalRectWithCustomSizedTexture(coords[0], coords[1], 5, 87, 18, 18, 256, 256);
+			}
+		}
+	}
+
+	public static class CrystallizerRecipe extends JeiUniversalRecipe {
+		private final int productivity;
+
+		public CrystallizerRecipe(ItemStack[] inputs, ItemStack[] outputs, ItemStack[] machine, int productivity) {
+			super(inputs, outputs, machine);
+			this.productivity = productivity;
+		}
+
+		@Override
+		public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY) {
+			super.drawInfo(minecraft, recipeWidth, recipeHeight, mouseX, mouseY);
+			if (productivity > 0) {
+				FontRenderer fontRenderer = minecraft.fontRenderer;
+				String momentum = "Effectiveness: +" + Math.min(productivity, 99) + "% per level";
+				int side = 8;
+				fontRenderer.drawString(momentum, side, 52, 0x404040);
+			}
+		}
+	}
 	
 	public static List<ChemRecipe> getChemistryRecipes() {
 		if(chemRecipes != null)
@@ -657,32 +705,6 @@ public class JeiRecipes {
         }
 		
 		return chemRecipes;
-	}
-
-	public static List<MixerRecipe> getMixerRecipes() {
-		if(mixerRecipes != null)
-			return mixerRecipes;
-		mixerRecipes = new ArrayList<MixerRecipe>();
-		
-        for(FluidType f : MixerRecipes.recipes.keySet()){
-
-        	List<AStack> inputs = new ArrayList<AStack>(3);
-
-        	AStack inputItem = MixerRecipes.getInputItem(f);
-        	FluidStack[] inputFluids = MixerRecipes.getInputFluidStacks(f);
-        	if(inputItem != null)
-        		inputs.add(inputItem);
-        	if(inputFluids != null){
-        		if(inputFluids.length >= 1) inputs.add(new NbtComparableStack(ItemFluidIcon.make(inputFluids[0].type, inputFluids[0].fill)));
-        		if(inputFluids.length == 2) inputs.add(new NbtComparableStack(ItemFluidIcon.make(inputFluids[1].type, inputFluids[1].fill)));
-        	}
-
-        	ItemStack output = ItemFluidIcon.make(f, MixerRecipes.getFluidOutputAmount(f));
-        	
-        	mixerRecipes.add(new MixerRecipe(inputs, output));
-        }
-		
-		return mixerRecipes;
 	}
 	
 	public static List<CyclotronRecipe> getCyclotronRecipes() {
@@ -813,33 +835,15 @@ public class JeiRecipes {
 		return cmbRecipes;
 	}
 	
-	public static List<GasCentRecipe> getGasCentrifugeRecipes() {
+	public static List<GasCentrifugeRecipe> getGasCentrifugeRecipes() {
 		if(gasCentRecipes != null)
 			return gasCentRecipes;
-		gasCentRecipes = new ArrayList<GasCentRecipe>();
+		gasCentRecipes = new ArrayList<GasCentrifugeRecipe>();
 
-		for(FluidType f : Fluids.getAll()){
-			List<GasCentOutput> outputs = MachineRecipes.getGasCentOutput(f);
-			
-			if(outputs != null){
-				int totalWeight = 0;
-				
-				for(GasCentOutput o : outputs) {
-					totalWeight += o.weight;
-				}
-				
-				ItemStack input = ItemFluidIcon.make(f, MachineRecipes.getFluidConsumedGasCent(f) * totalWeight);
-				
-				List<ItemStack> result = new ArrayList<ItemStack>(4);
-				
-				for(GasCentOutput o : outputs){
-					ItemStack stack = o.output.copy();
-					stack.setCount(stack.getCount() * o.weight);
-					result.add(stack);
-				}
-				
-				gasCentRecipes.add(new GasCentRecipe(input, result));
-			}
+		Map<Object, Object[]> recipes = GasCentrifugeRecipes.getGasCentrifugeRecipes();
+
+		for(Map.Entry<Object, Object[]> recipe : recipes.entrySet()) {
+			gasCentRecipes.add(new GasCentrifugeRecipe((ItemStack) recipe.getKey(), (ItemStack[]) recipe.getValue()[0], (boolean) recipe.getValue()[1], (int) recipe.getValue()[2]));
 		}
 		
 		return gasCentRecipes;
@@ -853,6 +857,18 @@ public class JeiRecipes {
 			bookRecipes.add(new BookRecipe(m));
 		}
 		return bookRecipes;
+	}
+
+	public static List<BreederRecipe> getBreederRecipes(){
+		if(breederRecipes != null)
+			return breederRecipes;
+		breederRecipes = new ArrayList<>();
+		HashMap<ItemStack, BreederRecipes.BreederRecipe> recipes = BreederRecipes.getAllRecipes();
+		for(Map.Entry<ItemStack, BreederRecipes.BreederRecipe> recipe : recipes.entrySet()) {
+			breederRecipes.add(new BreederRecipe(recipe.getKey(), recipe.getValue().output, recipe.getValue().flux));
+		}
+
+		return breederRecipes;
 	}
 
 	public static List<WasteDrumRecipe> getWasteDrumRecipes(){
@@ -913,52 +929,6 @@ public class JeiRecipes {
 			);
 		}
 		return refineryRecipes;
-	}
-
-	public static List<CrackingRecipe> getCrackingRecipe() {
-		if(crackingRecipes != null)
-			return crackingRecipes;
-		crackingRecipes = new ArrayList<CrackingRecipe>();
-
-		for (Entry<FluidType, Pair<com.hbm.inventory.fluid.FluidStack, com.hbm.inventory.fluid.FluidStack>> recipe : CrackRecipes.cracking.entrySet()) {
-			List<ItemStack> inputs = Arrays.asList(
-					ItemFluidIcon.make(recipe.getKey(), 100),
-					ItemFluidIcon.make(Fluids.STEAM, 200)
-			);
-
-			List<ItemStack> outputs;
-			if (recipe.getValue().getValue().type == Fluids.NONE) {
-				outputs = Arrays.asList(
-						ItemFluidIcon.make(recipe.getValue().getKey()),
-						ItemFluidIcon.make(Fluids.SPENTSTEAM, 2)
-				);
-			} else {
-				outputs = Arrays.asList(
-						ItemFluidIcon.make(recipe.getValue().getKey()),
-						ItemFluidIcon.make(recipe.getValue().getValue()),
-						ItemFluidIcon.make(Fluids.SPENTSTEAM, 2)
-				);
-			}
-
-			crackingRecipes.add(new CrackingRecipe(inputs, outputs));
-		}
-
-		return crackingRecipes;
-	}
-
-	public static List<FractioningRecipe> getFractioningRecipe() {
-		if(fractioningRecipes != null)
-			return fractioningRecipes;
-		fractioningRecipes = new ArrayList<FractioningRecipe>();
-
-		for(Entry<FluidType, Pair<FluidStack, FluidStack>> recipe : FractionRecipes.fractions.entrySet()) {
-			List<ItemStack> out = new ArrayList<ItemStack>();
-			out.add(ItemFluidIcon.make(recipe.getValue().getKey()));
-			out.add(ItemFluidIcon.make(recipe.getValue().getValue()));
-
-			fractioningRecipes.add(new FractioningRecipe(ItemFluidIcon.make(recipe.getKey(), 100), out));
-		}
-		return fractioningRecipes;
 	}
 	
 	public static List<ItemStack> getBlades() {

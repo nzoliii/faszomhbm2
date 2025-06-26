@@ -5,7 +5,7 @@ import api.hbm.fluid.IFluidUser;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;

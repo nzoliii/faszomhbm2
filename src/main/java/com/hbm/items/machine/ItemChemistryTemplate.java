@@ -1,7 +1,7 @@
 package com.hbm.items.machine;
 
 import com.hbm.interfaces.IHasCustomModel;
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;

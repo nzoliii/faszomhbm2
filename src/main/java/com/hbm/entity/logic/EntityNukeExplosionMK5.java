@@ -39,6 +39,7 @@ public class EntityNukeExplosionMK5 extends Entity implements IChunkLoader {
     private EntityFalloutRain falloutRain;
     private final List<ChunkPos> loadedChunks = new ArrayList<>();
     private boolean floodPlease = false;
+    private boolean initialized = false;
     private int falloutAdd = 0;
     private int algorithm;
     private Ticket loaderTicket;
@@ -71,6 +72,7 @@ public class EntityNukeExplosionMK5 extends Entity implements IChunkLoader {
 
         mk5.strength = 2 * r;
         mk5.radius = r;
+        mk5.algorithm = BombConfig.explosionAlgorithm;
 
         mk5.setPosition(x, y, z);
         mk5.floodPlease = isWet(world, new BlockPos(x, y, z));
@@ -130,11 +132,12 @@ public class EntityNukeExplosionMK5 extends Entity implements IChunkLoader {
         }
 
         //Create Explosion Rays
-        if (explosion == null) {
+        if (!initialized) {
             explosionStart = System.currentTimeMillis();
             if (BombConfig.explosionAlgorithm == 1 || BombConfig.explosionAlgorithm == 2)
                 explosion = new ExplosionNukeRayParallelized(world, posX, posY, posZ, strength, radius, algorithm);
             else explosion = new ExplosionNukeRayBatched(world, (int) posX, (int) posY, (int) posZ, strength, radius);
+            initialized = true;
         }
 
         //Calculating crater
@@ -248,13 +251,14 @@ public class EntityNukeExplosionMK5 extends Entity implements IChunkLoader {
         floodPlease = nbt.getBoolean("floodPlease");
         spawnFire = nbt.getBoolean("spawnFire");
         algorithm = nbt.getInteger("algorithm");
-        if (explosion == null) {
+        if (!initialized) {
             if (algorithm == 1 || algorithm == 2)
                 explosion = new ExplosionNukeRayParallelized(world, this.posX, this.posY, this.posZ, this.strength, this.radius);
             else
                 explosion = new ExplosionNukeRayBatched(world, (int) this.posX, (int) this.posY, (int) this.posZ, this.strength, this.radius);
         }
         explosion.readEntityFromNBT(nbt);
+        initialized = true;
     }
 
     @Override

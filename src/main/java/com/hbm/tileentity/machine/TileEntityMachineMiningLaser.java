@@ -9,7 +9,7 @@ import com.hbm.blocks.gas.BlockGasBase;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.CentrifugeRecipes;
-import com.hbm.inventory.CrystallizerRecipes;
+import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.ShredderRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.fluid.Fluids;

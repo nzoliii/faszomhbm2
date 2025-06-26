@@ -6,6 +6,7 @@ import java.util.List;
 import com.hbm.inventory.AnvilRecipes.AnvilOutput;
 import com.hbm.inventory.RecipesCommon.AStack;
 
+import com.hbm.main.MainRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -326,6 +327,82 @@ public class InventoryUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Turns objects into 2D ItemStack arrays. Index 1: Ingredient slot, index 2: variation (ore dict)
+	 * Handles:<br>
+	 * <ul>
+	 * <li>ItemStack</li>
+	 * <li>ItemStack[]</li>
+	 * <li>AStack</li>
+	 * <li>AStack[]</li>
+	 * </ul>
+	 * @param o
+	 * @return
+	 */
+	public static ItemStack[][] extractObject(Object o) {
+
+		if(o instanceof ItemStack) {
+			ItemStack[][] stacks = new ItemStack[1][1];
+			stacks[0][0] = ((ItemStack)o).copy();
+			return stacks;
+		}
+
+		if(o instanceof ItemStack[]) {
+			ItemStack[] ingredients = (ItemStack[]) o;
+			ItemStack[][] stacks = new ItemStack[ingredients.length][1];
+			for(int i = 0; i < ingredients.length; i++) {
+				stacks[i][0] = ingredients[i];
+			}
+			return stacks;
+		}
+
+		if(o instanceof ItemStack[][]) {
+			return (ItemStack[][]) o;
+		}
+
+		if(o instanceof AStack) {
+			AStack astack = (AStack) o;
+			ItemStack[] ext = astack.extractForJEI().toArray(new ItemStack[0]);
+			ItemStack[][] stacks = new ItemStack[1][0];
+			stacks[0] = ext; //untested, do java arrays allow that? the capacity set is 0 after all
+			return stacks;
+		}
+
+		if(o instanceof AStack[]) {
+			AStack[] ingredients = (AStack[]) o;
+			ItemStack[][] stacks = new ItemStack[ingredients.length][0];
+
+			for(int i = 0; i < ingredients.length; i++) {
+				stacks[i] = ingredients[i].extractForJEI().toArray(new ItemStack[0]);
+			}
+
+			return stacks;
+		}
+
+		/* in emergency situations with mixed types where AStacks coexist with NBT dependent ItemStacks, such as for fluid icons */
+		if(o instanceof Object[]) {
+			Object[] ingredients = (Object[]) o;
+			ItemStack[][] stacks = new ItemStack[ingredients.length][0];
+
+			for(int i = 0; i < ingredients.length; i++) {
+				Object ingredient = ingredients[i];
+
+				if(ingredient instanceof AStack) {
+					stacks[i] = ((AStack) ingredient).extractForJEI().toArray(new ItemStack[0]);
+				}
+				if(ingredient instanceof ItemStack) {
+					stacks[i] = new ItemStack[1];
+					stacks[i][0] = ((ItemStack) ingredient).copy();
+				}
+			}
+
+			return stacks;
+		}
+
+		MainRegistry.logger.warn("InventoryUtil: extractObject failed for type " + o);
+		return new ItemStack[0][0];
 	}
 
 	public static boolean doesArrayHaveIngredients(IItemHandler inv, int start, int end, List<AStack> ingredients) {

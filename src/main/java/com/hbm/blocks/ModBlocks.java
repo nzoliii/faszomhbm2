@@ -564,7 +564,7 @@ public class ModBlocks {
 	public static final Block block_red_phosphorus = new BlockFallingBase(Material.SAND, "block_red_phosphorus", SoundType.SAND).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_foam = new BlockBase(Material.CRAFTED_SNOW, "block_foam").setSoundType(SoundType.SNOW).setCreativeTab(MainRegistry.blockTab).setHardness(0.5F).setResistance(0.0F);
 	public static final Block block_lignite = new BlockFuel(Material.ROCK, "block_lignite", 10, 10, 12000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_coke = new BlockFuel(Material.ROCK, "block_coke", 10, 10, 32000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
+	public static final Block block_coke = new BlockCoke().setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_coal_infernal = new BlockFuel(Material.ROCK, "block_coal_infernal", 1, 1, 84000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_solid_fuel = new BlockFuel(Material.ROCK, "block_solid_fuel", 10, 10, 32000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_solid_fuel_presto = new BlockFuel(Material.ROCK, "block_solid_fuel_presto", 6, 6, 64000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
@@ -1038,7 +1038,6 @@ public class ModBlocks {
 	public static final int guiID_launch_pad = 19;
 
 	public static final Block machine_centrifuge = new MachineCentrifuge(Material.IRON, "machine_centrifuge").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_centrifuge = 5;
 
 	public static final Block machine_gascent = new MachineGasCent(Material.IRON, "machine_gascent").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_gascent = 71;
@@ -1053,7 +1052,6 @@ public class ModBlocks {
 	public static final int guiID_crystallizer = 95;
 
 	public static final Block machine_shredder = new MachineShredder(Material.IRON, "machine_shredder").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_machine_shredder = 34;
 
 	public static final Block machine_waste_drum = new WasteDrum(Material.IRON, "machine_waste_drum").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_waste_drum = 79;
@@ -1077,7 +1075,6 @@ public class ModBlocks {
 	public static final int guiID_mining_laser = 96;
 
 	public static final Block machine_turbofan = new MachineTurbofan(Material.IRON, "machine_turbofan").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_machine_turbofan = 52;
 
 	public static final Block machine_schrabidium_transmutator = new MachineSchrabidiumTransmutator(Material.IRON, "machine_schrabidium_transmutator").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_schrabidium_transmutator = 30;
@@ -1132,7 +1129,6 @@ public class ModBlocks {
 	public static final int guiID_machine_cyclotron = 41;
 
 	public static final Block machine_radgen = new MachineRadGen(Material.IRON, "machine_radgen").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_radgen = 58;
 
 	public static final Block pump_steam = new MachinePump(Material.IRON, "pump_steam").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block pump_electric = new MachinePump(Material.IRON, "pump_electric").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);

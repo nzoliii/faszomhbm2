@@ -76,7 +76,7 @@ public class RenderFoundry extends TileEntitySpecialRenderer<TileEntityFoundryCa
 
         if (foundry.shouldRender()) {
 			int hex = foundry.getMat().moltenColor;
-			Color color = new Color(hex).brighter();
+			Color color = new Color(hex);
 
 			GlStateManager.pushMatrix();
 			GlStateManager.disableCull();
@@ -87,13 +87,6 @@ public class RenderFoundry extends TileEntitySpecialRenderer<TileEntityFoundryCa
 			Tessellator tessellator = Tessellator.getInstance();
 			BufferBuilder buffer = tessellator.getBuffer();
 
-
-			double brightener = 0.7D;
-			int r = (int) (255D - (255D - color.getRed()) * brightener);
-			int g = (int) (255D - (255D - color.getGreen()) * brightener);
-			int b = (int) (255D - (255D - color.getBlue()) * brightener);
-			float a = 1.0F;
-			color = new Color(r, g, b);
 			GlStateManager.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, 1.0F);
 			buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
