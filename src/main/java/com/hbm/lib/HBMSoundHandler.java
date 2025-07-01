@@ -307,6 +307,8 @@ public final class HBMSoundHandler {
     public static SoundEvent fhbm2_copper_pig_scream;
     public static SoundEvent fhbm2_oppenheimer;
 
+    public static SoundEvent fhbm2_lobotomy;
+
     public static void init() {
 
         explosionSmallNear = register("weapon.explosion_small_near");
@@ -567,6 +569,8 @@ public final class HBMSoundHandler {
         fhbm2_copper_pig_explosion = register("fhbm2_copper_pig_explosion");
         fhbm2_copper_pig_scream = register("fhbm2_copper_pig_scream");
         fhbm2_oppenheimer = register("fhbm2_oppenheimer");
+
+        fhbm2_lobotomy = register("fhbm2_lobotomy");
     }
 
     public static SoundEvent register(String name) {

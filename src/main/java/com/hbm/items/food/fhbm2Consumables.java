@@ -3,6 +3,7 @@ package com.hbm.items.food;
 import java.util.List;
 import java.util.UUID;
 
+import com.hbm.blocks.fhbm2KabanStatue;
 import com.hbm.config.VersatileConfig;
 import com.hbm.items.ModItems;
 import com.hbm.config.BombConfig;
@@ -16,13 +17,24 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemFood;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import net.minecraft.entity.player.EntityPlayer;
+
+import com.hbm.fhbm2KabanTracker;
+
 public class fhbm2Consumables extends ItemFood {
+
+    fhbm2KabanTracker kabanTracker;
 
     public fhbm2Consumables(int hunger, String s) {
         super(hunger, false);
@@ -61,14 +73,15 @@ public class fhbm2Consumables extends ItemFood {
             list.add("Takes the edge off.");
         }
         if(this == ModItems.fhbm2_copper_pig_fragment) {
-            list.add("§oI must become one with the Copper Pig.");
-            list.add("§oI must consume this fragment.");
             list.add("A fragment of the most gracious the most merciful Copper Pig, кабан.");
-            list.add("If the Copper Pig has a million fans, then I am one of them.");
-            list.add("If the Copper Pig has ten fans, then I am one of them.");
-            list.add("If the Copper Pig has only one fan then that is me.");
-            list.add("If the Copper Pig has no fans, then that means I am no longer on earth.");
-            list.add("If the world is against the Copper Pig, then I am against the world. ");
+            list.add("");
+            list.add("§oIf I want to approach the Copper Pig, I must become one with the Copper Pig.");
+            list.add("§oI must consume this fragment.");
+            list.add("§oIf the Copper Pig has a million fans, then I am one of them.");
+            list.add("§oIf the Copper Pig has ten fans, then I am one of them.");
+            list.add("§oIf the Copper Pig has only one fan then that is me.");
+            list.add("§oIf the Copper Pig has no fans, then that means I am no longer on earth.");
+            list.add("§oIf the world is against the Copper Pig, then I am against the world. ");
         }
         if(this == ModItems.fhbm2_mini_pablo) {
             list.add("Mini Pablo nicotine pouches.");
@@ -92,7 +105,6 @@ public class fhbm2Consumables extends ItemFood {
             list.add("Tasty Abalé.");
             list.add("Why would anyone drink this?");
         }
-
     }
 
     @Override
@@ -120,8 +132,8 @@ public class fhbm2Consumables extends ItemFood {
             UUID playerUUID = player.getUniqueID();
             UUID targetUUID = UUID.fromString("5af3c6bb-6b31-4c26-8766-a229572b1d2a");
             if (playerUUID.equals(targetUUID)) {
-                worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.5), player.posX, player.posY, player.posZ));
-                EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.5));
+                worldIn.spawnEntity(EntityNukeExplosionMK5.statFac(worldIn, (int)(BombConfig.gadgetRadius * 0.25), player.posX, player.posY, player.posZ));
+                EntityNukeTorex.statFac(worldIn, player.posX, player.posY, player.posZ, (int)(BombConfig.gadgetRadius * 0.25));
             }
 
             else {
@@ -145,6 +157,8 @@ public class fhbm2Consumables extends ItemFood {
             player.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 2147483647, 255));
             player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2147483647, 3));
             ContaminationUtil.contaminate(player, HazardType.DIGAMMA, ContaminationType.DIGAMMA, 5F);
+
+            fhbm2KabanTracker.setPlayersWhoAteFragment(player, true);
         }
 
         if(stack.getItem() == ModItems.fhbm2_mini_pablo){

@@ -1039,7 +1039,7 @@ public class ModEventHandler {
 
                 if (HTTPHandler.changes != "") {
                     String[] lines = HTTPHandler.changes.split("\\$");
-                    e.player.sendMessage(new TextComponentString("§6[Some of the new Features]§r"));//RefStrings.CHANGELOG
+                    e.player.sendMessage(new TextComponentString("Changelog:"));//RefStrings.CHANGELOG
                     for (String w : lines) {
                         e.player.sendMessage(new TextComponentString(w));//RefStrings.CHANGELOG
                     }

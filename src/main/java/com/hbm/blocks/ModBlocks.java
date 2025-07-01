@@ -962,7 +962,7 @@ public class ModBlocks {
 	public static final Block pribris_radiating = new RBMKDebrisRadiating("pribris_radiating").setCreativeTab(MainRegistry.machineTab).setHardness(50.0F).setResistance(2000.0F);
 	public static final Block pribris_digamma = new RBMKDebrisDigamma("pribris_digamma").setCreativeTab(MainRegistry.machineTab).setHardness(50.0F).setResistance(6000.0F);
 
-	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150000).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
+	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
 	public static final Block block_corium_cobble = new BlockOutgas(true, 1, true, true, "block_corium_cobble").setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(6000.0F);
 
 
@@ -1441,6 +1441,15 @@ public class ModBlocks {
 
 	public static final Block orbital_station = new BlockOrbitalStation(Material.IRON, "orbital_station").setBlockUnbreakable().setResistance(Float.POSITIVE_INFINITY).setCreativeTab(null);
 	public static final Block orbital_station_port = new BlockOrbitalStation(Material.IRON, "orbital_station_port").setHardness(1.0F).setCreativeTab(MainRegistry.machineTab);
+
+	public static final Block meteor_brick_kaban = new BlockBase(Material.ROCK, "meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(900.0F);
+
+	//fhbm2 TODO: FIX KABAN LATER
+	public static final Block kaban_statue = new fhbm2KabanStatue(Material.IRON, "kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
+	// 	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
+
+	//fhbm2 actual try
+
 
 	public static void preInit(){
 		for(Block block : ALL_BLOCKS){

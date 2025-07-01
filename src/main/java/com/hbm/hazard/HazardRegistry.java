@@ -508,6 +508,8 @@ public class HazardRegistry {
 		 */
 		for(String ore : TH232.all(MaterialShapes.ORE)) HazardSystem.blacklist(ore);
 		for(String ore : U.all(MaterialShapes.ORE)) HazardSystem.blacklist(ore);
+
+		HazardSystem.register(kaban_statue, makeData(RADIATION, 6900F));
 	}
 
 	public static void registerTrafos() {

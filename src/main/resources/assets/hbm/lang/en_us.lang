@@ -717,7 +717,7 @@ chat.constructionwand.filled=Selection filled!
 chat.constructionwand.setblock=Set block 
 chat.crate.cansmash=The one crate you are allowed to smash!
 chat.crate.needcrowbar=I'll need a crate opening device to get the loot, smashing the whole thing won't work...
-chat.curver=§ePlaying on version §7%s§e right now§r
+chat.curver=§ePlaying on version §7%s§e right now.
 chat.detonated=Detonated
 chat.detonatedmulti=[Detonated] (%s/%s)
 chat.duck=Press O to duck!
@@ -755,7 +755,7 @@ chat.letter.a20=Error: null reference @ com.hbm.items.ItemStarterKit.class, plea
 chat.letter.open=You rip the letter in half; nothing happens.
 chat.meteorremote.watchhead=Watch your head!
 chat.newfeat=New Features
-chat.newver=§aNew§e version §3%s§e is available§r
+chat.newver=§aNew version §f%s§a is available.
 chat.posadd=Position added
 chat.posbadrror=[Error]: Target can not be detonated.
 chat.posnoset=No position set
@@ -788,7 +788,7 @@ chat.turret.ownertransfer=Transferred turret ownership!
 chat.turretcontrol.linked=Turret Linked!
 chat.watz.corebad=[Watz Power Plant] Error: Reactor Core not found!
 chat.watz.structurebad=[Watz Power Plant] Error: Reactor Structure not valid!
-chat.welcome=§3Welcome back
+chat.welcome=§fWelcome back.
 chat.wiring.cleared=§6[Cable] §ePylon position cleared
 chat.wiring.connected=§6[Cable] §eCables Connected
 chat.wiring.measure=§6[Cable] §ePylon distance: %sm
@@ -8189,6 +8189,7 @@ item.fhbm2_mail.name=Mail
 item.fhbm2_package.name=Package
 
 death.attack.unabomber=%1$s got a package from Uncle Ted.
+death.attack.copper_pig=%1$s was bewitched by The Copper Pig's magic, and then they were killed.
 
 fluid.bromine_fluid=Bromine
 
@@ -8282,3 +8283,6 @@ tile.dummy_plate_launch_table.name=Dummy
 tile.dummy_port_launch_table=Dummy
 tile.dummy_plate_cargo.name=Dummy
 tile.orbital_station.name=Orbital Station
+
+tile.meteor_brick_kaban.name=кабан Meteor Bricks
+tile.kaban_statue.name=кабан Statue

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.hbm.*;
 import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.generic.BlockResourceStone;
 import com.hbm.blocks.machine.WatzPump;
@@ -16,8 +17,6 @@ import com.hbm.dim.SolarSystem;
 import com.hbm.entity.effect.*;
 import com.hbm.entity.item.EntityMovingPackage;
 import com.hbm.entity.projectile.*;
-import com.hbm.fhbm2CustomMainMenu;
-import com.hbm.fhbm2MenuStateManager;
 import com.hbm.handler.*;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.interfaces.Spaghetti;
@@ -30,16 +29,11 @@ import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
 import com.hbm.tileentity.machine.storage.TileEntityMassStorage;
 import com.hbm.tileentity.network.*;
 import com.hbm.tileentity.turret.*;
-import com.hbm.world.ModBiomes;
-import com.hbm.world.PlanetGen;
-import com.hbm.world.fhbm2GenerateHorrorTowers;
-import com.hbm.world.fhbm2GenerateUncleTedShed;
-import net.minecraft.block.Block;
+import com.hbm.world.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -461,6 +455,8 @@ public class MainRegistry {
 		//fhbm2
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateKabanStatue(), 0);
+
 
 		GameRegistry.registerTileEntity(TileEntityDummy.class, new ResourceLocation(RefStrings.MODID, "tileentity_dummy"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssembler.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assembler"));
@@ -913,6 +909,10 @@ public class MainRegistry {
 
 		registerDispenserBehaviors();
 		TileEntityLaunchPadBase.registerLaunchables();
+
+		MinecraftForge.EVENT_BUS.register(fhbm2KabanTracker.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2Scheduler.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2VCopperPigLobotomyCutscene.class);
 	}
 
 	public static void reloadConfig() {

@@ -396,5 +396,7 @@
     "fhbm2_copper_pig_bewitches_the_clueless_player": {"category": "ambient", "sounds": [{"name": "hbm:fhbm2_copper_pig_bewitches_the_clueless_player", "stream": false}]},
     "fhbm2_copper_pig_explosion": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_explosion", "stream": false}]},
     "fhbm2_copper_pig_scream": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_scream", "stream": false}]},
-    "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:fhbm2_oppenheimer", "stream": false}]}
+    "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:fhbm2_oppenheimer", "stream": false}]},
+    "fhbm2_lobotomy": {"category": "player", "sounds": [{"name": "hbm:fhbm2_lobotomy", "stream": true}]}
+
 }
