@@ -10,13 +10,14 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.opengl.GL11;
 
 public class GUIMachineAssembler extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_assembler.png");
-	private TileEntityMachineAssembler assembler;
-	
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_assembler.png");
+	private final TileEntityMachineAssembler assembler;
+
 	public GUIMachineAssembler(InventoryPlayer invPlayer, TileEntityMachineAssembler tedf) {
 		super(new ContainerMachineAssembler(invPlayer, tedf));
 		assembler = tedf;
@@ -63,16 +64,15 @@ public class GUIMachineAssembler extends GuiInfoContainer {
 		drawTexturedModalRect(guiLeft + 45, guiTop + 82, 2, 222, j, 32);
 		} else {
 			drawTexturedModalRect(guiLeft + 45, guiTop + 82, 2, 222, 0, 32);
-			
 		}
 		
 		if(assembler.inventory.getStackInSlot(4).getItem() == Items.AIR || assembler.inventory.getStackInSlot(4).getItem()!= ModItems.assembly_template) {
-
 			this.drawInfoPanel(guiLeft - 16, guiTop + 36, 16, 16, 6);
 		}
 		
 		this.drawInfoPanel(guiLeft + 141, guiTop + 40, 8, 8, 8);
 	}
-	
-	
+	public ItemStackHandler getInventory() {
+		return assembler.inventory;
+	}
 }

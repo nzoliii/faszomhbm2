@@ -44,6 +44,7 @@ public abstract class SerializableRecipe {
         recipeHandlers.add(new ReformingRecipes());
         recipeHandlers.add(new SolidificationRecipes());
         recipeHandlers.add(new BreederRecipes());
+        recipeHandlers.add(new SolderingRecipes());
     }
 
     public static void initialize() {

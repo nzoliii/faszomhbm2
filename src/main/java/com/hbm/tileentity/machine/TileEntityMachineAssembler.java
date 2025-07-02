@@ -344,14 +344,14 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
     public void tryExchangeTemplates(TileEntity teOut, TileEntity teIn) {
         //validateTe sees if it's a valid inventory tile entity
         if (isTeInvalid(teOut) || isTeInvalid(teIn)) return;
-        IItemHandlerModifiable iTeIn = (IItemHandlerModifiable) teOut.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        IItemHandlerModifiable iTeOut = (IItemHandlerModifiable) teIn.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandlerModifiable iTeOut = (IItemHandlerModifiable) teOut.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandlerModifiable iTeIn = (IItemHandlerModifiable) teIn.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         boolean openSlot = false;
         boolean existingTemplate = false;
         boolean filledContainer = false;
         //Check if there's an existing template and an open slot
-        for (int i = 0; i < iTeIn.getSlots(); i++) {
-            if (iTeIn.getStackInSlot(i).isEmpty()) {
+        for (int i = 0; i < iTeOut.getSlots(); i++) {
+            if (iTeOut.getStackInSlot(i).isEmpty()) {
                 openSlot = true;
                 break;
             }
@@ -360,14 +360,14 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
             existingTemplate = true;
         }
         //Check if there's a template in input
-        for (int i = 0; i < iTeOut.getSlots(); i++) {
-            if (iTeOut.getStackInSlot(i).getItem() instanceof ItemAssemblyTemplate) {
+        for (int i = 0; i < iTeIn.getSlots(); i++) {
+            if (iTeIn.getStackInSlot(i).getItem() instanceof ItemAssemblyTemplate) {
                 if (openSlot && existingTemplate) {
-                    filledContainer = tryFillContainerCap(iTeIn, 4);
+                    filledContainer = tryFillContainerCap(iTeOut, 4);
                 }
                 if (filledContainer || !existingTemplate) {
-                    ItemStack copy = iTeOut.getStackInSlot(i).copy();
-                    iTeOut.setStackInSlot(i, ItemStack.EMPTY);
+                    ItemStack copy = iTeIn.getStackInSlot(i).copy();
+                    iTeIn.setStackInSlot(i, ItemStack.EMPTY);
                     this.inventory.setStackInSlot(4, copy);
                     return;
                 }
@@ -392,60 +392,6 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
                 stack.setStackInSlot(i, ItemStack.EMPTY);
 
         return stack;
-    }
-
-    //Unloads output into chests
-    public boolean tryFillContainer(IInventory inv, int slot) {
-
-        int size = inv.getSizeInventory();
-
-        for (int i = 0; i < size; i++) {
-            if (inv.getStackInSlot(i) != null) {
-
-                if (inventory.getStackInSlot(slot).getItem() == Items.AIR)
-                    return false;
-
-                ItemStack sta1 = inv.getStackInSlot(i).copy();
-                ItemStack sta2 = inventory.getStackInSlot(slot).copy();
-                if (sta1 != null && sta2 != null) {
-                    sta1.setCount(1);
-                    sta2.setCount(1);
-
-                    if (isItemAcceptable(sta1, sta2) && inventory.getStackInSlot(i).getCount() < inventory.getStackInSlot(i).getMaxStackSize()) {
-                        inventory.getStackInSlot(slot).shrink(1);
-
-                        if (inventory.getStackInSlot(slot).isEmpty())
-                            inventory.setStackInSlot(slot, ItemStack.EMPTY);
-
-                        ItemStack sta3 = inventory.getStackInSlot(i).copy();
-                        sta3.grow(1);
-                        inv.setInventorySlotContents(i, sta3);
-
-                        return true;
-                    }
-                }
-            }
-        }
-        for (int i = 0; i < size; i++) {
-
-            if (inventory.getStackInSlot(slot).getItem() == Items.AIR)
-                return false;
-
-            ItemStack sta2 = inventory.getStackInSlot(slot).copy();
-            if (inv.getStackInSlot(i) == null && sta2 != null) {
-                sta2.setCount(1);
-                inventory.getStackInSlot(slot).shrink(1);
-
-                if (inventory.getStackInSlot(slot).isEmpty())
-                    inventory.setStackInSlot(slot, ItemStack.EMPTY);
-
-                inv.setInventorySlotContents(i, sta2);
-
-                return true;
-            }
-        }
-
-        return false;
     }
 
     //Unloads output into chests. Capability version.

@@ -42,9 +42,8 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		float cherenkovB = 0F;
 		float cherenkovA = 0.1F;
 
-		if(control instanceof TileEntityRBMKRod) {
-			TileEntityRBMKRod rod = (TileEntityRBMKRod) control;
-			if(rod.hasRod) {
+		if(control instanceof TileEntityRBMKRod rod) {
+            if(rod.hasRod) {
 				hasRod = true;
 				fuelR = rod.fuelR;
 				fuelG = rod.fuelG;
@@ -58,7 +57,14 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 				cherenkovA = (float) Math.max(0.25F, Math.log(rod.fluxFast + rod.fluxSlow) * 0.01F);
 			}
 		}
-
+		int offset = 1;
+		for (int o = 1; o < 16; o++){
+			if (control.getWorld().getBlockState(control.getPos().up(o)).getBlock() == control.getBlockType()) {
+				offset = o;
+				int meta = control.getWorld().getBlockState(control.getPos().up(o)).getBlock().getMetaFromState(control.getWorld().getBlockState(control.getPos().up(o)));
+				if (meta > 5 && meta < 12) break;
+			} else break;
+		}
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x + 0.5, y, z + 0.5);
 
@@ -68,31 +74,31 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		}
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(block.columnTexture);
-		renderColumnStack(control);
+		renderColumnStack(control, offset + 1);
 
 		if(control.hasLid()) {
-			renderLid(control);
+			renderLid(control, offset);
 		}
 
 		if(hasRod) {
-			renderFuelRodStack(control, fuelR, fuelG, fuelB);
+			renderFuelRodStack(control, fuelR, fuelG, fuelB, offset + 1);
 		}
 
 		if(cherenkov) {
-			renderCherenkovEffect(control, cherenkovR, cherenkovG, cherenkovB, cherenkovA);
+			renderCherenkovEffect(control, cherenkovR, cherenkovG, cherenkovB, cherenkovA, offset);
 		}
 
 		GlStateManager.popMatrix();
 	}
 
 	// New helper methods
-	private void renderColumnStack(TileEntityRBMKBase control) {
+	private void renderColumnStack(TileEntityRBMKBase control, int offset) {
 		GlStateManager.pushMatrix();
 
 		// Get the correct model from the main render method
 		IModelCustom columnModel = getColumnModelForBlock(control.getBlockType());
 
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < offset; i++) {
 			columnModel.renderPart("Column");  // Use the selected model
 			GlStateManager.translate(0, 1, 0);
 		}
@@ -109,14 +115,14 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		return ResourceManager.rbmk_reflector;  // Default
 	}
 
-	private void renderFuelRodStack(TileEntityRBMKBase control, float r, float g, float b) {
+	private void renderFuelRodStack(TileEntityRBMKBase control, float r, float g, float b, int offset) {
 		GlStateManager.pushMatrix();
 		try {
 			GlStateManager.color(r, g, b, 1);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(texture_rods);
 
 			// Render full segments
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < offset; i++) {
 				ResourceManager.rbmk_element.renderPart("Rods");
 				GlStateManager.translate(0, 1, 0);
 			}
@@ -126,9 +132,9 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		}
 	}
 
-	private void renderLid(TileEntityRBMKBase control) {
+	private void renderLid(TileEntityRBMKBase control, int offset) {
 		GlStateManager.pushMatrix();
-		GlStateManager.translate(0, TileEntityRBMKBase.rbmkHeight + control.jumpheight, 0);
+		GlStateManager.translate(0, offset + control.jumpheight, 0);
 
 		int meta = control.getBlockMetadata() - RBMKBase.offset;
 		ResourceLocation lidTexture = (meta == RBMKBase.DIR_GLASS_LID.ordinal()) ?
@@ -144,7 +150,7 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		GlStateManager.popMatrix();
 	}
 
-	private void renderCherenkovEffect(TileEntityRBMKBase control, float r, float g, float b, float a) {
+	private void renderCherenkovEffect(TileEntityRBMKBase control, float r, float g, float b, float a, int offset) {
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(0, 0.75, 0);
 		GlStateManager.disableCull();
@@ -156,7 +162,6 @@ public class RenderRBMKLid extends TileEntitySpecialRenderer<TileEntityRBMKBase>
 		BufferBuilder buf = Tessellator.getInstance().getBuffer();
 		buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-		float offset = TileEntityRBMKBase.rbmkHeight;
 		for(double j = 0; j <= offset; j += 0.25) {
 			buf.pos(-0.5, j, -0.5).color(r, g, b, a).endVertex();
 			buf.pos(-0.5, j, 0.5).color(r, g, b, a).endVertex();

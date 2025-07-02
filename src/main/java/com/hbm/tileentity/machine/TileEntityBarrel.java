@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import api.hbm.fluid.*;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.CompatHandler;
 import com.hbm.interfaces.IFFtoNTMF;
@@ -10,6 +11,7 @@ import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Corrosive;
+import com.hbm.items.machine.ItemForgeFluidIdentifier;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IFluidCopiable;
@@ -29,8 +31,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -38,371 +43,468 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
-public class TileEntityBarrel extends TileEntityMachineBase implements ITickable, IPersistentNBT, IFluidCopiable, IFluidStandardTransceiver, SimpleComponent, CompatHandler.OCComponent, IFFtoNTMF {
+public class TileEntityBarrel extends TileEntityMachineBase implements
+        ITickable, IPersistentNBT, IFluidCopiable,
+        IFluidStandardTransceiver, SimpleComponent,
+        CompatHandler.OCComponent, IFFtoNTMF {
 
-	public FluidTank tank;
-	public FluidTankNTM tankNew;
-	//Drillgon200: I think this would be much easier to read as an enum.
-	public short mode = 0;
-	public static final short modes = 4;
-	private int age = 0;
-	public List<IFluidAcceptor> list = new ArrayList();
-	protected boolean sendingBrake = false;
+    public static final short modes = 4;
+    private static final int[] slots_top = new int[]{2};
+    private static final int[] slots_bottom = new int[]{3, 5};
+    private static final int[] slots_side = new int[]{4};
+    private static boolean converted = false;
+    public FluidTank tank;
+    public FluidTankNTM tankNew;
+    //Drillgon200: I think this would be much easier to read as an enum.
+    //Norwood: This could have been a byte
+    public short mode = 0;
+    public List<IFluidAcceptor> list = new ArrayList();
+    protected boolean sendingBrake = false;
+    private int age = 0;
+    // Th3_Sl1ze: Ugh. Maybe there's a smarter way to convert fluids from forge tank to NTM tank but I don't know any other client-seamless methods.
+    private Fluid oldFluid = ModForgeFluids.none;
 
-	private static final int[] slots_top = new int[] {2};
-	private static final int[] slots_bottom = new int[] {3, 5};
-	private static final int[] slots_side = new int[] {4};
-	// Th3_Sl1ze: Ugh. Maybe there's a smarter way to convert fluids from forge tank to NTM tank but I don't know any other client-seamless methods.
-	private Fluid oldFluid = ModForgeFluids.none;
-	private static boolean converted = false;
-	
-	public TileEntityBarrel() {
-		super(6);
-		tank = new FluidTank(-1);
-		tankNew = new FluidTankNTM(Fluids.NONE, 0, 0);
-		converted = true;
-	}
-	
-	public TileEntityBarrel(int cap) {
-		super(6);
-		tank = new FluidTank(cap);
-		tankNew = new FluidTankNTM(Fluids.NONE, cap, 0);
-	}
+    public TileEntityBarrel() {
+        super(6);
+        tank = new FluidTank(-1);
+        tankNew = new FluidTankNTM(Fluids.NONE, 0, 0);
+        converted = true;
+    }
 
-	@Override
-	public long getDemand(FluidType type, int pressure) {
+    public TileEntityBarrel(int cap) {
+        super(6);
+        tank = new FluidTank(cap);
+        tankNew = new FluidTankNTM(Fluids.NONE, cap, 0);
+    }
 
-		if(this.mode == 2 || this.mode == 3 || this.sendingBrake)
-			return 0;
+    protected static int transmitFluidFairly(World world, FluidTankNTM tank, IFluidConnector that, int fill, boolean connect, boolean send, DirPos[] connections) {
 
-		if(tankNew.getPressure() != pressure) return 0;
+        Set<IPipeNet> nets = new HashSet<>();
+        Set<IFluidConnector> consumers = new HashSet<>();
+        FluidType type = tank.getTankType();
+        int pressure = tank.getPressure();
 
-		return type == tankNew.getTankType() ? tankNew.getMaxFill() - tankNew.getFill() : 0;
-	}
+        for (DirPos pos : connections) {
 
-	@Override
-	public long transferFluid(FluidType type, int pressure, long fluid) {
-		long toTransfer = Math.min(getDemand(type, pressure), fluid);
-		tankNew.setFill(tankNew.getFill() + (int) toTransfer);
-		this.markDirty();
-		return fluid - toTransfer;
-	}
+            TileEntity te = world.getTileEntity(pos.getPos());
 
-	@Override
-	public void update() {
-		if(!converted && tankNew.getTankType() == Fluids.NONE) {
-			this.resizeInventory(6);
-			convertAndSetFluid(oldFluid, tank, tankNew);
-			converted = true;
-		}
-		if(!world.isRemote){
-			tankNew.setType(0, 1, inventory);
-			tankNew.loadTank(2, 3, inventory);
-			tankNew.unloadTank(4, 5, inventory);
+            if (te instanceof IFluidConductor) {
+                IFluidConductor con = (IFluidConductor) te;
+                if (con.getPipeNet(type) != null) {
+                    nets.add(con.getPipeNet(type));
+                    con.getPipeNet(type).unsubscribe(that);
+                    consumers.addAll(con.getPipeNet(type).getSubscribers());
+                }
 
-			this.sendingBrake = true;
-			tankNew.setFill(transmitFluidFairly(world, tankNew, this, tankNew.getFill(), this.mode == 0 || this.mode == 1, this.mode == 1 || this.mode == 2, getConPos()));
-			this.sendingBrake = false;
+                //if it's just a consumer, buffer it as a subscriber
+            } else if (te instanceof IFluidConnector) {
+                consumers.add((IFluidConnector) te);
+            }
+        }
 
-			if(tankNew.getFill() > 0) {
-				checkFluidInteraction();
-			}
+        consumers.remove(that);
 
-			this.networkPackNT(50);
-		}
-	}
+        if (fill > 0 && send) {
+            List<IFluidConnector> con = new ArrayList<>();
+            con.addAll(consumers);
 
-	@Override
-	public void serialize(ByteBuf buf) {
-		super.serialize(buf);
-		buf.writeShort(mode);
-		tankNew.serialize(buf);
-	}
+            con.removeIf(x -> x == null || !(x instanceof TileEntity) || ((TileEntity) x).isInvalid());
 
-	@Override
-	public void deserialize(ByteBuf buf) {
-		super.deserialize(buf);
-		mode = buf.readShort();
-		tankNew.deserialize(buf);
-	}
+            if (PipeNet.trackingInstances == null) {
+                PipeNet.trackingInstances = new ArrayList<>();
+            }
 
-	protected DirPos[] getConPos() {
-		return new DirPos[] {
-				new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),
-				new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Library.NEG_X),
-				new DirPos(pos.getX(), pos.getY() + 1, pos.getZ(), Library.POS_Y),
-				new DirPos(pos.getX(), pos.getY() - 1, pos.getZ(), Library.NEG_Y),
-				new DirPos(pos.getX(), pos.getY(), pos.getZ() + 1, Library.POS_Z),
-				new DirPos(pos.getX(), pos.getY(), pos.getZ() - 1, Library.NEG_Z)
-		};
-	}
+            PipeNet.trackingInstances.clear();
+            nets.forEach(x -> {
+                if (x instanceof PipeNet) PipeNet.trackingInstances.add((PipeNet) x);
+            });
 
-	protected static int transmitFluidFairly(World world, FluidTankNTM tank, IFluidConnector that, int fill, boolean connect, boolean send, DirPos[] connections) {
+            fill = (int) PipeNet.fairTransfer(con, type, pressure, fill);
+        }
 
-		Set<IPipeNet> nets = new HashSet<>();
-		Set<IFluidConnector> consumers = new HashSet<>();
-		FluidType type = tank.getTankType();
-		int pressure = tank.getPressure();
+        //resubscribe to buffered nets, if necessary
+        if (connect) {
+            nets.forEach(x -> x.subscribe(that));
+        }
 
-		for(DirPos pos : connections) {
+        return fill;
+    }
 
-			TileEntity te = world.getTileEntity(pos.getPos());
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            if (facing == EnumFacing.UP) {
+                return CapabilityFluidHandler.
+                        FLUID_HANDLER_CAPABILITY.
+                        cast(new NTMFluidHandlerWrapper(tankNew) {
+                                 @Override
+                                 public int fill(FluidStack resource, boolean doFill) {
+                                     if (mode == 0 || mode == 1)
+                                         return super.fill(resource, doFill);
+                                     return 0;
+                                 }
 
-			if(te instanceof IFluidConductor) {
-				IFluidConductor con = (IFluidConductor) te;
-				if(con.getPipeNet(type) != null) {
-					nets.add(con.getPipeNet(type));
-					con.getPipeNet(type).unsubscribe(that);
-					consumers.addAll(con.getPipeNet(type).getSubscribers());
-				}
+                                 @Override
+                                 public FluidStack drain(FluidStack resource, boolean doDrain) {
+                                     return null;
+                                 }
 
-				//if it's just a consumer, buffer it as a subscriber
-			} else if(te instanceof IFluidConnector) {
-				consumers.add((IFluidConnector) te);
-			}
-		}
+                                 @Override
+                                 public FluidStack drain(int maxDrain, boolean doDrain) {
+                                     return null;
+                                 }
+                             }
+                        );
 
-		consumers.remove(that);
+            } else if (facing == EnumFacing.DOWN) {
 
-		if(fill > 0 && send) {
-			List<IFluidConnector> con = new ArrayList<>();
-			con.addAll(consumers);
+                return CapabilityFluidHandler.
+                        FLUID_HANDLER_CAPABILITY.
+                        cast(new NTMFluidHandlerWrapper(tankNew) {
+                                 @Override
+                                 public int fill(FluidStack resource, boolean doFill) {
+                                     return 0;
+                                 }
 
-			con.removeIf(x -> x == null || !(x instanceof TileEntity) || ((TileEntity)x).isInvalid());
+                                 @Override
+                                 public FluidStack drain(FluidStack resource, boolean doDrain) {
 
-			if(PipeNet.trackingInstances == null) {
-				PipeNet.trackingInstances = new ArrayList<>();
-			}
+                                     if (mode == 2 || mode == 1)
+                                         return super.drain(resource, doDrain);
+                                     return null;
+                                 }
 
-			PipeNet.trackingInstances.clear();
-			nets.forEach(x -> {
-				if(x instanceof PipeNet) PipeNet.trackingInstances.add((PipeNet) x);
-			});
+                                 @Override
+                                 public FluidStack drain(int maxDrain, boolean doDrain) {
+                                     if (mode == 2 || mode == 1)
+                                         return super.drain(maxDrain, doDrain);
+                                     return null;
+                                 }
+                             }
+                        );
 
-			fill = (int) PipeNet.fairTransfer(con, type, pressure, fill);
-		}
+            } else {
 
-		//resubscribe to buffered nets, if necessary
-		if(connect) {
-			nets.forEach(x -> x.subscribe(that));
-		}
+                return CapabilityFluidHandler.
+                        FLUID_HANDLER_CAPABILITY.
+                        cast(new NTMFluidHandlerWrapper(tankNew) {
+                                 @Override
+                                 public int fill(FluidStack resource, boolean doFill) {
+                                     if (mode == 0 || mode == 1)
+                                         return super.fill(resource, doFill);
+                                     return 0;
+                                 }
 
-		return fill;
-	}
-	
-	public void checkFluidInteraction(){
-		Block b = this.getBlockType();
-		
-		//for when you fill antimatter into a matter tank
-		if(b != ModBlocks.barrel_antimatter && tankNew.getTankType().isAntimatter()) {
-			world.destroyBlock(pos, false);
-			world.newExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5, true, true);
-		}
-		
-		//for when you fill hot or corrosive liquids into a plastic tank
-		if(b == ModBlocks.barrel_plastic && (tankNew.getTankType().isCorrosive() || tankNew.getTankType().isHot())) {
-			world.destroyBlock(pos, false);
-			world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-		}
-		
-		//for when you fill corrosive liquid into an iron tank
-		if((b == ModBlocks.barrel_iron && tankNew.getTankType().isCorrosive()) ||
-				(b == ModBlocks.barrel_steel && tankNew.getTankType().hasTrait(FT_Corrosive.class) && tankNew.getTankType().getTrait(FT_Corrosive.class).getRating() > 50)) {
-			
-			world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-			ItemStackHandler copy = new ItemStackHandler(this.inventory.getSlots());
-			for (int i = 0; i < this.inventory.getSlots(); i++) {
-				copy.setStackInSlot(i, this.inventory.getStackInSlot(i).copy());
-			}
+                                 @Override
+                                 public FluidStack drain(FluidStack resource, boolean doDrain) {
 
-			this.inventory = new ItemStackHandler(6);
-			world.setBlockState(pos, ModBlocks.barrel_corroded.getDefaultState());
-			
-			TileEntityBarrel barrel = (TileEntityBarrel)world.getTileEntity(pos);
+                                     if (mode == 2 || mode == 1)
+                                         return super.drain(resource, doDrain);
+                                     return null;
+                                 }
 
-			if(barrel != null) {
-				barrel.tankNew.setTankType(tankNew.getTankType());
-				barrel.tankNew.setFill(Math.min(barrel.tankNew.getMaxFill(), tankNew.getFill()));
-				barrel.inventory = copy;
-			}
-		}
+                                 @Override
+                                 public FluidStack drain(int maxDrain, boolean doDrain) {
+                                     if (mode == 2 || mode == 1)
+                                         return super.drain(maxDrain, doDrain);
+                                     return null;
+                                 }
+                             }
+                        );
 
-		if(b == ModBlocks.barrel_corroded ) {
-			if(world.rand.nextInt(3) == 0) {
-				tankNew.setFill(tankNew.getFill() - 1);
-			}
-			if(world.rand.nextInt(3 * 60 * 20) == 0) world.destroyBlock(pos, false);
-		}
-	}
+            }
 
-	@Override
-	public String getName() {
-		return "container.barrel";
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
-		compound.setShort("mode", mode);
-		if(!converted && tankNew.getTankType() == Fluids.NONE){
-			compound.setInteger("cap", tank.getCapacity());
-			tank.writeToNBT(compound);
-			compound.setBoolean("converted", true);
-		} else tankNew.writeToNBT(compound, "tank");
-		return compound;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		super.readFromNBT(compound);
-		mode = compound.getShort("mode");
-		converted = compound.getBoolean("converted");
-		tankNew.readFromNBT(compound,"tank");
-		if (!converted && tankNew.getTankType() == Fluids.NONE){
-			if(tank == null || tank.getCapacity() <= 0)
-				tank = new FluidTank(compound.getInteger("cap"));
-			tank.readFromNBT(compound);
-			if(tank.getFluid() != null) {
-				oldFluid = tank.getFluid().getFluid();
-			}
-		} else {
-			if(compound.hasKey("cap")) compound.removeTag("cap");
-		}
-	}
+        }
 
-	@Override
-	public FluidTankNTM[] getSendingTanks() {
-		return (mode == 1 || mode == 2) ? new FluidTankNTM[] {tankNew} : new FluidTankNTM[0];
-	}
 
-	@Override
-	public FluidTankNTM[] getReceivingTanks() {
-		return (mode == 0 || mode == 1) && !sendingBrake ? new FluidTankNTM[] {tankNew} : new FluidTankNTM[0];
-	}
+        return super.getCapability(capability, facing);
+    }
 
-	@Override
-	public FluidTankNTM[] getAllTanks() {
-		return new FluidTankNTM[] { tankNew };
-	}
+    @Override
+    public long getDemand(FluidType type, int pressure) {
 
-	@Override
-	public int[] getFluidIDToCopy() {
-		return new int[] {tankNew.getTankType().getID()};
-	}
+        if (this.mode == 2 || this.mode == 3 || this.sendingBrake)
+            return 0;
 
-	@Override
-	public FluidTankNTM getTankToPaste() {
-		return tankNew;
-	}
+        if (tankNew.getPressure() != pressure) return 0;
 
-	@Override
-	public void writeNBT(NBTTagCompound nbt) {
-		if(tankNew.getFill() == 0) return;
-		NBTTagCompound data = new NBTTagCompound();
-		this.tankNew.writeToNBT(data, "tank");
-		data.setShort("mode", mode);
-		nbt.setTag(NBT_PERSISTENT_KEY, data);
-	}
+        return type == tankNew.getTankType() ? tankNew.getMaxFill() - tankNew.getFill() : 0;
+    }
 
-	@Override
-	public void readNBT(NBTTagCompound nbt) {
-		NBTTagCompound data = nbt.getCompoundTag(NBT_PERSISTENT_KEY);
-		this.tankNew.readFromNBT(data, "tank");
-		this.mode = data.getShort("nbt");
-	}
+    @Override
+    public long transferFluid(FluidType type, int pressure, long fluid) {
+        long toTransfer = Math.min(getDemand(type, pressure), fluid);
+        tankNew.setFill(tankNew.getFill() + (int) toTransfer);
+        this.markDirty();
+        return fluid - toTransfer;
+    }
 
-	@Override
-	public int[] getAccessibleSlotsFromSide(EnumFacing e) {
-		int i = e.ordinal();
-		return i == 0 ? slots_bottom : (i == 1 ? slots_top : slots_side);
-	}
-	
-	@Override
-	public boolean isItemValidForSlot(int i, ItemStack stack) {
-		if(i == 0){
-			return true;
-		}
-		
-		if(i == 2){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	@Override
-	public boolean canInsertItem(int slot, ItemStack itemStack, int amount) {
-		return isItemValidForSlot(slot, itemStack);
-	}
-	
-	@Override
-	public boolean canExtractItem(int slot, ItemStack itemStack, int amount) {
-		if(slot == 1){
-			return true;
-		}
-		
-		if(slot == 3){
-			return true;
-		}
-		
-		return false;
-	}
+    @Override
+    public void update() {
+        //Fix up old tanks
+        if (!converted && tankNew.getTankType() == Fluids.NONE) {
+            this.resizeInventory(6);
+            convertAndSetFluid(oldFluid, tank, tankNew);
+            converted = true;
+        }
+        //
 
-	@Override
-	@Optional.Method(modid = "OpenComputers")
-	public String getComponentName() {
-		return "ntm_fluid_tank";
-	}
+        if (!world.isRemote) {
+            tankNew.setType(0, 1, inventory);
+            tankNew.loadTank(2, 3, inventory);
+            tankNew.unloadTank(4, 5, inventory);
 
-	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
-	public Object[] getFluidStored(Context context, Arguments args) {
-		return new Object[] {tankNew.getFill()};
-	}
+            this.sendingBrake = true;
+            tankNew.setFill(transmitFluidFairly(world, tankNew, this, tankNew.getFill(), this.mode == 0 || this.mode == 1, this.mode == 1 || this.mode == 2, getConPos()));
+            this.sendingBrake = false;
 
-	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
-	public Object[] getMaxStored(Context context, Arguments args) {
-		return new Object[] {tankNew.getMaxFill()};
-	}
+            if (tankNew.getFill() > 0) {
+                checkFluidInteraction();
+            }
 
-	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
-	public Object[] getTypeStored(Context context, Arguments args) {
-		return new Object[] {tankNew.getTankType().getName()};
-	}
+            this.networkPackNT(50);
+        }
+    }
 
-	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
-	public Object[] getInfo(Context context, Arguments args) {
-		return new Object[]{tankNew.getFill(), tankNew.getMaxFill(), tankNew.getTankType().getName()};
-	}
+    @Override
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+        buf.writeShort(mode);
+        tankNew.serialize(buf);
+    }
 
-	@Override
-	@Optional.Method(modid = "OpenComputers")
-	public String[] methods() {
-		return new String[] {
-				"getFluidStored",
-				"getMaxStored",
-				"getTypeStored",
-				"getInfo"
-		};
-	}
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        mode = buf.readShort();
+        tankNew.deserialize(buf);
+    }
 
-	@Override
-	@Optional.Method(modid = "OpenComputers")
-	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
-		switch (method) {
-			case "getFluidStored":
-				return getFluidStored(context, args);
-			case "getMaxStored":
-				return getMaxStored(context, args);
-			case "getTypeStored":
-				return getTypeStored(context, args);
-			case "getInfo":
-				return getInfo(context, args);
-		}
-		throw new NoSuchMethodException();
-	}
+    protected DirPos[] getConPos() {
+        return new DirPos[]{
+                new DirPos(pos.getX() + 1, pos.getY(), pos.getZ(), Library.POS_X),
+                new DirPos(pos.getX() - 1, pos.getY(), pos.getZ(), Library.NEG_X),
+                new DirPos(pos.getX(), pos.getY() + 1, pos.getZ(), Library.POS_Y),
+                new DirPos(pos.getX(), pos.getY() - 1, pos.getZ(), Library.NEG_Y),
+                new DirPos(pos.getX(), pos.getY(), pos.getZ() + 1, Library.POS_Z),
+                new DirPos(pos.getX(), pos.getY(), pos.getZ() - 1, Library.NEG_Z)
+        };
+    }
+
+    public void checkFluidInteraction() {
+        Block b = this.getBlockType();
+
+        //for when you fill antimatter into a matter tank
+        if (b != ModBlocks.barrel_antimatter && tankNew.getTankType().isAntimatter()) {
+            world.destroyBlock(pos, false);
+            world.newExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 5, true, true);
+        }
+
+        //for when you fill hot or corrosive liquids into a plastic tank
+        if (b == ModBlocks.barrel_plastic && (tankNew.getTankType().isCorrosive() || tankNew.getTankType().isHot())) {
+            world.destroyBlock(pos, false);
+            world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
+
+        //for when you fill corrosive liquid into an iron tank
+        if ((b == ModBlocks.barrel_iron && tankNew.getTankType().isCorrosive()) ||
+                (b == ModBlocks.barrel_steel && tankNew.getTankType().hasTrait(FT_Corrosive.class) && tankNew.getTankType().getTrait(FT_Corrosive.class).getRating() > 50)) {
+
+            world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LAVA_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            ItemStackHandler copy = new ItemStackHandler(this.inventory.getSlots());
+            for (int i = 0; i < this.inventory.getSlots(); i++) {
+                copy.setStackInSlot(i, this.inventory.getStackInSlot(i).copy());
+            }
+
+            this.inventory = new ItemStackHandler(6);
+            world.setBlockState(pos, ModBlocks.barrel_corroded.getDefaultState());
+
+            TileEntityBarrel barrel = (TileEntityBarrel) world.getTileEntity(pos);
+
+            if (barrel != null) {
+                barrel.tankNew.setTankType(tankNew.getTankType());
+                barrel.tankNew.setFill(Math.min(barrel.tankNew.getMaxFill(), tankNew.getFill()));
+                barrel.inventory = copy;
+            }
+        }
+
+        if (b == ModBlocks.barrel_corroded) {
+            if (world.rand.nextInt(3) == 0) {
+                tankNew.setFill(tankNew.getFill() - 1);
+            }
+            if (world.rand.nextInt(3 * 60 * 20) == 0) world.destroyBlock(pos, false);
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "container.barrel";
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        compound.setShort("mode", mode);
+        if (!converted && tankNew.getTankType() == Fluids.NONE) {
+            compound.setInteger("cap", tank.getCapacity());
+            tank.writeToNBT(compound);
+            compound.setBoolean("converted", true);
+        } else tankNew.writeToNBT(compound, "tank");
+        return compound;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        mode = compound.getShort("mode");
+        converted = compound.getBoolean("converted");
+        tankNew.readFromNBT(compound, "tank");
+        if (!converted && tankNew.getTankType() == Fluids.NONE) {
+            if (tank == null || tank.getCapacity() <= 0)
+                tank = new FluidTank(compound.getInteger("cap"));
+            tank.readFromNBT(compound);
+            if (tank.getFluid() != null) {
+                oldFluid = tank.getFluid().getFluid();
+            }
+        } else {
+            if (compound.hasKey("cap")) compound.removeTag("cap");
+        }
+    }
+
+    @Override
+    public FluidTankNTM[] getSendingTanks() {
+        return (mode == 1 || mode == 2) ? new FluidTankNTM[]{tankNew} : new FluidTankNTM[0];
+    }
+
+    @Override
+    public FluidTankNTM[] getReceivingTanks() {
+        return (mode == 0 || mode == 1) && !sendingBrake ? new FluidTankNTM[]{tankNew} : new FluidTankNTM[0];
+    }
+
+    @Override
+    public FluidTankNTM[] getAllTanks() {
+        return new FluidTankNTM[]{tankNew};
+    }
+
+    @Override
+    public int[] getFluidIDToCopy() {
+        return new int[]{tankNew.getTankType().getID()};
+    }
+
+    @Override
+    public FluidTankNTM getTankToPaste() {
+        return tankNew;
+    }
+
+    @Override
+    public void writeNBT(NBTTagCompound nbt) {
+        if (tankNew.getFill() == 0) return;
+        NBTTagCompound data = new NBTTagCompound();
+        this.tankNew.writeToNBT(data, "tank");
+        data.setShort("mode", mode);
+        nbt.setTag(NBT_PERSISTENT_KEY, data);
+    }
+
+    @Override
+    public void readNBT(NBTTagCompound nbt) {
+        NBTTagCompound data = nbt.getCompoundTag(NBT_PERSISTENT_KEY);
+        this.tankNew.readFromNBT(data, "tank");
+        this.mode = data.getShort("nbt");
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(EnumFacing e) {
+        int i = e.ordinal();
+        return i == 0 ? slots_bottom : (i == 1 ? slots_top : slots_side);
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int i, ItemStack stack) {
+        if (i == 0 && stack.getItem() instanceof ItemForgeFluidIdentifier) {
+            return true;
+        }
+
+        if (i == 2) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack itemStack, int amount) {
+        return this.isItemValidForSlot(slot, itemStack);
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack itemStack, int amount) {
+        if (slot == 1) {
+            return true;
+        }
+
+        if (slot == 3) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    @Optional.Method(modid = "OpenComputers")
+    public String getComponentName() {
+        return "ntm_fluid_tank";
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getFluidStored(Context context, Arguments args) {
+        return new Object[]{tankNew.getFill()};
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getMaxStored(Context context, Arguments args) {
+        return new Object[]{tankNew.getMaxFill()};
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getTypeStored(Context context, Arguments args) {
+        return new Object[]{tankNew.getTankType().getName()};
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getInfo(Context context, Arguments args) {
+        return new Object[]{tankNew.getFill(), tankNew.getMaxFill(), tankNew.getTankType().getName()};
+    }
+
+    @Override
+    @Optional.Method(modid = "OpenComputers")
+    public String[] methods() {
+        return new String[]{
+                "getFluidStored",
+                "getMaxStored",
+                "getTypeStored",
+                "getInfo"
+        };
+    }
+
+    @Override
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] invoke(String method, Context context, Arguments args) throws Exception {
+        switch (method) {
+            case "getFluidStored":
+                return getFluidStored(context, args);
+            case "getMaxStored":
+                return getMaxStored(context, args);
+            case "getTypeStored":
+                return getTypeStored(context, args);
+            case "getInfo":
+                return getInfo(context, args);
+        }
+        throw new NoSuchMethodException();
+    }
+
 }

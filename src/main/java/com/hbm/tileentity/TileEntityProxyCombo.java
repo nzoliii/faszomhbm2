@@ -6,17 +6,23 @@ import api.hbm.tile.IHeatSource;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.ForgeDirection;
+import com.hbm.main.MainRegistry;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.jetbrains.annotations.Nullable;
 
-public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyReceiverMK2, IHeatSource, IFluidAcceptor, IFluidConnector {
+public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergyReceiverMK2, IHeatSource, IFluidAcceptor, IFluidConnector, IFluidHandler {
 
 	TileEntity tile;
 	boolean inventory;
@@ -341,5 +347,43 @@ public class TileEntityProxyCombo extends TileEntityProxyBase implements IEnergy
 		if (getTile() instanceof IHeatSource) {
 			((IHeatSource) getTile()).useUpHeat(heat);
 		}
+	}
+
+	@Override
+	public IFluidTankProperties[] getTankProperties() {
+		if(tile instanceof IFluidHandler){
+			return ((IFluidHandler) tile).getTankProperties();
+		}
+			MainRegistry.logger.error("Tile Entity: {} doesn't support IFluidHandler. Very likely a bug!", tile.toString());
+		return new IFluidTankProperties[0];
+	}
+
+	@Override
+	public int fill(FluidStack resource, boolean doFill) {
+		if(tile instanceof IFluidHandler){
+			return ((IFluidHandler) tile).fill(resource, doFill);
+		}
+		MainRegistry.logger.error("Tile Entity: {} doesn't support IFluidHandler. Very likely a bug!", tile.toString());
+		return 0;
+	}
+
+	@Override
+	public @Nullable FluidStack drain(FluidStack resource, boolean doDrain) {
+		if(tile instanceof IFluidHandler){
+			return ((IFluidHandler) tile).drain(resource, doDrain);
+		}
+		MainRegistry.logger.error("Tile Entity: {} doesn't support IFluidHandler. Very likely a bug!", tile.toString());
+		return null;
+	}
+
+	@Override
+	public @Nullable FluidStack drain(int maxDrain, boolean doDrain) {
+
+		if(tile instanceof IFluidHandler){
+			return ((IFluidHandler) tile).drain(maxDrain, doDrain);
+		}
+		MainRegistry.logger.error("Tile Entity: {} doesn't support IFluidHandler. Very likely a bug!", tile.toString());
+		return null;
+
 	}
 }

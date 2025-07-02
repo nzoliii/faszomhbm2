@@ -14,7 +14,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class FoundryMold extends FoundryCastingBase {
-    
+
 	public FoundryMold(String s) {
 		super(s);
 	}
@@ -26,20 +26,12 @@ public class FoundryMold extends FoundryCastingBase {
 
 	@Override
 	public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entityIn, boolean isActualState) {
-		AxisAlignedBB[] bbs = new AxisAlignedBB[] {
-				new AxisAlignedBB(pos, pos.add(1D, 0.125D, 1D)),
-				new AxisAlignedBB(pos, pos.add(1D, 0.5D, 0.125D)),
-				new AxisAlignedBB(pos, pos.add(0.125D, 0.5D, 1D)),
-				new AxisAlignedBB(pos.add(0.875, 0, 0), pos.add(1D, 0.5D, 1D)),
-				new AxisAlignedBB(pos.add(0, 0, 0.875), pos.add(1D, 0.5D, 1D)),
-		};
-
-		for(AxisAlignedBB bb : bbs) {
-			if(entityBox.intersects(bb)) {
-				collidingBoxes.add(bb);
-			}
-		}
-    }
+		addBox(pos, entityBox, collidingBoxes, 0.0,   0.0,    0.0,   1.0,   0.125, 1.0);
+		addBox(pos, entityBox, collidingBoxes, 0.0,   0.125,  0.0,   1.0,   0.5,   0.125);
+		addBox(pos, entityBox, collidingBoxes, 0.0,   0.125,  0.875, 1.0,   0.5,   1.0);
+		addBox(pos, entityBox, collidingBoxes, 0.0,   0.125,  0.125, 0.125, 0.5,   0.875);
+		addBox(pos, entityBox, collidingBoxes, 0.875, 0.125,  0.125, 1.0,   0.5,   0.875);
+	}
 
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
@@ -65,7 +57,7 @@ public class FoundryMold extends FoundryCastingBase {
 	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
 		return new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
 	}
-	
+
 	@Override
 	public boolean isSideSolid(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		return side != EnumFacing.UP;

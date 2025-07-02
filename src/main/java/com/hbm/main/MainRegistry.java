@@ -29,6 +29,8 @@ import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
 import com.hbm.tileentity.machine.storage.TileEntityMassStorage;
 import com.hbm.tileentity.network.*;
 import com.hbm.tileentity.turret.*;
+import com.hbm.world.ModBiomes;
+import com.hbm.world.PlanetGen;
 import com.hbm.world.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -949,42 +951,43 @@ public class MainRegistry {
 		registerReactorFuels();
 		ControlRegistry.init();
 		OreDictManager.registerOres();
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+		Fluids.initForgeFluidCompat();
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
-				&& fhbm2MenuStateManager.isCustomMenuEnabled()
-				&& !customMenuDisplayed) {
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
+                && fhbm2MenuStateManager.isCustomMenuEnabled()
+                && !customMenuDisplayed) {
 
-			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
-			customMenuDisplayed = true;
-		}
+            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+            customMenuDisplayed = true;
+        }
 
-		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
-			customMenuDisplayed = false;
-		}
-	}
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
+            customMenuDisplayed = false;
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-		if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
-			int yOffset = event.getGui().height / 4 + 48;
-			event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
+            int yOffset = event.getGui().height / 4 + 48;
+            event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
-		if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
-			fhbm2MenuStateManager.setCustomMenuEnabled(true);
-			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
+        if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
+            fhbm2MenuStateManager.setCustomMenuEnabled(true);
+            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+        }
+    }
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {

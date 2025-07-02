@@ -228,21 +228,18 @@ public class ItemRenderLibrary {
 
         renderers.put(Item.getItemFromBlock(ModBlocks.machine_crystallizer), new ItemRenderBase() {
             public void renderNonInv() {
-                GL11.glScaled(0.5, 0.5, 0.5);
+                GlStateManager.scale(0.5, 0.5, 0.5);
             }
 
             public void renderInventory() {
-                GL11.glTranslated(0, -4, 0);
-                GL11.glScaled(1.75, 1.75, 1.75);
+                GlStateManager.translate(0, -4, 0);
+                GlStateManager.scale(2, 2, 2);
             }
 
             public void renderCommon() {
                 GlStateManager.shadeModel(GL11.GL_SMOOTH);
                 bindTexture(ResourceManager.crystallizer_tex);
                 ResourceManager.crystallizer.renderPart("Body");
-                bindTexture(ResourceManager.crystallizer_window_tex);
-                ResourceManager.crystallizer.renderPart("Windows");
-                bindTexture(ResourceManager.crystallizer_spinner_tex);
                 ResourceManager.crystallizer.renderPart("Spinner");
                 GlStateManager.shadeModel(GL11.GL_FLAT);
             }
@@ -2675,6 +2672,17 @@ public class ItemRenderLibrary {
                 }
                 GlStateManager.shadeModel(GL11.GL_FLAT);
             }});
+
+        renderers.put(Item.getItemFromBlock(ModBlocks.machine_soldering_station), new ItemRenderBase() {
+            public void renderInventory() {
+                GlStateManager.translate(0, -1, 0);
+                GlStateManager.scale(5, 5, 5);
+            }
+            public void renderCommon() {
+                bindTexture(ResourceManager.soldering_station_tex);
+                ResourceManager.soldering_station.renderAll();
+            }
+        });
     }
 
     private static void bindTexture(ResourceLocation res) {

@@ -8,14 +8,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 public class GUIAssemfac extends GuiInfoContainer {
 
-    private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_assemfac.png");
-    private static ResourceLocation chemfac = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_chemfac.png");
-    private TileEntityMachineAssemfac assemfac;
+    private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_assemfac.png");
+    private static final ResourceLocation chemfac = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_chemfac.png");
+    private final TileEntityMachineAssemfac assemfac;
 
     public GUIAssemfac(InventoryPlayer invPlayer, TileEntityMachineAssemfac tedf) {
         super(new ContainerAssemfac(invPlayer, tedf));
@@ -91,5 +91,8 @@ public class GUIAssemfac extends GuiInfoContainer {
                 this.fontRenderer.drawStringWithShadow(i + "", guiLeft + s.xPos + 2, guiTop + s.yPos, 0xffffff);
                 this.fontRenderer.drawStringWithShadow(s.getSlotIndex() + "", guiLeft + s.xPos + 2, guiTop + s.yPos + 8, 0xff8080);
             }
+    }
+    public ItemStackHandler getInventory() {
+        return assemfac.inventory;
     }
 }

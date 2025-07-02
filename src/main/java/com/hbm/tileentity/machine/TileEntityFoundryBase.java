@@ -12,12 +12,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 /**
@@ -66,20 +63,17 @@ public abstract class TileEntityFoundryBase extends TileEntityLoadedBase impleme
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
+		if(nbt.hasKey("type"))
+			this.type = Mats.matById.get(nbt.getInteger("type"));
+		if(nbt.hasKey("amount"))
+			this.amount = nbt.getInteger("amount");
 		super.readFromNBT(nbt);
-		this.type = Mats.matById.get(nbt.getInteger("type"));
-		this.amount = nbt.getInteger("amount");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		if(this.type == null) {
-			nbt.setInteger("type", -1);
-		} else {
-			nbt.setInteger("type", this.type.id);
-		}
+		nbt.setInteger("type", this.type == null ? -1 : this.type.id);
 		nbt.setInteger("amount", this.amount);
-		
 		return super.writeToNBT(nbt);
 	}
 	
@@ -92,9 +86,8 @@ public abstract class TileEntityFoundryBase extends TileEntityLoadedBase impleme
 	 */
 	public boolean standardCheck(World world, BlockPos p, ForgeDirection side, MaterialStack stack) {
 		if(this.type != null && this.type != stack.material && this.amount > 0) return false; //reject if there's already a different material
-		if(this.amount >= this.getCapacity()) return false; //reject if the buffer is already full
-		return true;
-	}
+        return this.amount < this.getCapacity(); //reject if the buffer is already full
+    }
 	
 	/**
 	 * Standardized adding of material via pouring or flowing. Does:<br>

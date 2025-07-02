@@ -70,7 +70,8 @@ public class FT_Heatable extends FluidTrait {
 		BOILER("trait.htype.boiler"),
 		HEATEXCHANGER("trait.htype.heatexch"),
 		PWR("trait.htype.pwr"),
-		ICF("trait.htype.icf");
+		ICF("trait.htype.icf"),
+		PA("trait.htype.pa");
 		
 		public String name;
 		

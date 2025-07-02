@@ -87,6 +87,7 @@ public class GeneralConfig {
 	public static boolean enableHardcoreDarkness = false;
 
 	public static boolean enableLBSM = true;
+	public static boolean enableLBSMSimpleCrafting = true;
 	public static boolean enableLBSMSafeMEDrives = false;
 	public static boolean enableLBSMSafeCrates = false;
 

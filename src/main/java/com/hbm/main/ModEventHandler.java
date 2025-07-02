@@ -536,6 +536,7 @@ public class ModEventHandler {
 
         if (event.world != null && !event.world.isRemote && event.world.getTotalWorldTime() % 100 == 97) {
             //Drillgon200: Retarded hack because I'm not convinced game rules are client sync'd
+            //Yup they are not LMAO
             PacketDispatcher.wrapper.sendToAll(new SurveyPacket(RBMKDials.getColumnHeight(event.world)));
         }
 

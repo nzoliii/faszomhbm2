@@ -1,82 +1,119 @@
 package com.hbm.items;
 
-
 public class ItemEnums {
 
-	public static enum EnumCokeType {
-		COAL,
-		LIGNITE,
-		PETROLEUM
-	}
+  public enum EnumCokeType {
+    COAL,
+    LIGNITE,
+    PETROLEUM
+  }
 
-	public static enum EnumTarType {
-		CRUDE,
-		CRACK,
-		COAL,
-		WOOD,
-		WAX,
-		PARAFFIN
-	}
+  public enum EnumTarType {
+    CRUDE,
+    CRACK,
+    COAL,
+    WOOD,
+    WAX,
+    PARAFFIN
+  }
 
-	public static enum EnumBriquetteType {
-		COAL,
-		LIGNITE,
-		WOOD
-	}
+  public enum EnumBriquetteType {
+    COAL,
+    LIGNITE,
+    WOOD
+  }
 
-	public static enum EnumLegendaryType {
-		TIER1,
-		TIER2,
-		TIER3
-	}
+  public enum EnumLegendaryType {
+    TIER1,
+    TIER2,
+    TIER3
+  }
 
-	public static enum EnumAshType {
-		WOOD,
-		COAL,
-		MISC,
-		FLY,
-		SOOT,
-		FULLERENE
-	}
+  public enum EnumAshType {
+    WOOD,
+    COAL,
+    MISC,
+    FLY,
+    SOOT,
+    FULLERENE
+  }
 
-	public static enum EnumPlantType {
-		TOBACCO,
-		ROPE,
-		MUSTARDWILLOW
-	}
-	public static enum EnumChunkType {
-		RARE,
-		MALACHITE,
-		CRYOLITE
-	}
+  public enum EnumPlantType {
+    TOBACCO,
+    ROPE,
+    MUSTARDWILLOW
+  }
 
-	public static enum EnumAchievementType {
-		GOFISH,
-		ACID,
-		BALLS,
-		DIGAMMASEE,
-		DIGAMMAFEEL,
-		DIGAMMAKNOW,
-		DIGAMMAKAUAIMOHO,
-		DIGAMMAUPONTOP,
-		DIGAMMAFOROURRIGHT,
-		QUESTIONMARK
-	}
+  public enum EnumChunkType {
+    RARE,
+    MALACHITE,
+    CRYOLITE
+  }
 
-	public static enum EnumFuelAdditive {
-		ANTIKNOCK,
-		DEICER
-	}
+  public enum EnumAchievementType {
+    GOFISH,
+    ACID,
+    BALLS,
+    DIGAMMASEE,
+    DIGAMMAFEEL,
+    DIGAMMAKNOW,
+    DIGAMMAKAUAIMOHO,
+    DIGAMMAUPONTOP,
+    DIGAMMAFOROURRIGHT,
+    QUESTIONMARK
+  }
 
-	public static enum EnumPages {
-		PAGE1, PAGE2, PAGE3, PAGE4, PAGE5, PAGE6, PAGE7, PAGE8
-	}
+  public enum EnumFuelAdditive {
+    ANTIKNOCK,
+    DEICER
+  }
 
-	public static enum EnumSecretType {
-		CANISTER, CONTROLLER, SELENIUM_STEEL
-	}
+  public enum EnumPages {
+    PAGE1,
+    PAGE2,
+    PAGE3,
+    PAGE4,
+    PAGE5,
+    PAGE6,
+    PAGE7,
+    PAGE8
+  }
 
-	public static enum EnumCasingType {
-		SMALL, LARGE, SMALL_STEEL, LARGE_STEEL, SHOTSHELL, BUCKSHOT, BUCKSHOT_ADVANCED
-	}
+  public enum EnumSecretType {
+    CANISTER,
+    CONTROLLER,
+    SELENIUM_STEEL
+  }
+
+  public enum EnumCasingType {
+    SMALL,
+    LARGE,
+    SMALL_STEEL,
+    LARGE_STEEL,
+    SHOTSHELL,
+    BUCKSHOT,
+    BUCKSHOT_ADVANCED
+  }
+
+  public enum EnumCircuitType {
+    VACUUM_TUBE,
+    CAPACITOR,
+    CAPACITOR_TANTALIUM,
+    PCB,
+    SILICON,
+    CHIP,
+    CHIP_BISMOID,
+    ANALOG,
+    BASIC,
+    ADVANCED,
+    CAPACITOR_BOARD,
+    BISMOID,
+    CONTROLLER_CHASSIS,
+    CONTROLLER,
+    CONTROLLER_ADVANCED,
+    QUANTUM,
+    CHIP_QUANTUM,
+    CONTROLLER_QUANTUM,
+    ATOMIC_CLOCK,
+  }
 }

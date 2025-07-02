@@ -7,9 +7,6 @@ import com.hbm.main.MainRegistry;
 import com.hbm.util.ConcurrentBitSet;
 import com.hbm.util.SubChunkKey;
 import com.hbm.util.SubChunkSnapshot;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
@@ -42,6 +39,20 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private static final float NUKE_RESISTANCE_CUTOFF = 2_000_000F;
     private static final float INITIAL_ENERGY_FACTOR = 0.3F; // Scales crater, no impact on performance
     private static final double RESOLUTION_FACTOR = 1.0;  // Scales ray density, no impact on crater radius
+    private static final int LUT_RESISTANCE_BINS = 256;
+    private static final int LUT_DISTANCE_BINS = 256;
+    private static final float LUT_MAX_RESISTANCE = 100.0F;
+    private static final float[][] ENERGY_LOSS_LUT = new float[LUT_RESISTANCE_BINS][LUT_DISTANCE_BINS];
+
+    static {
+        for (int r = 0; r < LUT_RESISTANCE_BINS; r++) {
+            float resistance = (r / (float) (LUT_RESISTANCE_BINS - 1)) * LUT_MAX_RESISTANCE;
+            for (int d = 0; d < LUT_DISTANCE_BINS; d++) {
+                float distFrac = d / (float) (LUT_DISTANCE_BINS - 1);
+                ENERGY_LOSS_LUT[r][d] = (float) (Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0);
+            }
+        }
+    }
 
     private static final String TAG_ALGORITHM = "algorithm";
     private static final String TAG_RAY_COUNT = "rayCount";
@@ -64,10 +75,9 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private final int originX, originY, originZ;
     private final int radius;
     private final ConcurrentMap<ChunkPos, ConcurrentBitSet> destructionMap;
-    private final ConcurrentMap<ChunkPos, Int2ObjectMap<DoubleAdder>> damageMap;
+    private final ConcurrentMap<ChunkPos, ConcurrentMap<Integer, DoubleAdder>> damageMap;
     private final ConcurrentMap<SubChunkKey, SubChunkSnapshot> snapshots;
-    private final ConcurrentMap<SubChunkKey, ConcurrentLinkedQueue<RayTask>> waitingRoom;
-    private final BlockingQueue<RayTask> rayQueue;
+    private final ConcurrentMap<SubChunkKey, ConcurrentLinkedQueue<RayTracerTask>> waitingRoom;
     private final List<ChunkPos> orderedChunks;
     private final BlockingQueue<SubChunkKey> reactiveSnapQueue;
     private final Iterator<SubChunkKey> proactiveSnapIterator;
@@ -76,9 +86,7 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private List<BlockPos> destroyedList;
     private int algorithm;
     private int rayCount;
-    private ExecutorService pool;
-    private Thread latchWatcherThread;
-    private volatile CountDownLatch latch;
+    private ForkJoinPool pool;
     private volatile List<Vec3d> directions;
     private volatile boolean collectFinished = false;
     private volatile boolean consolidationFinished = false;
@@ -88,12 +96,9 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     public ExplosionNukeRayParallelized(World world, double x, double y, double z, int strength, int radius, int algorithm) {
         this(world, x, y, z, strength, radius);
         this.algorithm = algorithm;
-        initializeAndStartWorkers(rayCount);
+        initializeAndStartWorkers();
     }
 
-    /**
-     * For NBT deserialization.
-     */
     public ExplosionNukeRayParallelized(World world, double x, double y, double z, int strength, int radius) {
         this.world = world;
         this.explosionX = x;
@@ -119,10 +124,8 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
             this.waitingRoom = new ConcurrentHashMap<>();
             this.orderedChunks = new ArrayList<>();
             this.destroyedList = new ArrayList<>();
-            this.rayQueue = new LinkedBlockingQueue<>();
             this.directionsFuture = CompletableFuture.completedFuture(Collections.emptyList());
             this.pool = null;
-            this.latchWatcherThread = null;
             return;
         }
 
@@ -132,7 +135,6 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         this.reactiveSnapQueue = new LinkedBlockingQueue<>();
 
         int initialChunkCapacity = (int) sortedSubChunks.stream().map(SubChunkKey::getPos).distinct().count();
-
         this.destructionMap = new ConcurrentHashMap<>(initialChunkCapacity);
         this.damageMap = new ConcurrentHashMap<>(initialChunkCapacity);
 
@@ -143,7 +145,6 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         this.destroyedList = new ArrayList<>();
 
         this.directionsFuture = CompletableFuture.supplyAsync(() -> generateSphereRays(rayCount));
-        this.rayQueue = new LinkedBlockingQueue<>();
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
@@ -154,36 +155,30 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         return b.getExplosionResistance(null);
     }
 
-    private void initializeAndStartWorkers(int initialRayCount) {
-        if (initialRayCount <= 0) {
+    private void initializeAndStartWorkers() {
+        if (rayCount <= 0) {
             this.collectFinished = true;
             this.consolidationFinished = true;
             return;
         }
 
-        List<RayTask> initialRayTasks = new ArrayList<>(initialRayCount);
-        for (int i = 0; i < initialRayCount; i++) initialRayTasks.add(new RayTask(i));
-        this.rayQueue.addAll(initialRayTasks);
-
-        this.latch = new CountDownLatch(initialRayCount);
         int workers = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
-        this.pool = Executors.newWorkStealingPool(workers);
+        this.pool = new ForkJoinPool(workers);
 
-        for (int i = 0; i < workers; i++) pool.submit(new Worker());
+        RayTracerTask mainTask = new RayTracerTask(0, rayCount);
 
-        this.latchWatcherThread = new Thread(() -> {
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } finally {
-                collectFinished = true;
-                if (algorithm == 2 && pool != null) pool.submit(this::runConsolidation);
-                else consolidationFinished = true;
-            }
-        }, "ExplosionNuke-Watcher-" + System.nanoTime());
-        this.latchWatcherThread.setDaemon(true);
-        this.latchWatcherThread.start();
+        CompletableFuture.runAsync(() -> pool.invoke(mainTask), pool)
+                .whenComplete((v, ex) -> {
+                    if (ex != null) {
+                        MainRegistry.logger.error("Nuke ray-tracing failed catastrophically.", ex);
+                    }
+                    collectFinished = true;
+                    if (algorithm == 2) {
+                        pool.submit(this::runConsolidation);
+                    } else {
+                        consolidationFinished = true;
+                    }
+                });
     }
 
     private List<SubChunkKey> getAllSubChunks() {
@@ -239,8 +234,12 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private void processCacheKey(SubChunkKey ck) {
         if (snapshots.containsKey(ck)) return;
         snapshots.put(ck, SubChunkSnapshot.getSnapshot(world, ck, BombConfig.chunkloading));
-        ConcurrentLinkedQueue<RayTask> waiters = waitingRoom.remove(ck);
-        if (waiters != null) rayQueue.addAll(waiters);
+        ConcurrentLinkedQueue<RayTracerTask> waiters = waitingRoom.remove(ck);
+        if (waiters != null && pool != null && !pool.isShutdown()) {
+            for (RayTracerTask task : waiters) {
+                pool.submit(task);
+            }
+        }
     }
 
     @Override
@@ -347,17 +346,14 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         this.consolidationFinished = true;
         this.destroyFinished = true;
 
-        if (this.rayQueue != null) this.rayQueue.clear();
         if (this.waitingRoom != null) this.waitingRoom.clear();
         if (this.destroyedList != null) this.destroyedList.clear();
-
-        if (this.latchWatcherThread != null && this.latchWatcherThread.isAlive()) this.latchWatcherThread.interrupt();
 
         if (this.pool != null && !this.pool.isShutdown()) {
             this.pool.shutdownNow();
             try {
                 if (!this.pool.awaitTermination(100, TimeUnit.MILLISECONDS))
-                    MainRegistry.logger.error("ExplosionNukeRayParallelized thread pool did not terminate promptly on cancel.");
+                    MainRegistry.logger.error("ExplosionNukeRayParallelized ForkJoinPool did not terminate promptly on cancel.");
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 if (!this.pool.isShutdown()) this.pool.shutdownNow();
@@ -394,10 +390,10 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
             }
             ConcurrentBitSet chunkDestructionBitSet = destructionMap.computeIfAbsent(cp, k -> new ConcurrentBitSet(BITSET_SIZE));
 
-            Iterator<Int2ObjectMap.Entry<DoubleAdder>> iterator = innerDamageMap.int2ObjectEntrySet().iterator();
+            Iterator<Map.Entry<Integer, DoubleAdder>> iterator = innerDamageMap.entrySet().iterator();
             while (iterator.hasNext()) {
-                Int2ObjectMap.Entry<DoubleAdder> entry = iterator.next();
-                int bitIndex = entry.getIntKey();
+                Map.Entry<Integer, DoubleAdder> entry = iterator.next();
+                int bitIndex = entry.getKey();
                 DoubleAdder accumulatedDamageAdder = entry.getValue();
 
                 float accumulatedDamage = (float) accumulatedDamageAdder.sum();
@@ -474,7 +470,7 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                 this.collectFinished = this.consolidationFinished = this.destroyFinished = true;
                 return;
             }
-            initializeAndStartWorkers(this.rayCount);
+            initializeAndStartWorkers();
         }
     }
 
@@ -523,47 +519,52 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         }
     }
 
-    private class Worker implements Runnable {
-        private static final int RAY_BUCKET_SIZE = 1000;
+    private class RayTracerTask extends RecursiveAction {
+        private static final int THRESHOLD = 512; // Number of rays to process in a single batch
+        private final int start, end;
 
-        @Override
-        public void run() {
-            if (directions == null) directions = directionsFuture.join();
-            List<RayTask> bucket = new ArrayList<>(RAY_BUCKET_SIZE);
-            try {
-                while (latch.getCount() > 0 && !Thread.currentThread().isInterrupted()) {
-                    bucket.clear();
-                    int drainedCount = rayQueue.drainTo(bucket, RAY_BUCKET_SIZE);
-
-                    if (drainedCount > 0) {
-                        for (RayTask task : bucket) {
-                            if (Thread.currentThread().isInterrupted()) break;
-                            task.trace();
-                        }
-                    } else {
-                        RayTask task = rayQueue.poll(100, TimeUnit.MILLISECONDS);
-                        if (task != null) task.trace();
-                    }
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    private class RayTask {
         private static final double RAY_DIRECTION_EPSILON = 1e-6;
         private static final double PROCESSING_EPSILON = 1e-9;
         private static final float MIN_EFFECTIVE_DIST_FOR_ENERGY_CALC = 0.01f;
+        private Map<ChunkPos, Map<Integer, Double>> localDamageMap;
 
-        final int dirIndex;
-
-        RayTask(int dirIdx) {
-            this.dirIndex = dirIdx;
+        RayTracerTask(int start, int end) {
+            this.start = start;
+            this.end = end;
         }
 
-        void trace() {
-            Vec3d dir = directions.get(this.dirIndex);
+        @Override
+        protected void compute() {
+            if (directions == null) {
+                directions = directionsFuture.join();
+            }
+
+            if (end - start <= THRESHOLD) {
+                this.localDamageMap = (algorithm == 2) ? new HashMap<>() : null;
+
+                for (int i = start; i < end; i++) {
+                    if (Thread.currentThread().isInterrupted()) return;
+                    trace(i);
+                }
+
+                if (localDamageMap != null && !localDamageMap.isEmpty()) {
+                    for (Map.Entry<ChunkPos, Map<Integer, Double>> chunkEntry : localDamageMap.entrySet()) {
+                        ChunkPos cp = chunkEntry.getKey();
+                        ConcurrentMap<Integer, DoubleAdder> globalChunkDamage = damageMap.computeIfAbsent(cp, k -> new ConcurrentHashMap<>());
+
+                        for (Map.Entry<Integer, Double> damageEntry : chunkEntry.getValue().entrySet()) {
+                            globalChunkDamage.computeIfAbsent(damageEntry.getKey(), k -> new DoubleAdder()).add(damageEntry.getValue());
+                        }
+                    }
+                }
+            } else {
+                int mid = start + (end - start) / 2;
+                invokeAll(new RayTracerTask(start, mid), new RayTracerTask(mid, end));
+            }
+        }
+
+        void trace(int dirIndex) {
+            Vec3d dir = directions.get(dirIndex);
             float energy = strength * INITIAL_ENERGY_FACTOR;
             double px = explosionX;
             double py = explosionY;
@@ -595,8 +596,6 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
             int lastCX = Integer.MIN_VALUE, lastCZ = Integer.MIN_VALUE, lastSubY = Integer.MIN_VALUE;
             SubChunkKey currentSubChunkKey = null;
 
-            boolean isPaused = false;
-
             try {
                 if (energy <= 0) return;
 
@@ -615,14 +614,13 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                     SubChunkSnapshot snap = snapshots.get(currentSubChunkKey);
                     if (snap == null) {
                         final boolean[] amFirst = {false};
-                        ConcurrentLinkedQueue<RayTask> waiters = waitingRoom.computeIfAbsent(currentSubChunkKey, k -> {
+                        ConcurrentLinkedQueue<RayTracerTask> waiters = waitingRoom.computeIfAbsent(currentSubChunkKey, k -> {
                             amFirst[0] = true;
                             return new ConcurrentLinkedQueue<>();
                         });
                         if (amFirst[0]) reactiveSnapQueue.add(currentSubChunkKey);
-                        waiters.add(this);
 
-                        isPaused = true;
+                        waiters.add(new RayTracerTask(dirIndex, dirIndex + 1));
                         return;
                     }
 
@@ -653,7 +651,8 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                                     int bitIndex = ((WORLD_HEIGHT - 1 - y) << 8) | ((x & 0xF) << 4) | (z & 0xF);
                                     ChunkPos chunkPos = currentSubChunkKey.getPos();
                                     if (algorithm == 2) {
-                                        damageMap.computeIfAbsent(chunkPos, cp -> Int2ObjectMaps.synchronize(new Int2ObjectOpenHashMap<>(256))).computeIfAbsent(bitIndex, k -> new DoubleAdder()).add(damageDealt);
+                                        localDamageMap.computeIfAbsent(chunkPos, k -> new HashMap<>())
+                                                .merge(bitIndex, (double) damageDealt, Double::sum);
                                     } else if (energy > 0) {
                                         destructionMap.computeIfAbsent(chunkPos, posKey -> new ConcurrentBitSet(BITSET_SIZE)).set(bitIndex);
                                     }
@@ -686,15 +685,20 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                 if (energy > 0) ExplosionNukeRayParallelized.this.isContained = false;
 
             } catch (Exception e) {
-                MainRegistry.logger.error("Ray {} finished exceptionally: ", dirIndex, e);
-            } finally {
-                if (!isPaused) latch.countDown();
+                MainRegistry.logger.error("A ray in batch {}-{} finished exceptionally: ", start, end, e);
             }
         }
 
         private double getEnergyLossFactor(float resistance, double currentRayPosition) {
             double effectiveDist = Math.max(currentRayPosition, MIN_EFFECTIVE_DIST_FOR_ENERGY_CALC);
-            return (Math.pow(resistance + 1.0, 3.0 * (effectiveDist / radius)) - 1.0);
+            double distFrac = effectiveDist / radius;
+
+            if (resistance >= 0 && resistance <= LUT_MAX_RESISTANCE) {
+                int rBin = (int) (resistance * (LUT_RESISTANCE_BINS - 1) / LUT_MAX_RESISTANCE);
+                int dBin = (int) (distFrac * (LUT_DISTANCE_BINS - 1));
+                return ENERGY_LOSS_LUT[rBin][dBin];
+            }
+            return (Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0);
         }
     }
 }

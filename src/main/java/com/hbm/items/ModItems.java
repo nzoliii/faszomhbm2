@@ -1614,6 +1614,8 @@ public class ModItems {
 	public static final Item coke = new ItemEnumMulti("coke", EnumCokeType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	public static final Item lignite = new ItemFuel("lignite", 1200).setCreativeTab(MainRegistry.partsTab);
 
+	//Circuit
+	public static final Item circuit = new ItemEnumMulti("circuit", EnumCircuitType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	
 	//Fragments
 	public static final Item rare_earth_chunk = new ItemBase("rare_earth_chunk").setCreativeTab(MainRegistry.partsTab);

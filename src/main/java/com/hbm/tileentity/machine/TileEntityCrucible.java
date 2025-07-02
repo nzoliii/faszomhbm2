@@ -41,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,8 +52,8 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
     public int heat;
     public int progress;
 
-    public List<Mats.MaterialStack> recipeStack = new ArrayList();
-    public List<Mats.MaterialStack> wasteStack = new ArrayList();
+    public List<Mats.MaterialStack> recipeStack = new ArrayList<>();
+    public List<Mats.MaterialStack> wasteStack = new ArrayList<>();
 
     /* CONFIGURABLE CONSTANTS */
     //because eclipse's auto complete is dumb as a fucking rock, it's now called "ZCapacity" so it's listed AFTER the actual stacks in the auto complete list.
@@ -177,7 +178,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
             if(!this.recipeStack.isEmpty()) {
 
                 ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);
-                List<Mats.MaterialStack> toCast = new ArrayList();
+                List<Mats.MaterialStack> toCast = new ArrayList<>();
 
                 CrucibleRecipes.CrucibleRecipe recipe = this.getLoadedRecipe();
                 //if no recipe is loaded, everything from the recipe stack will be drainable
@@ -205,7 +206,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                     data.setByte("dir", (byte) dir.ordinal());
                     data.setFloat("off", 0.625F);
                     data.setFloat("base", 0.625F);
-                    data.setFloat("len", Math.max(1F, pos.getY() - (float) (Math.ceil(impact.toBlockPos().getY()) - 0.875)));
+                    data.setFloat("len", Math.max(1F, pos.getY() - (float) (impact.toBlockPos().getY() - 0.875)));
                     PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
 
                 }
@@ -291,6 +292,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
         this.heat = nbt.getInteger("heat");
     }
 
+    @NotNull
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 
@@ -308,26 +310,25 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
 
     protected void tryPullHeat() {
 
-        if(this.heat >= this.maxHeat) return;
+        if(this.heat >= maxHeat) return;
 
         TileEntity con = world.getTileEntity(pos.down());
 
-        if(con instanceof IHeatSource) {
-            IHeatSource source = (IHeatSource) con;
+        if(con instanceof IHeatSource source) {
             int diff = source.getHeatStored() - this.heat;
 
             if(diff == 0) {
                 return;
             }
 
-            diff = Math.min(diff, this.maxHeat - this.heat);
+            diff = Math.min(diff, maxHeat - this.heat);
 
             if(diff > 0) {
                 diff = (int) Math.ceil(diff * diffusion);
                 source.useUpHeat(diff);
                 this.heat += diff;
-                if(this.heat > this.maxHeat)
-                    this.heat = this.maxHeat;
+                if(this.heat > maxHeat)
+                    this.heat = maxHeat;
                 return;
             }
         }
@@ -343,7 +344,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
         if(slot == -1) return false;
 
         int delta = this.heat - (maxHeat / 2);
-        delta *= 0.05;
+        delta = (int) (delta * 0.05);
 
         this.progress += delta;
         this.heat -= delta;
@@ -457,7 +458,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
             } else {
 
                 //the maximum is the recipe's ratio scaled up to the recipe stack's capacity
-                int matMaximum = recipeInputRequired * this.recipeZCapacity / recipeContent;
+                int matMaximum = recipeInputRequired * recipeZCapacity / recipeContent;
                 int amountStored = getQuantaFromType(recipeStack, mat.material);
 
                 matchesRecipe = true;
@@ -465,13 +466,13 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                 recipeAmount += mat.amount;
 
                 //if the amount of that input would exceed the amount dictated by the recipe, return false
-                if(recipe != null && amountStored + mat.amount > matMaximum)
+                if(amountStored + mat.amount > matMaximum)
                     return false;
             }
         }
 
         //if the amount doesn't exceed the capacity and the recipe matches (or isn't null), return true
-        return recipeAmount <= this.recipeZCapacity && wasteAmount <= this.wasteZCapacity && matchesRecipe;
+        return recipeAmount <= recipeZCapacity && wasteAmount <= wasteZCapacity && matchesRecipe;
     }
 
     public void addToStack(List<Mats.MaterialStack> stack, Mats.MaterialStack matStack) {
@@ -536,6 +537,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
 
     AxisAlignedBB bb = null;
 
+    @NotNull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
 
@@ -565,15 +567,15 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
         CrucibleRecipes.CrucibleRecipe recipe = getLoadedRecipe();
 
         if(recipe == null) {
-            return getQuantaFromType(this.wasteStack, null) < this.wasteZCapacity;
+            return getQuantaFromType(this.wasteStack, null) < wasteZCapacity;
         }
 
         int recipeContent = recipe.getInputAmount();
         int recipeInputRequired = getQuantaFromType(recipe.input, stack.material);
-        int matMaximum = recipeInputRequired * this.recipeZCapacity / recipeContent;
+        int matMaximum = recipeInputRequired * recipeZCapacity / recipeContent;
         int amountStored = getQuantaFromType(recipeStack, stack.material);
 
-        return amountStored < matMaximum && getQuantaFromType(this.recipeStack, null) < this.recipeZCapacity;
+        return amountStored < matMaximum && getQuantaFromType(this.recipeStack, null) < recipeZCapacity;
     }
 
     @Override
@@ -585,11 +587,11 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
 
             int amount = getQuantaFromType(this.wasteStack, null);
 
-            if(amount + stack.amount <= this.wasteZCapacity) {
+            if(amount + stack.amount <= wasteZCapacity) {
                 this.addToStack(this.wasteStack, stack.copy());
                 return null;
             } else {
-                int toAdd = this.wasteZCapacity - amount;
+                int toAdd = wasteZCapacity - amount;
                 this.addToStack(this.wasteStack, new Mats.MaterialStack(stack.material, toAdd));
                 return new Mats.MaterialStack(stack.material, stack.amount - toAdd);
             }
@@ -597,7 +599,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
 
         int recipeContent = recipe.getInputAmount();
         int recipeInputRequired = getQuantaFromType(recipe.input, stack.material);
-        int matMaximum = recipeInputRequired * this.recipeZCapacity / recipeContent;
+        int matMaximum = recipeInputRequired * recipeZCapacity / recipeContent;
 
         if(recipeInputRequired + stack.amount <= matMaximum) {
             this.addToStack(this.recipeStack, stack.copy());
@@ -605,7 +607,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
         }
 
         int toAdd = matMaximum - stack.amount;
-        toAdd = Math.min(toAdd, this.recipeZCapacity - getQuantaFromType(this.recipeStack, null));
+        toAdd = Math.min(toAdd, recipeZCapacity - getQuantaFromType(this.recipeStack, null));
         this.addToStack(this.recipeStack, new Mats.MaterialStack(stack.material, toAdd));
         return new Mats.MaterialStack(stack.material, stack.amount - toAdd);
     }
