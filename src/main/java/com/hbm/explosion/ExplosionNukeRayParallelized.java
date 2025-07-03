@@ -20,7 +20,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -447,7 +446,7 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                 for (int i = 0; i < list.tagCount(); i++) {
                     NBTTagCompound tag = list.getCompoundTagAt(i);
                     ChunkPos pos = new ChunkPos(tag.getInteger(TAG_CHUNK_X), tag.getInteger(TAG_CHUNK_Z));
-                    long[] bitsetData = ObfuscationReflectionHelper.getPrivateValue(NBTTagLongArray.class, ((NBTTagLongArray) tag.getTag(TAG_BITSET)));
+                    long[] bitsetData = ((NBTTagLongArray) tag.getTag(TAG_BITSET)).data;
                     this.destructionMap.put(pos, ConcurrentBitSet.fromLongArray(bitsetData, BITSET_SIZE));
                 }
             }

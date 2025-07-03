@@ -35,7 +35,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.*;
@@ -44,9 +43,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -55,10 +51,6 @@ import java.util.List;
 import java.util.Set;
 @SideOnly(Side.CLIENT)
 public class NTMRenderHelper {
-	
-	public static Field r_setTileEntities;
-	public static Field r_viewFrustum;
-	public static Method r_getRenderChunk;
 	
 	private static FloatBuffer MODELVIEW = GLAllocation.createDirectFloatBuffer(16);
 	private static FloatBuffer PROJECTION = GLAllocation.createDirectFloatBuffer(16);
@@ -638,20 +630,13 @@ public class NTMRenderHelper {
 				}
 			}
 		}
-		try {
-			if(r_setTileEntities == null)
-				r_setTileEntities = ReflectionHelper.findField(RenderGlobal.class, "setTileEntities", "field_181024_n");
-			@SuppressWarnings("unchecked")
-			Set<TileEntity> globals = (Set<TileEntity>) r_setTileEntities.get(Minecraft.getMinecraft().renderGlobal);
-			synchronized(globals){
-				for(TileEntity te : globals){
-					if(Library.isBoxCollidingCone(te.getRenderBoundingBox(), start, end, degrees)){
-						tilesToRender.add(te);
-					}
+		Set<TileEntity> globals = Minecraft.getMinecraft().renderGlobal.setTileEntities;
+		synchronized(globals){
+			for(TileEntity te : globals){
+				if(Library.isBoxCollidingCone(te.getRenderBoundingBox(), start, end, degrees)){
+					tilesToRender.add(te);
 				}
 			}
-		} catch(IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
 		}
 		
 		double entPosX = renderView.lastTickPosX + (renderView.posX - renderView.lastTickPosX)*partialTicks;
@@ -974,21 +959,9 @@ public class NTMRenderHelper {
 		GL20.glUniformMatrix4(GL20.glGetUniformLocation(shader, "inv_ViewProjectionMatrix"), false, ClientProxy.AUX_GL_BUFFER);
 		
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public static RenderChunk getRenderChunk(BlockPos pos){
-    	try {
-    		if(r_viewFrustum == null)
-    			r_viewFrustum = ReflectionHelper.findField(RenderGlobal.class, "viewFrustum", "field_175008_n");
-    		if(r_getRenderChunk == null)
-				r_getRenderChunk = ReflectionHelper.findMethod(ViewFrustum.class, "getRenderChunk", "func_178161_a", BlockPos.class);
-			ViewFrustum v = (ViewFrustum) r_viewFrustum.get(Minecraft.getMinecraft().renderGlobal);
-			RenderChunk r = (RenderChunk) r_getRenderChunk.invoke(v, pos);
-			return r;
-		} catch(IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-    	return null;
+		return Minecraft.getMinecraft().renderGlobal.viewFrustum.getRenderChunk(pos);
 	}
 	
 	public static void renderFullscreenTriangle(){

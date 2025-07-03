@@ -36,6 +36,7 @@ import com.hbm.items.special.ItemAutogen;
 import com.hbm.items.special.ItemBedrockOreNew;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.items.tool.ItemGasCanister;
+import com.hbm.items.weapon.IMetaItemTesr;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.RecoilHandler;
 import com.hbm.lib.RefStrings;
@@ -177,7 +178,6 @@ public class ClientProxy extends ServerProxy {
     public static KeyBinding craneLoadKey;
     //Drillgon200: This is stupid, but I'm lazy
     public static boolean renderingConstant = false;
-    public static Field partialTicksPaused;
     public static int boxcarCalllist;
     public RenderInfoSystemLegacy theInfoSystem = new RenderInfoSystemLegacy();
     private final HashMap<Integer, Long> vanished = new HashMap<>();
@@ -721,7 +721,7 @@ public class ClientProxy extends ServerProxy {
 
     //version 2, now with strings!
     @Override
-    public void spawnParticle(double x, double y, double z, String type, float[] args) {
+    public void spawnParticle(double x, double y, double z, String type, float args[]) {
         World world = Minecraft.getMinecraft().world;
         TextureManager man = Minecraft.getMinecraft().renderEngine;
 
@@ -880,17 +880,17 @@ public class ClientProxy extends ServerProxy {
                 for (int i = 0; i < count; i++) {
                     if (GeneralConfig.instancedParticles) {
                         ParticleExSmokeInstanced fx = new ParticleExSmokeInstanced(world, x, y, z);
-                        double motionY = rand.nextGaussian() * (1 + (count / 100F));
-                        double motionX = rand.nextGaussian() * (1 + (count / 150F));
-                        double motionZ = rand.nextGaussian() * (1 + (count / 150F));
+                        double motionY = rand.nextGaussian() * (1 + (count / 100));
+                        double motionX = rand.nextGaussian() * (1 + (count / 150));
+                        double motionZ = rand.nextGaussian() * (1 + (count / 150));
                         if (rand.nextBoolean()) motionY = Math.abs(motionY);
                         fx.setMotion(motionX, motionY, motionZ);
                         InstancedParticleRenderer.addParticle(fx);
                     } else {
                         ParticleExSmoke fx = new ParticleExSmoke(world, x, y, z);
-                        double motionY = rand.nextGaussian() * (1 + (count / 100F));
-                        double motionX = rand.nextGaussian() * (1 + (count / 150F));
-                        double motionZ = rand.nextGaussian() * (1 + (count / 150F));
+                        double motionY = rand.nextGaussian() * (1 + (count / 100));
+                        double motionX = rand.nextGaussian() * (1 + (count / 150));
+                        double motionZ = rand.nextGaussian() * (1 + (count / 150));
                         if (rand.nextBoolean()) motionY = Math.abs(motionY);
                         fx.setMotion(motionX, motionY, motionZ);
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
@@ -903,11 +903,11 @@ public class ClientProxy extends ServerProxy {
                 for (int i = 0; i < count; i++) {
                     if (GeneralConfig.instancedParticles) {
                         ParticleExSmokeInstanced fx = new ParticleExSmokeInstanced(world, x, y, z);
-                        fx.setMotion(rand.nextGaussian() * (1 + (count / 50F)), rand.nextGaussian() * (1 + (count / 50F)), rand.nextGaussian() * (1 + (count / 50F)));
+                        fx.setMotion(rand.nextGaussian() * (1 + (count / 50)), rand.nextGaussian() * (1 + (count / 50)), rand.nextGaussian() * (1 + (count / 50)));
                         InstancedParticleRenderer.addParticle(fx);
                     } else {
                         ParticleExSmoke fx = new ParticleExSmoke(world, x, y, z);
-                        fx.setMotion(rand.nextGaussian() * (1 + (count / 50F)), rand.nextGaussian() * (1 + (count / 50F)), rand.nextGaussian() * (1 + (count / 50F)));
+                        fx.setMotion(rand.nextGaussian() * (1 + (count / 50)), rand.nextGaussian() * (1 + (count / 50)), rand.nextGaussian() * (1 + (count / 50)));
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
                 }
@@ -945,7 +945,7 @@ public class ClientProxy extends ServerProxy {
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
 
-                    vec.rotateAroundY(360F / count);
+                    vec.rotateAroundY(360 / count);
                 }
             }
 
@@ -969,7 +969,7 @@ public class ClientProxy extends ServerProxy {
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
 
-                    vec.rotateAroundY(360F / count);
+                    vec.rotateAroundY(360 / count);
                 }
             }
             if ("wave".equals(mode)) {
@@ -994,9 +994,25 @@ public class ClientProxy extends ServerProxy {
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
 
-                    vec.rotateAroundY(360F / count);
+                    vec.rotateAroundY(360 / count);
                 }
             }
+        }
+
+        if("network".equals(type)) {
+            ParticleDebug debug = null;
+            double mX = data.getDouble("mX");
+            double mY = data.getDouble("mY");
+            double mZ = data.getDouble("mZ");
+
+            if("power".equals(data.getString("mode"))) {
+                debug = new ParticleDebug(world,  x, y, z);
+            }
+            if("fluid".equals(data.getString("mode"))) {
+                int color = data.getInteger("color");
+                debug = new ParticleDebug(world, x, y, z, mX, mY, mZ, color);
+            }
+            Minecraft.getMinecraft().effectRenderer.addEffect(debug);
         }
 
         if ("exhaust".equals(type)) {
@@ -1543,9 +1559,9 @@ public class ClientProxy extends ServerProxy {
                     ParticleBatchRenderer.addParticle(impact);
                 }
                 if (mat == Material.SAND) {
-                    r *= 1.5F;
-                    g *= 1.5F;
-                    b *= 1.5F;
+                    r *= 1.5;
+                    g *= 1.5;
+                    b *= 1.5;
                 }
                 if (mat == Material.IRON) {
                     NBTTagCompound nbt = new NBTTagCompound();
@@ -2053,9 +2069,9 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void displayTooltipLegacy(String msg, int time, int id) {
         if (id != 0)
-            RenderInfoSystemLegacy.push(new RenderInfoSystemLegacy.InfoEntry(msg, time), id);
+            this.theInfoSystem.push(new RenderInfoSystemLegacy.InfoEntry(msg, time), id);
         else
-            RenderInfoSystemLegacy.push(new RenderInfoSystemLegacy.InfoEntry(msg, time));
+            this.theInfoSystem.push(new RenderInfoSystemLegacy.InfoEntry(msg, time));
     }
 
     @Override
@@ -2097,16 +2113,8 @@ public class ClientProxy extends ServerProxy {
     @SuppressWarnings("deprecation")
     @Override
     public float partialTicks() {
-        try {
-            if (partialTicksPaused == null) {
-                partialTicksPaused = ReflectionHelper.findField(Minecraft.class, "renderPartialTicksPaused", "field_193996_ah");
-            }
             boolean paused = Minecraft.getMinecraft().isGamePaused();
-            return paused ? partialTicksPaused.getFloat(Minecraft.getMinecraft()) : Minecraft.getMinecraft().getRenderPartialTicks();
-        } catch (Exception x) {
-            x.printStackTrace();
-        }
-        return Minecraft.getMinecraft().getRenderPartialTicks();
+            return paused ?  Minecraft.getMinecraft().renderPartialTicksPaused : Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
 }

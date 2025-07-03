@@ -48,7 +48,6 @@ import java.util.function.Consumer;
 public class ModelRendererUtil {
 
 	//Need to call this because things like bats do extra scaling
-	public static Method rPrepareScale;
 	public static Method rGetEntityTexture;
 	public static Method rHandleRotationFloat;
 	public static Method rApplyRotations;
@@ -69,16 +68,16 @@ public class ModelRendererUtil {
 		return r == null ? ResourceManager.turbofan_blades_tex : r;
 	}
 	
-	public static List<Pair<Matrix4f, ModelRenderer>> getBoxesFromMob(Entity e){
-		Render<Entity> eRenderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(e);
+	public static <T extends EntityLivingBase> List<Pair<Matrix4f, ModelRenderer>> getBoxesFromMob(T e){
+		Render<T> eRenderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(e);
 		if(eRenderer instanceof RenderLivingBase && e instanceof EntityLivingBase) {
-			return getBoxesFromMob((EntityLivingBase) e, ((RenderLivingBase<?>) eRenderer), MainRegistry.proxy.partialTicks());
+			return getBoxesFromMob(e, ((RenderLivingBase<T>) eRenderer), MainRegistry.proxy.partialTicks());
 		}
 		return Collections.emptyList();
 	}
 
 	@SuppressWarnings("deprecation")
-	private static List<Pair<Matrix4f, ModelRenderer>> getBoxesFromMob(EntityLivingBase e, RenderLivingBase<?> render, float partialTicks) {
+	private static <T extends EntityLivingBase> List<Pair<Matrix4f, ModelRenderer>> getBoxesFromMob(T e, RenderLivingBase<T> render, float partialTicks) {
 		ModelBase model = render.getMainModel();
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -122,9 +121,6 @@ public class ModelRendererUtil {
 		//if(rPreRenderCallback == null){
 		//	rPreRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);
 		//}
-		if(rPrepareScale == null){
-			rPrepareScale = ReflectionHelper.findMethod(RenderLivingBase.class, "prepareScale", "func_188322_c", EntityLivingBase.class, float.class);
-		}
 		//float f4 = prepareScale(e, partialTicks, render);
 		if(rHandleRotationFloat == null){
 			rHandleRotationFloat = ReflectionHelper.findMethod(RenderLivingBase.class, "handleRotationFloat", "func_77044_a", EntityLivingBase.class, float.class);
@@ -139,13 +135,7 @@ public class ModelRendererUtil {
 		}
 		
         //this.applyRotations(entity, f8, f, partialTicks);
-		
-		float f4 = 0.0625F;
-		try {
-			f4 = (float) rPrepareScale.invoke(render, e, partialTicks);
-		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e2) {
-			e2.printStackTrace();
-		}
+		float f4 = render.prepareScale(e, partialTicks);
 		float f5 = 0.0F;
 		float f6 = 0.0F;
 		if(!e.isRiding()) {
@@ -515,7 +505,7 @@ public class ModelRendererUtil {
 		
 		// Cut all mob boxes and store them in separate lists //
 		
-		List<Pair<Matrix4f, ModelRenderer>> boxes = ModelRendererUtil.getBoxesFromMob(ent);
+		List<Pair<Matrix4f, ModelRenderer>> boxes = ModelRendererUtil.getBoxesFromMob((EntityLivingBase) ent);
 		List<CutModelData> top = new ArrayList<>();
 		List<CutModelData> bottom = new ArrayList<>();
 		for(Pair<Matrix4f, ModelRenderer> r : boxes){

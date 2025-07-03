@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.shader.Framebuffer;
@@ -26,13 +25,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.util.glu.Project;
 import org.lwjgl.util.vector.Matrix4f;
 
-import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
 import java.util.*;
 
@@ -40,8 +37,7 @@ public class LightRenderer {
 
 	public static final int MAX_DIRECTIONAL_LIGHTS = 4;
 	public static final int MAX_POINT_LIGHTS = 4;
-	
-	public static Field r_setTileEntities;
+
 	
 	private static Set<Class<?>> blacklistedObjects = new HashSet<>();
 
@@ -388,22 +384,15 @@ public class LightRenderer {
 			}
 		}
 		if(d.doesTiles()) {
-			try {
-				if(r_setTileEntities == null)
-					r_setTileEntities = ReflectionHelper.findField(RenderGlobal.class, "setTileEntities", "field_181024_n");
-				@SuppressWarnings("unchecked")
-				Set<TileEntity> globals = (Set<TileEntity>) r_setTileEntities.get(Minecraft.getMinecraft().renderGlobal);
-				synchronized(globals) {
-					for(TileEntity te : globals) {
-						if(blacklistedObjects.contains(te.getClass()))
-							continue;
-						if(d.intersects(te.getRenderBoundingBox())) {
-							d.addTileToRender(te);
-						}
+			Set<TileEntity> globals = Minecraft.getMinecraft().renderGlobal.setTileEntities;
+			synchronized(globals) {
+				for(TileEntity te : globals) {
+					if(blacklistedObjects.contains(te.getClass()))
+						continue;
+					if(d.intersects(te.getRenderBoundingBox())) {
+						d.addTileToRender(te);
 					}
 				}
-			} catch(IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
 			}
 		}
 	}

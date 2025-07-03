@@ -90,7 +90,6 @@ public class PacketSpecialDeath implements IMessage {
 	
 	public static class Handler implements IMessageHandler<PacketSpecialDeath, IMessage> {
 
-		@SuppressWarnings("deprecation")
 		@Override
 		@SideOnly(Side.CLIENT)
 		public IMessage onMessage(PacketSpecialDeath m, MessageContext ctx) {
@@ -195,7 +194,7 @@ public class PacketSpecialDeath implements IMessage {
 						ent.setDead();
 						@SuppressWarnings("unchecked")
 						List<BulletHit> bHits = (List<BulletHit>) m.auxObj;
-						List<Pair<Matrix4f, ModelRenderer>> boxes = ModelRendererUtil.getBoxesFromMob(ent);
+						List<Pair<Matrix4f, ModelRenderer>> boxes = ModelRendererUtil.getBoxesFromMob((EntityLivingBase)ent);
 						RigidBody[] bodies = ModelRendererUtil.generateRigidBodiesFromBoxes(ent, boxes);
 						int[] displayLists = ModelRendererUtil.generateDisplayListsFromBoxes(boxes);
 						ResourceLocation tex = ModelRendererUtil.getEntityTexture(ent);

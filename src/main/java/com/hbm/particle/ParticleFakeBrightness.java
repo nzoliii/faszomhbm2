@@ -7,13 +7,11 @@ import org.lwjgl.opengl.GL11;
 import com.hbm.main.ClientProxy;
 import com.hbm.main.ResourceManager;
 import com.hbm.render.misc.LensVisibilityHandler;
-import com.hbm.util.BobMathUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -23,7 +21,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ParticleFakeBrightness extends Particle {
 
@@ -80,21 +77,14 @@ public class ParticleFakeBrightness extends Particle {
 	        float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks);
 	        float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks);
 	        GL11.glTranslated(f5, f6, f7);
-	        if(BobMathUtil.r_viewMat == null){
-				BobMathUtil.r_viewMat = ReflectionHelper.findField(ActiveRenderInfo.class, "MODELVIEW", "field_178812_b");
+			FloatBuffer view_mat = ActiveRenderInfo.MODELVIEW;
+			view_mat.rewind();
+			GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, ClientProxy.AUX_GL_BUFFER);
+			for(int i = 0; i < 12; i ++){
+				ClientProxy.AUX_GL_BUFFER.put(i, view_mat.get(i));
 			}
-			try {
-				FloatBuffer view_mat = (FloatBuffer) BobMathUtil.r_viewMat.get(null);
-				view_mat.rewind();
-				GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, ClientProxy.AUX_GL_BUFFER);
-				for(int i = 0; i < 12; i ++){
-					ClientProxy.AUX_GL_BUFFER.put(i, view_mat.get(i));
-				}
-				ClientProxy.AUX_GL_BUFFER.rewind();
-				GL11.glLoadMatrix(ClientProxy.AUX_GL_BUFFER);
-			} catch(IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+			ClientProxy.AUX_GL_BUFFER.rewind();
+			GL11.glLoadMatrix(ClientProxy.AUX_GL_BUFFER);
         } else {
         	double entPosX = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX)*partialTicks;
             double entPosY = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY)*partialTicks;

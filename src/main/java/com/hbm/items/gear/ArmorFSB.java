@@ -39,11 +39,9 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,9 +49,6 @@ import java.util.Map.Entry;
 
 public class ArmorFSB extends ItemArmor {
 
-	public static Field nextStepDistance = null;
-	public static Field distanceWalkedOnStepModified = null;
-	
 	@SideOnly(Side.CLIENT)
 	public static boolean flashlightPress;
 	
@@ -267,30 +262,19 @@ public class ArmorFSB extends ItemArmor {
 			}
 			
 			if(chestplate.step != null && entity.world.isRemote && entity.onGround && isStart && !entity.isSneaking()) {
-
-				try {
-					if(nextStepDistance == null)
-						nextStepDistance = ReflectionHelper.findField(Entity.class, "nextStepDistance", "field_70150_b");
-					if(distanceWalkedOnStepModified == null)
-						distanceWalkedOnStepModified = ReflectionHelper.findField(Entity.class, "distanceWalkedOnStepModified", "field_82151_R");
-
-					if(entity.getEntityData().getFloat("hfr_nextStepDistance") == 0) {
-						entity.getEntityData().setFloat("hfr_nextStepDistance", nextStepDistance.getFloat(entity));
-					}
-
-	                int px = MathHelper.floor(entity.posX);
-	                int py = MathHelper.floor(entity.posY - 0.2D);
-	                int pz = MathHelper.floor(entity.posZ);
-	                IBlockState block = entity.world.getBlockState(new BlockPos(px, py, pz));
-					if(block.getMaterial() != Material.AIR && entity.getEntityData().getFloat("hfr_nextStepDistance") <= distanceWalkedOnStepModified.getFloat(entity)){
-						entity.playSound(chestplate.step, 1.0F, 1.0F);
-					}
-
-					entity.getEntityData().setFloat("hfr_nextStepDistance", nextStepDistance.getFloat(entity));
-
-				} catch (Exception x) {
-					x.printStackTrace();
+				if(entity.getEntityData().getFloat("hfr_nextStepDistance") == 0) {
+					entity.getEntityData().setFloat("hfr_nextStepDistance", entity.nextStepDistance);
 				}
+
+				int px = MathHelper.floor(entity.posX);
+				int py = MathHelper.floor(entity.posY - 0.2D);
+				int pz = MathHelper.floor(entity.posZ);
+				IBlockState block = entity.world.getBlockState(new BlockPos(px, py, pz));
+				if(block.getMaterial() != Material.AIR && entity.getEntityData().getFloat("hfr_nextStepDistance") <= entity.distanceWalkedOnStepModified){
+					entity.playSound(chestplate.step, 1.0F, 1.0F);
+				}
+
+				entity.getEntityData().setFloat("hfr_nextStepDistance", entity.nextStepDistance);
 			}
 		}
     }

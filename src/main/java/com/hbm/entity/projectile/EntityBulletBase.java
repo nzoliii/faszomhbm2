@@ -1,6 +1,5 @@
 package com.hbm.entity.projectile;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -55,19 +54,14 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 public class EntityBulletBase extends Entity implements IProjectile {
 
 	public static final DataParameter<Integer> STYLE = EntityDataManager.createKey(EntityBulletBase.class, DataSerializers.VARINT);
 	public static final DataParameter<Integer> TRAIL = EntityDataManager.createKey(EntityBulletBase.class, DataSerializers.VARINT);
 	public static final DataParameter<Integer> BULLETCONFIG = EntityDataManager.createKey(EntityBulletBase.class, DataSerializers.VARINT);
-
-	public static Field lastDamage = null;
 
 	private BulletConfiguration config;
 	public EntityLivingBase shooter;
@@ -333,16 +327,8 @@ public class EntityBulletBase extends Entity implements IProjectile {
 				if(overrideDamage != 0)
 					damage = overrideDamage;
 				if (!victim.attackEntityFrom(damagesource, damage)) {
-
-					try {
-						if (lastDamage == null)
-							lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
-
-						float dmg = (float) damage + lastDamage.getFloat(victim);
-
+						float dmg = damage + ((EntityLivingBase)victim).lastDamage;
 						victim.attackEntityFrom(damagesource, dmg);
-					} catch (Exception x) {
-					}
 				}
 				
 

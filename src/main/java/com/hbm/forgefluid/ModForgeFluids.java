@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber(modid = RefStrings.MODID)
+@Deprecated
 public class ModForgeFluids {
 
 	public static HashMap<Fluid, Integer> fluidColors = new HashMap<Fluid, Integer>();

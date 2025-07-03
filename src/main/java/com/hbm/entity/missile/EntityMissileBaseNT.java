@@ -190,9 +190,7 @@ public abstract class EntityMissileBaseNT extends EntityThrowableInterp implemen
 	        
 	        EntityTrackerEntry tracker = TrackerUtil.getTrackerEntry((WorldServer) world, this.getEntityId());
 	        if (tracker != null) {
-	            int lastYaw = ObfuscationReflectionHelper.getPrivateValue(EntityTrackerEntry.class, tracker, "field_73127_g");
-	            lastYaw += 100;
-	            ObfuscationReflectionHelper.setPrivateValue(EntityTrackerEntry.class, tracker, lastYaw, "field_73127_g");
+				tracker.encodedRotationYaw += 100;
 	        }
 	        
 	        loadNeighboringChunks((int) Math.floor(posX / 16), (int) Math.floor(posZ / 16));

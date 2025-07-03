@@ -124,14 +124,8 @@ public class RenderAccessoryUtility {
 		}
 		return null;
 	}
-	
-	public static void loadCape(NetworkPlayerInfo info, ResourceLocation rl) {
-		try {
-			@SuppressWarnings("deprecation")
-			Map<Type, ResourceLocation> playerTextures = ReflectionHelper.getPrivateValue(NetworkPlayerInfo.class, info, "playerTextures", "field_187107_a");
 
-			playerTextures.put(Type.CAPE, rl);
-		} catch(Exception x) {
-		}
+	public static void loadCape(NetworkPlayerInfo info, ResourceLocation rl) {
+		info.playerTextures.put(Type.CAPE, rl);
 	}
 }

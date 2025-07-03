@@ -108,12 +108,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.registries.DataSerializerEntry;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.Level;
 
-import java.lang.reflect.Field;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -127,8 +125,6 @@ public class ModEventHandler {
     private static final Set<String> hashes = new HashSet();
     public static boolean showMessage = true;
     public static Random rand = new Random();
-    public static Field r_handInventory = null;
-    public static Field r_armorArray = null;
 
     static {
         hashes.add("41de5c372b0589bbdb80571e87efa95ea9e34b0d74c6005b8eab495b7afd9994");
@@ -899,41 +895,31 @@ public class ModEventHandler {
         }
     }
 
-    @SuppressWarnings({"unchecked", "deprecation"})
     @SubscribeEvent
     public void onLivingUpdate(LivingUpdateEvent event) {
         if (event.isCancelable() && event.isCanceled())
             return;
         ArmorFSB.handleTick(event.getEntityLiving());
-        if (r_handInventory == null) {
-            r_handInventory = ReflectionHelper.findField(EntityLivingBase.class, "handInventory", "field_184630_bs");
-            r_armorArray = ReflectionHelper.findField(EntityLivingBase.class, "armorArray", "field_184631_bt");
-        }
-        NonNullList<ItemStack> handInventory = null;
-        NonNullList<ItemStack> armorArray = null;
-        try {
-            handInventory = (NonNullList<ItemStack>) r_handInventory.get(event.getEntityLiving());
-            armorArray = (NonNullList<ItemStack>) r_armorArray.get(event.getEntityLiving());
+        NonNullList<ItemStack> handInventory = event.getEntityLiving().handInventory;
+        NonNullList<ItemStack> armorArray =event.getEntityLiving().armorArray;
 
-            if (event.getEntityLiving() instanceof EntityPlayer && event.getEntityLiving().getHeldItemMainhand().getItem() instanceof IEquipReceiver && !ItemStack.areItemsEqual(handInventory.get(0), event.getEntityLiving().getHeldItemMainhand())) {
-                ((IEquipReceiver) event.getEntityLiving().getHeldItemMainhand().getItem()).onEquip((EntityPlayer) event.getEntityLiving(), EnumHand.MAIN_HAND);
-            }
-            if (event.getEntityLiving() instanceof EntityPlayer && event.getEntityLiving().getHeldItemOffhand().getItem() instanceof IEquipReceiver && !ItemStack.areItemsEqual(handInventory.get(0), event.getEntityLiving().getHeldItemOffhand())) {
-                ((IEquipReceiver) event.getEntityLiving().getHeldItemOffhand().getItem()).onEquip((EntityPlayer) event.getEntityLiving(), EnumHand.OFF_HAND);
-            }
-        } catch (Exception e) {
+        if (event.getEntityLiving() instanceof EntityPlayer && event.getEntityLiving().getHeldItemMainhand().getItem() instanceof IEquipReceiver && !ItemStack.areItemsEqual(handInventory.get(0), event.getEntityLiving().getHeldItemMainhand())) {
+            ((IEquipReceiver) event.getEntityLiving().getHeldItemMainhand().getItem()).onEquip((EntityPlayer) event.getEntityLiving(), EnumHand.MAIN_HAND);
+        }
+        if (event.getEntityLiving() instanceof EntityPlayer && event.getEntityLiving().getHeldItemOffhand().getItem() instanceof IEquipReceiver && !ItemStack.areItemsEqual(handInventory.get(1), event.getEntityLiving().getHeldItemOffhand())) {
+            ((IEquipReceiver) event.getEntityLiving().getHeldItemOffhand().getItem()).onEquip((EntityPlayer) event.getEntityLiving(), EnumHand.OFF_HAND);
         }
 
         for (int i = 2; i < 6; i++) {
 
-            ItemStack prev = armorArray != null ? armorArray.get(i - 2) : null;
+            ItemStack prev = armorArray.get(i - 2);
             ItemStack armor = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.values()[i]);
 
-            boolean reapply = armorArray != null && !ItemStack.areItemStacksEqual(prev, armor);
+            boolean reapply = !ItemStack.areItemStacksEqual(prev, armor);
 
             if (reapply) {
 
-                if (prev != null && ArmorModHandler.hasMods(prev)) {
+                if (ArmorModHandler.hasMods(prev)) {
 
                     for (ItemStack mod : ArmorModHandler.pryMods(prev)) {
 
@@ -948,7 +934,7 @@ public class ModEventHandler {
                 }
             }
 
-            if (armor != null && ArmorModHandler.hasMods(armor)) {
+            if (ArmorModHandler.hasMods(armor)) {
 
                 for (ItemStack mod : ArmorModHandler.pryMods(armor)) {
 

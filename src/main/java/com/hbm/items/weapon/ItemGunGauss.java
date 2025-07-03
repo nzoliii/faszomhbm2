@@ -37,7 +37,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -81,13 +80,7 @@ public class ItemGunGauss extends ItemGunBase {
 			if(r == null || r.typeOfHit == Type.MISS){
 				break;
 			} else if(r.typeOfHit == Type.ENTITY && CompatibilityConfig.isWarDim(world)){
-				try {
-					if(hurtResistantTime == null)
-						hurtResistantTime = ReflectionHelper.findField(Entity.class, "hurtResistantTime", "field_70172_ad");
-					hurtResistantTime.setInt(r.entityHit, 0);
-				} catch (Exception x){
-					x.printStackTrace();
-				}
+				r.entityHit.hurtResistantTime = 0;
 				r.entityHit.attackEntityFrom(ModDamageSource.causeTauDamage(player, null), damage);
 				break;
 			} else {
@@ -129,13 +122,7 @@ public class ItemGunGauss extends ItemGunBase {
 						}
 						//Yeah, it's some repeated code, but the alternative was even worse and buggier.
 						if(r2 != null && r2.typeOfHit == Type.ENTITY && CompatibilityConfig.isWarDim(world)){
-							try {
-								if(hurtResistantTime == null)
-									hurtResistantTime = ReflectionHelper.findField(Entity.class, "hurtResistantTime", "field_70172_ad");
-								hurtResistantTime.setInt(r2.entityHit, 0);
-							} catch (Exception x){
-								x.printStackTrace();
-							}
+							r2.entityHit.hurtResistantTime = 0;
 							r2.entityHit.attackEntityFrom(ModDamageSource.causeTauDamage(player, null), damage*0.5F);
 						}
 					}

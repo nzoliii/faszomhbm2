@@ -1,7 +1,5 @@
 package com.hbm.util;
 
-import java.lang.reflect.Field;
-
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.items.ModItems;
 
@@ -11,38 +9,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class EntityDamageUtil {
-	
-	public static Field lastDamage = null;
-	
-	@SuppressWarnings("deprecation")
+
 	public static boolean attackEntityFromIgnoreIFrame(Entity victim, DamageSource src, float damage) {
 
 		if(!victim.attackEntityFrom(src, damage)) {
-			try {
-				if(lastDamage == null)
-					lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
-				
-				float dmg = (float) damage + lastDamage.getFloat(victim);
-				
-				return victim.attackEntityFrom(src, dmg);
-			} catch (Exception x) {
-				return false;
-			}
+			float dmg = damage + ((EntityLivingBase)victim).lastDamage;
+			return victim.attackEntityFrom(src, dmg);
 		} else {
 			return true;
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public static float getLastDamage(Entity victim) {
 		try {
-			if(lastDamage == null)
-				lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
-
-			return lastDamage.getFloat(victim);
+			return ((EntityLivingBase)victim).lastDamage;
 		} catch(Exception x) {
 			return 0F;
 		}

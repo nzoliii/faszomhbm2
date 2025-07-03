@@ -125,7 +125,7 @@ public class MachineRefinery extends BlockDummyable implements IPersistentInfoPr
 
 		if(!refinery.hasExploded) {
 			refinery.explode(world, pos.getX(), pos.getY(), pos.getZ());
-			Entity exploder = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77283_e");
+			Entity exploder = explosion.exploder;
 			if(exploder instanceof EntityBombletZeta) {
 				List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class,
 						new AxisAlignedBB(pos.add(0.5, 0.5, 0.5), pos.add(0.5, 0.5, 0.5)).expand(100, 100, 100));

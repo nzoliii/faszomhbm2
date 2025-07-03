@@ -1,8 +1,6 @@
 package com.hbm.main;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -238,7 +236,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = RefStrings.MODID, version = RefStrings.VERSION, name = RefStrings.NAME)
@@ -367,14 +364,7 @@ public class MainRegistry {
 		}
 
 		if(SharedMonsterAttributes.MAX_HEALTH.clampValue(Integer.MAX_VALUE) <= 2000){
-			try{
-				@SuppressWarnings("deprecation")
-				Field f = ReflectionHelper.findField(RangedAttribute.class, "maximumValue", "field_111118_b");
-				Field modifiersField = Field.class.getDeclaredField("modifiers");
-				modifiersField.setAccessible(true);
-				modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-				f.set(SharedMonsterAttributes.MAX_HEALTH, Integer.MAX_VALUE);
-			} catch(Throwable e){}
+			((RangedAttribute)SharedMonsterAttributes.MAX_HEALTH).maximumValue = Integer.MAX_VALUE;
 		}
 		proxy.checkGLCaps();
 		reloadConfig();

@@ -54,7 +54,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -179,7 +178,7 @@ public class EntityRideableRocket extends EntityMissileBaseNT implements ILookOv
 			}
 
 			// If it's a satellite launcher, launch immediately
-			if(state == RocketState.AWAITING && ((rider != null && getIsJumping(rider)) || !canRide())) {
+			if(state == RocketState.AWAITING && ((rider != null && rider.isJumping) || !canRide())) {
 				Target from = CelestialBody.getTarget(world, (int)posX, (int)posZ);
 				Target to = getTarget();
 
@@ -774,10 +773,6 @@ public class EntityRideableRocket extends EntityMissileBaseNT implements ILookOv
 		}
 
 		ILookOverlay.printGeneric(event, "Rocket", 0xffff00, 0x404000, text);
-	}
-
-	public static boolean getIsJumping(EntityPlayer player) {
-		return ObfuscationReflectionHelper.getPrivateValue(EntityPlayer.class, player, "field_70703_bu");
 	}
 
 	@Override

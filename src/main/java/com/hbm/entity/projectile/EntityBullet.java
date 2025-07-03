@@ -1,6 +1,5 @@
 package com.hbm.entity.projectile;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import com.hbm.config.CompatibilityConfig;
@@ -51,7 +50,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -523,20 +521,10 @@ public class EntityBullet extends Entity implements IProjectile {
 									;
 							}
 						} else {
-
 							if (movingobjectposition.entityHit instanceof EntityLivingBase) {
-
-								try {
-									@SuppressWarnings("deprecation")
-									Field lastDamage = ReflectionHelper.findField(EntityLivingBase.class, "lastDamage", "field_110153_bc");
-
-									float dmg = (float) damage + lastDamage.getFloat(movingobjectposition.entityHit);
-
-									movingobjectposition.entityHit.attackEntityFrom(damagesource, dmg);
-								} catch (Exception x) {
-								}
+								float dmg = (float) damage + ((EntityLivingBase)movingobjectposition.entityHit).lastDamage;
+								movingobjectposition.entityHit.attackEntityFrom(damagesource, dmg);
 							}
-
 						}
 
 						/* else {

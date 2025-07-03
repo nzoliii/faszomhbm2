@@ -18,11 +18,7 @@ import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.IRepairable;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityMachineFluidTank;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -43,12 +38,10 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -163,8 +156,8 @@ public class MachineFluidTank extends BlockDummyable implements IPersistentInfoP
 
 		if(!tank.hasExploded) {
 			tank.explode();
-			Entity exploder = ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "field_77283_e");
-			if(exploder != null && exploder instanceof EntityBombletZeta) {
+			Entity exploder = explosion.exploder;
+			if(exploder instanceof EntityBombletZeta) {
 				if(tank.tankNew.getTankType().getTrait(FT_Flammable.class) == null) return;
 
 				List<EntityPlayer> players = world.getEntitiesWithinAABB(EntityPlayer.class,

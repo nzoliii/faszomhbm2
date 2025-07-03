@@ -50,7 +50,6 @@ public class ItemGunBase extends Item implements IHoldableWeapon, IItemHUD {
 
 	public GunConfiguration mainConfig;
 	public GunConfiguration altConfig;
-	public static Field hurtResistantTime;
 
 	@SideOnly(Side.CLIENT)
 	public static boolean m1;// = false;
