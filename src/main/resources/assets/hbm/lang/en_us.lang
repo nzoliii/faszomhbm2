@@ -8284,5 +8284,5 @@ tile.dummy_port_launch_table=Dummy
 tile.dummy_plate_cargo.name=Dummy
 tile.orbital_station.name=Orbital Station
 
-tile.meteor_brick_kaban.name=кабан Meteor Bricks
-tile.kaban_statue.name=кабан Statue
+tile.fhbm2_meteor_brick_kaban.name=кабан Meteor Bricks
+tile.fhbm2_kaban_statue.name=кабан Statue

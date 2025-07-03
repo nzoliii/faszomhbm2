@@ -459,7 +459,6 @@ public class MainRegistry {
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateKabanStatue(), 0);
 
-
 		GameRegistry.registerTileEntity(TileEntityDummy.class, new ResourceLocation(RefStrings.MODID, "tileentity_dummy"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssembler.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assembler"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssemfac.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assemfac"));
@@ -1411,5 +1410,4 @@ public class MainRegistry {
             }
         });
 	}
-
 }

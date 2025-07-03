@@ -1444,14 +1444,9 @@ public class ModBlocks {
 	public static final Block orbital_station = new BlockOrbitalStation(Material.IRON, "orbital_station").setBlockUnbreakable().setResistance(Float.POSITIVE_INFINITY).setCreativeTab(null);
 	public static final Block orbital_station_port = new BlockOrbitalStation(Material.IRON, "orbital_station_port").setHardness(1.0F).setCreativeTab(MainRegistry.machineTab);
 
-	public static final Block meteor_brick_kaban = new BlockBase(Material.ROCK, "meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(900.0F);
+	public static final Block fhbm2_meteor_brick_kaban = new BlockBase(Material.ROCK, "fhbm2_meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(900.0F);
 
-	//fhbm2 TODO: FIX KABAN LATER
-	public static final Block kaban_statue = new fhbm2KabanStatue(Material.IRON, "kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
-	// 	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
-
-	//fhbm2 actual try
-
+	public static final Block fhbm2_kaban_statue = new fhbm2KabanStatue(Material.IRON, "fhbm2_kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
 
 	public static void preInit(){
 		for(Block block : ALL_BLOCKS){
@@ -1473,7 +1468,6 @@ public class ModBlocks {
 		BlockTallPlant.initPlacables();
 		BlockDeadPlant.initPlacables();
 		BlockFlowerPlant.initPlacables();
-
 
 	}
 }

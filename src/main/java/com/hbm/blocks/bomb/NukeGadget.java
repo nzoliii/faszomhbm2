@@ -4,6 +4,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
+import com.hbm.fhbm2Scheduler;
 import com.hbm.interfaces.IBomb;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.InventoryHelper;
@@ -21,8 +22,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -86,20 +89,34 @@ public class NukeGadget extends BlockContainer implements IBomb {
 	public boolean igniteTestBomb(World world, int x, int y, int z) {
 		if (!world.isRemote) {
 
+//			Back in the day when I was making this thing, I was trying to replicate the end portal opening method because every player hears it.
+//			Well, it didn't work, or I was just clueless and I didn't know how to do it.
+//			So I got this brilliant idea: just make the bomb play the sound, in a big range.
+
 			world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_oppenheimer, SoundCategory.PLAYERS, 50000.0F, 1.0F); // x,y,z,sound,volume,pitch
 
-			try {
-				TimeUnit.MILLISECONDS.sleep(3500);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
-			}
+//			Used to freeze the game until Mr Oppenheimer finishes his speech.
+//			Took me a while to actually fix this and not freeze the game.
+//			Now I can just use my scheduler that was made for the bewitching.
+//
+//			try {
+//				TimeUnit.MILLISECONDS.sleep(3500);
+//			} catch (InterruptedException e) {
+//				throw new RuntimeException(e);
+//			}
+//
+//			// world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 1.0f, world.rand.nextFloat() * 0.1F + 0.9F); // x,y,z,sound,volume,pitch
+//
+//			world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
+//			if (BombConfig.enableNukeClouds) {
+//				EntityNukeTorex.statFac(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.gadgetRadius);
+//			}
 
-			// world.playSound(null, x, y, z, SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 1.0f, world.rand.nextFloat() * 0.1F + 0.9F); // x,y,z,sound,volume,pitch
-			
-	    	world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
-			if (BombConfig.enableNukeClouds) {
-				EntityNukeTorex.statFac(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.gadgetRadius);
-			}
+			fhbm2Scheduler.schedule(70, (event) -> {
+				world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.gadgetRadius, x + 0.5, y + 0.5, z + 0.5));
+				if (BombConfig.enableNukeClouds) {
+					EntityNukeTorex.statFac(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.gadgetRadius);}
+			});
 		}
 
 		return false;

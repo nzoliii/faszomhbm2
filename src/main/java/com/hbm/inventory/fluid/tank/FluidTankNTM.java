@@ -188,6 +188,7 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
      * @param slots
      * @return
      */
+
     public boolean setType(int in, int out, IItemHandler slots) {
 
         if (!slots.getStackInSlot(in).isEmpty() && slots.getStackInSlot(in).getItem() instanceof IItemFluidIdentifier id) {
@@ -225,6 +226,7 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
      * @param width
      * @param height
      */
+
     public void renderTank(int x, int y, double z, int width, int height) {
         renderTank(x, y, z, width, height, 0);
     }
@@ -424,11 +426,9 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
 
         if (doDrain) {
             setFill(getFill() - toDrain);
-
         }
 
         return drained;
     }
-
 
 }

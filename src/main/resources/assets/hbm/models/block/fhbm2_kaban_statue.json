@@ -4,10 +4,10 @@
 	"parent": "block/cube_all",
 	"texture_size": [128, 128],
 	"textures": {
-		"0": "hbm:blocks/kaban_front",
-		"1": "hbm:blocks/kaban_side",
-		"2": "hbm:blocks/meteor_brick_kaban",
-		"particle": "hbm:blocks/kaban_front"
+		"0": "hbm:blocks/fhbm2_kaban_front",
+		"1": "hbm:blocks/fhbm2_kaban_side",
+		"2": "hbm:blocks/fhbm2_meteor_brick_kaban",
+		"particle": "hbm:blocks/fhbm2_kaban_front"
 	},
 	"elements": [
 		{

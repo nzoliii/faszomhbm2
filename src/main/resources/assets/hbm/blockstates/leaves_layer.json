@@ -1,0 +1,5 @@
+{
+	"variants": {
+		"normal": { "model": "hbm:leaves_layer" }
+	}
+}

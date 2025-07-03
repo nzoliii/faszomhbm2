@@ -69,13 +69,39 @@ public class FluidTankPacket implements IMessage {
 		buf.writeInt(y);
 		buf.writeInt(z);
 		buf.writeInt(length);
-		for(int i = 0; i < length ; i++){
-			buf.writeInt(tanks[i].getFluidAmount());
-			byte[] bytes = tanks[i].getFluid() == null ? "HBM_EMPTY".getBytes() : FluidRegistry.getFluidName(tanks[i].getFluid()).getBytes();
+		for (int i = 0; i < length; i++) {
+			FluidTank tank = (tanks != null && i < tanks.length) ? tanks[i] : null;
+
+			int amount = 0;
+			String fluidName = "HBM_EMPTY";
+
+			if (tank != null && tank.getFluid() != null) {
+				amount = tank.getFluidAmount();
+				fluidName = FluidRegistry.getFluidName(tank.getFluid());
+			}
+
+			buf.writeInt(amount);
+			byte[] bytes = fluidName.getBytes();
 			buf.writeInt(bytes.length);
 			buf.writeBytes(bytes);
 		}
 	}
+
+//	fhbm2 - This was making a fatal error, I tried fixing it. Seems to be working, but in case its fucked, here is the old code.
+//	@Override
+//	public void toBytes(ByteBuf buf) {
+//		buf.writeInt(x);
+//		buf.writeInt(y);
+//		buf.writeInt(z);
+//		buf.writeInt(length);
+//		for(int i = 0; i < length ; i++){
+//			buf.writeInt(tanks[i].getFluidAmount());
+//			byte[] bytes = tanks[i].getFluid() == null ? "HBM_EMPTY".getBytes() : FluidRegistry.getFluidName(tanks[i].getFluid()).getBytes();
+//			buf.writeInt(bytes.length);
+//			buf.writeBytes(bytes);
+//		}
+//	}
+
 
 	public static class Handler implements IMessageHandler<FluidTankPacket, IMessage> {
 

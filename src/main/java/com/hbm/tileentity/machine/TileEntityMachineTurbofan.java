@@ -90,7 +90,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 	public String getName() {
 		return "container.machineTurbofan";
 	}
-	
+
 	public boolean isUseableByPlayer(EntityPlayer player) {
 		if (world.getTileEntity(pos) != this) {
 			return false;
@@ -98,7 +98,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 			return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64;
 		}
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		this.power = compound.getLong("powerTime");
@@ -116,7 +116,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 			inventory.deserializeNBT(compound.getCompoundTag("inventory"));
 		super.readFromNBT(compound);
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setLong("powerTime", power);
@@ -127,7 +127,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 		compound.setTag("inventory", inventory.serializeNBT());
 		return super.writeToNBT(compound);
 	}
-	
+
 	public long getPowerScaled(long i) {
 		return (power * i) / maxPower;
 	}
@@ -144,7 +144,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 				new DirPos(this.pos.getX() - rot.offsetX * 2 - dir.offsetX, this.pos.getY(), this.pos.getZ() - rot.offsetZ * 2 - dir.offsetZ, rot.getOpposite())
 		};
 	}
-	
+
 	@Override
 	public void update() {
 		if(!converted && tank.getTankType() == Fluids.NONE) {
