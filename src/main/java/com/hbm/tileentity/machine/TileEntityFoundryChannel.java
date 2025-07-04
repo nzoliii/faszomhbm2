@@ -9,6 +9,8 @@ import com.hbm.inventory.material.NTMMaterial;
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,6 +27,21 @@ public class TileEntityFoundryChannel extends TileEntityFoundryBase {
 	protected NTMMaterial neighborType;
 	protected boolean hasCheckedNeighbors;
 	protected int unpropagateTime;
+
+	@Override
+	public NBTTagCompound getUpdateTag() {
+		return this.writeToNBT(super.getUpdateTag());
+	}
+
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(this.pos, 1, this.getUpdateTag());
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+		this.readFromNBT(pkt.getNbtCompound());
+	}
 	
 	@Override
 	public void update() {

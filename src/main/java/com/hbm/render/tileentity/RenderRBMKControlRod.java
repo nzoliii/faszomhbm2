@@ -3,6 +3,7 @@ package com.hbm.render.tileentity;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
+import com.hbm.tileentity.machine.rbmk.RBMKDials;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControl;
 import net.minecraft.client.Minecraft;
@@ -22,34 +23,39 @@ public class RenderRBMKControlRod extends TileEntitySpecialRenderer<TileEntityRB
 	@Override
 	public void render(TileEntityRBMKControl control, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		GlStateManager.pushMatrix();
+		int offset = 1;
+		for (int o = 1; o < 16; o++){
+			if (control.getWorld().getBlockState(control.getPos().up(o)).getBlock() == control.getBlockType()){
+				offset = o;
+			} else break;
+		}
 		GlStateManager.translate(x + 0.5, y, z + 0.5);
-
 		// Render column stack
-		renderControlColumn(control);
+		renderControlColumn(control, offset + 1);
 
 		// Render animated lid
-		renderControlLid(control, partialTicks);
+		renderControlLid(control, partialTicks, offset);
 
 		GlStateManager.popMatrix();
 	}
 
-	private void renderControlColumn(TileEntityRBMKControl control) {
+	private void renderControlColumn(TileEntityRBMKControl control, int offset) {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(((RBMKBase) control.getBlockType()).columnTexture);
 
 		GlStateManager.pushMatrix();
-		for(int i = 0; i < 4; i++) {
+		for(int i = 0; i < offset; i++) {
 			ResourceManager.rbmk_rods.renderPart("Column");
 			GlStateManager.translate(0, 1, 0);
 		}
 		GlStateManager.popMatrix();
 	}
 
-	private void renderControlLid(TileEntityRBMKControl control, float partialTicks) {
+	private void renderControlLid(TileEntityRBMKControl control, float partialTicks, int offset) {
 		GlStateManager.pushMatrix();
 
 		// Calculate animated lid position
 		double level = control.lastLevel + (control.level - control.lastLevel) * partialTicks;
-		GlStateManager.translate(0, TileEntityRBMKBase.rbmkHeight + level, 0);
+		GlStateManager.translate(0, offset + level, 0);
 
 		// Bind lid texture
 		ResourceLocation lidTexture = (control.getBlockType() instanceof RBMKBase)

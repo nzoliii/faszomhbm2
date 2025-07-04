@@ -227,7 +227,10 @@ public class ResourceManager {
 	public static final IModelCustom centrifuge_gas = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/centrifuge_gas.obj")).asVBO();
 	public static final IModelCustom silex = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/silex.obj")).asVBO();
 	public static final IModelCustom fel = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/fel.obj")).asVBO();
-	
+
+	//Soldering Station
+	public static final IModelCustom soldering_station = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/soldering_station.obj")).asVBO();
+
 	//Magnusson Device
 	public static final IModelCustom microwave = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/microwave.obj")).asVBO();
 
@@ -806,6 +809,9 @@ public class ResourceManager {
     public static final ResourceLocation chemplant_fluid_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/lavabase_small.png");
 	public static final ResourceLocation chemfac_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/chemfac.png");
 
+	//Soldering Station
+	public static final ResourceLocation soldering_station_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/soldering_station.png");
+
 	//Mixer
 	public static final ResourceLocation mixer_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/mixer.png");
 	public static final ResourceLocation mixer_uu_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/mixer_uu.png");
@@ -840,8 +846,6 @@ public class ResourceManager {
 	
 	//Crystallizer
 	public static final ResourceLocation crystallizer_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/crystallizer.png");
-	public static final ResourceLocation crystallizer_spinner_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/crystallizer_spinner.png");
-	public static final ResourceLocation crystallizer_window_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/crystallizer_window.png");
 
 	//Cyclotron
 	public static final ResourceLocation cyclotron_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/cyclotron.png");

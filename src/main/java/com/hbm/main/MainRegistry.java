@@ -1,12 +1,11 @@
 package com.hbm.main;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.hbm.*;
 import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.generic.BlockResourceStone;
 import com.hbm.blocks.machine.WatzPump;
@@ -16,15 +15,12 @@ import com.hbm.dim.SolarSystem;
 import com.hbm.entity.effect.*;
 import com.hbm.entity.item.EntityMovingPackage;
 import com.hbm.entity.projectile.*;
-import com.hbm.fhbm2CustomMainMenu;
-import com.hbm.fhbm2MenuStateManager;
 import com.hbm.handler.*;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.*;
 import com.hbm.inventory.fluid.Fluids;
-import com.hbm.items.machine.ItemFFFluidDuct;
-import com.hbm.items.special.ItemBedrockOreNew;
+import com.hbm.inventory.recipes.SerializableRecipe;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
@@ -33,14 +29,11 @@ import com.hbm.tileentity.network.*;
 import com.hbm.tileentity.turret.*;
 import com.hbm.world.ModBiomes;
 import com.hbm.world.PlanetGen;
-import com.hbm.world.fhbm2GenerateHorrorTowers;
-import com.hbm.world.fhbm2GenerateUncleTedShed;
-import net.minecraft.block.Block;
+import com.hbm.world.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -243,14 +236,13 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = RefStrings.MODID, version = RefStrings.VERSION, name = RefStrings.NAME)
 @Spaghetti("Total cluserfuck")
 public class MainRegistry {
 
-	private boolean customMenuDisplayed = false;
+    private boolean customMenuDisplayed = false;
 
 	static {
 		HBMSoundHandler.init();
@@ -372,14 +364,7 @@ public class MainRegistry {
 		}
 
 		if(SharedMonsterAttributes.MAX_HEALTH.clampValue(Integer.MAX_VALUE) <= 2000){
-			try{
-				@SuppressWarnings("deprecation")
-				Field f = ReflectionHelper.findField(RangedAttribute.class, "maximumValue", "field_111118_b");
-				Field modifiersField = Field.class.getDeclaredField("modifiers");
-				modifiersField.setAccessible(true);
-				modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-				f.set(SharedMonsterAttributes.MAX_HEALTH, Integer.MAX_VALUE);
-			} catch(Throwable e){}
+			((RangedAttribute)SharedMonsterAttributes.MAX_HEALTH).maximumValue = Integer.MAX_VALUE;
 		}
 		proxy.checkGLCaps();
 		reloadConfig();
@@ -459,9 +444,10 @@ public class MainRegistry {
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 
-		//fhbm2
+		// fhbm2
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
+		GameRegistry.registerWorldGenerator(new fhbm2GenerateKabanStatue(), 0);
 
 		GameRegistry.registerTileEntity(TileEntityDummy.class, new ResourceLocation(RefStrings.MODID, "tileentity_dummy"));
 		GameRegistry.registerTileEntity(TileEntityMachineAssembler.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_assembler"));
@@ -914,6 +900,14 @@ public class MainRegistry {
 
 		registerDispenserBehaviors();
 		TileEntityLaunchPadBase.registerLaunchables();
+
+		// fhbm2
+		MinecraftForge.EVENT_BUS.register(fhbm2KabanTracker.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2Scheduler.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2CopperPigLobotomyCutscene.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2KabanPTSDCutscene.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2FleshCutscene.class);
+		MinecraftForge.EVENT_BUS.register(new fhbm2CutsceneItemTracker());
 	}
 
 	public static void reloadConfig() {
@@ -950,42 +944,43 @@ public class MainRegistry {
 		registerReactorFuels();
 		ControlRegistry.init();
 		OreDictManager.registerOres();
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+		Fluids.initForgeFluidCompat();
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
-		if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
-				&& fhbm2MenuStateManager.isCustomMenuEnabled()
-				&& !customMenuDisplayed) {
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
+                && fhbm2MenuStateManager.isCustomMenuEnabled()
+                && !customMenuDisplayed) {
 
-			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
-			customMenuDisplayed = true;
-		}
+            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+            customMenuDisplayed = true;
+        }
 
-		if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
-			customMenuDisplayed = false;
-		}
-	}
+        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
+            customMenuDisplayed = false;
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-		if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
-			int yOffset = event.getGui().height / 4 + 48;
-			event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
+            int yOffset = event.getGui().height / 4 + 48;
+            event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
+        }
+    }
 
-	@SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
-		if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
-			fhbm2MenuStateManager.setCustomMenuEnabled(true);
-			Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
-		}
-	}
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
+        if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
+            fhbm2MenuStateManager.setCustomMenuEnabled(true);
+            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
+        }
+    }
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
@@ -1409,5 +1404,4 @@ public class MainRegistry {
             }
         });
 	}
-
 }

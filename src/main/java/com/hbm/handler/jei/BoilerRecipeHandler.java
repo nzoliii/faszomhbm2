@@ -1,6 +1,11 @@
 package com.hbm.handler.jei;
 
+import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.jei.JeiRecipes.BoilerRecipe;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.trait.FT_Heatable;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.lib.RefStrings;
 
 import com.hbm.util.I18nUtil;
@@ -14,55 +19,44 @@ import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public class BoilerRecipeHandler implements IRecipeCategory<BoilerRecipe> {
+import java.util.HashMap;
+import java.util.Map;
 
-	public static final ResourceLocation gui_rl = new ResourceLocation(RefStrings.MODID, "textures/gui/jei/gui_nei_boiler.png");
-	
-	protected final IDrawable background;
-	protected final IDrawableStatic tempStatic;
-	protected final IDrawableAnimated tempAnimated;
+public class BoilerRecipeHandler extends JEIUniversalHandler {
 	
 	public BoilerRecipeHandler(IGuiHelper help) {
-		background = help.createDrawable(gui_rl, 33, 33, 109, 19);
-		tempStatic = help.createDrawable(gui_rl, 0, 86, 6, 16);
-		tempAnimated = help.createAnimatedDrawable(tempStatic, 240, StartDirection.BOTTOM, false);
-	}
-	
-	@Override
-	public String getUid() {
-		return JEIConfig.BOILER;
+		super(help, JEIConfig.BOILER, ModBlocks.machine_boiler_off.getTranslationKey(), new ItemStack[]{
+				new ItemStack(ModBlocks.machine_boiler_off), new ItemStack(ModBlocks.machine_boiler_electric_off),
+				new ItemStack(ModBlocks.machine_boiler_rtg_off), new ItemStack(ModBlocks.machine_solar_boiler),
+				new ItemStack(ModBlocks.rbmk_boiler), new ItemStack(ModBlocks.heat_boiler)
+		}, generateRecipes());
 	}
 
-	@Override
-	public String getTitle() {
-		return I18nUtil.resolveKey("tile.machine_boiler_off.name");
-	}
+	public static HashMap<Object, Object> cache;
+	public static boolean isReload=false;
 
-	@Override
-	public String getModName() {
-		return RefStrings.MODID;
-	}
+	public static HashMap<Object, Object> generateRecipes() {
 
-	@Override
-	public IDrawable getBackground() {
-		return background;
-	}
-	
-	@Override
-	public void drawExtras(Minecraft minecraft) {
-		tempAnimated.draw(minecraft, 52, 2);
-	}
+		if(cache != null && !isReload) return cache;
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, BoilerRecipe recipeWrapper, IIngredients ingredients) {
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		
-		guiItemStacks.init(0, true, 1, 1);
-		guiItemStacks.init(1, false, 91, 1);
-		
-		guiItemStacks.set(ingredients);
+		cache = new HashMap();
+
+		for(FluidType type : Fluids.getInNiceOrder()) {
+
+			if(type.hasTrait(FT_Heatable.class)) {
+				FT_Heatable trait = type.getTrait(FT_Heatable.class);
+
+				if(trait.getEfficiency(FT_Heatable.HeatingType.BOILER) > 0) {
+					FT_Heatable.HeatingStep step = trait.getFirstStep();
+					cache.put(ItemFluidIcon.make(type, step.amountReq), ItemFluidIcon.make(step.typeProduced, step.amountProduced));
+				}
+			}
+		}
+		isReload=false;
+		return cache;
 	}
 
 }

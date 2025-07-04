@@ -5,8 +5,6 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.material.Mats.MaterialStack;
 import com.hbm.items.machine.ItemScraps;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.lib.Library;
-import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityFoundryChannel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -14,19 +12,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -77,14 +73,32 @@ public class FoundryChannel extends BlockContainer implements ICrucibleAcceptor 
 	}
 
 	private void updateMeta(World world, BlockPos pos) {
+		IBlockState oldState = world.getBlockState(pos);
+		int oldMeta = oldState.getValue(META);
+
 		int meta = 0;
+		if (canConnectTo(world, pos, EnumFacing.EAST)) meta |= 1;
+		if (canConnectTo(world, pos, EnumFacing.WEST)) meta |= 2;
+		if (canConnectTo(world, pos, EnumFacing.SOUTH)) meta |= 4;
+		if (canConnectTo(world, pos, EnumFacing.NORTH)) meta |= 8;
 
-		if (canConnectTo(world, pos, EnumFacing.EAST)) meta |= 1;  // +X
-		if (canConnectTo(world, pos, EnumFacing.WEST)) meta |= 2;  // -X
-		if (canConnectTo(world, pos, EnumFacing.SOUTH)) meta |= 4; // +Z
-		if (canConnectTo(world, pos, EnumFacing.NORTH)) meta |= 8; // -Z
+		if (meta == oldMeta) return;
 
-		world.setBlockState(pos, this.getDefaultState().withProperty(META, meta), 2);
+		TileEntity tile = world.getTileEntity(pos);
+		NBTTagCompound nbt = null;
+		if (tile != null) {
+			nbt = tile.writeToNBT(new NBTTagCompound());
+		}
+
+		world.setBlockState(pos, this.getDefaultState().withProperty(META, meta), 3);
+
+		if (nbt != null) {
+			TileEntity newTile = world.getTileEntity(pos);
+			if (newTile != null) {
+				newTile.readFromNBT(nbt);
+				newTile.markDirty();
+			}
+		}
 	}
 
 	public boolean canConnectTo(World world, BlockPos pos, EnumFacing direction) {
@@ -212,7 +226,7 @@ public class FoundryChannel extends BlockContainer implements ICrucibleAcceptor 
 				cast.type = null;
 				cast.propagateMaterial(null);
 				cast.markDirty();
-				world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 2);
+				world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 3);
 			}
 			return true;
 		}

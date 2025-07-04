@@ -18,7 +18,7 @@ import com.hbm.handler.*;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.*;
 import com.hbm.inventory.AssemblerRecipes;
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.NbtComparableStack;
 import com.hbm.inventory.fluid.FluidType;
@@ -145,7 +145,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -154,11 +153,11 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.glu.Project;
 
-import java.lang.reflect.Method;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.*;
 import java.util.Map.Entry;
+
 
 public class ModEventHandlerClient {
 
@@ -176,6 +175,8 @@ public class ModEventHandlerClient {
     public static TextureAtlasSprite particle_base;
     public static TextureAtlasSprite fog;
     public static TextureAtlasSprite uv_debug;
+    public static TextureAtlasSprite debugPower;
+    public static TextureAtlasSprite debugFluid;
     public static boolean renderingDepthOnly = false;
     private static boolean sentUniforms = false;
     private static long canneryTimestamp;
@@ -373,7 +374,7 @@ public class ModEventHandlerClient {
     public static ItemStack getMouseOverStack() {
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.currentScreen instanceof GuiContainer) {
+        if (mc.currentScreen instanceof GuiContainer container) {
 
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int width = scaledresolution.getScaledWidth();
@@ -381,21 +382,9 @@ public class ModEventHandlerClient {
             int mouseX = Mouse.getX() * width / mc.displayWidth;
             int mouseY = height - Mouse.getY() * height / mc.displayHeight - 1;
 
-            GuiContainer container = (GuiContainer) mc.currentScreen;
-
-            for (Object o : container.inventorySlots.inventorySlots) {
-                Slot slot = (Slot) o;
-
-                if (slot.getHasStack()) {
-                    try {
-                        Method isMouseOverSlot = ReflectionHelper.findMethod(GuiContainer.class, "func_146981_a", "isMouseOverSlot", Slot.class, int.class, int.class);
-
-                        if ((boolean) isMouseOverSlot.invoke(container, slot, mouseX, mouseY)) {
-                            return slot.getStack();
-                        }
-
-                    } catch (Exception ex) {
-                    }
+            for (Slot slot : container.inventorySlots.inventorySlots) {
+                if (slot.getHasStack() && container.isMouseOverSlot(slot, mouseX, mouseY)) {
+                    return slot.getStack();
                 }
             }
         }
@@ -574,10 +563,14 @@ public class ModEventHandlerClient {
             if (o instanceof IBakedModel)
                 e.putRenderModel((IBakedModel) o);
         }
-        for (EnumCell e : EnumCell.values()) {
-            Object o = evt.getModelRegistry().getObject(e.getResourceLocation());
-            if (o instanceof IBakedModel)
-                e.putRenderModel((IBakedModel) o);
+        for (EnumCell cellType : EnumCell.values()) {
+            FluidType fluid = cellType.getFluid();
+            int meta = (fluid == null) ? 0 : fluid.getID();
+            ModelLoader.setCustomModelResourceLocation(
+                    ModItems.cell,
+                    meta,
+                    cellType.getResourceLocation()
+            );
         }
         for (EnumGasCanister e : EnumGasCanister.values()) {
             Object o = evt.getModelRegistry().getObject(e.getResourceLocation());
@@ -971,11 +964,20 @@ public class ModEventHandlerClient {
         map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/wastefluid_flowing"));
         map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/wastegas_still"));
         map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/wastegas_flowing"));
+        //More shit to the pile
+        map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/gas_default"));
+        map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/fluid_default_still"));
+        map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/forgefluid/fluid_viscous_default_still"));
+
+        //Debug stuff
+        debugPower = map.registerSprite(new ResourceLocation(RefStrings.MODID, "particle/debug_power"));
+        debugFluid = map.registerSprite(new ResourceLocation(RefStrings.MODID, "particle/debug_fluid"));
+        uv_debug = map.registerSprite(new ResourceLocation(RefStrings.MODID, "misc/uv_debug"));
+
 
         contrail = map.registerSprite(new ResourceLocation(RefStrings.MODID + ":particle/contrail"));
         particle_base = map.registerSprite(new ResourceLocation(RefStrings.MODID, "particle/particle_base"));
         fog = map.registerSprite(new ResourceLocation(RefStrings.MODID, "particle/fog"));
-        uv_debug = map.registerSprite(new ResourceLocation(RefStrings.MODID, "misc/uv_debug"));
 
         map.registerSprite(new ResourceLocation(RefStrings.MODID, "items/ore_bedrock_layer"));
         map.registerSprite(new ResourceLocation(RefStrings.MODID, "items/fluid_identifier_overlay"));

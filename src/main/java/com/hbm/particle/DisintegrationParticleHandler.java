@@ -36,7 +36,7 @@ public class DisintegrationParticleHandler {
 	}
 
 	@SuppressWarnings({ "deprecation" })
-	public static void spawnGluonDisintegrateParticles(EntityLivingBase e, RenderLivingBase render, float partialTicks) {
+	public static <T extends EntityLivingBase> void spawnGluonDisintegrateParticles(T e, RenderLivingBase<T> render, float partialTicks) {
 		ModelBase model = render.getMainModel();
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -80,16 +80,8 @@ public class DisintegrationParticleHandler {
 		//if(rPreRenderCallback == null){
 		//	rPreRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);
 		//}
-		if(ModelRendererUtil.rPrepareScale == null){
-			ModelRendererUtil.rPrepareScale = ReflectionHelper.findMethod(RenderLivingBase.class, "prepareScale", "func_188322_c", EntityLivingBase.class, float.class);
-		}
 		//float f4 = prepareScale(e, partialTicks, render);
-		float f4 = 0.0625F;
-		try {
-			f4 = (float) ModelRendererUtil.rPrepareScale.invoke(render, e, partialTicks);
-		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e2) {
-			e2.printStackTrace();
-		}
+		float f4 = render.prepareScale(e, partialTicks);
 		float f5 = 0.0F;
 		float f6 = 0.0F;
 		if(!e.isRiding()) {
@@ -134,9 +126,9 @@ public class DisintegrationParticleHandler {
 			spawnLightningDisintegrateParticles((EntityLivingBase) e, ((RenderLivingBase) eRenderer), hitPos, MainRegistry.proxy.partialTicks());
 		}
 	}
-	
+
 	@SuppressWarnings({ "deprecation" })
-	public static void spawnLightningDisintegrateParticles(EntityLivingBase e, RenderLivingBase render, Vec3 hitPos, float partialTicks) {
+	public static <T extends EntityLivingBase> void spawnLightningDisintegrateParticles(T e, RenderLivingBase<T> render, Vec3 hitPos, float partialTicks) {
 		ModelBase model = render.getMainModel();
 		GL11.glPushMatrix();
 		GL11.glLoadIdentity();
@@ -180,16 +172,8 @@ public class DisintegrationParticleHandler {
 		//if(rPreRenderCallback == null){
 		//	rPreRenderCallback = ReflectionHelper.findMethod(RenderLivingBase.class, "preRenderCallback", "func_77041_b", EntityLivingBase.class, float.class);
 		//}
-		if(ModelRendererUtil.rPrepareScale == null){
-			ModelRendererUtil.rPrepareScale = ReflectionHelper.findMethod(RenderLivingBase.class, "prepareScale", "func_188322_c", EntityLivingBase.class, float.class);
-		}
 		//float f4 = prepareScale(e, partialTicks, render);
-		float f4 = 0.0625F;
-		try {
-			f4 = (float) ModelRendererUtil.rPrepareScale.invoke(render, e, partialTicks);
-		} catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException e2) {
-			e2.printStackTrace();
-		}
+		float f4 = render.prepareScale(e, partialTicks);
 		float f5 = 0.0F;
 		float f6 = 0.0F;
 		if(!e.isRiding()) {

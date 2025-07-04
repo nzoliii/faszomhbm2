@@ -1,7 +1,7 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.inventory.AssemblerRecipes;
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.PressRecipes;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;

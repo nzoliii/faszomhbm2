@@ -20,11 +20,9 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ArmorUtil {
 
@@ -152,12 +150,10 @@ public class ArmorUtil {
 			player.inventory.armorInventory.set(slot, ItemStack.EMPTY);
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	public static void resetFlightTime(EntityPlayer player) {
-		if(player instanceof EntityPlayerMP) {
-			EntityPlayerMP mp = (EntityPlayerMP) player;
-			ReflectionHelper.setPrivateValue(NetHandlerPlayServer.class, mp.connection, 0, "floatingTickCount", "field_147365_f");
+		if(player instanceof EntityPlayerMP mp) {
+            mp.connection.floatingTickCount = 0;
 		}
 	}
 

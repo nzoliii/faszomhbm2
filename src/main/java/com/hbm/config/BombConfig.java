@@ -151,29 +151,29 @@ public class BombConfig {
 		falloutChunkSpeed.setComment("Process a Chunk every nth tick by the fallout rain");
 		fChunkSpeed = falloutChunkSpeed.getInt();
 		// new explosion speed
-		Property falloutMSProp = config.get(CATEGORY_NUKE, "6.04_falloutTime", 30);
+		Property falloutMSProp = config.get(CATEGORY_NUKE, "6.05_falloutTime", 30);
 		falloutMSProp.setComment("Maximum amount of milliseconds per tick allocated for fallout chunk processing");
 		falloutMS = falloutMSProp.getInt();
-		Property spawnFireP = config.get(CATEGORY_NUKE, "6.05_falloutFireSpawn", false);
+		Property spawnFireP = config.get(CATEGORY_NUKE, "6.06_falloutFireSpawn", false);
 		spawnFireP.setComment("Whether to spawn fire after the nuke. Is off to increase TPS");
 		spawnFire = spawnFireP.getBoolean();
 		//Whether fallout and nuclear radiation is enabled at all
-		Property disableNuclearP = config.get(CATEGORY_NUKE, "6.06_disableNuclear", false);
+		Property disableNuclearP = config.get(CATEGORY_NUKE, "6.07_disableNuclear", false);
 		disableNuclearP.setComment("Disable the nuclear part of nukes");
 		disableNuclear = disableNuclearP.getBoolean();
 
-		enableNukeClouds = config.get(CATEGORY_NUKE, "6.07_enableMushroomClouds", true).getBoolean(true);
+		enableNukeClouds = config.get(CATEGORY_NUKE, "6.08_enableMushroomClouds", true).getBoolean(true);
 
-		Property enableNukeNBTSavingP = config.get(CATEGORY_NUKE, "6.08_enableNukeNBTSaving", true);
+		Property enableNukeNBTSavingP = config.get(CATEGORY_NUKE, "6.09_enableNukeNBTSaving", true);
 		enableNukeNBTSavingP.setComment("If true then nukes will save the blocks they want to destroy so they can resume work rather then restart after a crash/reload. For big nukes this can take a while tho.");
 		enableNukeNBTSaving = enableNukeNBTSavingP.getBoolean();
 
-		Property chunkloadingP = config.get(CATEGORY_NUKE, "6.09_enableMushroomClouds", true);
+		Property chunkloadingP = config.get(CATEGORY_NUKE, "6.10_enableChunkLoading", true);
 		chunkloadingP.setComment("Allows mk5 explosion to generate new chunks.");
 		chunkloading = chunkloadingP.getBoolean(true);
 
-		Property explosionAlgorithmP = config.get(CATEGORY_NUKE, "6.10_explosionAlgorithm", 2);
-		explosionAlgorithmP.setComment("0 = Legacy, 1 = Threaded DDA, 2: Threaded DDA with damage accumulation");
+		Property explosionAlgorithmP = config.get(CATEGORY_NUKE, "6.11_explosionAlgorithm", 2);
+		explosionAlgorithmP.setComment("Configures the algorithm of mk5 explosion. \n0 = Legacy, 1 = Threaded DDA, 2 = Threaded DDA with damage accumulation.");
 		explosionAlgorithm = explosionAlgorithmP.getInt();
 	}
 }

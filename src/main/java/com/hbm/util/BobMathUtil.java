@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +19,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.FloatBuffer;
@@ -30,7 +28,6 @@ import java.util.function.ToIntFunction;
 
 public class BobMathUtil {
 
-    public static Field r_viewMat;
     public static Random rand = new Random();
 
     public static String getShortNumber(long number) {
@@ -254,22 +251,15 @@ public class BobMathUtil {
         Matrix4f mv_mat = new Matrix4f();
         mv_mat.load(ClientProxy.AUX_GL_BUFFER);
         ClientProxy.AUX_GL_BUFFER.rewind();
-        if (r_viewMat == null) {
-            //It says model view matrix, but it's actually just the view matrix because it's grabbed right after setting up the camera.
-            //We can use the inverse of this to remove the view part of the open gl transform and get the model part alone that we need for this method.
-            r_viewMat = ReflectionHelper.findField(ActiveRenderInfo.class, "MODELVIEW", "field_178812_b");
-        }
-        try {
-            FloatBuffer VIEW_MAT = (FloatBuffer) r_viewMat.get(null);
-            VIEW_MAT.rewind();
-            Matrix4f v_mat = new Matrix4f();
-            v_mat.load(VIEW_MAT);
-            VIEW_MAT.rewind();
-            v_mat.invert();
-            Matrix4f.mul(v_mat, mv_mat, mv_mat);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        //It says model view matrix, but it's actually just the view matrix because it's grabbed right after setting up the camera.
+        //We can use the inverse of this to remove the view part of the open gl transform and get the model part alone that we need for this method.
+        FloatBuffer VIEW_MAT = ActiveRenderInfo.MODELVIEW;
+        VIEW_MAT.rewind();
+        Matrix4f v_mat = new Matrix4f();
+        v_mat.load(VIEW_MAT);
+        VIEW_MAT.rewind();
+        v_mat.invert();
+        Matrix4f.mul(v_mat, mv_mat, mv_mat);
         Vec3d[] retArr = new Vec3d[positions.length];
         for (int i = 0; i < positions.length; i++) {
             Vector4f pos = new Vector4f(positions[i].x, positions[i].y, positions[i].z, positions[i].w);

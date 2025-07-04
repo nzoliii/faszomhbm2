@@ -22,7 +22,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagLongArray;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ExplosionNukeRayBatched implements IExplosionRay {
 
@@ -289,7 +288,8 @@ public class ExplosionNukeRayBatched implements IExplosionRay {
 			while(nbt.hasKey("chunks"+i)){
 				NBTTagCompound c = (NBTTagCompound)nbt.getTag("chunks"+i);
 
-				perChunk.put(new ChunkPos(c.getInteger("cX"), c.getInteger("cZ")), BitSet.valueOf(getLongArray((NBTTagLongArray)c.getTag("cB"))));
+				NBTTagLongArray nbt1 = (NBTTagLongArray)c.getTag("cB");
+				perChunk.put(new ChunkPos(c.getInteger("cX"), c.getInteger("cZ")), BitSet.valueOf(nbt1.data));
 				i++;
 			}
 			if(isAusf3Complete){
@@ -321,10 +321,5 @@ public class ExplosionNukeRayBatched implements IExplosionRay {
 				i++;
 			}
 		}
-	}
-
-	// Who tf forgot to add a way to retrieve the long array from NBTTagLongArray??
-	public static long[] getLongArray(NBTTagLongArray nbt) {
-		return ObfuscationReflectionHelper.getPrivateValue(NBTTagLongArray.class, nbt, 0);
 	}
 }

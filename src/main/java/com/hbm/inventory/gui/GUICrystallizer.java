@@ -4,6 +4,7 @@ import com.hbm.inventory.container.ContainerCrystallizer;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineCrystallizer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -46,6 +47,8 @@ public class GUICrystallizer extends GuiInfoContainer {
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) {
 		super.drawDefaultBackground();
+		GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
+		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
@@ -59,5 +62,7 @@ public class GUICrystallizer extends GuiInfoContainer {
 		this.drawInfoPanel(guiLeft + 117, guiTop + 22, 8, 8, 8);
 
 		acidomatic.tankNew.renderTank(guiLeft + 35, guiTop + 70, this.zLevel, 16, 52);
+
+		GL11.glPopAttrib();
 	}
 }

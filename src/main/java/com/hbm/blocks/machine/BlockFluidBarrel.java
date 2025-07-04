@@ -30,12 +30,15 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class BlockFluidBarrel extends BlockContainer {
 
+	private static final ThreadLocal<List<ItemStack>> HARVEST_DROPS = new ThreadLocal<>();
 	private int capacity;
 	public static boolean keepInventory;
 	
@@ -140,10 +143,22 @@ public class BlockFluidBarrel extends BlockContainer {
 			InventoryHelper.dropInventoryItems(worldIn, pos, worldIn.getTileEntity(pos));
 		super.breakBlock(worldIn, pos, state);
 	}
+
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
-	{
-		return IPersistentNBT.getDrops(world, pos, this);
+	public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest) {
+		if (willHarvest) {
+			ArrayList<ItemStack> drops = IPersistentNBT.getDrops(world, pos, this);
+			HARVEST_DROPS.set(drops);
+		}
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
+	@NotNull
+	@Override
+	public List<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
+		List<ItemStack> drops = HARVEST_DROPS.get();
+		HARVEST_DROPS.remove();
+		return drops == null ? new ArrayList<>() : (ArrayList<ItemStack>) drops;
 	}
 
 	@Override

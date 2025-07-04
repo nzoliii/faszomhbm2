@@ -4,13 +4,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class SlotMachineOutput extends SlotItemHandler {
-	public SlotMachineOutput(IItemHandler inventory, int i, int j, int k) {
-		super(inventory, i, j, k);
+	public SlotMachineOutput(IItemHandler inventory, int index, int xPosition, int yPosition) {
+		super(inventory, index, xPosition, yPosition);
 	}
 	
 	@Override
-	public boolean isItemValid(ItemStack p_75214_1_)
+	public boolean isItemValid(@Nonnull ItemStack stack)
     {
         return false;
     }

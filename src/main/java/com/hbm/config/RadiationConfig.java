@@ -53,37 +53,37 @@ public class RadiationConfig {
 		final String CATEGORY_RAD = "07_radiation";
 		final String CATEGORY_POL = "16_pollution";
 		// afterrain duration
-		Property radRain = config.get(CATEGORY_NUKE, "6.06_falloutRainDuration", 2000);
+		Property radRain = config.get(CATEGORY_NUKE, "6.12_falloutRainDuration", 2000);
 		radRain.setComment("Duration of the thunderstorm after fallout in ticks (only large explosions)");
 		rain = radRain.getInt();
 		// afterrain radiation
-		Property rainCont = config.get(CATEGORY_NUKE, "6.07_falloutRainRadiation", 1000);
+		Property rainCont = config.get(CATEGORY_NUKE, "6.13_falloutRainRadiation", 1000);
 		rainCont.setComment("Radiation in 100th RADs created by fallout rain");
 		cont = rainCont.getInt();
 		// fog threshold
-		Property fogThresh = config.get(CATEGORY_NUKE, "6.08_fogThreshold", 100);
+		Property fogThresh = config.get(CATEGORY_NUKE, "6.14_fogThreshold", 100);
 		fogThresh.setComment("Radiation in RADs required for fog to spawn");
 		fogRad = fogThresh.getInt();
 		// fog chance
-		Property fogChance = config.get(CATEGORY_NUKE, "6.09_fogChance", 50);
+		Property fogChance = config.get(CATEGORY_NUKE, "6.14_fogChance", 50);
 		fogChance.setComment("1:n chance of fog spawning every second - default 1/50");
 		fogCh = fogChance.getInt();
-		worldRad = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.10_worldRadCount", "How many block operations radiation can perform per tick", 10);
-		worldRadThreshold = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.11_worldRadThreshold", "The least amount of RADs required for block modification to happen", 40);
-		worldRadEffects = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "6.12_worldRadEffects", "Whether high radiation levels should perform changes in the world", true);
-		enableContamination = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "6.12_enableContamination", "Toggles player contamination (and negative effects from radiation poisoning)", true);
-		blocksFallCh = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.13_blocksFallingChance", "The chance (in percentage form) that a block with low blast resistance will fall down. -1 Disables falling", 100);
+		worldRad = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.15_worldRadCount", "How many block operations radiation can perform per tick", 10);
+		worldRadThreshold = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.16_worldRadThreshold", "The least amount of RADs required for block modification to happen", 40);
+		worldRadEffects = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "6.17_worldRadEffects", "Whether high radiation levels should perform changes in the world", true);
+		enableContamination = CommonConfig.createConfigBool(config, CATEGORY_NUKE, "6.18_enableContamination", "Toggles player contamination (and negative effects from radiation poisoning)", true);
+		blocksFallCh = CommonConfig.createConfigInt(config, CATEGORY_NUKE, "6.19_blocksFallingChance", "The chance (in percentage form) that a block with low blast resistance will fall down. -1 Disables falling", 100);
 		// railgun
-		Property railDamage = config.get(CATEGORY_NUKE, "6.11_railgunDamage", 1000);
+		Property railDamage = config.get(CATEGORY_NUKE, "6.20_railgunDamage", 1000);
 		railDamage.setComment("How much damage a railgun death blast does per tick");
 		railgunDamage = railDamage.getInt();
-		Property railBuffer = config.get(CATEGORY_NUKE, "6.12_railgunBuffer", 500000000);
+		Property railBuffer = config.get(CATEGORY_NUKE, "6.21_railgunBuffer", 500000000);
 		railBuffer.setComment("How much RF the railgun can store");
 		railgunDamage = railBuffer.getInt();
-		Property railUse = config.get(CATEGORY_NUKE, "6.13_railgunConsumption", 250000000);
+		Property railUse = config.get(CATEGORY_NUKE, "6.22_railgunConsumption", 250000000);
 		railUse.setComment("How much RF the railgun requires per shot");
 		railgunDamage = railUse.getInt();
-		Property fireDurationP = config.get(CATEGORY_NUKE, "6.14_fireDuration", 15 * 20);
+		Property fireDurationP = config.get(CATEGORY_NUKE, "6.23_fireDuration", 15 * 20);
 		fireDurationP.setComment("How long the fire blast will last in ticks");
 		fireDuration = fireDurationP.getInt();
 		

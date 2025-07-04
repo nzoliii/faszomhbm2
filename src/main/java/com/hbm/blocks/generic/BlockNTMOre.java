@@ -70,7 +70,7 @@ public class BlockNTMOre extends BlockOre {
     @Override
     public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 
-        Random rand = world instanceof World ? ((World)world).rand : RANDOM;
+        Random rand =  ((World)world).rand;
         //TODO: perhaps move everyting to meta
         //For the time, just normal blocks
 
@@ -87,7 +87,7 @@ public class BlockNTMOre extends BlockOre {
                 droppedItem =  oreEnum.dropFunction.apply(state, rand);
             }
 
-            if (droppedItem.getItem() != Items.AIR)
+            if (!droppedItem.isEmpty())
             {
                 drops.add(droppedItem);
             }

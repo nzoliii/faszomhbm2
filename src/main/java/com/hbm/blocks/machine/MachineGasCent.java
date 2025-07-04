@@ -28,7 +28,7 @@ public class MachineGasCent extends BlockDummyable implements IMultiBlock {
     super(materialIn, s);
     this.bounding.add(new AxisAlignedBB(-0.5D, 0D, -0.5D, 0.5D, 1D, 0.5D));
     this.bounding.add(new AxisAlignedBB(-0.4375D, 1D, -0.4375D, 0.4375D, 4D, 0.4375D));
-    this.FULL_BLOCK_AABB.setMaxY(0.999D); //item bounce prevention
+    FULL_BLOCK_AABB.setMaxY(0.999D); //item bounce prevention
   }
 
   @Override

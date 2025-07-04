@@ -1,6 +1,5 @@
 package com.hbm.handler;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -49,7 +48,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -76,7 +74,6 @@ public class JetpackHandler {
 	public static final String JETPACK_NBT = "hbmJetpackAdvanced";
 	
 	public static Method r_setSize;
-	public static Field r_ticksElytraFlying;
 	
 	private static boolean jet_key_down = false;
 	private static boolean hover_key_down = false;
@@ -600,16 +597,8 @@ public class JetpackHandler {
 				}
 			}
 			GlStateManager.rotate(-(180.0F - renderYaw), 0.0F, 1.0F, 0.0F);
-			if(j != null){
-				if(r_ticksElytraFlying == null)
-					r_ticksElytraFlying = ReflectionHelper.findField(EntityLivingBase.class, "ticksElytraFlying", "field_184629_bo");
-				try {
-					r_ticksElytraFlying.setInt(player, j.jetpackFlyTime);
-				} catch(IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+            player.ticksElytraFlying = j.jetpackFlyTime;
+        }
 		GL11.glTranslated(-offsetX, -offsetY, -offsetZ);
 	}
 	
@@ -646,13 +635,7 @@ public class JetpackHandler {
 				info.trails[0] = null;
 				info.trails[1] = null;
 			}
-			if(r_ticksElytraFlying == null)
-				r_ticksElytraFlying = ReflectionHelper.findField(EntityLivingBase.class, "ticksElytraFlying", "field_184629_bo");
-			try {
-				r_ticksElytraFlying.setInt(player, 0);
-			} catch(IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
+			player.ticksElytraFlying = 0;
 		}
 		GL11.glPopMatrix();
 	}

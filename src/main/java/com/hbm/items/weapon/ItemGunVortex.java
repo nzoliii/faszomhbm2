@@ -36,7 +36,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -52,7 +51,6 @@ public class ItemGunVortex extends ItemGunBase {
 		super(config, s);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void spawnProjectile(World world, EntityPlayer player, ItemStack stack, int config, EnumHand hand) {
 		//EntityBeamVortex beam = new EntityBeamVortex(world, player);
@@ -63,14 +61,7 @@ public class ItemGunVortex extends ItemGunBase {
 		for(Entity e : entsOnBeam){
 			if((e instanceof EntityLivingBase) && CompatibilityConfig.isWarDim(world)){
 				float dmg = 30;
-				try {
-					if (ItemGunBase.hurtResistantTime == null)
-						ItemGunBase.hurtResistantTime = ReflectionHelper.findField(Entity.class, "hurtResistantTime", "field_70172_ad");
-					ItemGunBase.hurtResistantTime.setInt(e, 0);
-				} catch (Exception x){
-					x.printStackTrace();
-				}
-
+				e.hurtResistantTime = 0;
 				e.attackEntityFrom(ModDamageSource.radiation, dmg);
 			}
 		}

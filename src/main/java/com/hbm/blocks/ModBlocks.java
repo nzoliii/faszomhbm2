@@ -564,7 +564,7 @@ public class ModBlocks {
 	public static final Block block_red_phosphorus = new BlockFallingBase(Material.SAND, "block_red_phosphorus", SoundType.SAND).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_foam = new BlockBase(Material.CRAFTED_SNOW, "block_foam").setSoundType(SoundType.SNOW).setCreativeTab(MainRegistry.blockTab).setHardness(0.5F).setResistance(0.0F);
 	public static final Block block_lignite = new BlockFuel(Material.ROCK, "block_lignite", 10, 10, 12000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_coke = new BlockFuel(Material.ROCK, "block_coke", 10, 10, 32000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
+	public static final Block block_coke = new BlockCoke().setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_coal_infernal = new BlockFuel(Material.ROCK, "block_coal_infernal", 1, 1, 84000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_solid_fuel = new BlockFuel(Material.ROCK, "block_solid_fuel", 10, 10, 32000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_solid_fuel_presto = new BlockFuel(Material.ROCK, "block_solid_fuel_presto", 6, 6, 64000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
@@ -962,13 +962,15 @@ public class ModBlocks {
 	public static final Block pribris_radiating = new RBMKDebrisRadiating("pribris_radiating").setCreativeTab(MainRegistry.machineTab).setHardness(50.0F).setResistance(2000.0F);
 	public static final Block pribris_digamma = new RBMKDebrisDigamma("pribris_digamma").setCreativeTab(MainRegistry.machineTab).setHardness(50.0F).setResistance(6000.0F);
 
-	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150000).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
+	public static final Block block_corium = new BlockHazard(Material.IRON, "block_corium").makeBeaconable().addRad3d(150).setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(9000.0F);
 	public static final Block block_corium_cobble = new BlockOutgas(true, 1, true, true, "block_corium_cobble").setCreativeTab(MainRegistry.resourceTab).setHardness(100.0F).setResistance(6000.0F);
 
 
 	public static final Block machine_assembler = new MachineAssembler(Material.IRON, "machine_assembler").setCreativeTab(MainRegistry.machineTab).setHardness(5.0F).setResistance(100.0F);
 	public static final Block machine_assemfac = new MachineAssemfac(Material.IRON, "machine_assemfac").setHardness(5.0F).setResistance(30.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_machine_assembler = 48;
+
+	public static final Block machine_soldering_station = new MachineSolderingStation(Material.IRON, "machine_soldering_station").setHardness(5.0F).setResistance(30.0F).setCreativeTab(MainRegistry.machineTab);
 
 	public static final Block machine_chemplant = new MachineChemplant(Material.IRON, "machine_chemplant").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block machine_chemfac = new MachineChemfac(Material.IRON, "machine_chemfac").setHardness(5.0F).setResistance(30.0F).setCreativeTab(MainRegistry.machineTab);
@@ -1038,7 +1040,6 @@ public class ModBlocks {
 	public static final int guiID_launch_pad = 19;
 
 	public static final Block machine_centrifuge = new MachineCentrifuge(Material.IRON, "machine_centrifuge").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_centrifuge = 5;
 
 	public static final Block machine_gascent = new MachineGasCent(Material.IRON, "machine_gascent").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_gascent = 71;
@@ -1053,7 +1054,6 @@ public class ModBlocks {
 	public static final int guiID_crystallizer = 95;
 
 	public static final Block machine_shredder = new MachineShredder(Material.IRON, "machine_shredder").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_machine_shredder = 34;
 
 	public static final Block machine_waste_drum = new WasteDrum(Material.IRON, "machine_waste_drum").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_waste_drum = 79;
@@ -1077,7 +1077,6 @@ public class ModBlocks {
 	public static final int guiID_mining_laser = 96;
 
 	public static final Block machine_turbofan = new MachineTurbofan(Material.IRON, "machine_turbofan").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_machine_turbofan = 52;
 
 	public static final Block machine_schrabidium_transmutator = new MachineSchrabidiumTransmutator(Material.IRON, "machine_schrabidium_transmutator").setHardness(5.0F).setResistance(100.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final int guiID_schrabidium_transmutator = 30;
@@ -1132,7 +1131,6 @@ public class ModBlocks {
 	public static final int guiID_machine_cyclotron = 41;
 
 	public static final Block machine_radgen = new MachineRadGen(Material.IRON, "machine_radgen").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
-	public static final int guiID_radgen = 58;
 
 	public static final Block pump_steam = new MachinePump(Material.IRON, "pump_steam").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block pump_electric = new MachinePump(Material.IRON, "pump_electric").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
@@ -1446,6 +1444,10 @@ public class ModBlocks {
 	public static final Block orbital_station = new BlockOrbitalStation(Material.IRON, "orbital_station").setBlockUnbreakable().setResistance(Float.POSITIVE_INFINITY).setCreativeTab(null);
 	public static final Block orbital_station_port = new BlockOrbitalStation(Material.IRON, "orbital_station_port").setHardness(1.0F).setCreativeTab(MainRegistry.machineTab);
 
+	public static final Block fhbm2_meteor_brick_kaban = new BlockBase(Material.ROCK, "fhbm2_meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(900.0F);
+
+	public static final Block fhbm2_kaban_statue = new fhbm2KabanStatue(Material.IRON, "fhbm2_kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
+
 	public static void preInit(){
 		for(Block block : ALL_BLOCKS){
 			ForgeRegistries.BLOCKS.register(block);
@@ -1466,7 +1468,6 @@ public class ModBlocks {
 		BlockTallPlant.initPlacables();
 		BlockDeadPlant.initPlacables();
 		BlockFlowerPlant.initPlacables();
-
 
 	}
 }

@@ -1,22 +1,18 @@
 package com.hbm.handler.jei;
 
-import com.hbm.handler.jei.JeiRecipes.GasCentRecipe;
+import com.hbm.handler.jei.JeiRecipes.GasCentrifugeRecipe;
 import com.hbm.lib.RefStrings;
-
 import com.hbm.util.I18nUtil;
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.gui.IDrawable;
-import mezz.jei.api.gui.IDrawableAnimated;
-import mezz.jei.api.gui.IDrawableStatic;
-import mezz.jei.api.gui.IGuiItemStackGroup;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.*;
 import mezz.jei.api.gui.IDrawableAnimated.StartDirection;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
-public class GasCentrifugeRecipeHandler implements IRecipeCategory<GasCentRecipe> {
+public class GasCentrifugeRecipeHandler implements IRecipeCategory<GasCentrifugeRecipe> {
 
   public static final ResourceLocation gui_rl =
       new ResourceLocation(RefStrings.MODID, "textures/gui/jei/gui_jei_gas_centrifuge.png");
@@ -38,34 +34,28 @@ public class GasCentrifugeRecipeHandler implements IRecipeCategory<GasCentRecipe
   }
 
   @Override
-  public String getUid() {
+  public @NotNull String getUid() {
     return JEIConfig.GAS_CENT;
   }
 
   @Override
-  public String getTitle() {
+  public @NotNull String getTitle() {
     return I18nUtil.resolveKey("tile.machine_gascent.name");
   }
 
   @Override
-  public String getModName() {
+  public @NotNull String getModName() {
     return RefStrings.MODID;
   }
 
   @Override
-  public IDrawable getBackground() {
+  public @NotNull IDrawable getBackground() {
     return background;
   }
 
   @Override
-  public void drawExtras(Minecraft minecraft) {
-    powerAnimated.draw(minecraft, 1, 1);
-    progressAnimated.draw(minecraft, 72, 12);
-  }
-
-  @Override
   public void setRecipe(
-      IRecipeLayout recipeLayout, GasCentRecipe recipeWrapper, IIngredients ingredients) {
+          IRecipeLayout recipeLayout, @NotNull GasCentrifugeRecipe recipeWrapper, @NotNull IIngredients ingredients) {
     IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
     guiItemStacks.init(0, true, 44, 18);
@@ -79,5 +69,11 @@ public class GasCentrifugeRecipeHandler implements IRecipeCategory<GasCentRecipe
 
     guiItemStacks.set(ingredients);
     guiItemStacks.set(5, JeiRecipes.getBatteries());
+  }
+
+  @Override
+  public void drawExtras(@NotNull Minecraft minecraft) {
+    powerAnimated.draw(minecraft, 1, 1);
+    progressAnimated.draw(minecraft, 72, 12);
   }
 }

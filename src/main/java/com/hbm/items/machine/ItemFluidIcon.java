@@ -17,6 +17,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -103,6 +104,8 @@ public class ItemFluidIcon extends Item {
 		if(!stack.hasTagCompound()) return 0;
 		return stack.getTagCompound().getInteger("pressure");
 	}
+
+	@Nullable
 	public static FluidType getFluidType(ItemStack stack) {
 		if (stack.isEmpty() || !(stack.getItem() instanceof ItemFluidIcon)) {
 			return null;

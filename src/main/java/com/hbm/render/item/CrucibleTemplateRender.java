@@ -1,8 +1,6 @@
 package com.hbm.render.item;
 
-import com.hbm.inventory.CrucibleRecipes;
-import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemChemistryTemplate;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.items.machine.ItemCrucibleTemplate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.IBakedModel;

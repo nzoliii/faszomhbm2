@@ -1600,7 +1600,7 @@ public class ModItems {
 	
 	
 	//Fuels
-	public static final Item oil_tar = new ItemBase("oil_tar").setCreativeTab(MainRegistry.partsTab);
+	public static final Item oil_tar = new ItemEnumMulti("oil_tar", EnumTarType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel = new ItemFuel("solid_fuel", 3200).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel_presto = new ItemFuel("solid_fuel_presto", 6400).setCreativeTab(MainRegistry.partsTab);
 	public static final Item solid_fuel_presto_triplet = new ItemFuel("solid_fuel_presto_triplet", 19200).setCreativeTab(MainRegistry.partsTab);
@@ -1611,9 +1611,11 @@ public class ModItems {
 	public static final Item briquette = new ItemEnumMulti("briquette", EnumBriquetteType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	@Deprecated
 	public static final Item briquette_lignite = new ItemFuel("briquette_lignite", 1600).setCreativeTab(MainRegistry.partsTab);
-	public static final Item coke = new ItemFuel("coke", 3200).setCreativeTab(MainRegistry.partsTab);
+	public static final Item coke = new ItemEnumMulti("coke", EnumCokeType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	public static final Item lignite = new ItemFuel("lignite", 1200).setCreativeTab(MainRegistry.partsTab);
 
+	//Circuit
+	public static final Item circuit = new ItemEnumMulti("circuit", EnumCircuitType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 	
 	//Fragments
 	public static final Item rare_earth_chunk = new ItemBase("rare_earth_chunk").setCreativeTab(MainRegistry.partsTab);
@@ -3486,7 +3488,7 @@ public class ModItems {
 	public static final Item mysteryshovel = new ItemMS("mysteryshovel").setFull3D().setMaxStackSize(1).setCreativeTab(CreativeTabs.TOOLS);
 	public static final Item memory = new ItemBattery(Long.MAX_VALUE / 100L, 100000000000000L, 100000000000000L, "memory").setMaxStackSize(1).setCreativeTab(null);
 
-	//fhbm2
+	// fhbm2
 	public static final Item fhbm2_iceberg_arasaka = new fhbm2Consumables(3, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_black = new fhbm2Consumables(3, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_crazy_mix = new fhbm2Consumables(3, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
@@ -3502,7 +3504,9 @@ public class ModItems {
 	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 
-    public static void preInit(){
+	public static final Item fhbm2_key_kaban = new ItemCustomLore("fhbm2_key_kaban").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
+
+	public static void preInit(){
 		for(Item item : ALL_ITEMS){
 			ForgeRegistries.ITEMS.register(item);
 		}

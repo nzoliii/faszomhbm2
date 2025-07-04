@@ -1,8 +1,8 @@
 package com.hbm.items.special;
 
 import com.hbm.config.GeneralConfig;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.ArmorUtil;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
@@ -202,9 +202,18 @@ public class ItemCustomLore extends Item {
 			if(MainRegistry.polaroidID == 11) {
 				list.add(TextFormatting.DARK_RED + "" + TextFormatting.BOLD + "e");
 			} else {
-				list.add("Explore the other side.");
+				list.add("or don't...");
 			}
 		}
+
+		// fhbm2
+		if(this == ModItems.fhbm2_key_kaban) {
+			list.add("§oI don't know why, but I feel like");
+			list.add("§oI know where to use this key...");
+			list.add("");
+			list.add("§oI don't know how to get there yet.");
+		}
+
 		if(this == ModItems.crystal_energy) {
 			list.add("Densely packed energy powder.");
 			list.add("Not edible.");
@@ -478,7 +487,7 @@ public class ItemCustomLore extends Item {
 			this == ModItems.crystal_schrabidium ||
     		this == ModItems.crystal_schraranium ||
     		this == ModItems.crystal_trixite ||
-    		ItemCell.hasFluid(stack, ModForgeFluids.sas3) || 
+    		ItemCell.hasFluid(stack, Fluids.SAS3) ||
     		this == ModItems.rod_unobtainium) {
 			return EnumRarity.RARE;
 		}
@@ -543,5 +552,4 @@ public class ItemCustomLore extends Item {
     	this.rarity = rarity;
 		return this;
     }
-
 }

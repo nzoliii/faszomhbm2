@@ -1,6 +1,7 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.inventory.container.ContainerMachineChemplant;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineChemplant;
@@ -10,13 +11,14 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.opengl.GL11;
 
 public class GUIMachineChemplant extends GuiInfoContainer {
 
 	
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_chemplant.png");
-	private TileEntityMachineChemplant chemplant;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_chemplant.png");
+	private final TileEntityMachineChemplant chemplant;
 	
 	public GUIMachineChemplant(InventoryPlayer invPlayer, TileEntityMachineChemplant tedf) {
 		super(new ContainerMachineChemplant(invPlayer, tedf));
@@ -86,5 +88,13 @@ public class GUIMachineChemplant extends GuiInfoContainer {
 		chemplant.tanksNew[1].renderTank(guiLeft + 26, guiTop + 52, this.zLevel, 16, 34);
 		chemplant.tanksNew[2].renderTank(guiLeft + 134, guiTop + 52, this.zLevel, 16, 34);
 		chemplant.tanksNew[3].renderTank(guiLeft + 152, guiTop + 52, this.zLevel, 16, 34);
+	}
+
+	public ItemStackHandler getInventory() {
+		return chemplant.inventory;
+	}
+
+	public FluidTankNTM[] getTanks() {
+		return chemplant.tanksNew;
 	}
 }

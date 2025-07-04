@@ -123,9 +123,7 @@ public class CoreComponent extends BlockContainer {
 		EnumFacing enumfacing = EnumFacing.byIndex(meta);
         return this.getDefaultState().withProperty(FACING, enumfacing);
 	}
-	
-	
-	
+
 	@Override
 	public IBlockState withRotation(IBlockState state, Rotation rot) {
 		return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
@@ -136,5 +134,4 @@ public class CoreComponent extends BlockContainer {
 	{
 	   return state.withRotation(mirrorIn.toRotation((EnumFacing)state.getValue(FACING)));
 	}
-
 }

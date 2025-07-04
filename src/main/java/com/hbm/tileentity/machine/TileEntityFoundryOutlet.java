@@ -113,7 +113,12 @@ public class TileEntityFoundryOutlet extends TileEntityFoundryBase {
 		super.readFromNBT(nbt);
 		this.invertRedstone = nbt.getBoolean("invert");
 		this.invertFilter = nbt.getBoolean("invertFilter");
-		this.filter = Mats.matById.get((int) nbt.getShort("filter"));
+		if (nbt.hasKey("filter")) {
+			int id = nbt.getShort("filter");
+			this.filter = (id == -1) ? null : Mats.matById.get(id);
+		} else {
+			this.filter = null;
+		}
 	}
 
 	@Override

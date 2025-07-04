@@ -182,6 +182,8 @@ public class BlockCrate extends BlockFalling {
         BlockCrate.addToListWithWeight(redList, ModItems.flame_pony, 1);
         BlockCrate.addToListWithWeight(redList, Item.getItemFromBlock(ModBlocks.ntm_dirt), 1);
         BlockCrate.addToListWithWeight(redList, Item.getItemFromBlock(ModBlocks.broadcaster_pc), 1);
+
+        BlockCrate.addToListWithWeight(redList, ModItems.fhbm2_copper_pig_fragment, 1);
     }
 
     public void dropItems(World world, int x, int y, int z) {

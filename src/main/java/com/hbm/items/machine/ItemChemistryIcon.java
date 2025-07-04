@@ -1,6 +1,6 @@
 package com.hbm.items.machine;
 
-import com.hbm.inventory.ChemplantRecipes;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.items.ModItems;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.resources.I18n;

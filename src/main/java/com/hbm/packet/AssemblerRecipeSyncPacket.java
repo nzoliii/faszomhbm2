@@ -131,54 +131,49 @@ public class AssemblerRecipeSyncPacket implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeInt(recipes.size());
-		for(int i = 0; i < recipes.size(); i ++){
-			AssemblerRecipe recipe = recipes.get(i);
-			AStack[] inputs = recipe.in;
-			ComparableStack output = recipe.out;
-			buf.writeByte(inputs.length);
-			for(int j = 0; j < inputs.length; j ++){
-				AStack stack = inputs[j];
-				if(stack instanceof NbtComparableStack){
-					NbtComparableStack nStack = (NbtComparableStack)stack;
-					buf.writeByte(0);
-					buf.writeInt(nStack.count());
-					buf.writeInt(Item.getIdFromItem(nStack.item));
-					buf.writeInt(nStack.meta);
-					try {
-						CompressedStreamTools.write(nStack.getStack().getTagCompound(), new ByteBufOutputStream(buf));
-					} catch(IOException e) {
-						e.printStackTrace();
-					}
-				} else if(stack instanceof OreDictStack){
-					OreDictStack oStack = (OreDictStack) stack;
-					buf.writeByte(1);
-					buf.writeInt(oStack.count());
-					byte[] bytes = oStack.name.getBytes(Charset.forName("ascii"));
-					buf.writeInt(bytes.length);
-					buf.writeBytes(bytes);
-				} else if(stack instanceof ComparableStack){
-					ComparableStack cStack = (ComparableStack) stack;
-					buf.writeByte(2);
-					buf.writeInt(cStack.count());
-					buf.writeInt(Item.getIdFromItem(cStack.item));
-					buf.writeInt(cStack.meta);
-				}
-			}
-			buf.writeInt(Item.getIdFromItem(output.item));
-			buf.writeInt(output.meta);
-			buf.writeInt(output.count());
-			if(output instanceof NbtComparableStack){
-				buf.writeByte(1);
-				try {
-					CompressedStreamTools.write(output.getStack().getTagCompound(), new ByteBufOutputStream(buf));
-				} catch(IOException e) {
-					e.printStackTrace();
-				}
-			} else {
-				buf.writeByte(0);
-			}
-			buf.writeInt(recipes.get(i).time);
-		}
+        for (AssemblerRecipe recipe : recipes) {
+            AStack[] inputs = recipe.in;
+            ComparableStack output = recipe.out;
+            buf.writeByte(inputs.length);
+            for (AStack stack : inputs) {
+                if (stack instanceof NbtComparableStack nStack) {
+                    buf.writeByte(0);
+                    buf.writeInt(nStack.count());
+                    buf.writeInt(Item.getIdFromItem(nStack.item));
+                    buf.writeInt(nStack.meta);
+                    try {
+                        CompressedStreamTools.write(nStack.getStack().getTagCompound(), new ByteBufOutputStream(buf));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (stack instanceof OreDictStack oStack) {
+                    buf.writeByte(1);
+                    buf.writeInt(oStack.count());
+                    byte[] bytes = oStack.name.getBytes(Charset.forName("ascii"));
+                    buf.writeInt(bytes.length);
+                    buf.writeBytes(bytes);
+                } else if (stack instanceof ComparableStack cStack) {
+                    buf.writeByte(2);
+                    buf.writeInt(cStack.count());
+                    buf.writeInt(Item.getIdFromItem(cStack.item));
+                    buf.writeInt(cStack.meta);
+                }
+            }
+            buf.writeInt(Item.getIdFromItem(output.item));
+            buf.writeInt(output.meta);
+            buf.writeInt(output.count());
+            if (output instanceof NbtComparableStack) {
+                buf.writeByte(1);
+                try {
+                    CompressedStreamTools.write(output.getStack().getTagCompound(), new ByteBufOutputStream(buf));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                buf.writeByte(0);
+            }
+            buf.writeInt(recipe.time);
+        }
 		
 		
 		buf.writeInt(hidden.size());

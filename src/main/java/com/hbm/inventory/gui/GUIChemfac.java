@@ -1,14 +1,16 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.inventory.container.ContainerChemfac;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineChemfac;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GUIChemfac extends GuiInfoContainer {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_chemfac.png");
@@ -54,8 +56,13 @@ public class GUIChemfac extends GuiInfoContainer {
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
 		super.drawDefaultBackground();
 
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		GlStateManager.pushMatrix();
+		GlStateManager.enableBlend();
+		GlStateManager.disableLighting();
+		GlStateManager.disableDepth();
+		GlStateManager.colorMask(true, true, true, false);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, 167);
 		drawTexturedModalRect(guiLeft + 26, guiTop + 167, 26, 167, 230, 44);
 		drawTexturedModalRect(guiLeft + 26, guiTop + 211, 26, 211, 176, 45);
@@ -80,6 +87,11 @@ public class GUIChemfac extends GuiInfoContainer {
 			chemfac.tanksNew[i * 4 + 2].renderTank(offX + 103, offY + 46, this.zLevel, 3, 32);
 			chemfac.tanksNew[i * 4 + 3].renderTank(offX + 108, offY + 46, this.zLevel, 3, 32);
 		}
+		GlStateManager.colorMask(true, true, true, true);
+		GlStateManager.enableLighting();
+		GlStateManager.enableDepth();
+		GlStateManager.disableBlend();
+		GlStateManager.popMatrix();
 
 		chemfac.waterNew.renderTank(guiLeft + 234, guiTop + 161, this.zLevel, 7, 52);
 		chemfac.steamNew.renderTank(guiLeft + 243, guiTop + 161, this.zLevel, 7, 52);
@@ -91,5 +103,12 @@ public class GUIChemfac extends GuiInfoContainer {
 				this.fontRenderer.drawStringWithShadow(i + "", guiLeft + s.xPos + 2, guiTop + s.yPos, 0xffffff);
 				this.fontRenderer.drawStringWithShadow(s.getSlotIndex() + "", guiLeft + s.xPos + 2, guiTop + s.yPos + 8, 0xff8080);
 			}
+	}
+	public ItemStackHandler getInventory() {
+		return chemfac.inventory;
+	}
+
+	public FluidTankNTM[] getTanks() {
+		return chemfac.tanksNew;
 	}
 }

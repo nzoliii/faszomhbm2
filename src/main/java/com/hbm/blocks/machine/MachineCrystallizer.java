@@ -16,6 +16,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class MachineCrystallizer extends BlockDummyable {
 
@@ -24,21 +25,17 @@ public class MachineCrystallizer extends BlockDummyable {
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int meta) {
+	public TileEntity createNewTileEntity(@NotNull World world, int meta) {
 		if(meta >= 12)
 			return new TileEntityMachineCrystallizer();
-
-		if(meta >= 8 && meta <= 11)
-			return new TileEntityProxyInventory();
-
-		if(meta == 7)
-			return new TileEntityProxyCombo(false, true, true);
+		if(meta >= 6)
+			return new TileEntityProxyCombo(true, true, true);
 
 		return null;
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(world.isRemote)
 		{
 			return true;
@@ -62,7 +59,7 @@ public class MachineCrystallizer extends BlockDummyable {
 
 	@Override
 	public int[] getDimensions() {
-		return new int[] { 6, 0, 1, 1, 1, 1 };
+		return new int[] { 5, 0, 1, 1, 1, 1 };
 	}
 	
 	@Override
@@ -73,21 +70,10 @@ public class MachineCrystallizer extends BlockDummyable {
 	@Override
 	protected void fillSpace(World world, int x, int y, int z, ForgeDirection dir, int o) {
 		super.fillSpace(world, x, y, z, dir, o);
-
-		this.makeExtra(world, x + dir.offsetX * o + 1, y, z + dir.offsetZ * o);
-		this.makeExtra(world, x + dir.offsetX * o - 1, y, z + dir.offsetZ * o);
-		this.makeExtra(world, x + dir.offsetX * o, y, z + dir.offsetZ * o + 1);
-		this.makeExtra(world, x + dir.offsetX * o, y, z + dir.offsetZ * o - 1);
-
-		if(dir == ForgeDirection.NORTH || dir == ForgeDirection.SOUTH) {
-			this.makeExtra(world, x + dir.offsetX * o + 1, y + 5, z + dir.offsetZ * o);
-			this.makeExtra(world, x + dir.offsetX * o - 1, y + 5, z + dir.offsetZ * o);
-		}
-
-		if(dir == ForgeDirection.EAST || dir == ForgeDirection.WEST) {
-			this.makeExtra(world, x + dir.offsetX * o, y + 5, z + dir.offsetZ * o + 1);
-			this.makeExtra(world, x + dir.offsetX * o, y + 5, z + dir.offsetZ * o - 1);
-		}
+		this.makeExtra(world, x + dir.offsetX * o + 1, y, z + dir.offsetZ * o + 1);
+		this.makeExtra(world, x + dir.offsetX * o - 1, y, z + dir.offsetZ * o + 1);
+		this.makeExtra(world, x + dir.offsetX * o + 1, y, z + dir.offsetZ * o - 1);
+		this.makeExtra(world, x + dir.offsetX * o - 1, y, z + dir.offsetZ * o - 1);
 	}
 	
 	@Override

@@ -8,7 +8,6 @@ import com.hbm.main.ClientProxy;
 import com.hbm.particle.ParticleLayerBase;
 import com.hbm.particle.ParticleRenderLayer;
 import com.hbm.render.misc.ColorGradient;
-import com.hbm.util.BobMathUtil;
 
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -17,7 +16,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class ParticleRocketPlasma extends ParticleLayerBase {
 
@@ -65,21 +63,14 @@ public class ParticleRocketPlasma extends ParticleLayerBase {
         float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks);
         float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks);
         GL11.glTranslated(f5, f6, f7);
-        if(BobMathUtil.r_viewMat == null){
-			BobMathUtil.r_viewMat = ReflectionHelper.findField(ActiveRenderInfo.class, "MODELVIEW", "field_178812_b");
+		FloatBuffer view_mat = ActiveRenderInfo.MODELVIEW;
+		view_mat.rewind();
+		GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, ClientProxy.AUX_GL_BUFFER);
+		for(int i = 0; i < 12; i ++){
+			ClientProxy.AUX_GL_BUFFER.put(i, view_mat.get(i));
 		}
-		try {
-			FloatBuffer view_mat = (FloatBuffer) BobMathUtil.r_viewMat.get(null);
-			view_mat.rewind();
-			GL11.glGetFloat(GL11.GL_MODELVIEW_MATRIX, ClientProxy.AUX_GL_BUFFER);
-			for(int i = 0; i < 12; i ++){
-				ClientProxy.AUX_GL_BUFFER.put(i, view_mat.get(i));
-			}
-			ClientProxy.AUX_GL_BUFFER.rewind();
-			GL11.glLoadMatrix(ClientProxy.AUX_GL_BUFFER);
-		} catch(IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
-		}
+		ClientProxy.AUX_GL_BUFFER.rewind();
+		GL11.glLoadMatrix(ClientProxy.AUX_GL_BUFFER);
         Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
         
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);

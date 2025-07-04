@@ -42,7 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 
 public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, ILookOverlay, IToolable {
-	
+
 	public static AxisAlignedBB[] boxes;
 	static {
 		boxes = new AxisAlignedBB[EnumFacing.VALUES.length];
@@ -77,12 +77,12 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, new IProperty[]{FACING});
 	}
-	
+
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return ((EnumFacing)state.getValue(FACING)).getIndex();
 	}
-	
+
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		EnumFacing enumfacing = EnumFacing.byIndex(meta);
@@ -94,12 +94,12 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 
         return this.getDefaultState().withProperty(FACING, enumfacing);
 	}
-	
+
 	@Override
 	public IBlockState withRotation(IBlockState state, Rotation rot) {
 		return state.withProperty(FACING, rot.rotate((EnumFacing)state.getValue(FACING)));
 	}
-	
+
 	@Override
 	public IBlockState withMirror(IBlockState state, Mirror mirrorIn)
 	{
@@ -115,7 +115,7 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityFoundryOutlet();
 	}
-	
+
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(world.isRemote) {
@@ -124,7 +124,7 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 
 	 	if(!player.isSneaking()) {
 	 		TileEntityFoundryOutlet tile = (TileEntityFoundryOutlet) world.getTileEntity(pos);
-			
+
 	 		if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() == ModItems.scraps) {
 	 			MaterialStack mat = ItemScraps.getMats(player.getHeldItem(hand));
 	 			if(mat != null) {
@@ -136,13 +136,13 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	 		tile.markDirty();
 	 		world.markAndNotifyBlock(pos, world.getChunk(pos), state, state, 2);
 	 	}
-		
+
 	 	return true;
 	}
 
 	@Override
     public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, EnumFacing side, float fX, float fY, float fZ, EnumHand hand, ToolType tool) {
-    	
+
 		if(tool == ToolType.SCREWDRIVER) {
 			if(world.isRemote) return true;
 
@@ -151,7 +151,7 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 			tile.invertFilter = false;
 			tile.markDirty();
 		}
-		
+
 		if(tool == ToolType.HAND_DRILL) {
 			if(world.isRemote) return true;
 
@@ -159,7 +159,7 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 			tile.invertFilter = !tile.invertFilter;
 			tile.markDirty();
 		}
-		
+
 		return false;
 	}
 
@@ -170,17 +170,17 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	public boolean canAcceptPartialFlow(World world, BlockPos p, ForgeDirection side, MaterialStack stack) {
 		return ((ICrucibleAcceptor) world.getTileEntity(p)).canAcceptPartialFlow(world, p, side, stack);
 	}
-	
+
 	@Override
 	public MaterialStack flow(World world, BlockPos p, ForgeDirection side, MaterialStack stack) {
 		return ((ICrucibleAcceptor) world.getTileEntity(p)).flow(world, p, side, stack);
 	}
-	
+
 	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
-	
+
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
@@ -190,17 +190,17 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	public boolean isBlockNormalCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isNormalCube(IBlockState state) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isFullCube(IBlockState state) {
 		return false;
@@ -209,8 +209,13 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 	@Override
 	public void printHook(Pre event, World world, int x, int y, int z) {
 		TileEntityFoundryOutlet outlet = (TileEntityFoundryOutlet) world.getTileEntity(new BlockPos(x, y, z));
-		List<String> text = new ArrayList();
-		
+		List<String> text = new ArrayList<>();
+
+//		if(outlet.isClosed()) {
+//			text.add("§c" + I18nUtil.resolveKey("foundry.status.closed"));
+//		} else {
+//			text.add("§a" + I18nUtil.resolveKey("foundry.status.open"));
+//		}
 		if(outlet.filter != null) {
 			text.add("§e" + I18nUtil.resolveKey("foundry.filter", outlet.filter.names[0]));
 		}
@@ -220,7 +225,7 @@ public class FoundryOutlet extends BlockContainer implements ICrucibleAcceptor, 
 		if(outlet.invertRedstone) {
 			text.add("§2" + I18nUtil.resolveKey("foundry.inverted"));
 		}
-		
+
 		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(this.getTranslationKey() + ".name"), 0xFF4000, 0x401000, text);
 	}
 }

@@ -5,7 +5,7 @@ import com.hbm.inventory.material.NTMMaterial;
 public class TileEntityFoundryMold extends TileEntityFoundryCastingBase implements IRenderFoundry {
 
 	public TileEntityFoundryMold() {
-		super(2);
+		super();
 	}
 
 	@Override

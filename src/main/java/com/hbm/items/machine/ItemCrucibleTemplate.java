@@ -1,7 +1,7 @@
 package com.hbm.items.machine;
 
 import com.hbm.interfaces.IHasCustomModel;
-import com.hbm.inventory.CrucibleRecipes;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;

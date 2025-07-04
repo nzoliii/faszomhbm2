@@ -393,8 +393,11 @@ public class HbmWorldGen implements IWorldGenerator {
 
 					if (world.getBlockState(new BlockPos(x, y-1, z)).isSideSolid(world, new BlockPos(x, y-1, z), EnumFacing.UP)) {
 
+						// fhbm2 At first I thought this would be a fun idea to make nuclear landmines have a 50% chance to replace the basic mines.
+						// Boy I was wrong...
+
 						Random random = new Random();
-						if (random.nextBoolean()) {
+						if (random.nextFloat() < 0.8f) {
 							world.setBlockState(new BlockPos(x, y, z), ModBlocks.mine_ap.getDefaultState());
 						} else {
 							world.setBlockState(new BlockPos(x, y, z), ModBlocks.mine_fat.getDefaultState());
