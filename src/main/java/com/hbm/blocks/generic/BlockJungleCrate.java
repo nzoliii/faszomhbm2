@@ -33,8 +33,9 @@ public class BlockJungleCrate extends Block {
 		drops.add(new ItemStack(Items.GOLD_NUGGET, 8 + rand.nextInt(10)));
 		drops.add(new ItemStack(ModItems.powder_gold, 2 + rand.nextInt(3)));
 		drops.add(new ItemStack(ModItems.wire_fine, 2 + rand.nextInt(2), Mats.MAT_GOLD.id));
+		drops.add(new ItemStack(ModItems.fhbm2_key_kaban, 1));
 
-        if(rand.nextInt(2) == 0)
+		if(rand.nextInt(2) == 0)
         	drops.add(new ItemStack(ModItems.plate_gold, 1 + rand.nextInt(2)));
 
         if(rand.nextInt(3) == 0)

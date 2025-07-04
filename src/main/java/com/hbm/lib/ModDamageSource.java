@@ -222,7 +222,7 @@ public class ModDamageSource extends DamageSource {
     	return false;
     }
 
-    //fhbm2
+    // fhbm2
     public static DamageSource unabomber = (new DamageSource("unabomber")).setExplosion();
     public static DamageSource copper_pig = (new DamageSource("copper_pig")).setExplosion();
 

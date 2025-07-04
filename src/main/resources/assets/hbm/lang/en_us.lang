@@ -4454,7 +4454,7 @@ item.key.name=Key
 item.key_fake.name=Counterfeit Key
 item.key_kit.name=Key Imitation Kit
 item.key_red.desc.P11=§4e§r
-item.key_red.desc=Explore the other side.
+item.key_red.desc=Explore the other side...
 item.key_red.key_red_cracked.P11=§4???§r
 item.key_red.name=Red Key
 item.key_red_cracked.desc=???
@@ -8286,3 +8286,5 @@ tile.orbital_station.name=Orbital Station
 
 tile.fhbm2_meteor_brick_kaban.name=кабан Meteor Bricks
 tile.fhbm2_kaban_statue.name=кабан Statue
+
+item.fhbm2_key_kaban.name=кабан Key

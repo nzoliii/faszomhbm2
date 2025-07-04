@@ -21,6 +21,7 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.*;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.SerializableRecipe;
+import com.hbm.items.special.ItemCustomLore;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
@@ -444,7 +445,7 @@ public class MainRegistry {
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 
-		//fhbm2
+		// fhbm2
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateHorrorTowers(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateUncleTedShed(), 0);
 		GameRegistry.registerWorldGenerator(new fhbm2GenerateKabanStatue(), 0);
@@ -901,9 +902,12 @@ public class MainRegistry {
 		registerDispenserBehaviors();
 		TileEntityLaunchPadBase.registerLaunchables();
 
+		// fhbm2
 		MinecraftForge.EVENT_BUS.register(fhbm2KabanTracker.class);
 		MinecraftForge.EVENT_BUS.register(fhbm2Scheduler.class);
 		MinecraftForge.EVENT_BUS.register(fhbm2VCopperPigLobotomyCutscene.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2KabanPTSDCutscene.class);
+		MinecraftForge.EVENT_BUS.register(new fhbm2KabanKeyTracker());
 	}
 
 	public static void reloadConfig() {

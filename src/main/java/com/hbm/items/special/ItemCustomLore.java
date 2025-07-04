@@ -1,20 +1,31 @@
 package com.hbm.items.special;
 
 import com.hbm.config.GeneralConfig;
+import com.hbm.fhbm2KabanPTSDCutscene;
+import com.hbm.fhbm2KabanTracker;
+import com.hbm.fhbm2Scheduler;
+import com.hbm.fhbm2VCopperPigLobotomyCutscene;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.ModItems;
+import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -202,9 +213,18 @@ public class ItemCustomLore extends Item {
 			if(MainRegistry.polaroidID == 11) {
 				list.add(TextFormatting.DARK_RED + "" + TextFormatting.BOLD + "e");
 			} else {
-				list.add("Explore the other side.");
+				list.add("or don't...");
 			}
 		}
+
+		// fhbm2
+		if(this == ModItems.fhbm2_key_kaban) {
+			list.add("§oI don't know why, but I feel like");
+			list.add("§oI know where to use this key...");
+			list.add("");
+			list.add("§oI don't know how to get there yet.");
+		}
+
 		if(this == ModItems.crystal_energy) {
 			list.add("Densely packed energy powder.");
 			list.add("Not edible.");
@@ -543,5 +563,4 @@ public class ItemCustomLore extends Item {
     	this.rarity = rarity;
 		return this;
     }
-
 }

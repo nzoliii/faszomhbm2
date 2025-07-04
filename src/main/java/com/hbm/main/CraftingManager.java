@@ -1256,7 +1256,7 @@ public class CraftingManager {
 		addShapelessAuto(new ItemStack(ModItems.radaway_strong, 1), new Object[] { ModItems.radaway, ModBlocks.mush });
 		addShapelessAuto(new ItemStack(ModItems.radaway_flush, 1), new Object[] { ModItems.radaway_strong, I.dust() });
 
-		//fhbm2
+		// fhbm2
 		addRecipeAuto(new ItemStack(ModItems.iv_empty, 4), new Object[] { "A", "B", "A", 'A', ModItems.plate_polymer, 'B', IRON.plate() });
 		addRecipeAuto(new ItemStack(ModItems.fhbm2_abalt_salonna, 64), new Object[] { "   ", " P ", " B ", 'P', Items.PORKCHOP, 'B', ModItems.fhbm2_bucket_abale_old });
 		addRecipeAuto(new ItemStack(ModItems.fluid_barrel_infinite, 1), new Object[] { "SSS", "SAS", "SSS", 'S', ModItems.tank_steel, 'A', ModItems.particle_amat });

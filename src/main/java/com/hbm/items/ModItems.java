@@ -3488,7 +3488,7 @@ public class ModItems {
 	public static final Item mysteryshovel = new ItemMS("mysteryshovel").setFull3D().setMaxStackSize(1).setCreativeTab(CreativeTabs.TOOLS);
 	public static final Item memory = new ItemBattery(Long.MAX_VALUE / 100L, 100000000000000L, 100000000000000L, "memory").setMaxStackSize(1).setCreativeTab(null);
 
-	//fhbm2
+	// fhbm2
 	public static final Item fhbm2_iceberg_arasaka = new fhbm2Consumables(3, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_black = new fhbm2Consumables(3, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
 	public static final Item fhbm2_iceberg_crazy_mix = new fhbm2Consumables(3, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
@@ -3504,7 +3504,9 @@ public class ModItems {
 	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
 
-    public static void preInit(){
+	public static final Item fhbm2_key_kaban = new ItemCustomLore("fhbm2_key_kaban").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
+
+	public static void preInit(){
 		for(Item item : ALL_ITEMS){
 			ForgeRegistries.ITEMS.register(item);
 		}

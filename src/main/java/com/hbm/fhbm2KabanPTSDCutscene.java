@@ -7,21 +7,20 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.*;
 
-public class fhbm2VCopperPigLobotomyCutscene {
+public class fhbm2KabanPTSDCutscene {
 
-    private static final int TOTAL_FRAMES = 190;
+    private static final int TOTAL_FRAMES = 30;
     private static final int FRAME_INTERVAL_TICKS = 2; // 10 FPS
-    private static final String BASE_PATH = "textures/gui/lobotomy_cutscene/lobotomy";
+    private static final String BASE_PATH = "textures/gui/kabanptsd_cutscene/kabanptsd";
 
     private static final Map<UUID, Integer> frameIndices = new HashMap<>();
     private static final Map<UUID, Integer> tickCounters = new HashMap<>();
@@ -114,7 +113,7 @@ public class fhbm2VCopperPigLobotomyCutscene {
 
     private static ResourceLocation getFrameResource(int frameNumber) {
         Minecraft mc = Minecraft.getMinecraft();
-        String padded = String.format("%03d", frameNumber);
+        String padded = String.format("%02d", frameNumber);
 
         // Try PNG
         ResourceLocation png = new ResourceLocation("hbm", BASE_PATH + padded + ".png");
