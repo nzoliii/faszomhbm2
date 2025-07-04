@@ -28,6 +28,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
@@ -50,18 +51,19 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
 
     @Deprecated
     public int index = 0;
+    @NotNull
     FluidType type;
     int fluid;
     int maxFluid;
     int pressure = 0;
 
-    public FluidTankNTM(FluidType type, int maxFluid) {
+    public FluidTankNTM(@NotNull FluidType type, int maxFluid) {
         this.type = type;
         this.maxFluid = maxFluid;
     }
 
     @Deprecated // indices are no longer needed
-    public FluidTankNTM(FluidType type, int maxFluid, int index) {
+    public FluidTankNTM(@NotNull FluidType type, int maxFluid, int index) {
         this.type = type;
         this.maxFluid = maxFluid;
         this.index = index;
@@ -73,6 +75,7 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
         return this;
     }
 
+    @NotNull
     public FluidType getTankType() {
         return type;
     }

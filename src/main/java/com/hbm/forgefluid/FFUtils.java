@@ -829,7 +829,7 @@ public class FFUtils {
 	public static FluidTankNTM copyTank(FluidTankNTM tank){
 		if(tank == null)
 			return null;
-		return new FluidTankNTM(tank.getTankType() != Fluids.NONE ? tank.getTankType() : null, tank.getMaxFill());
+		return new FluidTankNTM(tank.getTankType(), tank.getMaxFill());
 	}
 
 	public static boolean checkFluidConnectables(World world, BlockPos pos, FFPipeNetwork net, @Nullable EnumFacing facing){

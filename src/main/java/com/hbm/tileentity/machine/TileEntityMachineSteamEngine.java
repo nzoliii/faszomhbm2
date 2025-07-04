@@ -5,6 +5,7 @@ import api.hbm.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Coolable;
@@ -18,15 +19,19 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 
 public class TileEntityMachineSteamEngine extends TileEntityLoadedBase
@@ -276,5 +281,23 @@ public class TileEntityMachineSteamEngine extends TileEntityLoadedBase
   @Override
   public FluidTankNTM getTankToPaste() {
     return null;
+  }
+
+  @Override
+  public boolean hasCapability(@NotNull Capability<?> capability, @Nullable EnumFacing facing) {
+    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+      return true;
+    }
+    return super.hasCapability(capability, facing);
+  }
+
+  @Override
+  public <T> T getCapability(@NotNull Capability<T> capability, @Nullable EnumFacing facing) {
+    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+      return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+              new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+      );
+    }
+    return super.getCapability(capability, facing);
   }
 }

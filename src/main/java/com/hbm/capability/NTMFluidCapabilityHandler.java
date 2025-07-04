@@ -31,8 +31,8 @@ public class NTMFluidCapabilityHandler {
     public static final ResourceLocation HBM_FLUID_CAPABILITY = new ResourceLocation("hbm", "fluid_container_wrapper");
 
     private static final Set<Item> HBM_FLUID_ITEMS = new HashSet<>();
-    private static final Map<FluidType, Fluid> HBM_TO_FORGE_MAP = new HashMap<>();
-    private static final Map<Fluid, FluidType> FORGE_TO_HBM_MAP = new HashMap<>();
+    private static final Map<FluidType, String> HBM_TO_FORGE_MAP = new HashMap<>();
+    private static final Map<String, FluidType> FORGE_TO_HBM_MAP = new HashMap<>();
 
     private static boolean initialized = false;
     private static boolean containerRegistryReady = false;
@@ -59,8 +59,8 @@ public class NTMFluidCapabilityHandler {
             Fluid forgeFluid = FluidRegistry.getFluid(type.getFFName());
 
             if (forgeFluid != null) {
-                HBM_TO_FORGE_MAP.put(type, forgeFluid);
-                FORGE_TO_HBM_MAP.put(forgeFluid, type);
+                HBM_TO_FORGE_MAP.put(type, forgeFluid.getName());
+                FORGE_TO_HBM_MAP.put(forgeFluid.getName(), type);
             } else {
                 MainRegistry.logger.warn("Could not find matching Forge Fluid for HBM FluidType with name: {}", hbmFluidName);
             }
@@ -80,12 +80,12 @@ public class NTMFluidCapabilityHandler {
 
     @Nullable
     public static Fluid getForgeFluid(FluidType hbmType) {
-        return HBM_TO_FORGE_MAP.get(hbmType);
+        return FluidRegistry.getFluid(HBM_TO_FORGE_MAP.get(hbmType));
     }
 
     @Nullable
     public static FluidType getHbmFluidType(Fluid forgeFluid) {
-        return FORGE_TO_HBM_MAP.get(forgeFluid);
+        return FORGE_TO_HBM_MAP.get(forgeFluid.getName());
     }
 
     public static boolean isHbmFluidContainer(@NotNull Item item) {
