@@ -1,8 +1,5 @@
 package com.hbm.handler.jei;
 
-import com.hbm.blocks.ModBlocks;
-import com.hbm.forgefluid.SpecialContainerFillLists.EnumCanister;
-import com.hbm.forgefluid.SpecialContainerFillLists.EnumCell;
 import com.hbm.inventory.*;
 import com.hbm.inventory.AnvilRecipes.AnvilConstructionRecipe;
 import com.hbm.inventory.AnvilRecipes.AnvilOutput;
@@ -20,11 +17,8 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemAssemblyTemplate;
 import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
 import com.hbm.items.machine.ItemFluidIcon;
-import com.hbm.items.machine.ItemFluidTank;
-import com.hbm.items.special.ItemCell;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
-import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.Tuple.Pair;
 import com.hbm.util.WeightedRandomObject;
@@ -39,7 +33,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -950,28 +943,22 @@ public class JeiRecipes {
 	public static List<FluidRecipe> getFluidEquivalences(){
 		if(fluidEquivalences != null)
 			return fluidEquivalences;
-		fluidEquivalences = new ArrayList<FluidRecipe>();
+		fluidEquivalences = new ArrayList<>();
 		
-		for(FluidType f : Fluids.getAll()){
-			fluidEquivalences.add(new FluidRecipe(ItemFluidIcon.make(f, 1), ItemFluidTank.getFullTank(f)));
-			fluidEquivalences.add(new FluidRecipeInverse(ItemFluidIcon.make(f, 1), ItemFluidTank.getFullTank(f)));
-
-			fluidEquivalences.add(new FluidRecipe(ItemFluidIcon.make(f, 1), ItemFluidTank.getFullBarrel(f)));
-			fluidEquivalences.add(new FluidRecipeInverse(ItemFluidIcon.make(f, 1), ItemFluidTank.getFullBarrel(f)));
-
-			if(EnumCanister.contains(f)){
-				fluidEquivalences.add(new FluidRecipe(ItemFluidIcon.make(f, 1), new ItemStack(ModItems.canister_generic, 1, f.getID())));
-				fluidEquivalences.add(new FluidRecipeInverse(ItemFluidIcon.make(f, 1), new ItemStack(ModItems.canister_generic, 1, f.getID())));
+		for(FluidContainerRegistry.FluidContainer container : FluidContainerRegistry.allContainers){
+			if (container.emptyContainer() == null || container.emptyContainer().isEmpty()) {
+				continue;
 			}
-			if(EnumCell.contains(f)){
-				fluidEquivalences.add(new FluidRecipe(ItemFluidIcon.make(f, 1), ItemCell.getFullCell(f)));
-				fluidEquivalences.add(new FluidRecipeInverse(ItemFluidIcon.make(f, 1), ItemCell.getFullCell(f)));
-			}
+			FluidType fluidType = container.type();
+			ItemStack fullContainerStack = container.fullContainer();
+			ItemStack fluidIconStack = ItemFluidIcon.make(fluidType, container.content());
+			fluidEquivalences.add(new FluidRecipe(fluidIconStack, fullContainerStack.copy()));
+			fluidEquivalences.add(new FluidRecipeInverse(fluidIconStack, fullContainerStack.copy()));
 		}
 		
 		return fluidEquivalences;
 	}
-	
+
 	public static List<FusionRecipe> getFusionByproducts(){
 		if(fusionByproducts != null)
 			return fusionByproducts;

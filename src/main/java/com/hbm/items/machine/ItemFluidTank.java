@@ -1,7 +1,6 @@
 package com.hbm.items.machine;
 
 import com.hbm.config.GeneralConfig;
-import com.hbm.forgefluid.HbmFluidHandlerItemStack;
 import com.hbm.interfaces.IHasCustomModel;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.fluid.FluidType;
@@ -15,7 +14,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
@@ -115,36 +113,22 @@ public class ItemFluidTank extends Item implements IHasCustomModel {
 	}
 	
 	public static ItemStack getFullBarrel(FluidType f, int amount){
-		ItemStack stack = new ItemStack(ModItems.fluid_barrel_full, amount, 0);
-		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setTag(HbmFluidHandlerItemStack.FLUID_NBT_KEY, f.writeToNBT(new NBTTagCompound()));
-		return stack;
+		return new ItemStack(ModItems.fluid_barrel_full, amount, f.getID());
 	}
-	
-	public static ItemStack getFullBarrel(FluidType f){
-		return getFullBarrel(f, 1);
+
+	public static ItemStack getFullBarrel(FluidType f) {
+		return new ItemStack(ModItems.fluid_barrel_full, 1, f.getID());
 	}
-	
-	public static ItemStack getFullTank(FluidType f, int amount){
-		ItemStack stack = new ItemStack(ModItems.fluid_tank_full, amount, 0);
-		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setTag(HbmFluidHandlerItemStack.FLUID_NBT_KEY, f.writeToNBT(new NBTTagCompound()));
-		return stack;
-	}
-	
-	public static ItemStack getFullTank(FluidType f){
-		return getFullTank(f, 1);
+
+	public static ItemStack getFullTank(FluidType f) {
+		return new ItemStack(ModItems.fluid_tank_full, 1, f.getID());
 	}
 
 	public static boolean isEmptyTank(ItemStack out) {
-		if(out.getItem() == ModItems.fluid_tank_full && FluidUtil.getFluidContained(out) == null)
-			return true;
-		return false;
-	}
+        return out.getItem() == ModItems.fluid_tank_full && FluidUtil.getFluidContained(out) == null;
+    }
 	
 	public static boolean isEmptyBarrel(ItemStack out) {
-		if(out.getItem() == ModItems.fluid_barrel_full && FluidUtil.getFluidContained(out) == null)
-			return true;
-		return false;
-	}
+        return out.getItem() == ModItems.fluid_barrel_full && FluidUtil.getFluidContained(out) == null;
+    }
 }

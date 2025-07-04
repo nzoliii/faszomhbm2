@@ -4,12 +4,15 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.CentrifugeRecipes;
 import com.hbm.inventory.DFCRecipes;
+import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.ShredderRecipes;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.gui.*;
-import com.hbm.inventory.recipes.RBMKOutgasserRecipes;
 import com.hbm.items.EffectItem;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemFELCrystal.EnumWavelengths;
+import com.hbm.items.machine.ItemFluidIcon;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.main.MainRegistry;
 import mezz.jei.api.*;
@@ -19,8 +22,6 @@ import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import org.jetbrains.annotations.NotNull;
 
 @JEIPlugin
@@ -324,46 +325,33 @@ public class JEIConfig implements IModPlugin {
     }
 
 
+    private static final ISubtypeRegistry.ISubtypeInterpreter metadataFluidContainerInterpreter = stack -> {
+        FluidType type = Fluids.fromID(stack.getMetadata());
+        if (type != null && type != Fluids.NONE && FluidContainerRegistry.getFluidContainer(stack) != null) {
+            return type.getTranslationKey();
+        }
+        return "";
+    };
+
 	@Override
 	public void registerItemSubtypes(@NotNull ISubtypeRegistry subtypeRegistry) {
 		if(!GeneralConfig.jei)
 			return;
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.cell, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.cell.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_barrel_full, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.fluid_barrel_full.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_tank_lead_full, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.fluid_tank_lead_full.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_tank_lead_full, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.fluid_tank_lead_full.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_tank_full, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.fluid_tank_full.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.canister_generic, (ItemStack stack) -> {
-			FluidStack fluid = FluidUtil.getFluidContained(stack);
-			return ModItems.canister_generic.getTranslationKey() + (fluid == null ? "empty" : fluid.getFluid().getUnlocalizedName() + fluid.amount);
-		});
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.cell, metadataFluidContainerInterpreter);
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_tank_full, metadataFluidContainerInterpreter);
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_barrel_full, metadataFluidContainerInterpreter);
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_tank_lead_full, metadataFluidContainerInterpreter);
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.canister_generic, metadataFluidContainerInterpreter);
 		subtypeRegistry.registerSubtypeInterpreter(ModItems.missile_custom, (ItemStack stack) -> ModItems.missile_custom.getTranslationKey() + "w" +
                 ItemCustomMissile.readFromNBT(stack, "warhead") + "f" + ItemCustomMissile.readFromNBT(stack, "fuselage") + "s" +
                 ItemCustomMissile.readFromNBT(stack, "stability") + "t" + ItemCustomMissile.readFromNBT(stack, "thruster"));
-		subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_icon, (ItemStack stack) -> {
-			if(stack.hasTagCompound()) {
-				String s = "";
-				if(stack.getTagCompound().hasKey("type"))
-					s = s + stack.getTagCompound().getString("type");
-				return s;
-			}
-			return "";
-		});
+        subtypeRegistry.registerSubtypeInterpreter(ModItems.fluid_icon, stack -> {
+            FluidType fluidType = ItemFluidIcon.getFluidType(stack);
+            if (fluidType != null) {
+                return fluidType.getTranslationKey();
+            }
+            return "";
+        });
 	}
 
     @Override
