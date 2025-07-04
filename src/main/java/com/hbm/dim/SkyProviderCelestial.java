@@ -30,7 +30,7 @@ public class SkyProviderCelestial extends IRenderHandler {
 	private static final ResourceLocation planetTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/planet.png");
 	private static final ResourceLocation flareTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/sunspike.png");
 	private static final ResourceLocation nightTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/night.png");
-	private static final ResourceLocation digammaStar = new ResourceLocation(RefStrings.MODID, "textures/misc/space/star_digamma.png");
+	private static final ResourceLocation digammaStar = new ResourceLocation(RefStrings.MODID, "textures/misc/space/fhbm2_digamma_portal.png");
 
 	private static final ResourceLocation noise = new ResourceLocation(RefStrings.MODID, "shaders/iChannel1.png");
 
@@ -673,7 +673,7 @@ public class SkyProviderCelestial extends IRenderHandler {
 
 			float brightness = (float) Math.sin(celestialAngle * Math.PI);
 			brightness *= brightness;
-			GlStateManager.color(brightness, brightness, brightness, brightness);
+			GlStateManager.color(brightness, brightness, brightness, 1.0F);
 			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(celestialAngle * 360.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(140.0F, 1.0F, 0.0F, 0.0F);
@@ -683,7 +683,7 @@ public class SkyProviderCelestial extends IRenderHandler {
 
 			float digamma = HbmLivingProps.getDigamma(Minecraft.getMinecraft().player);
 			float var12 = 1F * (1 + digamma * 0.25F);
-			double dist = 100D - digamma * 2.5;
+			double dist = 25D - digamma * 2.5;
 
 			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 			bufferBuilder.pos(-var12, dist, -var12).tex(0.0D, 0.0D).endVertex();

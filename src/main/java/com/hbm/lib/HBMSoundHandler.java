@@ -306,8 +306,11 @@ public final class HBMSoundHandler {
     public static SoundEvent fhbm2_copper_pig_explosion;
     public static SoundEvent fhbm2_copper_pig_scream;
     public static SoundEvent fhbm2_oppenheimer;
-
     public static SoundEvent fhbm2_lobotomy;
+    public static SoundEvent fhbm2_heartbeat;
+    public static SoundEvent fhbm2_rite_of_passage;
+    public static SoundEvent fhbm2_flesh;
+
 
     public static void init() {
 
@@ -569,8 +572,11 @@ public final class HBMSoundHandler {
         fhbm2_copper_pig_explosion = register("fhbm2_copper_pig_explosion");
         fhbm2_copper_pig_scream = register("fhbm2_copper_pig_scream");
         fhbm2_oppenheimer = register("fhbm2_oppenheimer");
-
         fhbm2_lobotomy = register("fhbm2_lobotomy");
+        fhbm2_heartbeat = register("fhbm2_heartbeat");
+        fhbm2_rite_of_passage = register("fhbm2_rite_of_passage");
+        fhbm2_flesh = register("fhbm2_flesh");
+
     }
 
     public static SoundEvent register(String name) {

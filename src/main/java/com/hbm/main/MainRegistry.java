@@ -21,7 +21,6 @@ import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.*;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.recipes.SerializableRecipe;
-import com.hbm.items.special.ItemCustomLore;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.tileentity.bomb.*;
 import com.hbm.tileentity.conductor.TileEntityFFDuctBaseMk2;
@@ -905,9 +904,10 @@ public class MainRegistry {
 		// fhbm2
 		MinecraftForge.EVENT_BUS.register(fhbm2KabanTracker.class);
 		MinecraftForge.EVENT_BUS.register(fhbm2Scheduler.class);
-		MinecraftForge.EVENT_BUS.register(fhbm2VCopperPigLobotomyCutscene.class);
+		MinecraftForge.EVENT_BUS.register(fhbm2CopperPigLobotomyCutscene.class);
 		MinecraftForge.EVENT_BUS.register(fhbm2KabanPTSDCutscene.class);
-		MinecraftForge.EVENT_BUS.register(new fhbm2KabanKeyTracker());
+		MinecraftForge.EVENT_BUS.register(fhbm2FleshCutscene.class);
+		MinecraftForge.EVENT_BUS.register(new fhbm2CutsceneItemTracker());
 	}
 
 	public static void reloadConfig() {

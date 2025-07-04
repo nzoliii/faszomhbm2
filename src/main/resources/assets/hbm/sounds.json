@@ -398,4 +398,7 @@
     "fhbm2_copper_pig_scream": {"category": "hostile", "sounds": [{"name": "hbm:fhbm2_copper_pig_scream", "stream": false}]},
     "fhbm2_oppenheimer": {"category": "player", "sounds": [{"name": "hbm:fhbm2_oppenheimer", "stream": false}]},
     "fhbm2_lobotomy": {"category": "player", "sounds": [{"name": "hbm:fhbm2_lobotomy", "stream": true}]},
+    "fhbm2_heartbeat": {"category": "player", "sounds": [{"name": "hbm:fhbm2_heartbeat", "stream": false}]},
+    "fhbm2_rite_of_passage": {"category": "player", "sounds": [{"name": "hbm:fhbm2_rite_of_passage", "stream": true}]},
+    "fhbm2_flesh": {"category": "player", "sounds": [{"name": "hbm:fhbm2_flesh", "stream": true}]}
 }

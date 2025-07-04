@@ -1,7 +1,7 @@
 package com.hbm.blocks;
 
 import com.hbm.fhbm2Scheduler;
-import com.hbm.fhbm2VCopperPigLobotomyCutscene;
+import com.hbm.fhbm2CopperPigLobotomyCutscene;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
@@ -254,30 +254,6 @@ public class fhbm2KabanStatue extends BlockBase {
         return Item.getItemFromBlock(this);
     }
 
-    public void copper_pig_bewitches_the_clueless_player(EntityPlayer player, World world, int x, int y, int z) {
-        if (fhbm2KabanTracker.isPlayerBewitched(player)) {
-            return;
-        }
-
-        fhbm2Scheduler.schedule(0 * 20, (event) -> {
-            fhbm2KabanTracker.setPlayerBewitched(player, true);
-            world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_copper_pig_bewitches_the_clueless_player, SoundCategory.HOSTILE, 35.0F, 1.0F);
-            player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 320, 49));
-        });
-
-        fhbm2Scheduler.schedule(6 * 20, (event) -> {
-            world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_copper_pig_scream, SoundCategory.HOSTILE, 35.0F, 1.0F);
-            player.addPotionEffect(new PotionEffect(MobEffects.LEVITATION, 60, 49));
-        });
-
-        fhbm2Scheduler.schedule(10 * 20, (event) -> {
-            world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_copper_pig_explosion, SoundCategory.HOSTILE, 35.0F, 1.0F);
-            player.addPotionEffect(new PotionEffect(MobEffects.INSTANT_DAMAGE, 1, 49));
-            player.attackEntityFrom(ModDamageSource.copper_pig, 40);
-            fhbm2KabanTracker.setPlayerBewitched(player, false);
-        });
-    }
-
     public void copper_pig_bewitches_the_clueless_player_and_makes_them_experience_very_bad_schizophrenic_hallucinations(EntityPlayer player, World world, int x, int y, int z) {
         if (fhbm2KabanTracker.isPlayerBewitched(player)) {
             return;
@@ -291,7 +267,7 @@ public class fhbm2KabanStatue extends BlockBase {
 
         fhbm2Scheduler.schedule(6 * 20, (event) -> {
             world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_lobotomy, SoundCategory.HOSTILE, 35.0F, 1.0F);
-            fhbm2VCopperPigLobotomyCutscene.startPlayback(player.getUniqueID());
+            fhbm2CopperPigLobotomyCutscene.startPlayback(player.getUniqueID());
         });
 
         fhbm2Scheduler.schedule(26 * 20, (event) -> {
