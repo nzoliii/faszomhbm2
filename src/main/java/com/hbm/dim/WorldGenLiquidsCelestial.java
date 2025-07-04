@@ -67,9 +67,9 @@ public class WorldGenLiquidsCelestial extends WorldGenerator {
 
 			if(l == 3 && i1 == 1) {
 				world.setBlockState(pos, this.liquidBlock.getDefaultState(), 2);
-				ObfuscationReflectionHelper.setPrivateValue(World.class, world, true, "field_72999_e");
+				world.scheduledUpdatesAreImmediate = true;
 				this.liquidBlock.updateTick(world, pos, liquidBlock.getDefaultState(), rand);
-				ObfuscationReflectionHelper.setPrivateValue(World.class, world, false, "field_72999_e");
+				world.scheduledUpdatesAreImmediate = false;
 			}
 
 			return true;

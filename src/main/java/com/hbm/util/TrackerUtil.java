@@ -8,9 +8,6 @@ import net.minecraft.util.IntHashMap;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
-import java.util.Map;
 
 /**
  * This absolute fucking mess of a class is the direct consequence of mojank's terrible entity tracker that allows for 0 flexibility with how entities are synced.
@@ -21,9 +18,8 @@ public class TrackerUtil {
     /** Grabs the tracker entry from the given entity */
     public static EntityTrackerEntry getTrackerEntry(WorldServer world, int entityId) {
         EntityTracker entitytracker = world.getEntityTracker();
-        IntHashMap entries = ObfuscationReflectionHelper.getPrivateValue(EntityTracker.class, entitytracker, "trackedEntityHashTable", "field_72794_c");
-        EntityTrackerEntry entry = (EntityTrackerEntry) entries.lookup(entityId);
-        return entry;
+        IntHashMap<EntityTrackerEntry> entries = entitytracker.trackedEntityHashTable;
+        return entries.lookup(entityId);
     }
     /** Force-teleports the given entity using the tracker, resetting the tick count to 0 to prevent movement during this tick */
     public static void sendTeleport(World world, Entity e) {

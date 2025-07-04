@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +11,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class DebugTeleporter extends Teleporter {
@@ -78,12 +76,9 @@ public class DebugTeleporter extends Teleporter {
 				nbttagcompound.removeTag("Dimension");
 				newEntity.readFromNBT(nbttagcompound);
 				newEntity.timeUntilPortal = ridingEntity.timeUntilPortal;
-				ObfuscationReflectionHelper.setPrivateValue(Entity.class, newEntity,
-						ObfuscationReflectionHelper.getPrivateValue(Entity.class, ridingEntity, "field_181016_an"), "field_181016_an");
-				ObfuscationReflectionHelper.setPrivateValue(Entity.class, newEntity,
-						ObfuscationReflectionHelper.getPrivateValue(Entity.class, ridingEntity, "field_181017_ao"), "field_181017_ao");
-				ObfuscationReflectionHelper.setPrivateValue(Entity.class, newEntity,
-						ObfuscationReflectionHelper.getPrivateValue(Entity.class, ridingEntity, "field_181018_ap"), "field_181018_ap");
+				newEntity.lastPortalPos = ridingEntity.lastPortalPos;
+				newEntity.lastPortalVec = ridingEntity.lastPortalVec;
+				newEntity.teleportDirection = ridingEntity.teleportDirection;
 				targetServer.spawnEntity(newEntity);
 			}
 

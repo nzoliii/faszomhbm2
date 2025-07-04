@@ -26,7 +26,6 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.*;
@@ -324,7 +323,8 @@ public class ChunkAtmosphereHandler {
 		for(Pair<ExplosionEvent.Detonate, List<ThreeInts>> pair : explosions) {
 			ExplosionEvent.Detonate event = pair.key;
 			ThreeInts explosion = new ThreeInts(MathHelper.floor(event.getExplosion().getExplosivePlacedBy().posX), MathHelper.floor(event.getExplosion().getExplosivePlacedBy().posY), MathHelper.floor(event.getExplosion().getExplosivePlacedBy().posZ));
-			List<AtmosphereBlob> nearbyBlobs = getBlobsWithinRadius(event.getWorld(), explosion, MAX_BLOB_RADIUS + MathHelper.ceil(getExplosionSize(event.getExplosion())));
+			Explosion explosion1 = event.getExplosion();
+			List<AtmosphereBlob> nearbyBlobs = getBlobsWithinRadius(event.getWorld(), explosion, MAX_BLOB_RADIUS + MathHelper.ceil(explosion1.size));
 	
 			for(ThreeInts pos : pair.value) {
 				if(nearbyBlobs.size() == 0) break;
@@ -346,9 +346,4 @@ public class ChunkAtmosphereHandler {
 
 		explosions.clear();
 	}
-
-	public static float getExplosionSize(Explosion explosion) {
-		return ObfuscationReflectionHelper.getPrivateValue(Explosion.class, explosion, "size");
-	}
-	
 }

@@ -12,7 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,19 +32,19 @@ public class CompatExternal {
      * This method will be updated in the event that other multiblock systems or dummies are added to retrain the intended functionality.
      * @return the core tile entity if the given position holds a dummy, the tile entity at that position if it doesn't or null if there is no tile entity
      */
+    @Nullable
     public static TileEntity getCoreFromPos(IBlockAccess world, BlockPos pos) {
 
         Block b = world.getBlockState(pos).getBlock();
 
         //if the block at that pos is a Dummyable, use the mk2's system to find the core
-        if(b instanceof BlockDummyable) {
-            BlockDummyable dummy = (BlockDummyable) b;
+        if(b instanceof BlockDummyable dummy) {
             int[] pos1 = dummy.findCore(world, pos.getX(), pos.getY(), pos.getZ());
 
             if(pos1 != null) {
                 return world.getTileEntity(new BlockPos(pos1[0], pos1[1], pos1[2]));
             }
-        }
+        }//  else MainRegistry.logger.info("{} is not instance of BlockDummyable", b.getClass().getSimpleName());
 
         TileEntity tile = world.getTileEntity(pos);
 

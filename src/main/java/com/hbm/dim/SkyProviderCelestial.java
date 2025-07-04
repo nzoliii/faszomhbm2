@@ -1,14 +1,12 @@
 package com.hbm.dim;
 
 import com.hbm.render.Shader;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.saveddata.satellites.SatelliteSavedData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -17,8 +15,6 @@ import net.minecraftforge.client.IRenderHandler;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.lwjgl.opengl.GL11;
 
 import com.hbm.dim.SolarSystem.AstroMetric;
@@ -34,15 +30,12 @@ public class SkyProviderCelestial extends IRenderHandler {
 	private static final ResourceLocation planetTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/planet.png");
 	private static final ResourceLocation flareTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/sunspike.png");
 	private static final ResourceLocation nightTexture = new ResourceLocation(RefStrings.MODID, "textures/misc/space/night.png");
-	private static final ResourceLocation digammaStar = new ResourceLocation(RefStrings.MODID, "textures/misc/space/star_digamma.png");
+	private static final ResourceLocation digammaStar = new ResourceLocation(RefStrings.MODID, "textures/misc/space/fhbm2_digamma_portal.png");
 
 	private static final ResourceLocation noise = new ResourceLocation(RefStrings.MODID, "shaders/iChannel1.png");
 
 	protected static final Shader planetShader = new Shader(new ResourceLocation(RefStrings.MODID, "shaders/crescent.frag"));
 	protected static final Shader swarmShader = new Shader(new ResourceLocation(RefStrings.MODID, "shaders/swarm.vert"), new ResourceLocation(RefStrings.MODID, "shaders/swarm.frag"));
-
-	private static final String[] GL_SKY_LIST = new String[] { "glSkyList", "field_72771_w", "G" };
-	private static final String[] GL_SKY_LIST2 = new String[] { "glSkyList2", "field_72781_x", "H" };
 
 	public static boolean displayListsInitialized = false;
 	public static int skyVBO;
@@ -56,8 +49,8 @@ public class SkyProviderCelestial extends IRenderHandler {
 
 	private void initializeDisplayLists() {
 		Minecraft mc = Minecraft.getMinecraft();
-		skyVBO = ReflectionHelper.getPrivateValue(RenderGlobal.class, mc.renderGlobal, GL_SKY_LIST);
-		sky2VBO = ReflectionHelper.getPrivateValue(RenderGlobal.class, mc.renderGlobal, GL_SKY_LIST2);
+		skyVBO = mc.renderGlobal.glSkyList;
+		sky2VBO = mc.renderGlobal.glSkyList2;
 
 		displayListsInitialized = true;
 	}
@@ -69,8 +62,8 @@ public class SkyProviderCelestial extends IRenderHandler {
 		float fogIntensity = 0;
 
 		if(world.provider instanceof WorldProviderCelestial) {
-			DynamicTexture lightmapTexture = ObfuscationReflectionHelper.getPrivateValue(EntityRenderer.class, mc.entityRenderer, "field_78513_d");
-			int[] lightmapColors = ObfuscationReflectionHelper.getPrivateValue(EntityRenderer.class, mc.entityRenderer, "field_78504_Q");
+			DynamicTexture lightmapTexture = mc.entityRenderer.lightmapTexture;
+			int[] lightmapColors = mc.entityRenderer.lightmapColors;
 			// Without mixins, we have to resort to some very wacky ways of checking that the lightmap needs to be updated
 			// fortunately, thanks to torch flickering, we can just check to see if the brightest pixel has been modified
 			if(lastBrightestPixel != lightmapColors[255] + lightmapColors[250]) {
@@ -680,7 +673,7 @@ public class SkyProviderCelestial extends IRenderHandler {
 
 			float brightness = (float) Math.sin(celestialAngle * Math.PI);
 			brightness *= brightness;
-			GlStateManager.color(brightness, brightness, brightness, brightness);
+			GlStateManager.color(brightness, brightness, brightness, 1.0F);
 			GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
 			GlStateManager.rotate(celestialAngle * 360.0F, 1.0F, 0.0F, 0.0F);
 			GlStateManager.rotate(140.0F, 1.0F, 0.0F, 0.0F);
@@ -690,7 +683,7 @@ public class SkyProviderCelestial extends IRenderHandler {
 
 			float digamma = HbmLivingProps.getDigamma(Minecraft.getMinecraft().player);
 			float var12 = 1F * (1 + digamma * 0.25F);
-			double dist = 100D - digamma * 2.5;
+			double dist = 25D - digamma * 2.5;
 
 			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 			bufferBuilder.pos(-var12, dist, -var12).tex(0.0D, 0.0D).endVertex();

@@ -10,7 +10,6 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.AnimationFrame;
 import net.minecraft.client.resources.data.AnimationMetadataSection;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.compress.utils.IOUtils;
@@ -18,7 +17,6 @@ import org.apache.commons.compress.utils.IOUtils;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Function;
 
@@ -76,7 +74,7 @@ public class TextureAtlasSpriteMutatable extends TextureAtlasSprite {
                     this.framesTextureData.set(frameIndex, getFrameTextureData(frameData, this.width, this.width, frameIndex));
                 }
 
-                this.setAnimationMetadata(animationMetadataSection);
+                this.animationMetadata = animationMetadataSection;
             } else {
                 List<AnimationFrame> frames = Lists.newArrayList();
 
@@ -85,7 +83,7 @@ public class TextureAtlasSpriteMutatable extends TextureAtlasSprite {
                     frames.add(new AnimationFrame(i, -1));
                 }
 
-                this.setAnimationMetadata(new AnimationMetadataSection(frames, this.width, this.height, animationMetadataSection.getFrameTime(), animationMetadataSection.isInterpolate()));;
+                this.animationMetadata = new AnimationMetadataSection(frames, this.width, this.height, animationMetadataSection.getFrameTime(), animationMetadataSection.isInterpolate());
             }
         }
     }
@@ -144,17 +142,6 @@ public class TextureAtlasSpriteMutatable extends TextureAtlasSprite {
     //whatever the fuck this is
     private ResourceLocation completeResourceLocation(ResourceLocation loc) {
         return new ResourceLocation(loc.getNamespace(), String.format("%s/%s%s", new Object[] { this.basePath, loc.getPath(), ".png" }));
-    }
-
-    //yeah yeah, at least that should work
-    private void setAnimationMetadata(AnimationMetadataSection metadata) {
-        try {
-            Field field = ReflectionHelper.findField(TextureAtlasSprite.class, "animationMetadata", "field_110982_k");
-            field.setAccessible(true);
-            field.set(this, metadata);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Failed to set animation metadata", e);
-        }
     }
 
     private void allocateFrameTextureData(int index)

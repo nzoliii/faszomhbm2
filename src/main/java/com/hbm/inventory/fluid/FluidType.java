@@ -25,13 +25,13 @@ import java.util.Locale;
 public class FluidType {
 
 	//The numeric ID of the fluid
-	private int id;
+	private final int id;
 	//The internal name
-	private String stringId;
+	private final String stringId;
 	//Approximate HEX Color of the fluid, used for pipe rendering
-	private int color;
+	private final int color;
 	//Unlocalized string ID of the fluid
-	private String unlocalized;
+	private final String unlocalized;
 	//localization override for custom fluids
 	private String localizedOverride;
 	public NBTTagCompound tag;
@@ -42,19 +42,21 @@ public class FluidType {
 	public int reactivity;
 	public EnumSymbol symbol;
 	public boolean customFluid = false;
-	
+	public boolean ffBan = false;
+
 	public static final int ROOM_TEMPERATURE = 20;
 	
 	// v v v this entire system is a pain in the ass to work with. i'd much rather define state transitions and heat values manually.
 	/** How hot this fluid is. Simple enough. */
 	public int temperature = ROOM_TEMPERATURE;
 	
-	public HashMap<Class, Object> containers = new HashMap();
-	public HashMap<Class<? extends FluidTrait>, FluidTrait> traits = new HashMap();
+	public HashMap<Class, Object> containers = new HashMap<>();
+	public HashMap<Class<? extends FluidTrait>, FluidTrait> traits = new HashMap<>();
 	//public List<EnumFluidTrait> enumTraits = new ArrayList();
 	
-	private ResourceLocation texture;
-	
+	private final ResourceLocation texture;
+	private String ffNameOverride;
+
 	public FluidType(String name, int color, int p, int f, int r, EnumSymbol symbol) {
 		this.stringId = name;
 		this.color = color;
@@ -97,7 +99,12 @@ public class FluidType {
 		this.temperature = temperature;
 		return this;
 	}
-	
+
+	public FluidType noFF(boolean bool) {
+		this.ffBan = bool;
+		return this;
+	}
+
 	public FluidType addContainers(Object... containers) {
 		for(Object container : containers) this.containers.put(container.getClass(), container);
 		return this;
@@ -109,6 +116,10 @@ public class FluidType {
 	
 	public FluidType addTraits(FluidTrait... traits) {
 		for(FluidTrait trait : traits) this.traits.put(trait.getClass(), trait);
+		return this;
+	}
+	public FluidType setFFNameOverride(String override){
+		this.ffNameOverride = override;
 		return this;
 	}
 	
@@ -123,7 +134,7 @@ public class FluidType {
 	public int getID() {
 		return this.id;
 	}
-	/** The unique mapping name for this fluid, usually matches the unlocalied name, minus the prefix */
+	/** The unique mapping name for this fluid, usually matches the unlocalized name, minus the prefix */
 	public String getName() {
 		return this.stringId;
 	}
@@ -177,6 +188,11 @@ public class FluidType {
 		return !(this.traits.containsKey(FluidTraitSimple.FT_Amat.class) || this.traits.containsKey(FluidTraitSimple.FT_NoContainer.class) || this.traits.containsKey(FluidTraitSimple.FT_Viscous.class));
 	}
 
+
+	public String getFFName(){
+		return ffNameOverride == null ? stringId.toLowerCase(Locale.US) : ffNameOverride;
+	}
+
 	/**
 	 * Called when the tile entity is broken, effectively voiding the fluids.
 	 * @param te
@@ -212,7 +228,7 @@ public class FluidType {
 		
 		boolean shiftHeld = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 		
-		List<String> hidden = new ArrayList();
+		List<String> hidden = new ArrayList<>();
 		
 		for(Class<? extends FluidTrait> clazz : FluidTrait.traitList) {
 			FluidTrait trait = this.getTrait(clazz);
@@ -233,7 +249,7 @@ public class FluidType {
 
 		boolean shiftHeld = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
-		List<String> hidden = new ArrayList();
+		List<String> hidden = new ArrayList<>();
 
 		for(Class<? extends FluidTrait> clazz : FluidTrait.traitList) {
 			FluidTrait trait = this.getTrait(clazz);
