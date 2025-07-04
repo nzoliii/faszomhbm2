@@ -55,7 +55,7 @@ public class FluidLoaderStandard implements IFluidLoadingHandler {
 		if (amount <= 0) return false;
 		boolean canAccept = (tank.getTankType() == Fluids.NONE) || (tank.getTankType() == itemFluidType);
 		if (!canAccept) return false;
-		if (tank.getFill() + amount > tank.getMaxFill()) return true;
+		if (tank.getFill() + amount > tank.getMaxFill()) return false;
 
 		ItemStack emptyContainer = FluidContainerRegistry.getEmptyContainer(inputStack);
 		ItemStack outputStack = slots.getStackInSlot(out);

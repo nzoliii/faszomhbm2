@@ -7,20 +7,23 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class ItemFluidContainerInfinite extends Item {
 
-	private FluidType type;
-	private int amount;
-	private int chance;
+	@Nullable
+	private final FluidType type;
+	private final int amount;
+	private final int chance;
 
-	public ItemFluidContainerInfinite(FluidType type, int amount, String s) {
+	public ItemFluidContainerInfinite(@Nullable FluidType type, int amount, String s) {
 		this(type, amount, 1, s);
 	}
 	
-	public ItemFluidContainerInfinite(FluidType type, int amount, int chance, String s) {
+	public ItemFluidContainerInfinite(@Nullable FluidType type, int amount, int chance, String s) {
 		this.setTranslationKey(s);
 		this.setRegistryName(s);
 		this.type = type;
@@ -31,11 +34,12 @@ public class ItemFluidContainerInfinite extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flagIn){
+	public void addInformation(@NotNull ItemStack stack, World world, @NotNull List<String> list, @NotNull ITooltipFlag flagIn){
 		super.addInformation(stack, world, list, flagIn);
 		list.add(I18nUtil.resolveKey("desc.canisterinfinite", amount * 0.02F));
 	}
 
+	@Nullable
 	public FluidType getType() { return this.type; }
 	public int getAmount() { return this.amount; }
 	public int getChance() { return this.chance; }
