@@ -41,12 +41,14 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MachineFluidTank extends BlockDummyable implements IPersistentInfoProvider, IToolable, ILookOverlay {
-	
+	private static final ThreadLocal<List<ItemStack>> HARVEST_DROPS = new ThreadLocal<>();
 	public MachineFluidTank(Material materialIn, String s) {
 		super(materialIn, s);
 	}
@@ -126,8 +128,20 @@ public class MachineFluidTank extends BlockDummyable implements IPersistentInfoP
 	}
 
 	@Override
-	public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
-		return IPersistentNBT.getDrops(world, pos, this);
+	public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest) {
+		if (willHarvest) {
+			ArrayList<ItemStack> drops = IPersistentNBT.getDrops(world, pos, this);
+			HARVEST_DROPS.set(drops);
+		}
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
+	@NotNull
+	@Override
+	public List<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
+		List<ItemStack> drops = HARVEST_DROPS.get();
+		HARVEST_DROPS.remove();
+		return drops == null ? new ArrayList<>() : (ArrayList<ItemStack>) drops;
 	}
 
 	@Override

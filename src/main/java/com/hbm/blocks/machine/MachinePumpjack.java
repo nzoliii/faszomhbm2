@@ -26,10 +26,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MachinePumpjack extends BlockDummyable implements IPersistentInfoProvider {
-
+	private static final ThreadLocal<List<ItemStack>> HARVEST_DROPS = new ThreadLocal<>();
 	public MachinePumpjack(Material materialIn, String s) {
 		super(materialIn, s);
 	}
@@ -90,8 +91,20 @@ public class MachinePumpjack extends BlockDummyable implements IPersistentInfoPr
 	}
 
 	@Override
-	public @NotNull List<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
-		return IPersistentNBT.getDrops(world, pos, this);
+	public boolean removedByPlayer(@NotNull IBlockState state, World world, @NotNull BlockPos pos, @NotNull EntityPlayer player, boolean willHarvest) {
+		if (willHarvest) {
+			ArrayList<ItemStack> drops = IPersistentNBT.getDrops(world, pos, this);
+			HARVEST_DROPS.set(drops);
+		}
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+	}
+
+	@NotNull
+	@Override
+	public List<ItemStack> getDrops(@NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull IBlockState state, int fortune) {
+		List<ItemStack> drops = HARVEST_DROPS.get();
+		HARVEST_DROPS.remove();
+		return drops == null ? new ArrayList<>() : (ArrayList<ItemStack>) drops;
 	}
 
 	@Override
