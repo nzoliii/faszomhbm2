@@ -1,8 +1,9 @@
 package com.hbm.packet;
 
+import com.hbm.main.MainRegistry;
+import com.hbm.packet.threading.PrecompiledPacket;
 import com.hbm.tileentity.IBufPacketReceiver;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -10,14 +11,13 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class BufPacket implements IMessage {
+public class BufPacket extends PrecompiledPacket {
 
     int x;
     int y;
     int z;
     IBufPacketReceiver rec;
     ByteBuf buf;
-    byte[] data;
 
     public BufPacket() { }
 
@@ -33,11 +33,7 @@ public class BufPacket implements IMessage {
         this.x = buf.readInt();
         this.y = buf.readInt();
         this.z = buf.readInt();
-        int length = buf.readableBytes();
-        if (length > 0) {
-            data = new byte[length];
-            buf.readBytes(data);
-        }
+        this.buf = buf;
     }
 
     @Override
@@ -45,10 +41,7 @@ public class BufPacket implements IMessage {
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
-        ByteBuf tempBuf = Unpooled.buffer();
-        this.rec.serialize(tempBuf);
-        buf.writeBytes(tempBuf);
-        tempBuf.release();
+        this.rec.serialize(buf);
     }
 
     public static class Handler implements IMessageHandler<BufPacket, IMessage> {
@@ -62,11 +55,14 @@ public class BufPacket implements IMessage {
             TileEntity te = Minecraft.getMinecraft().world.getTileEntity(new BlockPos(m.x, m.y, m.z));
 
             if(te instanceof IBufPacketReceiver) {
-                ByteBuf buf = Unpooled.wrappedBuffer(m.data);
                 try {
-                    ((IBufPacketReceiver) te).deserialize(buf);
+                    ((IBufPacketReceiver) te).deserialize(m.buf);
+                }  catch(Exception e) { // just in case I fucked up
+                    MainRegistry.logger.warn("A ByteBuf packet failed to be read and has thrown an error. This normally means that there was a buffer underflow and more data was read than was actually in the packet.");
+                    MainRegistry.logger.warn("Tile: {}", te.getBlockType().getTranslationKey());
+                    MainRegistry.logger.warn(e.getMessage());
                 } finally {
-                    buf.release();
+                    m.buf.release();
                 }
             }
 

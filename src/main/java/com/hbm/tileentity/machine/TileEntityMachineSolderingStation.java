@@ -3,6 +3,7 @@ package com.hbm.tileentity.machine;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.UpgradeManager;
@@ -18,7 +19,6 @@ import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.IUpgradeInfoProvider;
@@ -181,7 +181,7 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
             NBTTagCompound dPart = new NBTTagCompound();
             dPart.setString("type", "tau");
             dPart.setByte("count", (byte) 3);
-            PacketDispatcher.wrapper.sendToAllAround(
+            PacketThreading.createAllAroundThreadedPacket(
                 new AuxParticlePacketNT(
                     dPart,
                     pos.getX() + 0.5 - dir.offsetX * 0.5 + rot.offsetX * 0.5,

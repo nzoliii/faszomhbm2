@@ -2,6 +2,7 @@ package com.hbm.tileentity.turret;
 
 import com.hbm.entity.projectile.EntityArtilleryShell;
 import com.hbm.handler.CasingEjector;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.container.ContainerTurretBase;
 import com.hbm.inventory.gui.GUITurretArty;
 import com.hbm.items.ModItems;
@@ -10,7 +11,6 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
 import net.minecraft.client.gui.GuiScreen;
@@ -375,7 +375,7 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
                 data.setString("mode", "largeexplode");
                 data.setFloat("size", 0F);
                 data.setByte("count", (byte)5);
-                PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.xCoord + vec.xCoord, pos.yCoord + vec.yCoord, pos.zCoord + vec.zCoord), new TargetPoint(world.provider.getDimension(), pos.xCoord, pos.yCoord, pos.zCoord, 150));
+                PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.xCoord + vec.xCoord, pos.yCoord + vec.yCoord, pos.zCoord + vec.zCoord), new TargetPoint(world.provider.getDimension(), pos.xCoord, pos.yCoord, pos.zCoord, 150));
             }
 
             if(this.mode == this.MODE_MANUAL && !this.targetQueue.isEmpty()) {
@@ -456,7 +456,7 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
         data.setBoolean("crouched", false);
         data.setString("name", cachedCasingConfig.getName());
         if(ej != null) data.setInteger("ej", ej.getId());
-        PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, spawn.x, spawn.y, spawn.z), new TargetPoint(world.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 50));
+        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, spawn.x, spawn.y, spawn.z), new TargetPoint(world.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 50));
 
         cachedCasingConfig = null;
     }

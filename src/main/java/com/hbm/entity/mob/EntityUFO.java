@@ -4,13 +4,13 @@ import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IRadiationImmune;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.AdvancementManager;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
@@ -225,8 +225,8 @@ public class EntityUFO extends EntityFlying implements IMob, IRadiationImmune {
 					
 					NBTTagCompound data = new NBTTagCompound();
 					data.setString("type", "ufo");
-					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, posX, iy + 0.5, posZ),  new TargetPoint(dimension, posX, iy + 0.5, posZ, 150));
-					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, posX + this.motionX * 0.5, iy + 0.5, posZ + this.motionZ * 0.5),  new TargetPoint(dimension, posX + this.motionX * 0.5, iy + 0.5, posZ + this.motionZ * 0.5, 150));
+					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, posX, iy + 0.5, posZ),  new TargetPoint(dimension, posX, iy + 0.5, posZ, 150));
+					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, posX + this.motionX * 0.5, iy + 0.5, posZ + this.motionZ * 0.5),  new TargetPoint(dimension, posX + this.motionX * 0.5, iy + 0.5, posZ + this.motionZ * 0.5, 150));
 				}
 			}
 			

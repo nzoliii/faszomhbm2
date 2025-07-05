@@ -3,13 +3,13 @@ package com.hbm.tileentity.machine;
 import api.hbm.tile.IHeatSource;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.entity.projectile.EntitySawblade;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ItemStackUtil;
@@ -107,7 +107,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
                             data.setDouble("motion", 0.1D);
                             data.setString("mode", "blockdust");
                             data.setInteger("block", Block.getIdFromBlock(Blocks.REDSTONE_BLOCK));
-                            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, e.posX, e.posY + e.height * 0.5, e.posZ), new NetworkRegistry.TargetPoint(e.dimension, e.posX, e.posY, e.posZ, 50));
+                            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, e.posX, e.posY + e.height * 0.5, e.posZ), new NetworkRegistry.TargetPoint(e.dimension, e.posX, e.posY, e.posZ, 50));
                         }
                     }
 

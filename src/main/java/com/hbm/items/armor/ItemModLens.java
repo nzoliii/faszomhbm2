@@ -2,10 +2,10 @@ package com.hbm.items.armor;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.ArmorModHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.items.ISatChip;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.saveddata.satellites.Satellite;
 import com.hbm.saveddata.satellites.SatelliteSavedData;
 import com.hbm.saveddata.satellites.SatelliteScanner;
@@ -114,7 +114,7 @@ public class ItemModLens extends ItemArmorMod implements ISatChip {
             data.setInteger("expires", 15_000);
             data.setDouble("dist", 300D);
             if(label != null) data.setString("label", label);
-            PacketDispatcher.wrapper.sendTo(new AuxParticlePacketNT(data, x, y, z), player);
+            PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(data, x, y, z), player);
             return true;
         }
 

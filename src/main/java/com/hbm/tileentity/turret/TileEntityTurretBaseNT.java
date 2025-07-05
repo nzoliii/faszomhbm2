@@ -10,6 +10,7 @@ import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.CasingEjector;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.control_panel.ControlEvent;
 import com.hbm.inventory.control_panel.ControlEventSystem;
@@ -20,7 +21,6 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.SpentCasing;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -905,7 +905,7 @@ public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase imple
 		data.setBoolean("crouched", false);
 		data.setString("name", cachedCasingConfig.getName());
 		if(ej != null) data.setInteger("ej", ej.getId());
-		PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, spawn.x, spawn.y, spawn.z), new TargetPoint(world.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 50));
+		PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, spawn.x, spawn.y, spawn.z), new TargetPoint(world.provider.getDimension(), getPos().getX(), getPos().getY(), getPos().getZ(), 50));
 
 		cachedCasingConfig = null;
 	}

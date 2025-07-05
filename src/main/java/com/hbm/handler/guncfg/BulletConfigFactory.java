@@ -1,33 +1,29 @@
 package com.hbm.handler.guncfg;
 
-import java.util.List;
-import java.util.Random;
-
 import com.hbm.config.CompatibilityConfig;
-import com.hbm.entity.particle.EntityBSmokeFX;
-import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
+import com.hbm.entity.particle.EntityBSmokeFX;
+import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
-import com.hbm.util.ArmorRegistry;
-import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.potion.HbmPotion;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.util.ArmorRegistry;
+import com.hbm.util.ArmorRegistry.HazardClass;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,6 +31,9 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import java.util.List;
+import java.util.Random;
 
 public class BulletConfigFactory {
 
@@ -308,12 +307,12 @@ public class BulletConfigFactory {
 				data.setString("mode", "flame");
 				data.setInteger("count", count);
 				data.setDouble("motion", motion);
-				
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
+
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
 				if(bullet.world.rand.nextFloat() < hazeChance) {
 					NBTTagCompound haze = new NBTTagCompound();
 					haze.setString("type", "haze");
-					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(haze, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 150));
+					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(haze, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 150));
 				}
 			}
 		};
@@ -363,8 +362,8 @@ public class BulletConfigFactory {
 				data.setString("mode", "cloud");
 				data.setInteger("count", 15);
 				data.setDouble("motion", 0.1D);
-				
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
+
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(bullet.dimension, bullet.posX, bullet.posY, bullet.posZ, 50));
 			}
 		};
 		

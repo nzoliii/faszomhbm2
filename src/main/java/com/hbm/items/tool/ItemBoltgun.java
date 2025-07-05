@@ -3,7 +3,7 @@ package com.hbm.items.tool;
 import api.hbm.block.IToolable;
 import api.hbm.block.IToolable.ToolType;
 import com.hbm.handler.NTMToolHandler;
-import com.hbm.inventory.RecipesCommon;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.IAnimatedItem;
 import com.hbm.items.ModItems;
@@ -12,7 +12,6 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.anim.BusAnimation;
 import com.hbm.render.anim.BusAnimationKeyframe;
 import com.hbm.render.anim.BusAnimationSequence;
@@ -33,12 +32,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import static com.hbm.inventory.RecipesCommon.*;
 import static com.hbm.inventory.RecipesCommon.AStack;
+import static com.hbm.inventory.RecipesCommon.MetaBlock;
 
 public class ItemBoltgun extends Item implements IAnimatedItem {
 
@@ -83,7 +83,7 @@ public class ItemBoltgun extends Item implements IAnimatedItem {
                             data.setString("mode", "largeexplode");
                             data.setFloat("size", 1F);
                             data.setByte("count", (byte) 1);
-                            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, entity.posX, entity.posY + entity.height / 2 - entity.getYOffset(), entity.posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), entity.posX, entity.posY, entity.posZ, 50));
+                            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, entity.posX, entity.posY + entity.height / 2 - entity.getYOffset(), entity.posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), entity.posX, entity.posY, entity.posZ, 50));
                         } else {
                             // doing this on the client outright removes the packet delay and makes the animation silky-smooth
                             NBTTagCompound d0 = new NBTTagCompound();
@@ -144,12 +144,12 @@ public class ItemBoltgun extends Item implements IAnimatedItem {
         data.setString("mode", "largeexplode");
         data.setFloat("size", 1F);
         data.setByte("count", (byte) 1);
-        PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + hitX + dir.offsetX * off, pos.getY() + hitY + dir.offsetY * off, pos.getZ() + hitZ + dir.offsetZ * off), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50));
+        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + hitX + dir.offsetX * off, pos.getY() + hitY + dir.offsetY * off, pos.getZ() + hitZ + dir.offsetZ * off), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50));
 
         NBTTagCompound d0 = new NBTTagCompound();
         d0.setString("type", "anim");
         d0.setString("mode", "generic");
-        PacketDispatcher.wrapper.sendTo(new AuxParticlePacketNT(d0, 0, 0, 0), (EntityPlayerMP) player);
+        PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(d0, 0, 0, 0), (EntityPlayerMP) player);
     }
 
     @Override

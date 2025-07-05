@@ -10,12 +10,12 @@ import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.standard.*;
 import com.hbm.handler.pollution.PollutionHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.SpentCasing;
 import com.hbm.potion.HbmPotion;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -35,7 +35,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -228,7 +227,7 @@ public class ItemAmmoArty extends Item {
         data.setFloat("g", 1.0F);
         data.setFloat("b", 1.0F);
         data.setFloat("scale", 50F);
-        PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, shell.posX, shell.posY, shell.posZ),
+        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, shell.posX, shell.posY, shell.posZ),
                 new NetworkRegistry.TargetPoint(shell.dimension, shell.posX, shell.posY, shell.posZ, 500));
 
         for(int i = 0; i < amount; i++) {
@@ -288,12 +287,12 @@ public class ItemAmmoArty extends Item {
                 for(int i = 0; i < 5; i++) {
                     NBTTagCompound haze = new NBTTagCompound();
                     haze.setString("type", "haze");
-                    PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(haze, mop.hitVec.x + shell.world.rand.nextGaussian() * 10, mop.hitVec.y, mop.hitVec.z + shell.world.rand.nextGaussian() * 10), new NetworkRegistry.TargetPoint(shell.dimension, shell.posX, shell.posY, shell.posZ, 150));
+                    PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(haze, mop.hitVec.x + shell.world.rand.nextGaussian() * 10, mop.hitVec.y, mop.hitVec.z + shell.world.rand.nextGaussian() * 10), new NetworkRegistry.TargetPoint(shell.dimension, shell.posX, shell.posY, shell.posZ, 150));
                 }
                 NBTTagCompound data = new NBTTagCompound();
                 data.setString("type", "rbmkmush");
                 data.setFloat("scale", 10);
-                PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z), new NetworkRegistry.TargetPoint(shell.dimension, shell.posX, shell.posY, shell.posZ, 250));
+                PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z), new NetworkRegistry.TargetPoint(shell.dimension, shell.posX, shell.posY, shell.posZ, 250));
             }
         };
 

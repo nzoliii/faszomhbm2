@@ -8,11 +8,11 @@ import com.hbm.explosion.ExplosionDrying;
 import com.hbm.explosion.ExplosionFleija;
 import com.hbm.explosion.ExplosionNukeAdvanced;
 import com.hbm.explosion.ExplosionSolinium;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.ContaminationUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
@@ -277,7 +277,7 @@ public class EntityNukeExplosionMK3 extends Entity implements IChunkLoader {
 		data.setFloat("g", g);
 		data.setFloat("b", b);
 		data.setFloat("scale", 7.5F);
-		PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x+0.5D, y+0.5D, z+0.5D), new TargetPoint(dim, x, y, z, 150));
+		PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x+0.5D, y+0.5D, z+0.5D), new TargetPoint(dim, x, y, z, 150));
 	}
 
 	public static boolean isJammed(World world, Entity entity) {

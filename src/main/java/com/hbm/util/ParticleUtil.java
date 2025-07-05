@@ -1,8 +1,8 @@
 package com.hbm.util;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -25,7 +25,7 @@ public class ParticleUtil {
 			data.setDouble("posZ", z);
 			MainRegistry.proxy.effectNT(data);
 		} else {
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 		}
 	}
 	// what in the actual fuck
@@ -41,7 +41,7 @@ public class ParticleUtil {
 			data.setDouble("posZ", z);
 			MainRegistry.proxy.effectNT(data);
 		} else {
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 		}
 		}
 	}
@@ -60,7 +60,7 @@ public class ParticleUtil {
 			data.setDouble("posZ", z);
 			MainRegistry.proxy.effectNT(data);
 		} else {
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class ParticleUtil {
 				data.setDouble("posZ", z);
 				MainRegistry.proxy.effectNT(data);
 			} else {
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 			}
 		}	
 	}
@@ -93,7 +93,7 @@ public class ParticleUtil {
 			data.setDouble("posZ", z);
 			MainRegistry.proxy.effectNT(data);
 		} else {
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 		}
 	}
 	public static void spawnNFlame(World world, double x, double y, double z, double mX, double mY, double mZ) {
@@ -112,7 +112,7 @@ public class ParticleUtil {
 			data.setDouble("posZ", z);
 			MainRegistry.proxy.effectNT(data);
 		} else {
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x, y, z), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, 150));
 		}
 	}
 }

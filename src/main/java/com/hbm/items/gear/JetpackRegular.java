@@ -3,6 +3,7 @@ package com.hbm.items.gear;
 import com.hbm.capability.HbmCapability;
 import com.hbm.capability.HbmCapability.IHBMData;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.items.armor.JetpackBase;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
@@ -62,7 +63,7 @@ public class JetpackRegular extends JetpackBase {
 				NBTTagCompound data = new NBTTagCompound();
 				data.setString("type", "jetpack");
 				data.setInteger("player", player.getEntityId());
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, player.posX, player.posY, player.posZ), new TargetPoint(world.provider.getDimension(), player.posX, player.posY, player.posZ, 100));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, player.posX, player.posY, player.posZ), new TargetPoint(world.provider.getDimension(), player.posX, player.posY, player.posZ, 100));
 			}
 		}
 		if(getFuel(stack) > 0 && props.getKeyPressed(EnumKeybind.JETPACK) && props.isJetpackActive()) {

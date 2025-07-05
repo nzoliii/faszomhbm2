@@ -6,6 +6,7 @@ import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.FluidCombustionRecipes;
 import com.hbm.inventory.fluid.Fluids;
@@ -16,7 +17,6 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IFluidCopiable;
 import net.minecraft.nbt.NBTTagCompound;
@@ -109,7 +109,7 @@ public class TileEntityTurretFritz extends TileEntityTurretBaseNT implements IFl
 			data.setString("mode", "flame");
 			data.setInteger("count", 2);
 			data.setDouble("motion", 0.025D);
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.x + vec.xCoord, pos.y + vec.yCoord, pos.z + vec.zCoord), new TargetPoint(world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 50));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.x + vec.xCoord, pos.y + vec.yCoord, pos.z + vec.zCoord), new TargetPoint(world.provider.getDimension(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), 50));
 		}
 	}
 	

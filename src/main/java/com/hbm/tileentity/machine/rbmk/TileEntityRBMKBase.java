@@ -9,6 +9,7 @@ import com.hbm.config.MachineConfig;
 import com.hbm.entity.effect.EntitySpear;
 import com.hbm.entity.projectile.EntityRBMKDebris;
 import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.control_panel.ControlEventSystem;
 import com.hbm.inventory.control_panel.DataValue;
 import com.hbm.inventory.control_panel.DataValueFloat;
@@ -542,7 +543,7 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements
 		NBTTagCompound data = new NBTTagCompound();
 		data.setString("type", "rbmkmush");
 		data.setFloat("scale", smallDim);
-		PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, avgX + 0.5, pos.getY() + TileEntityRBMKBase.rbmkHeight, avgZ + 0.5), new TargetPoint(world.provider.getDimension(), avgX + 0.5, pos.getY() + TileEntityRBMKBase.rbmkHeight, avgZ + 0.5, 250));
+		PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, avgX + 0.5, pos.getY() + TileEntityRBMKBase.rbmkHeight, avgZ + 0.5), new TargetPoint(world.provider.getDimension(), avgX + 0.5, pos.getY() + TileEntityRBMKBase.rbmkHeight, avgZ + 0.5, 250));
 		MainRegistry.proxy.effectNT(data);
 		
 		world.playSound(null, avgX + 0.5, pos.getY() + TileEntityRBMKBase.rbmkHeight>>1, avgZ + 0.5, HBMSoundHandler.rbmk_explosion, SoundCategory.BLOCKS, 50.0F, 1.0F);

@@ -3,6 +3,7 @@ package com.hbm.items.weapon;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.hbm.config.GeneralConfig;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IPostRender;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.ModEventHandlerClient;
@@ -60,7 +61,7 @@ public class ItemCrucible extends ItemSwordCutter implements IPostRender {
 		tag.setString("mode", "crucible_loop");
 		tag.setInteger("playerId", player.getEntityId());
 		PacketDispatcher.wrapper.sendToAllTracking(new AuxParticlePacketNT(tag, 0, 0, 0), player);
-		PacketDispatcher.sendTo(new AuxParticlePacketNT(tag, 0, 0, 0), (EntityPlayerMP) player);
+		PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(tag, 0, 0, 0), (EntityPlayerMP) player);
 		//world.playSound(null, player.posX, player.posY, player.posZ, HBMSoundHandler.cDeploy, SoundCategory.PLAYERS, 1.0F, 1.0F);
 	}
 	
@@ -85,7 +86,7 @@ public class ItemCrucible extends ItemSwordCutter implements IPostRender {
 			nbt.setInteger("hand", hand.ordinal());
 			nbt.setString("mode", "cSwing");
 			nbt.setString("name", this.getRegistryName().getPath());
-			PacketDispatcher.wrapper.sendTo(new AuxParticlePacketNT(nbt, 0, 0, 0), (EntityPlayerMP)entityLiving);
+			PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(nbt, 0, 0, 0), (EntityPlayerMP)entityLiving);
 		}
 		if(getCharges(stack) > 0)
 			entityLiving.world.playSound(null, entityLiving.posX, entityLiving.posY, entityLiving.posZ, HBMSoundHandler.crucibleSwing, SoundCategory.PLAYERS, 1, 1);
@@ -139,7 +140,7 @@ public class ItemCrucible extends ItemSwordCutter implements IPostRender {
 				data.setDouble("motion", 0.1D);
 				data.setString("mode", "blockdust");
 				data.setInteger("block", Block.getIdFromBlock(Blocks.REDSTONE_BLOCK));
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, victim.posX, victim.posY + victim.height * 0.5, victim.posZ), new TargetPoint(victim.dimension, victim.posX, victim.posY + victim.height * 0.5, victim.posZ, 50));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, victim.posX, victim.posY + victim.height * 0.5, victim.posZ), new TargetPoint(victim.dimension, victim.posX, victim.posY + victim.height * 0.5, victim.posZ, 50));
 			}
 		}
 		return super.hitEntity(stack, victim, attacker);

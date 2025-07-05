@@ -23,6 +23,7 @@ import com.hbm.forgefluid.FFPipeNetwork;
 import com.hbm.handler.*;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.handler.pollution.PollutionHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.interfaces.IBomb;
 import com.hbm.inventory.AssemblerRecipes;
@@ -514,26 +515,24 @@ public class ModEventHandler {
     public void worldTick(WorldTickEvent event) {
         if (event.world == null || event.world.isRemote) return;
         List<Object> entityList = new ArrayList<>(event.world.loadedEntityList);
-        if (!MainRegistry.allPipeNetworks.isEmpty() && !event.world.isRemote) {
+        if (!MainRegistry.allPipeNetworks.isEmpty()) {
             Iterator<FFPipeNetwork> itr = MainRegistry.allPipeNetworks.iterator();
             while (itr.hasNext()) {
                 FFPipeNetwork net = itr.next();
                 if (net.getNetworkWorld() != event.world)
                     continue;
-                if (net != null)
-                    net.updateTick();
+                net.updateTick();
                 if (net.getPipes().isEmpty()) {
                     net.destroySoft();
                     itr.remove();
                 }
-
             }
         }
 
-        if (event.world != null && !event.world.isRemote && event.world.getTotalWorldTime() % 100 == 97) {
+        if (event.world.getTotalWorldTime() % 100 == 97) {
             //Drillgon200: Retarded hack because I'm not convinced game rules are client sync'd
             //Yup they are not LMAO
-            PacketDispatcher.wrapper.sendToAll(new SurveyPacket(RBMKDials.getColumnHeight(event.world)));
+            PacketThreading.createSendToAllThreadedPacket(new SurveyPacket(RBMKDials.getColumnHeight(event.world)));
         }
 
         if (event.phase == Phase.END) {
@@ -560,6 +559,14 @@ public class ModEventHandler {
             if (e instanceof EntityItem) {
                 HazardSystem.updateDroppedItem((EntityItem) e);
             }
+        }
+
+        if(event.phase == Phase.END) {
+            // As ByteBufs are added to the queue in `com.hbm.packet.toclient.PacketThreading`, they are processed by the packet thread.
+            // This waits until the thread is finished, which most of the time will be instantly since it has plenty of time to process in parallel to everything else.
+            PacketThreading.waitUntilThreadFinished();
+
+            NetworkHandler.flush(); // Flush ALL network packets.
         }
     }
 
@@ -608,7 +615,7 @@ public class ModEventHandler {
             data.setDouble("motion", 0.1D);
             data.setString("mode", "blockdust");
             data.setInteger("block", Block.getIdFromBlock(Blocks.REDSTONE_BLOCK));
-            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, ent.posX, ent.posY + ent.height * 0.5, ent.posZ), new TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 50));
+            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, ent.posX, ent.posY + ent.height * 0.5, ent.posZ), new TargetPoint(ent.dimension, ent.posX, ent.posY, ent.posZ, 50));
 
             if (attacker.getDistanceSq(ent) < 25) {
                 attacker.heal(e.getAmount() * 0.5F);
@@ -853,7 +860,7 @@ public class ModEventHandler {
             NBTTagCompound vdat = new NBTTagCompound();
             vdat.setString("type", "giblets");
             vdat.setInteger("ent", entity.getEntityId());
-            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(vdat, entity.posX, entity.posY + entity.height * 0.5, entity.posZ), new TargetPoint(entity.dimension, entity.posX, entity.posY + entity.height * 0.5, entity.posZ, 150));
+            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(vdat, entity.posX, entity.posY + entity.height * 0.5, entity.posZ), new TargetPoint(entity.dimension, entity.posX, entity.posY + entity.height * 0.5, entity.posZ, 150));
 
             entity.world.playSound(null, entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.HOSTILE, 2.0F, 0.95F + entity.world.rand.nextFloat() * 0.2F);
 

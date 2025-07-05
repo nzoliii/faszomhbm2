@@ -3,8 +3,8 @@ package com.hbm.entity.mob;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.standard.*;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ public class EntityCreeperFlesh extends EntityCreeper {
             vdat.setString("type", "giblets");
             vdat.setInteger("ent", getEntityId());
             vdat.setInteger("cDiv", 2);
-            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(vdat, posX, posY + height * 0.5, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY + height * 0.5, posZ, 150));
+            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(vdat, posX, posY + height * 0.5, posZ), new NetworkRegistry.TargetPoint(dimension, posX, posY + height * 0.5, posZ, 150));
 
             this.setDead();
 

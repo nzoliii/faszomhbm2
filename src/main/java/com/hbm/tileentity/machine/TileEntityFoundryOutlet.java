@@ -1,14 +1,13 @@
 package com.hbm.tileentity.machine;
 
+import api.hbm.block.ICrucibleAcceptor;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.Mats.MaterialStack;
-import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.inventory.material.NTMMaterial;
 import com.hbm.lib.ForgeDirection;
+import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.util.CrucibleUtil;
-
-import api.hbm.block.ICrucibleAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -96,7 +95,7 @@ public class TileEntityFoundryOutlet extends TileEntityFoundryBase {
 			data.setFloat("off", 0.375F);
 			data.setFloat("base", 0F);
 			data.setFloat("len", Math.max(1F, p.getY() - (float) (Math.ceil(hitY) - 0.875)));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, p.getX() + 0.5D - dir.offsetX * 0.125, p.getY() + 0.125, p.getZ() + 0.5D - dir.offsetZ * 0.125), new TargetPoint(world.provider.getDimension(), p.getX() + 0.5, p.getY(), p.getZ() + 0.5, 50));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, p.getX() + 0.5D - dir.offsetX * 0.125, p.getY() + 0.125, p.getZ() + 0.5D - dir.offsetZ * 0.125), new TargetPoint(world.provider.getDimension(), p.getX() + 0.5, p.getY(), p.getZ() + 0.5, 50));
 		
 		}
 		

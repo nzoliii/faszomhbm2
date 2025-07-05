@@ -4,6 +4,7 @@ import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerMachineTurbofan;
@@ -16,7 +17,7 @@ import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.lib.*;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.*;
+import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
@@ -47,8 +48,6 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implements ITickable, IEnergyProviderMK2, IFluidStandardTransceiver, IGUIProvider, IFluidCopiable, IFFtoNTMF {
-
-	public ItemStackHandler inventory;
 
 	public long power;
 	public static final long maxPower = 1_000_000;
@@ -211,7 +210,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 						data.setDouble("mX", -dir.offsetX * speed + deviation);
 						data.setDouble("mZ", -dir.offsetZ * speed + deviation);
 						data.setFloat("scale", 8F);
-						PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, this.pos.getX() + 0.5F - dir.offsetX * (3 - i), this.pos.getY() + 1.5F, this.pos.getZ() + 0.5F - dir.offsetZ * (3 - i)), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 150));
+						PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, this.pos.getX() + 0.5F - dir.offsetX * (3 - i), this.pos.getY() + 1.5F, this.pos.getZ() + 0.5F - dir.offsetZ * (3 - i)), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 150));
 					}
 
 					/*if(this.afterburner > 90 && worldObj.rand.nextInt(60) == 0) {
@@ -227,7 +226,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 						data.setString("type", "gasfire");
 						data.setDouble("mY", 0.1 * world.rand.nextDouble());
 						data.setFloat("scale", 4F);
-						PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data,
+						PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data,
 								this.pos.getX() + 0.5F + dir.offsetX * (world.rand.nextDouble() * 4 - 2) + rot.offsetX * (world.rand.nextDouble() * 2 - 1),
 								this.pos.getY() + 1F + world.rand.nextDouble() * 2,
 								this.pos.getZ() + 0.5F - dir.offsetZ * (world.rand.nextDouble() * 4 - 2) + rot.offsetZ * (world.rand.nextDouble() * 2 - 1)
@@ -280,7 +279,7 @@ public class TileEntityMachineTurbofan extends TileEntityMachinePolluting implem
 						vdat.setString("type", "giblets");
 						vdat.setInteger("ent", e.getEntityId());
 						vdat.setInteger("cDiv", 5);
-						PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(vdat, e.posX, e.posY + e.height * 0.5, e.posZ), new TargetPoint(e.dimension, e.posX, e.posY + e.height * 0.5, e.posZ, 150));
+						PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(vdat, e.posX, e.posY + e.height * 0.5, e.posZ), new TargetPoint(e.dimension, e.posX, e.posY + e.height * 0.5, e.posZ, 150));
 
 						world.playSound(null, e.posX, e.posY, e.posZ, SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.BLOCKS, 2.0F, 0.95F + world.rand.nextFloat() * 0.2F);
 

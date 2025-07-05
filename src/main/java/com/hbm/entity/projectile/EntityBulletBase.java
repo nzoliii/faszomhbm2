@@ -1,16 +1,12 @@
 package com.hbm.entity.projectile;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.hbm.config.BombConfig;
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.RedBarrel;
-import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.effect.EntityCloudFleijaRainbow;
 import com.hbm.entity.effect.EntityEMPBlast;
+import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK3;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.hbm.entity.particle.EntityTSmokeFX;
@@ -20,16 +16,15 @@ import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.bullet_hit.EntityHitDataHandler;
 import com.hbm.potion.HbmPotion;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -56,6 +51,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class EntityBulletBase extends Entity implements IProjectile {
 
@@ -487,7 +485,7 @@ public class EntityBulletBase extends Entity implements IProjectile {
 				tag.setInteger("block", Block.getIdFromBlock(block));
 				tag.setByte("meta", (byte) block.getMetaFromState(blockstate));
 			}
-			PacketDispatcher.wrapper.sendToAllTracking(new AuxParticlePacketNT(tag, hit.hitVec.x, hit.hitVec.y, hit.hitVec.z), this);
+			PacketThreading.createSendToAllTrackingThreadedPacket(new AuxParticlePacketNT(tag, hit.hitVec.x, hit.hitVec.y, hit.hitVec.z), this);
 			if(hit.typeOfHit == Type.ENTITY && hit.entityHit instanceof EntityLivingBase){
 				EntityHitDataHandler.addHit((EntityLivingBase) hit.entityHit, this, hit.hitVec, new Vec3d(this.motionX, this.motionY, this.motionZ).normalize());
 			}

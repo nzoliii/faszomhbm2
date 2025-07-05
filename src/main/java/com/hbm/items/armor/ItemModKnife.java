@@ -1,10 +1,10 @@
 package com.hbm.items.armor;
 
 import com.hbm.handler.ArmorModHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.AdvancementManager;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.I18nUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -58,7 +58,7 @@ public class ItemModKnife extends ItemArmorMod {
 				NBTTagCompound nbt = new NBTTagCompound();
 				nbt.setString("type", "bloodvomit");
 				nbt.setInteger("entity", entity.getEntityId());
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(nbt, 0, 0, 0),  new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 25));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(nbt, 0, 0, 0),  new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 25));
 				
 				IAttributeInstance attributeinstance = entity.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
 				
@@ -83,7 +83,7 @@ public class ItemModKnife extends ItemArmorMod {
 						
 						AdvancementManager.grantAchievement((EntityPlayer)entity, AdvancementManager.achSomeWounds);
 					}
-					PacketDispatcher.wrapper.sendTo(new AuxParticlePacketNT(data, 0, 0, 0), (EntityPlayerMP)entity);
+					PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(data, 0, 0, 0), (EntityPlayerMP)entity);
 				}
 			}
 		}

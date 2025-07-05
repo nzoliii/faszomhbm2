@@ -6,16 +6,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.handler.pollution.PollutionHandler;
-import com.hbm.inventory.recipes.CrucibleRecipes;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.container.ContainerCrucible;
 import com.hbm.inventory.gui.GUICrucible;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.NTMMaterial;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IGUIProvider;
@@ -167,7 +167,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                     data.setFloat("off", 0.625F);
                     data.setFloat("base", 0.625F);
                     data.setFloat("len", Math.max(1F, pos.getY() - (float) (Math.ceil(impact.yCoord) - 0.875)));
-                    PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
+                    PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
 
                 }
 
@@ -207,7 +207,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                     data.setFloat("off", 0.625F);
                     data.setFloat("base", 0.625F);
                     data.setFloat("len", Math.max(1F, pos.getY() - (float) (impact.toBlockPos().getY() - 0.875)));
-                    PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
+                    PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + 0.5D + dir.offsetX * 1.875D, pos.getY(), pos.getZ() + 0.5D + dir.offsetZ * 1.875D), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5, 50));
 
                 }
 

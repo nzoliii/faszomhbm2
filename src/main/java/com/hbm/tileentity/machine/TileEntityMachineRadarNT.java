@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.handler.CompatHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.container.ContainerMachineRadarNT;
 import com.hbm.inventory.gui.GUIMachineRadarNT;
@@ -20,7 +21,6 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.BufPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.saveddata.satellites.*;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IGUIProvider;
@@ -209,7 +209,7 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 						screen.refZ = pos.getZ();
 						screen.range = this.getRange();
 						screen.linked = true;
-						PacketDispatcher.wrapper.sendToAllAround(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 25));
+						PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 25));
 					}
 				}
 			}

@@ -2,14 +2,14 @@ package com.hbm.tileentity.machine.oil;
 
 import api.hbm.fluid.IFluidStandardTransceiver;
 import com.hbm.capability.NTMFluidHandlerWrapper;
-import com.hbm.inventory.recipes.FractionRecipes;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.recipes.FractionRecipes;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.packet.BufPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.Tuple;
@@ -77,7 +77,7 @@ public class TileEntityMachineFractionTower extends TileEntityLoadedBase impleme
 
 			this.sendFluid();
 
-			PacketDispatcher.wrapper.sendToAllAround(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50));
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 50));
 		}
 	}
 

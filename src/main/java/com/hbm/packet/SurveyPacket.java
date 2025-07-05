@@ -1,6 +1,6 @@
 package com.hbm.packet;
 
-import com.hbm.capability.HbmLivingCapability;
+import com.hbm.packet.threading.ThreadedPacket;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 
 import io.netty.buffer.ByteBuf;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class SurveyPacket implements IMessage {
+public class SurveyPacket extends ThreadedPacket {
 	int rbmkHeight;
 
 	public SurveyPacket(){

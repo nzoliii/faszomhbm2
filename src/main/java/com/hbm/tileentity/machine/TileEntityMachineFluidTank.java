@@ -8,6 +8,7 @@ import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MultiblockHandlerXR;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.RecipesCommon;
@@ -23,7 +24,6 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.*;
 import com.hbm.util.ParticleUtil;
 import io.netty.buffer.ByteBuf;
@@ -308,7 +308,7 @@ public class TileEntityMachineFluidTank extends TileEntityMachineBase implements
 				data.setFloat("max", 5F);
 				data.setInteger("life", 100 + world.rand.nextInt(20));
 				data.setInteger("color", tankNew.getTankType().getColor());
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 150));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 150));
 			}
 
 			if(world.getTotalWorldTime() % 5 == 0 ) {

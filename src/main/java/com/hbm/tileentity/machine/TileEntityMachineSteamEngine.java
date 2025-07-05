@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Coolable;
@@ -13,8 +14,10 @@ import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.packet.BufPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.*;
+import com.hbm.tileentity.IBufPacketReceiver;
+import com.hbm.tileentity.IConfigurableMachine;
+import com.hbm.tileentity.IFluidCopiable;
+import com.hbm.tileentity.TileEntityLoadedBase;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NBTTagCompound;
@@ -165,7 +168,7 @@ public class TileEntityMachineSteamEngine extends TileEntityLoadedBase
       tanks[0].writeToNBT(data, "s");
       tanks[1].writeToNBT(data, "w");
 
-      PacketDispatcher.wrapper.sendToAllAround(
+      PacketThreading.createAllAroundThreadedPacket(
           new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this),
           new NetworkRegistry.TargetPoint(
               this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 150));

@@ -1,8 +1,8 @@
 package api.hbm.energymk2;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.Compat;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -54,7 +54,7 @@ public interface IEnergyReceiverMK2 extends IEnergyHandlerMK2 {
             data.setDouble("mX", -dir.offsetX * (red ? 0.025 : 0.1));
             data.setDouble("mY", -dir.offsetY * (red ? 0.025 : 0.1));
             data.setDouble("mZ", -dir.offsetZ * (red ? 0.025 : 0.1));
-            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, posX, posY, posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), posX, posY, posZ, 25));
+            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, posX, posY, posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), posX, posY, posZ, 25));
         }
     }
 

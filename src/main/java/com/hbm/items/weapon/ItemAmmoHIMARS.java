@@ -8,12 +8,12 @@ import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.standard.*;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.particle.helper.ExplosionCreator;
 import com.hbm.potion.HbmPotion;
 import com.hbm.render.amlfrom1710.Vec3;
@@ -209,7 +209,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
     NBTTagCompound data = new NBTTagCompound();
     data.setString("type", "rbmkmush");
     data.setFloat("scale", size);
-    PacketDispatcher.wrapper.sendToAllAround(
+    PacketThreading.createAllAroundThreadedPacket(
         new AuxParticlePacketNT(data, mop.hitVec.x, mop.hitVec.y, mop.hitVec.z),
         new NetworkRegistry.TargetPoint(
             entity.dimension, entity.posX, entity.posY, entity.posZ, 250));
@@ -322,7 +322,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
             for (int i = 0; i < 10; i++) {
               NBTTagCompound haze = new NBTTagCompound();
               haze.setString("type", "haze");
-              PacketDispatcher.wrapper.sendToAllAround(
+              PacketThreading.createAllAroundThreadedPacket(
                   new AuxParticlePacketNT(
                       haze,
                       mop.hitVec.x + rocket.world.rand.nextGaussian() * 15,

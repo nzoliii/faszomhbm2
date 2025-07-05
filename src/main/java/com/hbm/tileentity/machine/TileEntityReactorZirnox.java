@@ -10,6 +10,7 @@ import com.hbm.entity.projectile.EntityZirnoxDebris.DebrisType;
 import com.hbm.explosion.ExplosionNukeGeneric;
 import com.hbm.handler.CompatHandler;
 import com.hbm.handler.MultiblockHandlerXR;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.container.ContainerReactorZirnox;
@@ -19,14 +20,12 @@ import com.hbm.inventory.gui.GUIReactorZirnox;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemZirnoxRod;
 import com.hbm.items.machine.ItemZirnoxRod.EnumZirnoxType;
-import static com.hbm.items.machine.ItemZirnoxRodDepleted.EnumZirnoxTypeDepleted;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
@@ -56,6 +55,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.hbm.items.machine.ItemZirnoxRodDepleted.EnumZirnoxTypeDepleted;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityReactorZirnox extends TileEntityMachineBase implements ITickable, IControlReceiver, IFluidStandardTransceiver, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
@@ -400,7 +401,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
         NBTTagCompound data = new NBTTagCompound();
         data.setString("type", "rbmkmush");
         data.setFloat("scale", 4);
-        PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5, 250));
+        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5, 250));
         MainRegistry.proxy.effectNT(data);
 
         int meta = this.getBlockMetadata();

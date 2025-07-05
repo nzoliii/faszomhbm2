@@ -1,16 +1,12 @@
 package com.hbm.capability;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.hbm.config.RadiationConfig;
-import com.hbm.capability.HbmLivingCapability.EntityHbmProps;
 import com.hbm.capability.HbmLivingCapability.IEntityHbmProps;
+import com.hbm.config.RadiationConfig;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.AdvancementManager;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.packet.PacketDispatcher;
-
 import com.hbm.packet.PlayerInformPacketLegacy;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,12 +22,17 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
+import java.util.List;
+import java.util.UUID;
+
 public class HbmLivingProps {
 
 	public static final UUID digamma_UUID = UUID.fromString("2a3d8aec-5ab9-4218-9b8b-ca812bdf378b");
 
 	public static IEntityHbmProps getData(EntityLivingBase entity){
-		return entity.hasCapability(HbmLivingCapability.EntityHbmPropsProvider.ENT_HBM_PROPS_CAP, null) ? entity.getCapability(HbmLivingCapability.EntityHbmPropsProvider.ENT_HBM_PROPS_CAP, null) : HbmLivingCapability.EntityHbmPropsProvider.DUMMY;
+		return entity.hasCapability(HbmLivingCapability.EntityHbmPropsProvider.ENT_HBM_PROPS_CAP, null)
+				? entity.getCapability(HbmLivingCapability.EntityHbmPropsProvider.ENT_HBM_PROPS_CAP, null)
+				: HbmLivingCapability.EntityHbmPropsProvider.DUMMY;
 	}
 
 	/// RADIATION ///
@@ -120,7 +121,7 @@ public class HbmLivingProps {
 			data.setInteger("count", 50);
 			data.setInteger("block", Block.getIdFromBlock(Blocks.SOUL_SAND));
 			data.setInteger("entity", entity.getEntityId());
-			PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, 0, 0, 0), new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 50));
+			PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, 0, 0, 0), new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, 50));
 		}
 
 		if(entity instanceof EntityPlayer) {
@@ -153,10 +154,11 @@ public class HbmLivingProps {
 	}
 
 	public static void setAsbestos(EntityLivingBase entity, int asbestos){
-		getData(entity).setAsbestos(asbestos);
+		IEntityHbmProps props = getData(entity);
+		props.setAsbestos(asbestos);
 
-		if(asbestos >= EntityHbmProps.maxAsbestos) {
-			getData(entity).setAsbestos(0);
+		if(asbestos >= HbmLivingCapability.EntityHbmProps.maxAsbestos) {
+			props.setAsbestos(0);
 			entity.attackEntityFrom(ModDamageSource.asbestos, 1000);
 		}
 	}
@@ -179,10 +181,11 @@ public class HbmLivingProps {
 	}
 
 	public static void setBlackLung(EntityLivingBase entity, int blacklung){
-		getData(entity).setBlacklung(blacklung);
+		IEntityHbmProps props = getData(entity);
+		props.setBlacklung(blacklung);
 
-		if(blacklung >= EntityHbmProps.maxBlacklung) {
-			getData(entity).setBlacklung(0);
+		if(blacklung >= HbmLivingCapability.EntityHbmProps.maxBlacklung) {
+			props.setBlacklung(0);
 			entity.attackEntityFrom(ModDamageSource.blacklung, 1000);
 		}
 	}
@@ -249,11 +252,11 @@ public class HbmLivingProps {
 		}
 
 		public static ContaminationEffect load(NBTTagCompound nbt, int index){
-			NBTTagCompound me = (NBTTagCompound)nbt.getTag("cont_" + index);
+			NBTTagCompound me = nbt.getCompoundTag("cont_" + index);
 			float maxRad = me.getFloat("maxRad");
-			int maxTime = nbt.getInteger("maxTime");
-			int time = nbt.getInteger("time");
-			boolean ignoreArmor = nbt.getBoolean("ignoreArmor");
+			int maxTime = me.getInteger("maxTime");
+			int time = me.getInteger("time");
+			boolean ignoreArmor = me.getBoolean("ignoreArmor");
 
 			ContaminationEffect effect = new ContaminationEffect(maxRad, maxTime, ignoreArmor);
 			effect.time = time;

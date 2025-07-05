@@ -16,52 +16,52 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class HbmLivingCapability {
-	
+
 	public interface IEntityHbmProps {
-		public float getRads();
-		public void setRads(float rads);
-		public void increaseRads(float rads);
-		public void decreaseRads(float rads);
+		float getRads();
+		void setRads(float rads);
+		void increaseRads(float rads);
+		void decreaseRads(float rads);
 
-		public float getNeutrons();
-		public void setNeutrons(float rads);
-		
-		public float getRadsEnv();
-		public void setRadsEnv(float rads);
-		
-		public float getRadBuf();
-		public void setRadBuf(float buf);
-		
-		public float getDigamma();
-		public void setDigamma(float dig);
-		public void increaseDigamma(float dig);
-		public void decreaseDigamma(float dig);
-		
-		public int getAsbestos();
-		public void setAsbestos(int asbestos);
-		
-		public int getBlacklung();
-		public void setBlacklung(int blacklung);
-		
-		public int getBombTimer();
-		public void setBombTimer(int bombTimer);
-		
-		public int getContagion();
-		public void setContagion(int cont);
+		float getNeutrons();
+		void setNeutrons(float rads);
 
-		public int getOil();
-		public void setOil(int time);
-		
-		public List<ContaminationEffect> getContaminationEffectList();
-		
-		public void saveNBTData(NBTTagCompound tag);
-		public void loadNBTData(NBTTagCompound tag);
+		float getRadsEnv();
+		void setRadsEnv(float rads);
+
+		float getRadBuf();
+		void setRadBuf(float buf);
+
+		float getDigamma();
+		void setDigamma(float dig);
+		void increaseDigamma(float dig);
+		void decreaseDigamma(float dig);
+
+		int getAsbestos();
+		void setAsbestos(int asbestos);
+
+		int getBlacklung();
+		void setBlacklung(int blacklung);
+
+		int getBombTimer();
+		void setBombTimer(int bombTimer);
+
+		int getContagion();
+		void setContagion(int cont);
+
+		int getOil();
+		void setOil(int time);
+
+		List<HbmLivingProps.ContaminationEffect> getContaminationEffectList();
+
+		void saveNBTData(NBTTagCompound tag);
+		void loadNBTData(NBTTagCompound tag);
 	}
-	
+
 	public static class EntityHbmProps implements IEntityHbmProps {
 
-		public static final Callable<IEntityHbmProps> FACTORY = () -> {return new EntityHbmProps();};
-		
+		public static final Callable<IEntityHbmProps> FACTORY = EntityHbmProps::new;
+
 		private float rads = 0;
 		private float neutrons = 0;
 		private float envRads = 0;
@@ -74,8 +74,8 @@ public class HbmLivingCapability {
 		private int bombTimer;
 		private int contagion;
 		private int oil;
-		private List<ContaminationEffect> contamination = new ArrayList<>();
-		
+		private final List<HbmLivingProps.ContaminationEffect> contamination = new ArrayList<>();
+
 		@Override
 		public float getRads() {
 			return rads;
@@ -95,12 +95,12 @@ public class HbmLivingCapability {
 		public void setNeutrons(float neutrons) {
 			this.neutrons = Math.max(neutrons, 0);
 		}
-		
+
 		@Override
 		public void increaseRads(float rads){
 			this.rads = MathHelper.clamp(this.rads + rads, 0, 2500);
 		}
-		
+
 		@Override
 		public void decreaseRads(float rads){
 			this.rads = MathHelper.clamp(this.rads - rads, 0, 2500);
@@ -140,7 +140,7 @@ public class HbmLivingCapability {
 		public void increaseDigamma(float dig){
 			this.digamma = MathHelper.clamp(this.digamma + dig, 0, 1000);
 		}
-		
+
 		@Override
 		public void decreaseDigamma(float dig){
 			this.digamma = MathHelper.clamp(this.digamma - dig, 0, 1000);
@@ -193,10 +193,10 @@ public class HbmLivingCapability {
 
 
 		@Override
-		public List<ContaminationEffect> getContaminationEffectList(){
+		public List<HbmLivingProps.ContaminationEffect> getContaminationEffectList(){
 			return contamination;
 		}
-		
+
 		@Override
 		public void saveNBTData(NBTTagCompound tag){
 			tag.setFloat("rads", getRads());
@@ -229,11 +229,11 @@ public class HbmLivingCapability {
 			setOil(tag.getInteger("oil"));
 			contamination.clear();
 			for(int i = 0; i < tag.getInteger("conteffectsize"); i ++){
-				contamination.add(ContaminationEffect.load(tag, i));
+				contamination.add(HbmLivingProps.ContaminationEffect.load(tag, i));
 			}
 		}
 	}
-	
+
 	public static class EntityHbmPropsStorage implements IStorage<IEntityHbmProps>{
 
 		@Override
@@ -246,13 +246,12 @@ public class HbmLivingCapability {
 		@Override
 		public void readNBT(Capability<IEntityHbmProps> capability, IEntityHbmProps instance, EnumFacing side, NBTBase nbt) {
 			if(nbt instanceof NBTTagCompound){
-				NBTTagCompound tag = (NBTTagCompound)nbt;
-				instance.loadNBTData(tag);
+				instance.loadNBTData((NBTTagCompound)nbt);
 			}
 		}
-		
+
 	}
-	
+
 	public static class EntityHbmPropsProvider implements ICapabilitySerializable<NBTBase> {
 
 		public static final IEntityHbmProps DUMMY = new IEntityHbmProps(){
@@ -349,9 +348,9 @@ public class HbmLivingCapability {
 		
 		@CapabilityInject(IEntityHbmProps.class)
 		public static final Capability<IEntityHbmProps> ENT_HBM_PROPS_CAP = null;
-		
-		private IEntityHbmProps instance = ENT_HBM_PROPS_CAP.getDefaultInstance();
-		
+
+		private final IEntityHbmProps instance = ENT_HBM_PROPS_CAP.getDefaultInstance();
+
 		@Override
 		public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 			return capability == ENT_HBM_PROPS_CAP;
@@ -359,7 +358,7 @@ public class HbmLivingCapability {
 
 		@Override
 		public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-			return capability == ENT_HBM_PROPS_CAP ? ENT_HBM_PROPS_CAP.<T>cast(this.instance) : null;
+			return capability == ENT_HBM_PROPS_CAP ? ENT_HBM_PROPS_CAP.cast(this.instance) : null;
 		}
 
 		@Override
@@ -371,6 +370,5 @@ public class HbmLivingCapability {
 		public void deserializeNBT(NBTBase nbt) {
 			ENT_HBM_PROPS_CAP.getStorage().readNBT(ENT_HBM_PROPS_CAP, instance, null, nbt);
 		}
-		
 	}
 }

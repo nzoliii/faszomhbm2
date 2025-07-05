@@ -2,17 +2,16 @@ package com.hbm.packet;
 
 import com.hbm.lib.RefStrings;
 
+import com.hbm.main.NetworkHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketDispatcher {
 	
-	public static final SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(RefStrings.MODID);
+	public static final NetworkHandler wrapper = new NetworkHandler(RefStrings.MODID);
 	
-	public static final void registerPackets(){
+	public static void registerPackets(){
 		int i = 0;
 
 		//Fluid packet for GUI

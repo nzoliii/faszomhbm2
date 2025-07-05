@@ -2,10 +2,10 @@ package com.hbm.blocks.machine.rbmk;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.ContaminationUtil;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -50,7 +50,7 @@ public class RBMKDebrisRadiating extends RBMKDebrisBurning {
 				NBTTagCompound data = new NBTTagCompound();
 				data.setString("type", "rbmkflame");
 				data.setInteger("maxAge", 300);
-				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, pos.getX() + rand.nextDouble(), pos.getY() + 1.75, pos.getZ() + rand.nextDouble()), new TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1.75, pos.getZ() + 0.5, 75));
+				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + rand.nextDouble(), pos.getY() + 1.75, pos.getZ() + rand.nextDouble()), new TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 1.75, pos.getZ() + 0.5, 75));
 				MainRegistry.proxy.effectNT(data);
 				world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 1.0F + rand.nextFloat(), rand.nextFloat() * 0.7F + 0.3F);
 

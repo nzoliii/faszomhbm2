@@ -2,11 +2,11 @@ package com.hbm.blocks.machine;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityZirnoxDestroyed;
 import net.minecraft.block.Block;
@@ -95,7 +95,7 @@ public class ZirnoxDestroyed extends BlockDummyable {
                 NBTTagCompound data = new NBTTagCompound();
                 data.setString("type", "rbmkflame");
                 data.setInteger("maxAge", 90);
-                PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, x + 0.25 + world.rand.nextDouble() * 0.5, y + 1.75, z + 0.25 + world.rand.nextDouble() * 0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x + 0.5, y + 1.75, z + 0.5, 75));
+                PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, x + 0.25 + world.rand.nextDouble() * 0.5, y + 1.75, z + 0.25 + world.rand.nextDouble() * 0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), x + 0.5, y + 1.75, z + 0.5, 75));
                 MainRegistry.proxy.effectNT(data);
                 world.playSound(null, x + 0.5F, y + 0.5, z + 0.5, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 1.0F + world.rand.nextFloat(), world.rand.nextFloat() * 0.7F + 0.3F);
             }

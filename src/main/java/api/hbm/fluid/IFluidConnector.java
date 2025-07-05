@@ -1,16 +1,15 @@
 package api.hbm.fluid;
 
 import api.hbm.tile.ILoadedTile;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.util.Compat;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public interface IFluidConnector extends ILoadedTile {
@@ -74,7 +73,7 @@ public interface IFluidConnector extends ILoadedTile {
             data.setDouble("mX", -dir.offsetX * (red ? 0.025 : 0.1));
             data.setDouble("mY", -dir.offsetY * (red ? 0.025 : 0.1));
             data.setDouble("mZ", -dir.offsetZ * (red ? 0.025 : 0.1));
-            PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, posX, posY, posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), posX, posY, posZ, 25));
+            PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, posX, posY, posZ), new NetworkRegistry.TargetPoint(world.provider.getDimension(), posX, posY, posZ, 25));
         }
     }
 

@@ -6,6 +6,7 @@ import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
 import com.hbm.handler.GunConfiguration;
 import com.hbm.handler.HbmKeybinds;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IHoldableWeapon;
 import com.hbm.interfaces.IItemHUD;
 import com.hbm.items.ModItems;
@@ -231,7 +232,7 @@ public class ItemGunBase extends Item implements IHoldableWeapon, IItemHUD {
 			NBTTagCompound nbt = new NBTTagCompound();
 			nbt.setString("type", "justTilt");
 			nbt.setInteger("time", mainConfig.rateOfFire + 1);
-			PacketDispatcher.wrapper.sendTo(new AuxParticlePacketNT(nbt, player.posX, player.posY, player.posZ), (EntityPlayerMP) player);
+			PacketThreading.createSendToThreadedPacket(new AuxParticlePacketNT(nbt, player.posX, player.posY, player.posZ), (EntityPlayerMP) player);
 		}
 	}
 	

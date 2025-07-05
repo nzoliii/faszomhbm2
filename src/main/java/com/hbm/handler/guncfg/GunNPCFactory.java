@@ -1,22 +1,18 @@
 package com.hbm.handler.guncfg;
 
-import java.util.List;
-import java.util.Random;
-
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
 import com.hbm.handler.BulletConfiguration;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IBulletImpactBehavior;
 import com.hbm.interfaces.IBulletUpdateBehavior;
-import com.hbm.util.ContaminationUtil;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.BobMathUtil;
-
+import com.hbm.util.ContaminationUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,6 +22,9 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+
+import java.util.List;
+import java.util.Random;
 
 public class GunNPCFactory {
 
@@ -335,7 +334,7 @@ public class GunNPCFactory {
 					data.setFloat("pitch", -30F + 30F * i);
 					data.setFloat("yaw", bullet.world.rand.nextFloat() * 180F);
 					data.setFloat("scale", 5F);
-					PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ),
+					PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ),
 							new TargetPoint(bullet.world.provider.getDimension(), bullet.posX, bullet.posY, bullet.posZ, 100));
 				}
 			}

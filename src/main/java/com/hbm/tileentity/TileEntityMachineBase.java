@@ -6,6 +6,7 @@ import com.hbm.dim.orbit.WorldProviderOrbit;
 import com.hbm.dim.trait.CBT_Atmosphere;
 import com.hbm.handler.atmosphere.AtmosphereBlob;
 import com.hbm.handler.atmosphere.ChunkAtmosphereManager;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.Spaghetti;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.DirPos;
@@ -116,7 +117,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
      */
     public void networkPackNT(int range) {
         if (!world.isRemote)
-            PacketDispatcher.wrapper.sendToAllAround(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+            PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
     }
 
     @Override

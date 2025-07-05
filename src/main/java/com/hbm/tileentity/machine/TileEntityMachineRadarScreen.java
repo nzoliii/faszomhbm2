@@ -1,8 +1,8 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.entity.RadarEntry;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.packet.BufPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IBufPacketReceiver;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +35,7 @@ public class TileEntityMachineRadarScreen extends TileEntity implements ITickabl
     }
 
     public void networkPackNT(int range) {
-        if(!world.isRemote) PacketDispatcher.wrapper.sendToAllAround(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+        if(!world.isRemote) PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
     }
 
     @Override

@@ -2,10 +2,10 @@ package com.hbm.entity.mob;
 
 import com.hbm.entity.projectile.EntityBulletBase;
 import com.hbm.handler.BulletConfigSyncingUtil;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.potion.HbmPotion;
 import com.hbm.tileentity.machine.TileEntityTesla;
 import net.minecraft.entity.EntityLivingBase;
@@ -78,7 +78,7 @@ public class EntityTaintCrab extends EntityCyberCrab {
 		data.setDouble("mX", bullet.motionX * 0.3);
 		data.setDouble("mY", bullet.motionY * 0.3);
 		data.setDouble("mZ", bullet.motionZ * 0.3);
-		PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(this.dimension, posX, posY, posZ, 50));
+		PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, bullet.posX, bullet.posY, bullet.posZ), new TargetPoint(this.dimension, posX, posY, posZ, 50));
         this.world.spawnEntity(bullet);
         this.playSound(HBMSoundHandler.sawShoot, 1.0F, 0.5F);
 	}
