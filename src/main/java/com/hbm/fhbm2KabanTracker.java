@@ -16,7 +16,9 @@ public class fhbm2KabanTracker {
     private static final Map<UUID, Boolean> playersHavingFleshVisions = new ConcurrentHashMap<>();
 
 
-    // Mark a player as bewitched or not
+
+
+
     public static void setPlayerBewitched(EntityPlayer player, boolean value) {
         UUID id = player.getUniqueID();
         if (value) {
@@ -26,13 +28,15 @@ public class fhbm2KabanTracker {
         }
     }
 
-    // Check if a player is bewitched
     public static boolean isPlayerBewitched(EntityPlayer player) {
         UUID id = player.getUniqueID();
         return bewitchedPlayers.containsKey(id) && bewitchedPlayers.get(id);
     }
 
-    // Mark a player as having eaten the fragment or not
+
+
+
+
     public static void setPlayersWhoAteFragment(EntityPlayer player, boolean value) {
         UUID id = player.getUniqueID();
         if (value) {
@@ -42,11 +46,14 @@ public class fhbm2KabanTracker {
         }
     }
 
-    // Check if a player has eaten the fragment
     public static boolean hasPlayersAteFragment(EntityPlayer player) {
         UUID id = player.getUniqueID();
         return playersWhoAteFragment.containsKey(id) && playersWhoAteFragment.get(id);
     }
+
+
+
+
 
     public static void setPlayersHavingVisions(EntityPlayer player, boolean value) {
         UUID id = player.getUniqueID();
@@ -62,6 +69,11 @@ public class fhbm2KabanTracker {
         return playersHavingVisions.containsKey(id) && playersHavingVisions.get(id);
     }
 
+
+
+
+
+
     public static void setPlayersHavingFleshVisions(EntityPlayer player, boolean value) {
         UUID id = player.getUniqueID();
         if (value) {
@@ -76,7 +88,11 @@ public class fhbm2KabanTracker {
         return playersHavingFleshVisions.containsKey(id) && playersHavingFleshVisions.get(id);
     }
 
-    // Automatically clear players from the lists when they die
+
+
+
+
+
     @SubscribeEvent
     public static void onPlayerDeath(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof EntityPlayer)) return;
