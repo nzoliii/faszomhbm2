@@ -19,9 +19,8 @@ import java.io.IOException;
 
 public class GUIReactorZirnox extends GuiInfoContainer {
 
-    // fuck you
     private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID, "textures/gui/reactors/gui_zirnox.png");
-    private TileEntityReactorZirnox zirnox;
+    private final TileEntityReactorZirnox zirnox;
 
     public GUIReactorZirnox(InventoryPlayer invPlayer, TileEntityReactorZirnox tile) {
         super(new ContainerReactorZirnox(invPlayer, tile));
@@ -38,8 +37,8 @@ public class GUIReactorZirnox extends GuiInfoContainer {
         zirnox.steam.renderTankInfo(this, mouseX, mouseY, guiLeft + 160, guiTop + 108, 18, 12);
         zirnox.carbonDioxide.renderTankInfo(this, mouseX, mouseY, guiLeft + 142, guiTop + 108, 18, 12);
         zirnox.water.renderTankInfo(this, mouseX, mouseY, guiLeft + 178, guiTop + 108, 18, 12);
-        this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 160, guiTop + 33, 18, 17, new String[] { "Temperature:", "   " + Math.round((zirnox.heat) * 0.00001 * 780 + 20) + "°C" });
-        this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 178, guiTop + 33, 18, 17, new String[] { "Pressure:", "   " + Math.round((zirnox.pressure) * 0.00001 * 30) + " bar" });
+        this.drawCustomInfo(mouseX, mouseY, guiLeft + 160, guiTop + 33, 18, 17, new String[] { "Temperature:", "   " + Math.round((zirnox.heat) * 0.00001 * 780 + 20) + "°C" });
+        this.drawCustomInfo(mouseX, mouseY, guiLeft + 178, guiTop + 33, 18, 17, new String[] { "Pressure:", "   " + Math.round((zirnox.pressure) * 0.00001 * 30) + " bar" });
 
         String[] coolantText = I18nUtil.resolveKeyArray("desc.gui.zirnox.coolant");
         this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, coolantText);
@@ -95,19 +94,19 @@ public class GUIReactorZirnox extends GuiInfoContainer {
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         int s = zirnox.getGaugeScaled(6, 0);
-        drawTexturedModalRect(guiLeft + 160, guiTop + 108, 238, 0 + 12 * s, 18, 12);
+        drawTexturedModalRect(guiLeft + 160, guiTop + 108, 238, 12 * s, 18, 12);
 
         int c = zirnox.getGaugeScaled(6, 1);
-        drawTexturedModalRect(guiLeft + 142, guiTop + 108, 238, 0 + 12 * c, 18, 12);
+        drawTexturedModalRect(guiLeft + 142, guiTop + 108, 238, 12 * c, 18, 12);
 
         int w = zirnox.getGaugeScaled(6, 2);
-        drawTexturedModalRect(guiLeft + 178, guiTop + 108, 238, 0 + 12 * w, 18, 12);
+        drawTexturedModalRect(guiLeft + 178, guiTop + 108, 238, 12 * w, 18, 12);
 
         int h = zirnox.getGaugeScaled(12, 3);
-        drawTexturedModalRect(guiLeft + 160, guiTop + 33, 220, 0 + 18 * h, 18, 17);
+        drawTexturedModalRect(guiLeft + 160, guiTop + 33, 220, 18 * h, 18, 17);
 
         int p = zirnox.getGaugeScaled(12, 4);
-        drawTexturedModalRect(guiLeft + 178, guiTop + 33, 220, 0 + 18 * p, 18, 17);
+        drawTexturedModalRect(guiLeft + 178, guiTop + 33, 220, 18 * p, 18, 17);
 
         if(zirnox.isOn) {
             for(int x = 0; x < 4; x++)

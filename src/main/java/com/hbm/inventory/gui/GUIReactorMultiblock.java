@@ -39,9 +39,9 @@ public class GUIReactorMultiblock extends GuiInfoContainer {
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 6, guiTop + 5, 16, 52, diFurnace.tanks[0], diFurnace.tankTypes[0]);
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 24, guiTop + 5, 16, 52, diFurnace.tanks[1], diFurnace.tankTypes[1]);
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 22, guiTop + 107, 10, 16, diFurnace.tanks[2], diFurnace.tankTypes[2]);
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 42, guiTop + 5, 4, 88, new String[] { "Core Temperature:", "   " + Math.round((diFurnace.coreHeat) * 0.00002 * 980 + 20) + "°C" });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 48, guiTop + 5, 4, 88, new String[] { "Hull Temperature:", "   " + Math.round((diFurnace.hullHeat) * 0.00001 * 980 + 20) + "°C" });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 115, guiTop + 17, 18, 90, new String[] { "Control Rods: " + diFurnace.rods + "%" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 42, guiTop + 5, 4, 88, new String[] { "Core Temperature:", "   " + Math.round((diFurnace.coreHeat) * 0.00002 * 980 + 20) + "°C" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 48, guiTop + 5, 4, 88, new String[] { "Hull Temperature:", "   " + Math.round((diFurnace.hullHeat) * 0.00001 * 980 + 20) + "°C" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 115, guiTop + 17, 18, 90, new String[] { "Control Rods: " + diFurnace.rods + "%" });
 		
 		String[] text = new String[] { "Coolant will move heat from the core to",
 				"the hull. Water will use that heat and",
@@ -79,8 +79,8 @@ public class GUIReactorMultiblock extends GuiInfoContainer {
 			break;
 		}
 
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 100, guiTop + 16, 10, 88, new String[] {fuel+" Rod", "Fuel: "+( Math.round(100F * diFurnace.fuel / diFurnace.maxFuel))+"%"});
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 128, guiTop + 16, 10, 88, new String[] {"Depleted "+fuel+" Rod", "Depleted Fuel: "+( Math.round(100F * diFurnace.waste/ diFurnace.maxWaste))+"%"});
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 100, guiTop + 16, 10, 88, new String[] {fuel+" Rod", "Fuel: "+( Math.round(100F * diFurnace.fuel / diFurnace.maxFuel))+"%"});
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 128, guiTop + 16, 10, 88, new String[] {"Depleted "+fuel+" Rod", "Depleted Fuel: "+( Math.round(100F * diFurnace.waste/ diFurnace.maxWaste))+"%"});
 		
 		String[] text0 = new String[] { diFurnace.rods > 0 ? "Reactor is ON" : "Reactor is OFF"};
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 35, guiTop + 107, 18, 18, mouseX, mouseY, text0);

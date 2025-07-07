@@ -22,6 +22,7 @@ import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 @JEIPlugin
@@ -70,6 +71,7 @@ public class JEIConfig implements IModPlugin {
     public static final String DFC = "hbm.dfc";
     public static final String TRANSMUTATION = "hbm.transmutation";
     public static final String SOLDERING_STATION = "hbm.soldering_station";
+    public static final String ARC_WELDER = "hbm.arc_welder";
     private CokingRecipeHandler cokingHandler;
     private CrackingHandler crackingHandler;
     private CrystallizerRecipeHandler crystallizerHandler;
@@ -82,6 +84,7 @@ public class JEIConfig implements IModPlugin {
     private ReformingHandler reformingHandler;
     private SolidificationHandler solidificationHandler;
     private SolderingStationRecipeHandler solderingStationHandler;
+    private ArcWelderRecipeHandler arcWelderRecipeHandler;
 
     @Override
     public void register(@NotNull IModRegistry registry) {
@@ -135,6 +138,7 @@ public class JEIConfig implements IModPlugin {
         registry.addRecipeCatalyst(new ItemStack(ModBlocks.machine_fluidtank), FLUIDS);
         registry.addRecipeCatalyst(new ItemStack(ModBlocks.machine_crystallizer), CRYSTALLIZER);
         registry.addRecipeCatalyst(new ItemStack(ModBlocks.machine_soldering_station), SOLDERING_STATION);
+        registry.addRecipeCatalyst(new ItemStack(ModBlocks.machine_arc_welder), ARC_WELDER);
         //This recipe catalyst doesn't work, since the book of is blacklisted.
         registry.addRecipeCatalyst(new ItemStack(ModItems.book_of_), BOOK);
         registry.addRecipeCatalyst(new ItemStack(ModBlocks.iter), FUSION_BYPRODUCT);
@@ -176,6 +180,7 @@ public class JEIConfig implements IModPlugin {
         registry.addRecipes(reformingHandler.getRecipes(), REFORMING);
         registry.addRecipes(solidificationHandler.getRecipes(), SOLIDIFICATION);
         registry.addRecipes(solderingStationHandler.getRecipes(), SOLDERING_STATION);
+        registry.addRecipes(arcWelderRecipeHandler.getRecipes(), ARC_WELDER);
         registry.addRecipes(ShredderRecipes.getShredderRecipes(), SHREDDER);
         registry.addRecipes(JeiRecipes.getFluidEquivalences(), FLUIDS);
         registry.addRecipes(crystallizerHandler.getRecipes(), CRYSTALLIZER);
@@ -226,6 +231,7 @@ public class JEIConfig implements IModPlugin {
 		registry.addRecipeClickArea(GUIAnvil.class, 12, 50, 48-12, 66-50, ANVIL);
 		registry.addRecipeClickArea(GUIRBMKOutgasser.class, 64, 53, 48, 16, RBMKOUTGASSER);
 		registry.addRecipeClickArea(GUIMachineSchrabidiumTransmutator.class, 64, 56, 66, 31, TRANSMUTATION);
+        registry.addRecipeClickArea(GUIMachineArcWelder.class, 72, 38, 32, 13, ARC_WELDER);
 
         IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
 
@@ -299,6 +305,7 @@ public class JEIConfig implements IModPlugin {
                 reformingHandler = new ReformingHandler(help),
                 solidificationHandler = new SolidificationHandler(help),
                 solderingStationHandler = new SolderingStationRecipeHandler(help),
+                arcWelderRecipeHandler = new ArcWelderRecipeHandler(help),
                 new CentrifugeRecipeHandler(help),
                 new GasCentrifugeRecipeHandler(help),
                 new BreederRecipeHandler(help),

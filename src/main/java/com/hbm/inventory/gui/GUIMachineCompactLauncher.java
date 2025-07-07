@@ -15,14 +15,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 public class GUIMachineCompactLauncher extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_table_small.png");
-	private TileEntityCompactLauncher launcher;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_table_small.png");
+	private final TileEntityCompactLauncher launcher;
 	
-	public GUIMachineCompactLauncher(InventoryPlayer invPlayer, TileEntityCompactLauncher tedf) {
-		super(new ContainerCompactLauncher(invPlayer, tedf));
-		launcher = tedf;
+	public GUIMachineCompactLauncher(InventoryPlayer invPlayer, TileEntityCompactLauncher tile) {
+		super(new ContainerCompactLauncher(invPlayer, tile));
+		launcher = tile;
 		
 		this.xSize = 176;
 		this.ySize = 222;
@@ -36,7 +38,7 @@ public class GUIMachineCompactLauncher extends GuiInfoContainer {
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 36, 16, 34, launcher.tanks[1], launcher.tankTypes[1]);
 		String[] text2 = I18nUtil.resolveKeyArray("desc.solidfuellaunch", launcher.solid);
 		
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 88 - 52, 16, 52, text2);
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 152, guiTop + 88 - 52, 16, 52, text2);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 113, 34, 6, launcher.power, TileEntityCompactLauncher.maxPower);
 
 		String[] text = I18nUtil.resolveKeyArray("desc.guimachcomplauncher1");
@@ -65,7 +67,7 @@ public class GUIMachineCompactLauncher extends GuiInfoContainer {
 		int i = (int)launcher.getPowerScaled(34);
 		drawTexturedModalRect(guiLeft + 134, guiTop + 113, 176, 96, i, 6);
 		
-		int j = (int)launcher.getSolidScaled(52);
+		int j = launcher.getSolidScaled(52);
 		drawTexturedModalRect(guiLeft + 152, guiTop + 88 - j, 176, 96 - j, 16, j);
 		
 		if(launcher.isMissileValid())
@@ -102,9 +104,9 @@ public class GUIMachineCompactLauncher extends GuiInfoContainer {
 		
 		if(launcher.isMissileValid()) {
 			ItemStack custom = launcher.inventory.getStackInSlot(0);
-			
+
 			missile = new MissileMultipart();
-			
+
 			missile = MissileMultipart.loadFromStruct(ItemCustomMissile.getStruct(custom));
 		
 			GL11.glTranslatef(guiLeft + 88, guiTop + 115, 100);

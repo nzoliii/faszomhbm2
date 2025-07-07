@@ -51,7 +51,6 @@ import com.hbm.particle.ParticleFirstPerson;
 import com.hbm.particle.gluon.ParticleGluonBurnTrail;
 import com.hbm.render.LightRenderer;
 import com.hbm.render.NTMRenderHelper;
-import com.hbm.render.amlfrom1710.Tessellator;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.render.anim.HbmAnimations;
 import com.hbm.render.anim.HbmAnimations.Animation;
@@ -93,12 +92,9 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.chunk.RenderChunk;
@@ -1323,10 +1319,12 @@ public class ModEventHandlerClient {
             GL11.glScaled(0.125, 0.25, 0.125);
 
             double len = MathHelper.clamp(tester.length() * 2, 0, 40);
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
 
             NTMRenderHelper.bindTexture(ResourceManager.universal);
             GlStateManager.enableLighting();
-            Tessellator.instance.startDrawing(GL11.GL_TRIANGLES);
+            buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_TEX_NORMAL);
             for (int i = 0; i < Math.ceil(len); i++) {
                 float offset = 0;
                 if (ItemGunShotty.motionStrafe != 0) {
@@ -1339,11 +1337,11 @@ public class ModEventHandlerClient {
                         offset = -offset;
                 }
                 float scale = (float) (len / 20F);
-                Tessellator.instance.setTranslation(0, i, offset * scale);
-                ResourceManager.n45_chain.tessellateAll(Tessellator.instance);
+                buffer.setTranslation(0, i, offset * scale);
+                ResourceManager.n45_chain.renderAll();
             }
 
-            Tessellator.instance.draw();
+            tessellator.draw();
             GL11.glPopMatrix();
         }
 

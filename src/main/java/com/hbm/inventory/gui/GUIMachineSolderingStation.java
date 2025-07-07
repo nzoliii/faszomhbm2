@@ -17,6 +17,9 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GUIMachineSolderingStation extends GuiInfoContainer {
   private static final ResourceLocation texture =
@@ -48,27 +51,29 @@ public class GUIMachineSolderingStation extends GuiInfoContainer {
         soldering_station.getPower(),
         soldering_station.getMaxPower());
 
-    //    this.drawCustomInfoStat(
-    //        x,
-    //        y,
-    //        guiLeft + 78,
-    //        guiTop + 67,
-    //        8,
-    //        8,
-    //        guiLeft + 78,
-    //        guiTop + 67,
-    //        this.getUpgradeInfo(soldering_station));
+    this.drawCustomInfoStat(
+        mouseX,
+        mouseY,
+        guiLeft + 78,
+        guiTop + 67,
+        8,
+        8,
+        guiLeft + 78,
+        guiTop + 67,
+        this.getUpgradeInfo(soldering_station));
 
-    String[] text =
-        new String[] {
-          "Recipe Collision Prevention: "
-              + (soldering_station.collisionPrevention
-                  ? ChatFormatting.GREEN + "ON"
-                  : ChatFormatting.RED + "OFF"),
-          "Prevents no-fluid recipes from being processed",
-          "when fluid is present."
-        };
-    this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 5, guiTop + 66, 10, 10, mouseX, mouseY, text);
+    List<String> lines =
+        new ArrayList<>(
+            Arrays.asList(
+                "Recipe Collision Prevention: "
+                    + (soldering_station.collisionPrevention
+                        ? ChatFormatting.GREEN + "ON"
+                        : ChatFormatting.RED + "OFF"),
+                "Prevents no-fluid recipes from being processed",
+                "when fluid is present."));
+
+    this.drawCustomInfoStat(
+        mouseX, mouseY, guiLeft + 5, guiTop + 66, 10, 10, mouseX, mouseY, lines);
     super.renderHoveredToolTip(mouseX, mouseY);
   }
 
@@ -114,6 +119,6 @@ public class GUIMachineSolderingStation extends GuiInfoContainer {
     this.drawInfoPanel(guiLeft + 78, guiTop + 67, 8, 8, 8);
     soldering_station.tank.renderTank(guiLeft + 35, guiTop + 79, this.zLevel, 34, 16, 1);
 
-    GL11.glPopAttrib();
+    GlStateManager.popAttrib();
   }
 }

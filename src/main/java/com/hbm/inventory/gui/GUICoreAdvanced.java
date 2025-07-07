@@ -12,12 +12,12 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICoreAdvanced extends GuiInfoContainer {
 	
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/factory_advanced.png");
-	private TileEntityCoreAdvanced diFurnace;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/factory_advanced.png");
+	private final TileEntityCoreAdvanced diFurnace;
 
-	public GUICoreAdvanced(InventoryPlayer invPlayer, TileEntityCoreAdvanced tedf) {
-		super(new ContainerCoreAdvanced(invPlayer, tedf));
-		diFurnace = tedf;
+	public GUICoreAdvanced(InventoryPlayer invPlayer, TileEntityCoreAdvanced tile) {
+		super(new ContainerCoreAdvanced(invPlayer, tile));
+		diFurnace = tile;
 		
 		this.xSize = 176;
 		this.ySize = 222;
@@ -29,10 +29,10 @@ public class GUICoreAdvanced extends GuiInfoContainer {
 		
 		this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 0x222222);
 		this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 0x222222);
-		String thing = "0 HE/s";
-		if(diFurnace.power < diFurnace.getMaxPower())
-			thing = Library.getShortNumber(diFurnace.progressStep * TileEntityCoreAdvanced.powerPerStep * 20) + " HE/s";
-			this.fontRenderer.drawString(thing, this.xSize-60-this.fontRenderer.getStringWidth(thing), 41, 0x222222);
+    	if (diFurnace.power < diFurnace.getMaxPower()) {
+      		String thing = Library.getShortNumber(diFurnace.progressStep * TileEntityCoreAdvanced.powerPerStep * 20) + " HE/s";
+      		this.fontRenderer.drawString(thing, this.xSize - 60 - this.fontRenderer.getStringWidth(thing), 41, 0x222222);
+		}
 
 		this.fontRenderer.drawString("Speed:", 60, 95, 0x222222);
 		this.fontRenderer.drawString(diFurnace.progressStep+"", this.xSize-60-this.fontRenderer.getStringWidth(diFurnace.progressStep+""), 95, 0x222222);

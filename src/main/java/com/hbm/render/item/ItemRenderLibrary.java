@@ -8,9 +8,11 @@ import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemAmmoHIMARS;
 import com.hbm.main.ResourceManager;
+import com.hbm.render.tileentity.RenderAutosaw;
 import com.hbm.render.tileentity.RenderDemonLamp;
 import com.hbm.render.tileentity.RenderSawmill;
 import com.hbm.render.tileentity.RenderSteamEngine;
+import com.hbm.tileentity.machine.TileEntityMachineAutosaw;
 import com.hbm.tileentity.machine.TileEntityMachineSteamEngine;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -2681,6 +2683,30 @@ public class ItemRenderLibrary {
             public void renderCommon() {
                 bindTexture(ResourceManager.soldering_station_tex);
                 ResourceManager.soldering_station.renderAll();
+            }
+        });
+
+        renderers.put(Item.getItemFromBlock(ModBlocks.machine_arc_welder), new ItemRenderBase() {
+            public void renderInventory() {
+                GlStateManager.translate(0, -2, 0);
+                GlStateManager.scale(4, 4, 4);
+            }
+            public void renderCommon() {
+                bindTexture(ResourceManager.arc_welder_tex);
+                ResourceManager.arc_welder.renderAll();
+            }
+        });
+
+        renderers.put(Item.getItemFromBlock(ModBlocks.machine_autosaw), new ItemRenderBase() {
+            public void renderInventory() {
+                GlStateManager.translate(0, -3.5, -3);
+                GlStateManager.scale(5, 5, 5);
+            }
+            public void renderCommon() {
+                GlStateManager.scale(0.5, 0.5, 0.5);
+                GlStateManager.rotate(-90, 0F, 1F, 0F);
+                RenderAutosaw renderAutosaw = (RenderAutosaw) TileEntityRendererDispatcher.instance.renderers.get(TileEntityMachineAutosaw.class);
+                renderAutosaw.renderCommon(0, 80, (float) (System.currentTimeMillis() % 3600 * 0.1), 0);
             }
         });
     }

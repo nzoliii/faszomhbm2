@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class RenderSolderingStation
     extends TileEntitySpecialRenderer<TileEntityMachineSolderingStation> {
   @Override
-  public void render(@NotNull TileEntityMachineSolderingStation soldering_station, double x, double y, double z, float interp, int destroyStage, float alpha) {
+  public void render(@NotNull TileEntityMachineSolderingStation soldering_station, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
     GlStateManager.pushMatrix();
     GlStateManager.translate(x + 0.5, y, z + 0.5);
     GlStateManager.enableLighting();
@@ -38,11 +38,11 @@ public class RenderSolderingStation
       GlStateManager.rotate(-90, 1F, 0F, 0F);
 
       if(soldering_station.display != null) {
-        ItemStack stack = soldering_station.display.copy();
+        //ItemStack stack = soldering_station.display.copy();
 
-        EntityItem item = new EntityItem(null, 0.0D, 0.0D, 0.0D, stack);
+        //EntityItem item = new EntityItem(null, 0.0D, 0.0D, 0.0D, stack);
         //item.stackSize = 1;
-        item.hoverStart = 0.0F;
+        //item.hoverStart = 0.0F;
 
         //RenderItem.renderInFrame = true;
         GlStateManager.scale(1.5, 1.5, 1.5);

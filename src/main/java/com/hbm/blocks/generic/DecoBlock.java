@@ -8,7 +8,6 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -24,14 +23,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
 public class DecoBlock extends BlockContainer {
 
-    public static PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-    public static final float f = 0.0625F;
+    private static final float f = 0.0625F;
     public static final AxisAlignedBB WALL_WEST_BOX = new AxisAlignedBB(14 * f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     public static final AxisAlignedBB WALL_EAST_BOX = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 2 * f, 1.0F, 1.0F);
     public static final AxisAlignedBB WALL_NORTH_BOX = new AxisAlignedBB(0.0F, 0.0F, 14 * f, 1.0F, 1.0F, 1.0F);
@@ -40,8 +40,6 @@ public class DecoBlock extends BlockContainer {
     public static final AxisAlignedBB STEEL_BEAM_BOX = new AxisAlignedBB(7 * f, 0.0F, 7 * f, 9 * f, 1.0F, 9 * f);
     public static final AxisAlignedBB SCAFFOLD_EASTWEST_BOX = new AxisAlignedBB(2 * f, 0.0F, 0.0F, 14 * f, 1.0F, 1.0F);
     public static final AxisAlignedBB SCAFFOLD_NORTHSOUTH_BOX = new AxisAlignedBB(0.0F, 0.0F, 2 * f, 1.0F, 1.0F, 14 * f);
-
-    Random rand = new Random();
 
     public DecoBlock(Material materialIn, String s) {
         super(materialIn);
@@ -53,56 +51,56 @@ public class DecoBlock extends BlockContainer {
     }
 
     @Override
-    public Block setSoundType(SoundType sound) {
+    public @NotNull Block setSoundType(@NotNull SoundType sound) {
         return super.setSoundType(sound);
     }
 
     @Override
-    public TileEntity createNewTileEntity(World worldIn, int meta) {
+    public TileEntity createNewTileEntity(@NotNull World world, int meta) {
         if (this == ModBlocks.steel_scaffold || this == ModBlocks.steel_beam)
             return null;
         return new TileEntityDecoBlock();
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state) {
-        return this != ModBlocks.steel_scaffold && this != ModBlocks.steel_beam;
+    public boolean hasTileEntity(@NotNull IBlockState state) {
+        return this != ModBlocks.steel_beam;
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state) {
+    public @NotNull EnumBlockRenderType getRenderType(@NotNull IBlockState state) {
         if (this == ModBlocks.steel_beam || this == ModBlocks.steel_scaffold)
             return EnumBlockRenderType.MODEL;
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(@NotNull IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isBlockNormalCube(IBlockState state) {
+    public boolean isBlockNormalCube(@NotNull IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isNormalCube(IBlockState state) {
+    public boolean isNormalCube(@NotNull IBlockState state) {
         return false;
     }
 
     @Override
-    public boolean isNormalCube(IBlockState state, IBlockAccess world, BlockPos pos) {
+    public boolean isNormalCube(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos) {
         return false;
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
+    public boolean shouldSideBeRendered(@NotNull IBlockState blockState, @NotNull IBlockAccess blockAccess, @NotNull BlockPos pos, @NotNull EnumFacing side) {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state) {
+    public boolean isFullCube(@NotNull IBlockState state) {
         return false;
     }
 
@@ -112,49 +110,37 @@ public class DecoBlock extends BlockContainer {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune) {
+    public @NotNull Item getItemDropped(@NotNull IBlockState state, @NotNull Random rand, int fortune) {
         return super.getItemDropped(state, rand, fortune);
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public @NotNull AxisAlignedBB getBoundingBox(IBlockState state, @NotNull IBlockAccess source, @NotNull BlockPos pos) {
         EnumFacing te = state.getValue(FACING);
         if (this == ModBlocks.steel_wall) {
-            switch (te) {
-                case WEST:
-                    return WALL_WEST_BOX;
-                case NORTH:
-                    return WALL_NORTH_BOX;
-                case EAST:
-                    return WALL_EAST_BOX;
-                case SOUTH:
-                    return WALL_SOUTH_BOX;
-                default:
-                    return FULL_BLOCK_AABB;
-            }
+            return switch (te) {
+                case WEST -> WALL_WEST_BOX;
+                case NORTH -> WALL_NORTH_BOX;
+                case EAST -> WALL_EAST_BOX;
+                case SOUTH -> WALL_SOUTH_BOX;
+                default -> FULL_BLOCK_AABB;
+            };
         } else if (this == ModBlocks.steel_roof) {
             return STEEL_ROOF_BOX;
         } else if (this == ModBlocks.steel_beam) {
             return STEEL_BEAM_BOX;
         } else if (this == ModBlocks.steel_scaffold) {
-            switch (te) {
-                case WEST:
-                    return SCAFFOLD_EASTWEST_BOX;
-                case NORTH:
-                    return SCAFFOLD_NORTHSOUTH_BOX;
-                case EAST:
-                    return SCAFFOLD_EASTWEST_BOX;
-                case SOUTH:
-                    return SCAFFOLD_NORTHSOUTH_BOX;
-                default:
-                    return FULL_BLOCK_AABB;
-            }
+            return switch (te) {
+                case WEST, EAST -> SCAFFOLD_EASTWEST_BOX;
+                case NORTH, SOUTH -> SCAFFOLD_NORTHSOUTH_BOX;
+                default -> FULL_BLOCK_AABB;
+            };
         }
         return FULL_BLOCK_AABB;
     }
 
     @Override
-    protected BlockStateContainer createBlockState() {
+    protected @NotNull BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, FACING);
     }
 
@@ -164,24 +150,24 @@ public class DecoBlock extends BlockContainer {
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        EnumFacing enumfacing = EnumFacing.byIndex(meta);
+    public @NotNull IBlockState getStateFromMeta(int meta) {
+        EnumFacing facing = EnumFacing.byIndex(meta);
 
-        if (enumfacing.getAxis() == EnumFacing.Axis.Y) {
-            enumfacing = EnumFacing.NORTH;
+        if (facing.getAxis() == EnumFacing.Axis.Y) {
+            facing = EnumFacing.NORTH;
         }
 
-        return this.getDefaultState().withProperty(FACING, enumfacing);
+        return this.getDefaultState().withProperty(FACING, facing);
     }
 
 
     @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot) {
+    public @NotNull IBlockState withRotation(IBlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
+    public @NotNull IBlockState withMirror(IBlockState state, Mirror mirrorIn) {
         return state.withRotation(mirrorIn.toRotation(state.getValue(FACING)));
     }
 

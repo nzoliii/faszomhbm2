@@ -18,9 +18,9 @@ public class GUIMachineAssembler extends GuiInfoContainer {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_assembler.png");
 	private final TileEntityMachineAssembler assembler;
 
-	public GUIMachineAssembler(InventoryPlayer invPlayer, TileEntityMachineAssembler tedf) {
-		super(new ContainerMachineAssembler(invPlayer, tedf));
-		assembler = tedf;
+	public GUIMachineAssembler(InventoryPlayer invPlayer, TileEntityMachineAssembler tile) {
+		super(new ContainerMachineAssembler(invPlayer, tile));
+		assembler = tile;
 		
 		this.xSize = 176;
 		this.ySize = 222;
@@ -29,24 +29,23 @@ public class GUIMachineAssembler extends GuiInfoContainer {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
-		this.renderHoveredToolTip(mouseX, mouseY);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 116, guiTop + 70 - 52, 16, 52, assembler.power, TileEntityMachineAssembler.maxPower);
 		
 		if(assembler.inventory.getStackInSlot(4).getItem() == Items.AIR || assembler.inventory.getStackInSlot(4).getItem()!= ModItems.assembly_template) {
 
-			String[] text1 = I18nUtil.resolveKeyArray("desc.guimachassembler");
-			this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, text1);
+			String[] text = I18nUtil.resolveKeyArray("desc.guimachassembler");
+			this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, text);
 		}
 
 		String[] text = I18nUtil.resolveKeyArray("desc.guiacceptupgrades1");
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 141, guiTop + 40, 8, 8, guiLeft + 141, guiTop + 40 + 16, text);
+		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 141, guiTop + 40, 8, 8, guiLeft + 225, guiTop + 40 + 16 + 8, this.getUpgradeInfo(assembler));
+
+		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer( int i, int j) {
-		String name = this.assembler.hasCustomInventoryName() ? this.assembler.getInventoryName() : I18n.format(this.assembler.getInventoryName());
-		
-		this.fontRenderer.drawString(name, this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2, 6, 4210752);
 		this.fontRenderer.drawString(I18n.format("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
@@ -72,6 +71,7 @@ public class GUIMachineAssembler extends GuiInfoContainer {
 		
 		this.drawInfoPanel(guiLeft + 141, guiTop + 40, 8, 8, 8);
 	}
+
 	public ItemStackHandler getInventory() {
 		return assembler.inventory;
 	}

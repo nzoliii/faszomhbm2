@@ -40,6 +40,18 @@ public class BlockTallPlant extends BlockPlantEnumMeta implements IGrowable, IPl
 
     }
 
+    public enum EnumTallFlower {
+        WEED(false),
+        CD2(true),
+        CD3(true),
+        CD4(true);
+
+        public final boolean needsOil;
+        EnumTallFlower(boolean needsOil) {
+            this.needsOil = needsOil;
+        }
+    }
+
     public static void initPlacables() {
         PLANTABLE_BLOCKS.add(ModBlocks.dirt_dead);
         PLANTABLE_BLOCKS.add(ModBlocks.dirt_oily);

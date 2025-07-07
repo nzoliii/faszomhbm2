@@ -24,12 +24,12 @@ import java.util.function.Consumer;
 
 public class GUILaunchPadLarge extends GuiInfoContainer {
 	
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/weapon/gui_launch_pad_large.png");
-	private TileEntityLaunchPadBase launchpad;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/weapon/gui_launch_pad_large.png");
+	private final TileEntityLaunchPadBase launchpad;
 
-	public GUILaunchPadLarge(InventoryPlayer invPlayer, TileEntityLaunchPadBase tedf) {
-		super(new ContainerLaunchPadLarge(invPlayer, tedf));
-		launchpad = tedf;
+	public GUILaunchPadLarge(InventoryPlayer invPlayer, TileEntityLaunchPadBase tile) {
+		super(new ContainerLaunchPadLarge(invPlayer, tile));
+		launchpad = tile;
 		
 		this.xSize = 176;
 		this.ySize = 236;
@@ -45,7 +45,7 @@ public class GUILaunchPadLarge extends GuiInfoContainer {
 
 		if(this.mc.player.inventory.getItemStack().isEmpty() && this.isMouseOverSlot(this.inventorySlots.getSlot(1), mouseX, mouseY) && !this.inventorySlots.getSlot(1).getHasStack()) {
 			ItemStack[] list = new ItemStack[] { new ItemStack(ModItems.designator), new ItemStack(ModItems.designator_range), new ItemStack(ModItems.designator_manual) };
-			List<Object> lines = new ArrayList<>();
+			List<Object[]> lines = new ArrayList<>();
 			ItemStack selected = list[(int) ((System.currentTimeMillis() % (1000 * list.length)) / 1000)];
 			selected.setCount(0);
 			lines.add(list);
@@ -96,9 +96,8 @@ public class GUILaunchPadLarge extends GuiInfoContainer {
 
 				double scale = 1D;
 				
-				if(launchpad.inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard) {
-					ItemMissileStandard missile = (ItemMissileStandard) launchpad.inventory.getStackInSlot(0).getItem();
-					switch(missile.formFactor) {
+				if(launchpad.inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard missile) {
+                    switch(missile.formFactor) {
 					case ABM: scale = 1.45D; break;
 					case MICRO: scale = 2.5D; break;
 					case V2: scale = 1.75D; break;
@@ -131,17 +130,17 @@ public class GUILaunchPadLarge extends GuiInfoContainer {
 		GL11.glTranslated(guiLeft + 34, guiTop + 107, 0);
 		String text = "";
 		int color = 0xffffff;
-		if(launchpad.state == launchpad.STATE_MISSING) {
+		if(launchpad.state == TileEntityLaunchPadBase.STATE_MISSING) {
 			GL11.glScaled(0.5, 0.5, 1);
 			text = "Not ready";
 			color = 0xff0000;
 		}
-		if(launchpad.state == launchpad.STATE_LOADING) {
+		if(launchpad.state == TileEntityLaunchPadBase.STATE_LOADING) {
 			GL11.glScaled(0.6, 0.6, 1);
 			text = "Loading...";
 			color = 0xff8000;
 		}
-		if(launchpad.state == launchpad.STATE_READY) {
+		if(launchpad.state == TileEntityLaunchPadBase.STATE_READY) {
 			GL11.glScaled(0.8, 0.8, 1);
 			text = "Ready";
 			color = 0x00ff000;

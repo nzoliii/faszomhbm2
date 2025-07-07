@@ -33,33 +33,33 @@ public class GUIReactorControl extends GuiInfoContainer {
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 34, 88, 4, new String[] { "Fuel: " + control.fuel + "%" });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 40, 88, 4, new String[] { "Water: " + control.water + "/" + control.maxWater + "mB" });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 46, 88, 4, new String[] { "Coolant: " + control.cool + "/" + control.maxCool + "mB" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 34, 88, 4, new String[] { "Fuel: " + control.fuel + "%" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 40, 88, 4, new String[] { "Water: " + control.water + "/" + control.maxWater + "mB" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 46, 88, 4, new String[] { "Coolant: " + control.cool + "/" + control.maxCool + "mB" });
 		
 
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 7, guiTop + 16, 18, 18, new String[] { "Reactor Status: " + (control.isOn ? "ON" : "OFF") });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 43, guiTop + 16, 18, 18, new String[] { "Automatic Shutdown: " + (control.auto ? "ENABLED" : "DISABLED") });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 7, guiTop + 16, 18, 18, new String[] { "Reactor Status: " + (control.isOn ? "ON" : "OFF") });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 43, guiTop + 16, 18, 18, new String[] { "Automatic Shutdown: " + (control.auto ? "ENABLED" : "DISABLED") });
 
 		
 		if(!control.isLinked) {
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 79, guiTop + 16, 18, 18, new String[] { "Reactor link not found!" });
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 79, guiTop + 16, 18, 18, new String[] { "Reactor link not found!" });
 		}
 
 		if(control.water < control.maxWater * 0.1) {
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 79 + 18, guiTop + 16, 18, 18, new String[] { "Water level low!" });
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 79 + 18, guiTop + 16, 18, 18, new String[] { "Water level low!" });
 		}
 		
 		if(control.cool < control.maxCool * 0.1) {
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 79 + 18 * 2, guiTop + 16, 18, 18, new String[] { "Coolant level low!" });
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 79 + 18 * 2, guiTop + 16, 18, 18, new String[] { "Coolant level low!" });
 		}
 		
 		if(control.steam > control.maxSteam * 0.95) {
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 79 + 18 * 3, guiTop + 16, 18, 18, new String[] { "Steam buffer full!" });
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 79 + 18 * 3, guiTop + 16, 18, 18, new String[] { "Steam buffer full!" });
 		}
 		
 		if(control.coreHeat > (50000 * 0.85)) {
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 79 + 18 * 4, guiTop + 16, 18, 18, new String[] { "CORE TEMPERATURE CRITICAL!!" });
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 79 + 18 * 4, guiTop + 16, 18, 18, new String[] { "CORE TEMPERATURE CRITICAL!!" });
 		}
 		
 		String s = "";
@@ -68,10 +68,10 @@ public class GUIReactorControl extends GuiInfoContainer {
 		case 1: s = "Dense Steam"; break;
 		case 2: s = "Super Dense Steam"; break;
 		}
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 52, 88, 4, new String[] { s + ": " + control.steam + "/" + control.maxSteam + "mB" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 52, 88, 4, new String[] { s + ": " + control.steam + "/" + control.maxSteam + "mB" });
 		
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 58, 88, 4, new String[] { "Hull Heat: " + Math.round((control.hullHeat) * 0.00001 * 980 + 20) + "°C" });
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 64, 88, 4, new String[] { "Core Heat: " + Math.round((control.coreHeat) * 0.00002 * 980 + 20) + "°C" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 58, 88, 4, new String[] { "Hull Heat: " + Math.round((control.hullHeat) * 0.00001 * 980 + 20) + "°C" });
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 80, guiTop + 64, 88, 4, new String[] { "Core Heat: " + Math.round((control.coreHeat) * 0.00002 * 980 + 20) + "°C" });
 		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 

@@ -116,4 +116,19 @@ public class ItemEnums {
     CONTROLLER_QUANTUM,
     ATOMIC_CLOCK,
   }
+
+  public enum EnumPartType {
+    PISTON_PNEUMATIC("piston_pneumatic"),
+    PISTON_HYDRAULIC("piston_hydraulic"),
+    PISTON_ELECTRIC("piston_electric"),
+    LDE("low_density_element"),
+    HDE("heavy_duty_element"),
+    GLASS_POLARIZED("glass_polarized");
+
+    final String texName;
+
+    EnumPartType(String texName) {
+      this.texName = texName;
+    }
+  }
 }

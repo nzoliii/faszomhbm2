@@ -33,7 +33,7 @@ public class GUIMachineRadGen extends GuiInfoContainer {
 			if(radgen.maxProgress[i] <= 0)
 				continue;
 
-			this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 65, guiTop + 18 + i * 5, 46, 5, new String[] {
+			this.drawCustomInfo(mouseX, mouseY, guiLeft + 65, guiTop + 18 + i * 5, 46, 5, new String[] {
 					"Slot " + (i + 1) + ":",
 					radgen.production[i] + "HE/t for",
 					(radgen.maxProgress[i] - radgen.progress[i]) + " ticks (" + ((radgen.maxProgress[i] - radgen.progress[i]) * 100 / radgen.maxProgress[i]) + "%)"

@@ -119,8 +119,8 @@ public class TileEntityTurretHIMARS extends TileEntityTurretBaseArtillery implem
 
     Vec3d pos = this.getTurretPos();
 
-    Vec3 delta = Vec3.createVectorHelper(tPos.x - pos.x, tPos.y - pos.y, tPos.z - pos.z);
-    double targetYaw = -Math.atan2(delta.xCoord, delta.zCoord);
+    Vec3d delta = new Vec3d(tPos.x - pos.x, tPos.y - pos.y, tPos.z - pos.z);
+    double targetYaw = -Math.atan2(delta.x, delta.z);
     double targetPitch = Math.PI / 4D;
 
     this.turnTowardsAngle(targetPitch, targetYaw);

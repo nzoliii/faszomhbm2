@@ -4,15 +4,14 @@ import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.threading.PacketThreading;
-import com.hbm.interfaces.IControlReceiver;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.UpgradeManager;
-import com.hbm.inventory.container.ContainerMachineSolderingStation;
+import com.hbm.inventory.container.ContainerMachineArcWelder;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
-import com.hbm.inventory.gui.GUIMachineSolderingStation;
-import com.hbm.inventory.recipes.SolderingRecipes;
-import com.hbm.inventory.recipes.SolderingRecipes.SolderingRecipe;
+import com.hbm.inventory.gui.GUIMachineArcWelder;
+import com.hbm.inventory.recipes.ArcWelderRecipes;
+import com.hbm.inventory.recipes.ArcWelderRecipes.*;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.DirPos;
@@ -38,7 +37,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,13 +44,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileEntityMachineSolderingStation extends TileEntityMachineBase
+public class TileEntityMachineArcWelder extends TileEntityMachineBase
     implements IEnergyReceiverMK2,
         IFluidStandardReceiver,
-        IControlReceiver,
         IGUIProvider,
         IUpgradeInfoProvider,
         IFluidCopiable,
@@ -60,7 +58,6 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
   public long power;
   public long maxPower = 2_000;
   public long consumption;
-  public boolean collisionPrevention = false;
 
   public int progress;
   public int processTime = 1;
@@ -70,10 +67,13 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
 
   private final UpgradeManager upgradeManager;
 
-  private static final int invSize = 11;
+  private static final int invSize = 8;
 
-  public TileEntityMachineSolderingStation() {
+  public TileEntityMachineArcWelder() {
     super(invSize);
+
+    this.tank = new FluidTankNTM(Fluids.NONE, 24_000);
+
     inventory =
         new ItemStackHandler(invSize) {
           @Override
@@ -83,15 +83,13 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
           }
 
           @Override
-          public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+          public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
             super.setStackInSlot(slot, stack);
 
             if (stack != ItemStack.EMPTY
-                && slot >= 9
-                && slot <= 10
+                && slot >= 6
+                && slot <= 7
                 && stack.getItem() instanceof ItemMachineUpgrade) {
-              final BlockPos pos = getPos();
-
               world.playSound(
                   null,
                   pos.getX() + 0.5,
@@ -104,24 +102,22 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
             }
           }
         };
+
     upgradeManager = new UpgradeManager();
-    this.tank = new FluidTankNTM(Fluids.NONE, 8_000);
   }
 
   @Override
-  public @NotNull String getName() {
-    return "container.machineSolderingStation";
+  public String getName() {
+    return "container.machineArcWelder";
   }
-
-  private SolderingRecipe recipe;
 
   @Override
   public void update() {
 
     if (!world.isRemote) {
 
-      this.power = Library.chargeTEFromItems(inventory, 7, this.getPower(), this.getMaxPower());
-      this.tank.setType(8, inventory);
+      this.power = Library.chargeTEFromItems(inventory, 4, this.getPower(), this.getMaxPower());
+      this.tank.setType(5, inventory);
 
       if (world.getTotalWorldTime() % 20 == 0) {
         for (DirPos dirPos : getConPos()) {
@@ -142,19 +138,14 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
         }
       }
 
-      recipe =
-          SolderingRecipes.getRecipe(
-              new ItemStack[] {
-                inventory.getStackInSlot(0),
-                inventory.getStackInSlot(1),
-                inventory.getStackInSlot(2),
-                inventory.getStackInSlot(3),
-                inventory.getStackInSlot(4),
-                inventory.getStackInSlot(5)
-              });
+      ArcWelderRecipe recipe =
+          ArcWelderRecipes.getRecipe(
+              inventory.getStackInSlot(0),
+              inventory.getStackInSlot(1),
+              inventory.getStackInSlot(2));
       long intendedMaxPower;
 
-      upgradeManager.eval(inventory, 9, 10);
+      upgradeManager.eval(inventory, 6, 7);
       int redLevel = upgradeManager.getLevel(UpgradeType.SPEED);
       int blueLevel = upgradeManager.getLevel(UpgradeType.POWER);
       int blackLevel = upgradeManager.getLevel(UpgradeType.OVERDRIVE);
@@ -177,28 +168,28 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
             this.progress = 0;
             this.consumeItems(recipe);
 
-            if (inventory.getStackInSlot(6).isEmpty()) {
-              inventory.setStackInSlot(6, recipe.output.copy());
+            if (inventory.getStackInSlot(3).isEmpty()) {
+              inventory.setStackInSlot(3, recipe.output.copy());
             } else {
-              inventory.getStackInSlot(6).grow(recipe.output.getCount());
+              inventory
+                  .getStackInSlot(3)
+                  .setCount(inventory.getStackInSlot(3).getCount() + recipe.output.getCount());
             }
 
             this.markDirty();
           }
 
-          if (world.getTotalWorldTime() % 20 == 0) {
+          if (world.getTotalWorldTime() % 2 == 0) {
             ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
-            ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
-            BlockPos pos = getPos();
             NBTTagCompound dPart = new NBTTagCompound();
-            dPart.setString("type", "tau");
-            dPart.setByte("count", (byte) 3);
+            dPart.setString("type", world.getTotalWorldTime() % 20 == 0 ? "tau" : "hadron");
+            dPart.setByte("count", (byte) 5);
             PacketThreading.createAllAroundThreadedPacket(
                 new AuxParticlePacketNT(
                     dPart,
-                    pos.getX() + 0.5 - dir.offsetX * 0.5 + rot.offsetX * 0.5,
-                    pos.getY() + 1.125,
-                    pos.getZ() + 0.5 - dir.offsetZ * 0.5 + rot.offsetZ * 0.5),
+                    pos.getX() + 0.5 - dir.offsetX * 0.5,
+                    pos.getY() + 1.25,
+                    pos.getZ() + 0.5 - dir.offsetZ * 0.5),
                 new TargetPoint(
                     world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 25));
           }
@@ -219,7 +210,45 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
     }
   }
 
-  public boolean canProcess(SolderingRecipe recipe) {
+  @Override
+  public void serialize(ByteBuf buf) {
+    super.serialize(buf);
+    buf.writeLong(power);
+    buf.writeLong(maxPower);
+    buf.writeLong(consumption);
+    buf.writeInt(progress);
+    buf.writeInt(processTime);
+
+    tank.serialize(buf);
+
+    ArcWelderRecipe recipe =
+        ArcWelderRecipes.getRecipe(
+            inventory.getStackInSlot(0), inventory.getStackInSlot(1), inventory.getStackInSlot(2));
+
+    if (recipe != null) {
+      buf.writeBoolean(true);
+      buf.writeInt(Item.getIdFromItem(recipe.output.getItem()));
+      buf.writeInt(recipe.output.getItemDamage());
+    } else buf.writeBoolean(false);
+  }
+
+  @Override
+  public void deserialize(ByteBuf buf) {
+    super.deserialize(buf);
+    power = buf.readLong();
+    maxPower = buf.readLong();
+    consumption = buf.readLong();
+    progress = buf.readInt();
+    processTime = buf.readInt();
+
+    tank.deserialize(buf);
+
+    if (buf.readBoolean()) {
+      this.display = new ItemStack(Item.getItemById(buf.readInt()), 1, buf.readInt());
+    } else this.display = null;
+  }
+
+  public boolean canProcess(ArcWelderRecipe recipe) {
 
     if (this.power < this.consumption) return false;
 
@@ -228,44 +257,22 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
       if (this.tank.getFill() < recipe.fluid.fill) return false;
     }
 
-    if (collisionPrevention && recipe.fluid == null && this.tank.getFill() > 0) return false;
+    ItemStack stack = inventory.getStackInSlot(3);
 
-    if (!inventory.getStackInSlot(6).isEmpty()) {
-      if (inventory.getStackInSlot(6).getItem() != recipe.output.getItem()) return false;
-      if (inventory.getStackInSlot(6).getItemDamage() != recipe.output.getItemDamage())
-        return false;
-
-      if (inventory.getStackInSlot(6).getCount() + recipe.output.getCount()
-          > inventory.getStackInSlot(6).getMaxStackSize()) return false;
+    if (!stack.isEmpty()) {
+      if (stack.getItem() != recipe.output.getItem()) return false;
+      if (stack.getItemDamage() != recipe.output.getItemDamage()) return false;
+      if (stack.getCount() + recipe.output.getCount() > stack.getMaxStackSize()) return false;
     }
 
     return true;
   }
 
-  public void consumeItems(SolderingRecipe recipe) {
+  public void consumeItems(ArcWelderRecipe recipe) {
 
-    for (AStack aStack : recipe.toppings) {
+    for (AStack aStack : recipe.ingredients) {
+
       for (int i = 0; i < 3; i++) {
-        ItemStack stack = inventory.getStackInSlot(i);
-        if (aStack.matchesRecipe(stack, true) && stack.getCount() >= aStack.stacksize) {
-          inventory.getStackInSlot(i).shrink(aStack.stacksize);
-          break;
-        }
-      }
-    }
-
-    for (AStack aStack : recipe.pcb) {
-      for (int i = 3; i < 5; i++) {
-        ItemStack stack = inventory.getStackInSlot(i);
-        if (aStack.matchesRecipe(stack, true) && stack.getCount() >= aStack.stacksize) {
-          inventory.getStackInSlot(i).shrink(aStack.stacksize);
-          break;
-        }
-      }
-    }
-
-    for (AStack aStack : recipe.solder) {
-      for (int i = 5; i < 6; i++) {
         ItemStack stack = inventory.getStackInSlot(i);
         if (aStack.matchesRecipe(stack, true) && stack.getCount() >= aStack.stacksize) {
           inventory.getStackInSlot(i).shrink(aStack.stacksize);
@@ -279,102 +286,39 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
     }
   }
 
-  @Override
-  public boolean isItemValidForSlot(int slot, ItemStack stack) {
-    if (slot < 3) {
-      for (int i = 0; i < 3; i++)
-        if (i != slot
-            && !inventory.getStackInSlot(i).isEmpty()
-            && inventory.getStackInSlot(i).isItemEqual(stack)) return false;
-      for (AStack t : SolderingRecipes.toppings) if (t.matchesRecipe(stack, true)) return true;
-    } else if (slot < 5) {
-      for (int i = 3; i < 5; i++)
-        if (i != slot
-            && !inventory.getStackInSlot(i).isEmpty()
-            && inventory.getStackInSlot(i).isItemEqual(stack)) return false;
-      for (AStack t : SolderingRecipes.pcb) if (t.matchesRecipe(stack, true)) return true;
-    } else if (slot < 6) {
-      for (int i = 5; i < 6; i++)
-        if (i != slot
-            && !inventory.getStackInSlot(i).isEmpty()
-            && inventory.getStackInSlot(i).isItemEqual(stack)) return false;
-      for (AStack t : SolderingRecipes.solder) if (t.matchesRecipe(stack, true)) return true;
-    }
-    return false;
-  }
-
-  @Override
-  public boolean canExtractItem(int i, ItemStack itemStack, int j) {
-    return i == 6;
-  }
-
-  @Override
-  public int[] getAccessibleSlotsFromSide(EnumFacing side) {
-    return new int[] {0, 1, 2, 3, 4, 5, 6};
-  }
-
   protected DirPos[] getConPos() {
 
     ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
     ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
 
-    BlockPos pos = getPos();
-    int x = pos.getX();
-    int y = pos.getY();
-    int z = pos.getZ();
+    final int x = pos.getX();
+    final int y = pos.getY();
+    final int z = pos.getZ();
 
     return new DirPos[] {
       new DirPos(x + dir.offsetX, y, z + dir.offsetZ, dir),
       new DirPos(x + dir.offsetX + rot.offsetX, y, z + dir.offsetZ + rot.offsetZ, dir),
+      new DirPos(x + dir.offsetX - rot.offsetX, y, z + dir.offsetZ - rot.offsetZ, dir),
       new DirPos(x - dir.offsetX * 2, y, z - dir.offsetZ * 2, dir.getOpposite()),
       new DirPos(
           x - dir.offsetX * 2 + rot.offsetX,
           y,
           z - dir.offsetZ * 2 + rot.offsetZ,
           dir.getOpposite()),
-      new DirPos(x - rot.offsetX, y, z - rot.offsetZ, rot.getOpposite()),
       new DirPos(
-          x - dir.offsetX - rot.offsetX, y, z - dir.offsetZ - rot.offsetZ, rot.getOpposite()),
+          x - dir.offsetX * 2 - rot.offsetX,
+          y,
+          z - dir.offsetZ * 2 - rot.offsetZ,
+          dir.getOpposite()),
       new DirPos(x + rot.offsetX * 2, y, z + rot.offsetZ * 2, rot),
       new DirPos(x - dir.offsetX + rot.offsetX * 2, y, z - dir.offsetZ + rot.offsetZ * 2, rot),
+      new DirPos(x - rot.offsetX * 2, y, z - rot.offsetZ * 2, rot.getOpposite()),
+      new DirPos(
+          x - dir.offsetX - rot.offsetX * 2,
+          y,
+          z - dir.offsetZ - rot.offsetZ * 2,
+          rot.getOpposite())
     };
-  }
-
-  @Override
-  public void serialize(ByteBuf buf) {
-    super.serialize(buf);
-    buf.writeLong(this.power);
-    buf.writeLong(this.maxPower);
-    buf.writeLong(this.consumption);
-    buf.writeInt(this.progress);
-    buf.writeInt(this.processTime);
-    buf.writeBoolean(this.collisionPrevention);
-    buf.writeBoolean(recipe != null);
-    if (recipe != null) {
-      buf.writeInt(Item.getIdFromItem(recipe.output.getItem()));
-      buf.writeInt(recipe.output.getItemDamage());
-    }
-    this.tank.serialize(buf);
-  }
-
-  @Override
-  public void deserialize(ByteBuf buf) {
-    super.deserialize(buf);
-    this.power = buf.readLong();
-    this.maxPower = buf.readLong();
-    this.consumption = buf.readLong();
-    this.progress = buf.readInt();
-    this.processTime = buf.readInt();
-    this.collisionPrevention = buf.readBoolean();
-
-    if (buf.readBoolean()) {
-      int id = buf.readInt();
-      this.display = new ItemStack(Item.getItemById(id), 1, buf.readInt());
-    } else {
-      this.display = null;
-    }
-
-    this.tank.deserialize(buf);
   }
 
   @Override
@@ -385,7 +329,6 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
     this.maxPower = nbt.getLong("maxPower");
     this.progress = nbt.getInteger("progress");
     this.processTime = nbt.getInteger("processTime");
-    this.collisionPrevention = nbt.getBoolean("collisionPrevention");
     tank.readFromNBT(nbt, "t");
   }
 
@@ -397,7 +340,6 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
     nbt.setLong("maxPower", maxPower);
     nbt.setInteger("progress", progress);
     nbt.setInteger("processTime", processTime);
-    nbt.setBoolean("collisionPrevention", collisionPrevention);
     tank.writeToNBT(nbt, "t");
     return nbt;
   }
@@ -428,14 +370,56 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
   }
 
   @Override
+  public boolean isItemValidForSlot(int slot, ItemStack stack) {
+    return slot < 3;
+  }
+
+  @Override
+  public boolean canExtractItem(int slot, ItemStack stack, int side) {
+    return slot == 3;
+  }
+
+  @Override
+  public int[] getAccessibleSlotsFromSide(EnumFacing side) {
+    return new int[] {1, 3};
+  }
+
+  @Override
+  public boolean canInsertItem(int slot, ItemStack itemStack, int amount) {
+    return slot < 3;
+  }
+
+//  @Override
+//  public int[] getAccessibleSlotsFromSide(int x, int y, int z, EnumFacing side) {
+//    BlockPos pos = new BlockPos(x, y, z);
+//    ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
+//    ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
+//    BlockPos core = new BlockPos(xCoord, yCoord, zCoord);
+//
+//    // Red
+//    if (pos.equals(core.clone().offset(rot))
+//        || pos.equals(core.clone().offset(rot.getOpposite()).offset(dir.getOpposite())))
+//      return new int[] {0, 3};
+//
+//    // Yellow
+//    if (pos.equals(core.clone().offset(dir.getOpposite()))) return new int[] {1, 3};
+//
+//    // Green
+//    if (pos.equals(core.clone().offset(rot.getOpposite()))
+//        || pos.equals(core.clone().offset(rot).offset(dir.getOpposite()))) return new int[] {2, 3};
+//
+//    return new int[] {};
+//  }
+
+  @Override
   public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
-    return new ContainerMachineSolderingStation(player.inventory, this);
+    return new ContainerMachineArcWelder(player.inventory, this);
   }
 
   @Override
   @SideOnly(Side.CLIENT)
   public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
-    return new GUIMachineSolderingStation(player.inventory, this);
+    return new GUIMachineArcWelder(player.inventory, this);
   }
 
   AxisAlignedBB bb = null;
@@ -464,18 +448,14 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
   }
 
   @Override
-  public boolean canProvideInfo(
-      ItemMachineUpgrade.UpgradeType type, int level, boolean extendedInfo) {
-    return type == ItemMachineUpgrade.UpgradeType.SPEED
-        || type == ItemMachineUpgrade.UpgradeType.POWER
-        || type == ItemMachineUpgrade.UpgradeType.OVERDRIVE;
+  public boolean canProvideInfo(UpgradeType type, int level, boolean extendedInfo) {
+    return type == UpgradeType.SPEED || type == UpgradeType.POWER || type == UpgradeType.OVERDRIVE;
   }
 
   @Override
-  public void provideInfo(
-      ItemMachineUpgrade.UpgradeType type, int level, List<String> info, boolean extendedInfo) {
-    info.add(IUpgradeInfoProvider.getStandardLabel(ModBlocks.machine_soldering_station));
-    if (type == ItemMachineUpgrade.UpgradeType.SPEED) {
+  public void provideInfo(UpgradeType type, int level, List<String> info, boolean extendedInfo) {
+    info.add(IUpgradeInfoProvider.getStandardLabel(ModBlocks.machine_arc_welder));
+    if (type == UpgradeType.SPEED) {
       info.add(
           ChatFormatting.GREEN
               + I18nUtil.resolveKey(this.KEY_DELAY, "-" + (level * 100 / 6) + "%"));
@@ -483,40 +463,29 @@ public class TileEntityMachineSolderingStation extends TileEntityMachineBase
           ChatFormatting.RED
               + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "+" + (level * 100) + "%"));
     }
-    if (type == ItemMachineUpgrade.UpgradeType.POWER) {
+    if (type == UpgradeType.POWER) {
       info.add(
           ChatFormatting.GREEN
               + I18nUtil.resolveKey(this.KEY_CONSUMPTION, "-" + (level * 100 / 6) + "%"));
       info.add(
           ChatFormatting.RED + I18nUtil.resolveKey(this.KEY_DELAY, "+" + (level * 100 / 3) + "%"));
     }
-    if (type == ItemMachineUpgrade.UpgradeType.OVERDRIVE) {
+    if (type == UpgradeType.OVERDRIVE) {
       info.add((BobMathUtil.getBlink() ? ChatFormatting.RED : ChatFormatting.DARK_GRAY) + "YES");
     }
   }
 
   @Override
-  public HashMap<ItemMachineUpgrade.UpgradeType, Integer> getValidUpgrades() {
-    HashMap<ItemMachineUpgrade.UpgradeType, Integer> upgrades = new HashMap<>();
-    upgrades.put(ItemMachineUpgrade.UpgradeType.SPEED, 3);
-    upgrades.put(ItemMachineUpgrade.UpgradeType.POWER, 3);
-    upgrades.put(ItemMachineUpgrade.UpgradeType.OVERDRIVE, 3);
+  public HashMap<UpgradeType, Integer> getValidUpgrades() {
+    HashMap<UpgradeType, Integer> upgrades = new HashMap<>();
+    upgrades.put(UpgradeType.SPEED, 3);
+    upgrades.put(UpgradeType.POWER, 3);
+    upgrades.put(UpgradeType.OVERDRIVE, 3);
     return upgrades;
   }
 
   @Override
   public FluidTankNTM getTankToPaste() {
     return tank;
-  }
-
-  @Override
-  public boolean hasPermission(EntityPlayer player) {
-    return this.isUseableByPlayer(player);
-  }
-
-  @Override
-  public void receiveControl(NBTTagCompound data) {
-    this.collisionPrevention = !this.collisionPrevention;
-    this.markDirty();
   }
 }

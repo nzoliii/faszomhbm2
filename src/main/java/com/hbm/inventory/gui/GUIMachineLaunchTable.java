@@ -21,6 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.List;
 
 public class GUIMachineLaunchTable extends GuiInfoContainer {
 
@@ -42,16 +43,16 @@ public class GUIMachineLaunchTable extends GuiInfoContainer {
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 116, guiTop + 36, 16, 34, launcher.tanks[0], launcher.tankTypes[0]);
 		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 36, 16, 34, launcher.tanks[1], launcher.tankTypes[1]);
 
-		String [] text2 = I18nUtil.resolveKeyArray("desc.guimacheltable1");
-		String [] text3 = I18nUtil.resolveKeyArray("desc.guimacheltable2");
-		String [] text4 = I18nUtil.resolveKeyArray("desc.guimacheltable3");
-		String [] text5 = I18nUtil.resolveKeyArray("desc.solidfuellaunch", launcher.solid);
+		String[] text2 = I18nUtil.resolveKeyArray("desc.guimacheltable1");
+		String[] text3 = I18nUtil.resolveKeyArray("desc.guimacheltable2");
+		String[] text4 = I18nUtil.resolveKeyArray("desc.guimacheltable3");
+		String[] text5 = I18nUtil.resolveKeyArray("desc.solidfuellaunch", launcher.solid);
 		
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 152, guiTop + 88 - 52, 16, 52, text5);
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 152, guiTop + 88 - 52, 16, 52, text5);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 113, 34, 6, launcher.power, TileEntityLaunchTable.maxPower);
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 7, guiTop + 98, 18, 18, text2);
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 25, guiTop + 98, 18, 18, text3);
-		this.drawCustomInfo(this, mouseX, mouseY, guiLeft + 43, guiTop + 98, 18, 18, text4);
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 7, guiTop + 98, 18, 18, text2);
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 25, guiTop + 98, 18, 18, text3);
+		this.drawCustomInfo(mouseX, mouseY, guiLeft + 43, guiTop + 98, 18, 18, text4);
 
 		String[] text = I18nUtil.resolveKeyArray("desc.guimacheltable4");
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft - 16, guiTop + 36, 16, 16, guiLeft - 8, guiTop + 36 + 16, text);

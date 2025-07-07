@@ -66,16 +66,16 @@ public class FT_Heatable extends FluidTrait {
 		}
 	}
 	
-	public static enum HeatingType {
+	public enum HeatingType {
 		BOILER("trait.htype.boiler"),
 		HEATEXCHANGER("trait.htype.heatexch"),
 		PWR("trait.htype.pwr"),
 		ICF("trait.htype.icf"),
 		PA("trait.htype.pa");
 		
-		public String name;
+		public final String name;
 		
-		private HeatingType(String name) {
+		HeatingType(String name) {
 			this.name = name;
 		}
 	}
