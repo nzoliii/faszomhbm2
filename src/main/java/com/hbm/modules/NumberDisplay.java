@@ -1,11 +1,8 @@
 package com.hbm.modules;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
-
-import javax.annotation.Nonnegative;
-
+import com.google.common.annotations.Beta;
+import com.hbm.inventory.gui.GuiInfoContainer;
+import com.hbm.util.BobMathUtil;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,9 +10,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.annotations.Beta;
-import com.hbm.inventory.gui.GuiInfoContainer;
-import com.hbm.util.BobMathUtil;
+import javax.annotation.Nonnegative;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
 
 
 /**
@@ -100,7 +98,7 @@ public class NumberDisplay {
     }
 
     /**
-     * Returns a hexadecimal from EnumChatFormatting
+     * Returns a hexadecimal from TextFormatting
      * @param c Color to use
      * @return
      */

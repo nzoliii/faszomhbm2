@@ -1,28 +1,17 @@
 package com.hbm.explosion.vanillant;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
-import com.hbm.explosion.vanillant.interfaces.IBlockAllocator;
-import com.hbm.explosion.vanillant.interfaces.IBlockProcessor;
-import com.hbm.explosion.vanillant.interfaces.IEntityProcessor;
-import com.hbm.explosion.vanillant.interfaces.IExplosionSFX;
-import com.hbm.explosion.vanillant.interfaces.IPlayerProcessor;
-import com.hbm.explosion.vanillant.standard.BlockAllocatorStandard;
-import com.hbm.explosion.vanillant.standard.BlockProcessorStandard;
-import com.hbm.explosion.vanillant.standard.CustomDamageHandlerAmat;
-import com.hbm.explosion.vanillant.standard.EntityProcessorStandard;
-import com.hbm.explosion.vanillant.standard.ExplosionEffectAmat;
-import com.hbm.explosion.vanillant.standard.ExplosionEffectStandard;
-import com.hbm.explosion.vanillant.standard.PlayerProcessorStandard;
-
+import com.hbm.explosion.vanillant.interfaces.*;
+import com.hbm.explosion.vanillant.standard.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Time to over-engineer this into fucking oblivion so that I never have to write a vanilla-esque explosion class ever again

@@ -2,7 +2,6 @@ package com.hbm.wiaj.actions;
 
 import com.hbm.wiaj.JarScene;
 import com.hbm.wiaj.WorldInAJar;
-
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ActionSetActorData implements IJarAction {

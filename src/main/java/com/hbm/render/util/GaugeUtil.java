@@ -3,14 +3,17 @@ package com.hbm.render.util;
 import com.hbm.lib.RefStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 public class GaugeUtil {
 
-	public static enum Gauge {
+	public enum Gauge {
 
 		ROUND_SMALL(new ResourceLocation(RefStrings.MODID + ":textures/gui/gauges/small_round.png"), 18, 18, 13),
 		ROUND_LARGE(new ResourceLocation(RefStrings.MODID + ":textures/gui/gauges/large_round.png"), 36, 36, 13),
@@ -25,7 +28,7 @@ public class GaugeUtil {
 		int height;
 		int count;
 
-		private Gauge(ResourceLocation texture, int width, int height, int count) {
+		Gauge(ResourceLocation texture, int width, int height, int count) {
 			this.texture = texture;
 			this.width = width;
 			this.height = height;
@@ -59,4 +62,56 @@ public class GaugeUtil {
 		tess.draw();
 	}
 
+	public static void drawSmoothGauge(int x, int y, double z, double progress, double tipLength, double backLength, double backSide, int color) {
+		drawSmoothGauge(x, y, z, progress, tipLength, backLength, backSide, color, 0x000000);
+	}
+
+	public static void drawSmoothGauge(int x, int y, double z, double progress, double tipLength, double backLength, double backSide, int color, int colorOuter) {
+		GlStateManager.disableTexture2D();
+
+		progress = MathHelper.clamp(progress, 0, 1);
+		float angle = (float) Math.toRadians(-progress * 270 - 45);
+
+		Vec3d tip = new Vec3d(0, tipLength, 0);
+		Vec3d left = new Vec3d(backSide, -backLength, 0);
+		Vec3d right = new Vec3d(-backSide, -backLength, 0);
+
+		tip = rotateZ(tip, angle);
+		left = rotateZ(left, angle);
+		right = rotateZ(right, angle);
+
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+		float r_outer = (float)(colorOuter >> 16 & 255) / 255.0F;
+		float g_outer = (float)(colorOuter >> 8 & 255) / 255.0F;
+		float b_outer = (float)(colorOuter & 255) / 255.0F;
+
+		float r_inner = (float)(color >> 16 & 255) / 255.0F;
+		float g_inner = (float)(color >> 8 & 255) / 255.0F;
+		float b_inner = (float)(color & 255) / 255.0F;
+
+		bufferbuilder.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+
+		double mult = 1.5;
+		bufferbuilder.pos(x + tip.x * mult, y + tip.y * mult, z).color(r_outer, g_outer, b_outer, 1.0F).endVertex();
+		bufferbuilder.pos(x + left.x * mult, y + left.y * mult, z).color(r_outer, g_outer, b_outer, 1.0F).endVertex();
+		bufferbuilder.pos(x + right.x * mult, y + right.y * mult, z).color(r_outer, g_outer, b_outer, 1.0F).endVertex();
+
+		bufferbuilder.pos(x + tip.x, y + tip.y, z).color(r_inner, g_inner, b_inner, 1.0F).endVertex();
+		bufferbuilder.pos(x + left.x, y + left.y, z).color(r_inner, g_inner, b_inner, 1.0F).endVertex();
+		bufferbuilder.pos(x + right.x, y + right.y, z).color(r_inner, g_inner, b_inner, 1.0F).endVertex();
+
+		tessellator.draw();
+
+		GlStateManager.enableTexture2D();
+	}
+
+	private static Vec3d rotateZ(Vec3d vec, float angle) {
+		float cos = MathHelper.cos(angle);
+		float sin = MathHelper.sin(angle);
+		double newX = vec.x * cos - vec.y * sin;
+		double newY = vec.x * sin + vec.y * cos;
+		return new Vec3d(newX, newY, vec.z);
+	}
 }

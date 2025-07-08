@@ -1,11 +1,8 @@
 package com.hbm.dim.Ike;
 
-import java.util.List;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.dim.ChunkProviderCelestial;
 import com.hbm.dim.mapgen.MapGenTiltedSpires;
-
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,6 +13,7 @@ import net.minecraft.world.gen.MapGenBase;
 import net.minecraft.world.gen.MapGenCaves;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class ChunkProviderIke extends ChunkProviderCelestial {
 	

@@ -1,113 +1,79 @@
 package com.hbm.tileentity.machine;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
-import com.hbm.interfaces.ITankPacketAcceptor;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
+import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
-public class TileEntityMachinePuF6Tank extends TileEntity implements ITickable, ITankPacketAcceptor {
+import javax.annotation.Nullable;
 
-	public ItemStackHandler inventory;
-
-	public FluidTank tank;
-	public Fluid tankType;
+public class TileEntityMachinePuF6Tank extends TileEntityMachineBase implements ITickable, IFluidStandardTransceiver {
+	public FluidTankNTM tank;
 
 	//private static final int[] slots_top = new int[] {0};
 	//private static final int[] slots_bottom = new int[] {1, 3};
 	//private static final int[] slots_side = new int[] {2};
 	
-	private String customName;
-	
 	public TileEntityMachinePuF6Tank() {
-		inventory = new ItemStackHandler(4){
-			@Override
-			protected void onContentsChanged(int slot) {
-				markDirty();
-				super.onContentsChanged(slot);
-			}
-		};
-		tank = new FluidTank(64000);
-		tankType = ModForgeFluids.puf6;
-	}
-	
-	public String getInventoryName() {
-		return this.hasCustomInventoryName() ? this.customName : "container.puf6_tank";
+		super(4);
+		tank = new FluidTankNTM(Fluids.PUF6, 64000);
 	}
 
-	public boolean hasCustomInventoryName() {
-		return this.customName != null && this.customName.length() > 0;
+	@Override
+	public String getName() {
+		return "container.puf6_tank";
 	}
-	
-	public void setCustomName(String name) {
-		this.customName = name;
-	}
+
 	
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		if(world.getTileEntity(pos) != this)
-		{
+		if(world.getTileEntity(pos) != this) {
 			return false;
-		}else{
+		} else {
 			return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <=64;
 		}
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		tank.readFromNBT(compound);
-		tankType = ModForgeFluids.puf6;
-		if(compound.hasKey("inventory"))
-			inventory.deserializeNBT(compound.getCompoundTag("inventory"));
 		super.readFromNBT(compound);
+		tank.readFromNBT(compound, "tank");
 	}
-	
+
+	@NotNull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		tank.writeToNBT(compound);
-		compound.setTag("inventory", inventory.serializeNBT());
+		tank.writeToNBT(compound, "tank");
 		return super.writeToNBT(compound);
 	}
 	
 	@Override
 	public void update() {
-		if(!world.isRemote)
-		{
-			if(this.inputValidForTank(-1, 0))
-				FFUtils.fillFromFluidContainer(inventory, tank, 0, 1);
-			FFUtils.fillFluidContainer(inventory, tank, 2, 3);
-			
-			PacketDispatcher.wrapper.sendToAll(new FluidTankPacket(pos.getX(), pos.getY(), pos.getZ(), new FluidTank[]{tank}));
+		if(!world.isRemote) {
+			tank.loadTank(0, 1, inventory);
+			tank.unloadTank(2, 3, inventory);
 		}
 	}
-	
-	protected boolean inputValidForTank(int irrelevant, int slot){
-		if(!inventory.getStackInSlot(slot).isEmpty() && tank != null){
-			if(isValidFluidForTank(FluidUtil.getFluidContained(inventory.getStackInSlot(slot)))){
-				return true;
-			}
-		}
-		return false;
+
+	@Override
+	public void serialize(ByteBuf buf){
+		tank.serialize(buf);
 	}
-	
-	private boolean isValidFluidForTank(FluidStack stack) {
-		if(stack == null || tank == null)
-			return false;
-		return stack.getFluid() == tankType;
+
+	@Override
+	public void deserialize(ByteBuf buf){
+		tank.deserialize(buf);
 	}
 	
 	@Override
@@ -123,25 +89,35 @@ public class TileEntityMachinePuF6Tank extends TileEntity implements ITickable, 
 	}
 
 	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length != 1){
-			return;
-		} else {
-			tank.readFromNBT(tags[0]);
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return true;
 		}
+		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
 		}
 		return super.getCapability(capability, facing);
 	}
-	
+
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	public FluidTankNTM[] getSendingTanks() {
+		return new FluidTankNTM[]{tank};
 	}
 
+	@Override
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[]{tank};
+	}
+
+	@Override
+	public FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{tank};
+	}
 }

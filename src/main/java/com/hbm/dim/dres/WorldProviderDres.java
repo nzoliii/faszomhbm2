@@ -2,23 +2,17 @@ package com.hbm.dim.dres;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.SpaceConfig;
-import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.dim.WorldChunkManagerCelestial;
+import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.dim.WorldProviderCelestial;
 import com.hbm.dim.dres.GenLayerDres.GenLayerDiversifyDres;
 import com.hbm.dim.dres.GenLayerDres.GenLayerDresBasins;
 import com.hbm.dim.dres.GenLayerDres.GenLayerDresBiomes;
 import com.hbm.dim.dres.GenLayerDres.GenLayerDresPlains;
-
 import net.minecraft.block.Block;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.layer.GenLayer;
-import net.minecraft.world.gen.layer.GenLayerFuzzyZoom;
-import net.minecraft.world.gen.layer.GenLayerSmooth;
-import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
-import net.minecraft.world.gen.layer.GenLayerZoom;
+import net.minecraft.world.gen.layer.*;
 
 public class WorldProviderDres extends WorldProviderCelestial {
 	

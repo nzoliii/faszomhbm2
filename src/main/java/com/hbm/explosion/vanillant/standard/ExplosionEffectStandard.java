@@ -1,7 +1,5 @@
 package com.hbm.explosion.vanillant.standard;
 
-import java.util.List;
-
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.interfaces.IExplosionSFX;
 import com.hbm.packet.ExplosionVanillaNewTechnologyCompressedAffectedBlockPositionDataForClientEffectsAndParticleHandlingPacket;
@@ -13,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+
+import java.util.List;
 
 public class ExplosionEffectStandard implements IExplosionSFX {
 

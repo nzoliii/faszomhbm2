@@ -3,7 +3,6 @@ package com.hbm.render.entity.effect;
 import com.hbm.entity.effect.EntityMist;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import org.jetbrains.annotations.Nullable;

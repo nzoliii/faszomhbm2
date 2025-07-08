@@ -5,12 +5,12 @@ import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineChemfac;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class GUIChemfac extends GuiInfoContainer {
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_chemfac.png");

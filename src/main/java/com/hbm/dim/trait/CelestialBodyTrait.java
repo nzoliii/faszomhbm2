@@ -1,12 +1,11 @@
 package com.hbm.dim.trait;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.HashBiMap;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CelestialBodyTrait {
 

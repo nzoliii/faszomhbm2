@@ -1,55 +1,33 @@
 package com.hbm.lib;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.Map;
-import java.util.TreeMap;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
-import javax.annotation.Nullable;
-
+import api.hbm.energymk2.IEnergyConnectorBlock;
 import api.hbm.energymk2.IEnergyConnectorMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidConnector;
 import api.hbm.fluid.IFluidConnectorBlock;
-import api.hbm.fluid.IFluidStandardReceiver;
-import api.hbm.fluid.IFluidStandardSender;
-import com.hbm.interfaces.IFluidAcceptor;
-import com.hbm.interfaces.IFluidDuct;
-import com.hbm.interfaces.IFluidSource;
-import com.hbm.inventory.fluid.FluidType;
-import com.hbm.tileentity.TileEntityProxyInventory;
-import org.apache.logging.log4j.Level;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
-import com.hbm.main.MainRegistry;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmLivingCapability.EntityHbmPropsProvider;
 import com.hbm.capability.HbmLivingCapability.IEntityHbmProps;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
 import com.hbm.handler.WeightedRandomChestContentFrom1710;
+import com.hbm.interfaces.IFluidAcceptor;
+import com.hbm.interfaces.IFluidDuct;
+import com.hbm.interfaces.IFluidSource;
 import com.hbm.interfaces.Spaghetti;
+import com.hbm.inventory.fluid.FluidType;
 import com.hbm.items.ModItems;
+import com.hbm.main.MainRegistry;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.tileentity.TileEntityProxyInventory;
 import com.hbm.util.BobMathUtil;
-
-import api.hbm.energymk2.IBatteryItem;
-import api.hbm.energymk2.IEnergyConnectorBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -62,23 +40,27 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandom;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
+
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.*;
 
 @Spaghetti("this whole class")
 public class Library {
@@ -284,53 +266,27 @@ public class Library {
 
 	// Drillgon200: Just realized I copied the wrong method. God dang it.
 	// It works though. Not sure why, but it works.
+	// mlbv: refactored with brand new NTMBatteryCapabilityHandler helpers
 	public static long chargeTEFromItems(IItemHandlerModifiable inventory, int index, long power, long maxPower) {
-		if(inventory.getStackInSlot(index).getItem() == ModItems.battery_creative)
-		{
+		ItemStack stack = inventory.getStackInSlot(index);
+		if (stack.getItem() == ModItems.battery_creative || stack.getItem() == ModItems.fusion_core_infinite) {
 			return maxPower;
 		}
-		
-		if(inventory.getStackInSlot(index).getItem() == ModItems.fusion_core_infinite)
-		{
-			return maxPower;
-		}
-		
-		if(inventory.getStackInSlot(index).getItem() instanceof IBatteryItem) {
-			
-			IBatteryItem battery = (IBatteryItem) inventory.getStackInSlot(index).getItem();
-
-			long batCharge = battery.getCharge(inventory.getStackInSlot(index));
-			long batRate = battery.getDischargeRate();
-			
-			//in hHe
-			long toDischarge = Math.min(Math.min((maxPower - power), batRate), batCharge);
-			
-			battery.dischargeBattery(inventory.getStackInSlot(index), toDischarge);
-			power += toDischarge;
-		}
-		
-		return power;
+		long powerNeeded = maxPower - power;
+		if (powerNeeded <= 0) return power;
+		long heExtracted = NTMBatteryCapabilityHandler.extractChargeIfValid(stack, powerNeeded, false);
+		return power + heExtracted;
 	}
 
 	//not great either but certainly better
+	// mlbv: a lot better now
 	public static long chargeItemsFromTE(IItemHandlerModifiable inventory, int index, long power, long maxPower) {
-		if(inventory.getStackInSlot(index).getItem() instanceof IBatteryItem) {
-			IBatteryItem battery = (IBatteryItem) inventory.getStackInSlot(index).getItem();
-			ItemStack stack = inventory.getStackInSlot(index);
-			
-			long batMax = battery.getMaxCharge();
-			long batCharge = battery.getCharge(stack);
-			long batRate = battery.getChargeRate();
-			
-			//in hHE
-			long toCharge = Math.min(Math.min(power, batRate), batMax - batCharge);
-			
-			power -= toCharge;
-			
-			battery.chargeBattery(stack, toCharge);
+		ItemStack stackToCharge = inventory.getStackInSlot(index);
+		if (stackToCharge.isEmpty() || power <= 0) {
+			return power;
 		}
-		
-		return power;
+		long heCharged = NTMBatteryCapabilityHandler.addChargeIfValid(stackToCharge, power, false);
+		return power - heCharged;
 	}
 
 	public static boolean isArrayEmpty(Object[] array) {
@@ -839,6 +795,9 @@ public static boolean canConnect(IBlockAccess world, BlockPos pos, ForgeDirectio
 	//Th3_Sl1ze: Sincerely I hate deprecated interfaces but couldn't figure out how to make mechs work without them. Will let them live for now
 
 	/** dir is the direction along the fluid duct entering the block */
+	public static boolean canConnectFluid(IBlockAccess world, BlockPos pos, ForgeDirection dir /* duct's connecting side */, FluidType type) {
+		return canConnectFluid(world, pos.getX(),pos.getY(),pos.getZ(),dir,type);
+	}
 	public static boolean canConnectFluid(IBlockAccess world, int x, int y, int z, ForgeDirection dir /* duct's connecting side */, FluidType type) {
 
 		if(y > 255 || y < 0)

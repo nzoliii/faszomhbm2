@@ -1,17 +1,16 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.inventory.material.Mats.MaterialStack;
-import com.hbm.lib.ItemStackHandlerWrapper;
-import com.hbm.lib.ForgeDirection;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMold;
 import com.hbm.items.machine.ItemMold.Mold;
-
+import com.hbm.lib.ForgeDirection;
+import com.hbm.lib.ItemStackHandlerWrapper;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;

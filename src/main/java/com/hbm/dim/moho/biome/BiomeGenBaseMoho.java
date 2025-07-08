@@ -3,7 +3,6 @@ package com.hbm.dim.moho.biome;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.dim.BiomeDecoratorCelestial;
 import com.hbm.dim.BiomeGenBaseCelestial;
-
 import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeGenBaseMoho extends BiomeGenBaseCelestial {

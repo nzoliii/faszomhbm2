@@ -1,17 +1,15 @@
 package com.hbm.explosion.vanillant.standard;
 
-import java.util.HashSet;
-
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.interfaces.IBlockAllocator;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+
+import java.util.HashSet;
 
 public class BlockAllocatorStandard implements IBlockAllocator {
 

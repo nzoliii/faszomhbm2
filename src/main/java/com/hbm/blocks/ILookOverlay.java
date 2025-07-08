@@ -16,20 +16,20 @@ import java.util.List;
 public interface ILookOverlay {
 
 	@SideOnly(Side.CLIENT)
-	public void printHook(RenderGameOverlayEvent.Pre event, World world, int x, int y, int z);
+	void printHook(RenderGameOverlayEvent.Pre event, World world, int x, int y, int z);
 
 	@SideOnly(Side.CLIENT)
-	public default void printHook(RenderGameOverlayEvent.Pre event, World world, BlockPos pos){
+	default void printHook(RenderGameOverlayEvent.Pre event, World world, BlockPos pos){
 		printHook(event, world, pos.getX(), pos.getY(), pos.getZ());
-	};
+	}
 
-	@SideOnly(Side.CLIENT)
-	public static void printGeneric(RenderGameOverlayEvent.Pre event, String title, int titleCol, int bgCol, List<String> text) {
+    @SideOnly(Side.CLIENT)
+	static void printGeneric(RenderGameOverlayEvent.Pre event, String title, int titleCol, int bgCol, List<String> text) {
 
 		Minecraft mc = Minecraft.getMinecraft();
 		ScaledResolution resolution = event.getResolution();
 
-		GL11.glPushMatrix();
+		GlStateManager.pushMatrix();
 
 		int pX = resolution.getScaledWidth() / 2 + 8;
 		int pZ = resolution.getScaledHeight() / 2;
@@ -56,7 +56,7 @@ public interface ILookOverlay {
 
 		GlStateManager.disableBlend();
 
-		GL11.glPopMatrix();
+		GlStateManager.popMatrix();
 		Minecraft.getMinecraft().renderEngine.bindTexture(Gui.ICONS);
 	}
 }

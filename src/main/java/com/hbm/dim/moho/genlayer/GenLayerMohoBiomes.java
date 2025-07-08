@@ -1,7 +1,6 @@
 package com.hbm.dim.moho.genlayer;
 
 import com.hbm.dim.moho.biome.BiomeGenBaseMoho;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;

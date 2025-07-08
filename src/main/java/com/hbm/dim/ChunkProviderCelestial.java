@@ -1,18 +1,10 @@
 package com.hbm.dim;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import com.hbm.render.amlfrom1710.Vec3;
-import com.hbm.util.Compat;
-import com.hbm.world.WorldUtil;
 import com.hbm.world.biome.BiomeGenCraterBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.IProgressUpdate;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -21,14 +13,15 @@ import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.NoiseGenerator;
 import net.minecraft.world.gen.NoiseGeneratorOctaves;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraftforge.event.terraingen.InitNoiseGensEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
-import net.minecraftforge.fml.common.Loader;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public abstract class ChunkProviderCelestial implements IChunkGenerator {
 

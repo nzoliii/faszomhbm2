@@ -1,7 +1,6 @@
 package api.hbm.energymk2;
 
 import com.hbm.lib.DirPos;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;

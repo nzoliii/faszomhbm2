@@ -3,7 +3,6 @@ package com.hbm.items.machine;
 import com.hbm.util.BobMathUtil;
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

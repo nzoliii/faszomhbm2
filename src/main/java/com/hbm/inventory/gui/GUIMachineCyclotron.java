@@ -1,7 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerMachineCyclotron;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
@@ -20,8 +18,8 @@ import java.io.IOException;
 
 public class GUIMachineCyclotron extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/machine/gui_cyclotron.png");
-	private TileEntityMachineCyclotron cyclotron;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/machine/gui_cyclotron.png");
+	private final TileEntityMachineCyclotron cyclotron;
 
 	public GUIMachineCyclotron(InventoryPlayer invPlayer, TileEntityMachineCyclotron tile) {
 		super(new ContainerMachineCyclotron(invPlayer, tile));
@@ -36,10 +34,8 @@ public class GUIMachineCyclotron extends GuiInfoContainer {
 		super.drawScreen(mouseX, mouseY, f);
 
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 80, guiTop + 72, 7, 52, cyclotron.power, TileEntityMachineCyclotron.maxPower);
-
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 53, guiTop + 72, 7, 52, cyclotron.coolant, ModForgeFluids.coolant);
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 90, 7, 34, cyclotron.amat, ModForgeFluids.amat);
-
+		cyclotron.tankCoolant.renderTankInfo(this, mouseX, mouseY, guiLeft + 53, guiTop + 72, 7, 52);
+		cyclotron.tankAmat.renderTankInfo(this, mouseX, mouseY, guiLeft + 134, guiTop + 90, 7, 34);
 		String[] text = I18nUtil.resolveKeyArray("desc.guiacceptupgrades2");
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 21, guiTop + 75, 8, 8, mouseX, mouseY, text);
 		super.renderHoveredToolTip(mouseX, mouseY);
@@ -81,8 +77,7 @@ public class GUIMachineCyclotron extends GuiInfoContainer {
 			drawTexturedModalRect(guiLeft + 97, guiTop + 107, 219, 0, 18, 18);
 		
 		this.drawInfoPanel(guiLeft + 21, guiTop + 75, 8, 8, 8);
-
-		FFUtils.drawLiquid(cyclotron.coolant, guiLeft, guiTop, zLevel, 7, 52, 53, 152);
-		FFUtils.drawLiquid(cyclotron.amat, guiLeft, guiTop, zLevel, 7, 34, 134, 152);
+		cyclotron.tankCoolant.renderTank(guiLeft + 53, guiTop + 124, this.zLevel, 7, 52);
+		cyclotron.tankAmat.renderTank(guiLeft + 134, guiTop + 124, this.zLevel, 7, 34);
 	}
 }

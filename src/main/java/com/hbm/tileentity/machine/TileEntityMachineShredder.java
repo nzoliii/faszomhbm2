@@ -1,12 +1,11 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.ShredderRecipes;
-import com.hbm.inventory.container.ContainerMachineChemplant;
 import com.hbm.inventory.container.ContainerMachineShredder;
-import com.hbm.inventory.gui.GUIMachineChemplant;
 import com.hbm.inventory.gui.GUIMachineShredder;
 import com.hbm.items.machine.ItemBlades;
 import com.hbm.lib.ForgeDirection;
@@ -25,6 +24,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -65,7 +66,7 @@ public class TileEntityMachineShredder extends TileEntityMachineBase implements 
 	public boolean isItemValidForSlot(int i, ItemStack stack){
 		if (i < 9) {
 			return true;
-		} else if (i == 29 && stack.getItem() instanceof IBatteryItem) {
+		} else if (i == 29 && NTMBatteryCapabilityHandler.isBattery(stack)) {
 			return true;
 		} else {
 			return (i == 27 || i == 28) && stack.getItem() instanceof ItemBlades;
@@ -317,5 +318,23 @@ public class TileEntityMachineShredder extends TileEntityMachineBase implements 
 	@SideOnly(Side.CLIENT)
 	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
     	return new GUIMachineShredder(player.inventory, this);
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 }

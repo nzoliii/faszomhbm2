@@ -1,6 +1,5 @@
 package com.hbm.tileentity.bomb;
 
-import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.bomb.Landmine;
 import com.hbm.lib.HBMSoundHandler;
 import net.minecraft.block.Block;

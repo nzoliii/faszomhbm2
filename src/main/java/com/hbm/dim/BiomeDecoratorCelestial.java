@@ -1,7 +1,5 @@
 package com.hbm.dim;
 
-import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.*;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +13,9 @@ import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 import net.minecraftforge.event.terraingen.TerrainGen;
 
 import java.util.Random;
+
+import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.LAKE_WATER;
+import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.EventType.REED;
 
 public class BiomeDecoratorCelestial extends BiomeDecorator {
 

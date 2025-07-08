@@ -1,9 +1,7 @@
 package com.hbm.items.tool;
 
 import com.hbm.items.ItemBase;
-import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class ItemCraftingDegradation extends ItemBase {

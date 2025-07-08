@@ -1,7 +1,7 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.recipes.MixerRecipes;
 import com.hbm.inventory.container.ContainerMixer;
+import com.hbm.inventory.recipes.MixerRecipes;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineMixer;
 import com.mojang.realmsclient.gui.ChatFormatting;

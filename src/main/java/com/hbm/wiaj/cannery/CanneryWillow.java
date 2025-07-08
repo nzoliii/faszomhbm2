@@ -1,7 +1,6 @@
 package com.hbm.wiaj.cannery;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.PlantEnums;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.items.ItemEnums;
 import com.hbm.items.ModItems;
@@ -15,7 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
-import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.*;
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.MUSTARD_WILLOW_0;
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.MUSTARD_WILLOW_1;
 import static com.hbm.blocks.PlantEnums.EnumTallPlantType.*;
 
 public class CanneryWillow extends CanneryBase {

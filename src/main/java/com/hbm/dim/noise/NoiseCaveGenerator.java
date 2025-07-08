@@ -1,9 +1,9 @@
 package com.hbm.dim.noise;
 
-import java.util.Random;
-
 import com.hbm.util.BobMathUtil;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Random;
 
 public final class NoiseCaveGenerator {
 

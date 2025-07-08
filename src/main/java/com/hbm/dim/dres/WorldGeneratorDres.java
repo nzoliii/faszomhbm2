@@ -1,7 +1,5 @@
 package com.hbm.dim.dres;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.SpaceConfig;
@@ -12,6 +10,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
+
+import java.util.Random;
 
 public class WorldGeneratorDres implements IWorldGenerator {
 

@@ -1,13 +1,5 @@
 package com.hbm.dim;
 
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.hbm.render.amlfrom1710.Vec3;
-import net.minecraft.util.math.MathHelper;
-import org.apache.commons.lang3.NotImplementedException;
-
 import com.hbm.config.SpaceConfig;
 import com.hbm.dim.trait.CBT_Atmosphere;
 import com.hbm.dim.trait.CBT_Temperature;
@@ -15,11 +7,17 @@ import com.hbm.dim.trait.CBT_Water;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
+import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.util.AstronomyUtil;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.NotImplementedException;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SolarSystem {
 	

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.BlockBase;
 import com.hbm.items.IDynamicModels;
 import com.hbm.render.block.BlockBakeFrame;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -17,8 +18,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 
-import static com.hbm.render.block.BlockBakeFrame.*;
-import static com.hbm.render.block.BlockBakeFrame.BlockForm.*;
+import static com.hbm.render.block.BlockBakeFrame.BlockForm.ALL;
 
 //Simple class for my baking system, automatically bakes block models from BlockBakeFrame
 public class BlockBakeBase extends BlockBase implements IDynamicModels {
@@ -80,6 +80,11 @@ public class BlockBakeBase extends BlockBase implements IDynamicModels {
             }
 
 
+    }
+
+    @Override
+    public Block getBlock() {
+        return this;
     }
 
     @Override

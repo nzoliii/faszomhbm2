@@ -3,8 +3,6 @@ package com.hbm.render.tileentity;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.ResourceManager;
-import com.hbm.tileentity.machine.rbmk.RBMKDials;
-import com.hbm.tileentity.machine.rbmk.TileEntityRBMKBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

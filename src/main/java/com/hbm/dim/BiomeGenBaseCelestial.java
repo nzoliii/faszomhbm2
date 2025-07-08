@@ -1,10 +1,10 @@
 package com.hbm.dim;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.biome.Biome;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class BiomeGenBaseCelestial extends Biome {
 

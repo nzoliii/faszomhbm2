@@ -1,17 +1,16 @@
 package com.hbm.explosion.vanillant.standard;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.interfaces.IPlayerProcessor;
 import com.hbm.packet.ExplosionKnockbackPacket;
 import com.hbm.packet.PacketDispatcher;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class PlayerProcessorStandard implements IPlayerProcessor {
 

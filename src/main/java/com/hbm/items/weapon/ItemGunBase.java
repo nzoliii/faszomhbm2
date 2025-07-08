@@ -44,7 +44,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class ItemGunBase extends Item implements IHoldableWeapon, IItemHUD {

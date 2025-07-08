@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
-import static com.hbm.inventory.RecipesCommon.*;
+import static com.hbm.inventory.RecipesCommon.ComparableStack;
 
 public class WasteDrumRecipes {
 

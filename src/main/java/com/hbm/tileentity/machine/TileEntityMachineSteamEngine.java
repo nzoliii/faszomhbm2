@@ -5,6 +5,7 @@ import api.hbm.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.Fluids;
@@ -28,6 +29,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -288,7 +290,7 @@ public class TileEntityMachineSteamEngine extends TileEntityLoadedBase
 
   @Override
   public boolean hasCapability(@NotNull Capability<?> capability, @Nullable EnumFacing facing) {
-    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
       return true;
     }
     return super.hasCapability(capability, facing);
@@ -299,6 +301,11 @@ public class TileEntityMachineSteamEngine extends TileEntityLoadedBase
     if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
       return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
               new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+      );
+    }
+    if (capability == CapabilityEnergy.ENERGY) {
+      return CapabilityEnergy.ENERGY.cast(
+              new NTMEnergyCapabilityWrapper(this)
       );
     }
     return super.getCapability(capability, facing);

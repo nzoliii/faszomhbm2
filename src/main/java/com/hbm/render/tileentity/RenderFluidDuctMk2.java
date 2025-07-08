@@ -1,7 +1,6 @@
 package com.hbm.render.tileentity;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.forgefluid.FFUtils;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.Library;
@@ -30,7 +29,13 @@ public class RenderFluidDuctMk2<T extends TileEntityPipeBaseNT> extends TileEnti
 			if (type == null) type = Fluids.NONE;
 			color = type.getColor();
 		}
-		if (type != Fluids.NONE) FFUtils.setRGBFromHex(color);
+		if (type != Fluids.NONE) {
+			float r = (color >> 16 & 0xFF) / 255F;
+			float g = (color >> 8 & 0xFF) / 255F;
+			float b = (color & 0xFF) / 255F;
+
+			GlStateManager.color(r, g, b, 1);
+		}
 
 		boolean pX = Library.canConnectFluid(Minecraft.getMinecraft().world, te.getPos().getX() + 1, te.getPos().getY(), te.getPos().getZ(), Library.POS_X, type);
 		boolean nX = Library.canConnectFluid(Minecraft.getMinecraft().world, te.getPos().getX() - 1, te.getPos().getY(), te.getPos().getZ(), Library.NEG_X, type);

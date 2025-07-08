@@ -26,6 +26,7 @@
     "block.broadcast3": {"category": "block", "sounds": [{"name": "hbm:block/broadcast3", "stream": false}]},
 	"block.boiler": {"category": "block", "sounds": [{"name": "hbm:block/boiler", "stream": false}]},
     "block.sonarPing": {"category": "block", "sounds": [{"name": "hbm:block/sonarPing", "stream": false}]},
+    "block.reactorLoop": {"category": "block", "sounds": [{"name": "hbm:block/reactorLoop", "stream": false}]},
     "block.reactorStart": {"category": "block", "sounds": [{"name": "hbm:block/reactorStart", "stream": false}]},
     "block.reactorStop": {"category": "block", "sounds": [{"name": "hbm:block/reactorStop", "stream": false}]},
     "block.vaultScrape": {"category": "block", "sounds": [{"name": "hbm:block/vaultScrape", "stream": false}]},

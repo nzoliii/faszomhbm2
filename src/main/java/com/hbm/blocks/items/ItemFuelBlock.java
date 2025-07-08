@@ -1,7 +1,6 @@
 package com.hbm.blocks.items;
 
 import com.hbm.blocks.generic.BlockFuel;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;

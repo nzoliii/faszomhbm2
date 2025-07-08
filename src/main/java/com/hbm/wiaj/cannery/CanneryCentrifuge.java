@@ -1,7 +1,5 @@
 package com.hbm.wiaj.cannery;
 
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
@@ -11,21 +9,15 @@ import com.hbm.util.I18nUtil;
 import com.hbm.wiaj.JarScene;
 import com.hbm.wiaj.JarScript;
 import com.hbm.wiaj.WorldInAJar;
-import com.hbm.wiaj.actions.ActionCreateActor;
-import com.hbm.wiaj.actions.ActionRemoveActor;
-import com.hbm.wiaj.actions.ActionSetBlock;
-import com.hbm.wiaj.actions.ActionSetTile;
-import com.hbm.wiaj.actions.ActionSetZoom;
-import com.hbm.wiaj.actions.ActionWait;
+import com.hbm.wiaj.actions.*;
 import com.hbm.wiaj.actors.ActorFancyPanel;
+import com.hbm.wiaj.actors.ActorFancyPanel.Orientation;
 import com.hbm.wiaj.actors.ActorTileEntity;
 import com.hbm.wiaj.actors.ITileActorRenderer;
-import com.hbm.wiaj.actors.ActorFancyPanel.Orientation;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.lwjgl.opengl.GL11;
 
 public class CanneryCentrifuge extends CanneryBase {
 

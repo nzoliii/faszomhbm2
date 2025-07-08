@@ -1,8 +1,5 @@
 package com.hbm.dim;
 
-import java.util.List;
-import java.util.Random;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeCache;
@@ -10,6 +7,9 @@ import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.List;
+import java.util.Random;
 
 public class WorldChunkManagerCelestial extends BiomeProvider {
 	

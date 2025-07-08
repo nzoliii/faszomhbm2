@@ -1,29 +1,37 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityBlackHole;
 import com.hbm.entity.logic.EntityBalefire;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.ExplosionThermo;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MultiblockHandler;
 import com.hbm.handler.threading.PacketThreading;
-import com.hbm.interfaces.ITankPacketAcceptor;
 import com.hbm.inventory.CyclotronRecipes;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.NbtComparableStack;
+import com.hbm.inventory.container.ContainerMachineCyclotron;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUIMachineCyclotron;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,14 +40,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,8 +52,11 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import org.jetbrains.annotations.NotNull;
 
-public class TileEntityMachineCyclotron extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidHandler, ITankPacketAcceptor {
+import javax.annotation.Nullable;
+
+public class TileEntityMachineCyclotron extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, IGUIProvider {
 
 	public long power;
 	public static final long maxPower = 100000000;
@@ -62,8 +70,8 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	public int progress;
 	public static final int duration = 690;
 
-	public FluidTank coolant;
-	public FluidTank amat;
+	public FluidTankNTM tankCoolant;
+	public FluidTankNTM tankAmat;
 
 
 	private TileEntity teIn1 = null;
@@ -89,8 +97,8 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 				super.setStackInSlot(slot, stack);
 			}
 		};
-		coolant = new FluidTank(32000);
-		amat = new FluidTank(8000);
+		tankCoolant = new FluidTankNTM(Fluids.COOLANT, 32000);
+		tankAmat = new FluidTankNTM(Fluids.AMAT,8000);
 	}
 	
 	@Override
@@ -312,93 +320,79 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	
 	@Override
 	public void update() {
-		if (!world.isRemote) {
-			age++;
-			if(age >= 20)
-			{
-				age = 0;
-			}
-			this.updateConnections();
-			if(age == 9 || age == 19)
-				fillFluidInit(amat);
+		if (world.isRemote) return;
+		age++;
+		if(age >= 20)
+		{
+			age = 0;
+		}
+		this.updateConnections();
+		if(age == 9 || age == 19)
+			fillFluidInit(tankAmat);
+		this.power = Library.chargeTEFromItems(inventory, 13, power, maxPower);
+		tankCoolant.loadTank(11, 12, inventory);
+		tankAmat.unloadTank(9, 10, inventory);
+		this.findContainers();
+		this.fillFromContainers(this.teIn1, 0, 3);
+		this.fillFromContainers(this.teIn2, 1, 4);
+		this.fillFromContainers(this.teIn3, 2, 5);
+		this.exportIntoContainers(this.teOut1, 6);
+		this.exportIntoContainers(this.teOut2, 7);
+		this.exportIntoContainers(this.teOut3, 8);
 
-			this.power = Library.chargeTEFromItems(inventory, 13, power, maxPower);
-			FFUtils.fillFromFluidContainer(inventory, coolant, 11, 12);
-			if(coolant.getFluid() != null && coolant.getFluid().getFluid() != ModForgeFluids.coolant){
-				coolant.setFluid(null);
-			}
-			FFUtils.fillFluidContainer(inventory, amat, 9, 10);
+		if(isOn) {
 
-			this.findContainers();
-			this.fillFromContainers(this.teIn1, 0, 3);
-			this.fillFromContainers(this.teIn2, 1, 4);
-			this.fillFromContainers(this.teIn3, 2, 5);
-			this.exportIntoContainers(this.teOut1, 6);
-			this.exportIntoContainers(this.teOut2, 7);
-			this.exportIntoContainers(this.teOut3, 8);
-			
-			if(isOn) {
+			int defConsumption = consumption - 100000 * getConsumption();
 
-				int defConsumption = consumption - 100000 * getConsumption();
+			if(canProcess() && power >= defConsumption) {
+				progress += this.getSpeed();
+				power -= defConsumption;
 
-				if(canProcess() && power >= defConsumption) {
-					progress += this.getSpeed();
-					power -= defConsumption;
-					
-					if(progress >= duration) {
-						process();
-						progress = 0;
-						this.markDirty();
-					}
-					if(coolant.getFluidAmount() > 0) {
-						countdown = 0;
-
-						if(world.rand.nextInt(3) == 0)
-							coolant.drain(1, true);
-
-					} else if(world.rand.nextInt(this.getSafety()) == 0) {
-
-						countdown++;
-
-						int chance = 7 - Math.min((int) Math.ceil(countdown / 200D), 6);
-
-						if(world.rand.nextInt(chance) == 0)
-							ExplosionLarge.spawnTracers(world, pos.getX() + 0.5, pos.getY() + 3.25, pos.getZ() + 0.5, 1);
-
-						if(countdown > 1000) {
-							ExplosionThermo.setEntitiesOnFire(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 25);
-							ExplosionThermo.scorchLight(world, pos.getX(), pos.getY(), pos.getZ(), 7);
-
-							if(countdown % 4 == 0)
-								ExplosionLarge.spawnBurst(world, pos.getX() + 0.5, pos.getY() + 3.25, pos.getZ() + 0.5, 18, 1);
-
-						} else if(countdown > 600) {
-							ExplosionThermo.setEntitiesOnFire(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 10);
-						}
-
-						if(countdown == 1140)
-							world.playSound(null, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, HBMSoundHandler.shutdown, SoundCategory.BLOCKS, 10.0F, 1.0F);
-
-						if(countdown > 1200)
-							explode();
-					}
-				} else {
+				if(progress >= duration) {
+					process();
 					progress = 0;
+					this.markDirty();
 				}
-				
+				if(tankCoolant.getFluidAmount() > 0) {
+					countdown = 0;
+
+					if(world.rand.nextInt(3) == 0)
+						tankCoolant.drain(1, true);
+
+				} else if(world.rand.nextInt(this.getSafety()) == 0) {
+
+					countdown++;
+
+					int chance = 7 - Math.min((int) Math.ceil(countdown / 200D), 6);
+
+					if(world.rand.nextInt(chance) == 0)
+						ExplosionLarge.spawnTracers(world, pos.getX() + 0.5, pos.getY() + 3.25, pos.getZ() + 0.5, 1);
+
+					if(countdown > 1000) {
+						ExplosionThermo.setEntitiesOnFire(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 25);
+						ExplosionThermo.scorchLight(world, pos.getX(), pos.getY(), pos.getZ(), 7);
+
+						if(countdown % 4 == 0)
+							ExplosionLarge.spawnBurst(world, pos.getX() + 0.5, pos.getY() + 3.25, pos.getZ() + 0.5, 18, 1);
+
+					} else if(countdown > 600) {
+						ExplosionThermo.setEntitiesOnFire(world, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, 10);
+					}
+
+					if(countdown == 1140)
+						world.playSound(null, pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5, HBMSoundHandler.shutdown, SoundCategory.BLOCKS, 10.0F, 1.0F);
+
+					if(countdown > 1200)
+						explode();
+				}
 			} else {
 				progress = 0;
 			}
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("progress", progress);
-			data.setBoolean("isOn", isOn);
-			data.setByte("plugs", plugs);
-			this.networkPack(data, 25);
 
-			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, coolant, amat), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 15));
+		} else {
+			progress = 0;
 		}
+		this.networkPackNT(25);
 	}
 	
 	private void updateConnections()  {
@@ -411,14 +405,6 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 		this.trySubscribe(world, pos.getX() - 1, pos.getY(), pos.getZ() + 3, Library.POS_Z);
 		this.trySubscribe(world, pos.getX() + 1, pos.getY(), pos.getZ() - 3, Library.NEG_Z);
 		this.trySubscribe(world, pos.getX() - 1, pos.getY(), pos.getZ() - 3, Library.NEG_Z);
-	}
-
-	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.isOn = data.getBoolean("isOn");
-		this.power = data.getLong("power");
-		this.plugs = data.getByte("plugs");
-		this.progress = data.getInteger("progress");
 	}
 	
 	@Override
@@ -435,11 +421,11 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 			int[] ids1 = OreDictionary.getOreIDs(stack1);
 			int[] ids2 = OreDictionary.getOreIDs(stack2);
 
-			if(ids1 != null && ids2 != null && ids1.length > 0 && ids2.length > 0) {
-				for(int i = 0; i < ids1.length; i++)
-					for(int j = 0; j < ids2.length; j++)
-						if(ids1[i] == ids2[j])
-							return true;
+			if(ids1.length > 0 && ids2.length > 0) {
+                for (int k : ids1)
+                    for (int i : ids2)
+                        if (k == i)
+                            return true;
 			}
 		}
 
@@ -517,16 +503,14 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 				continue;
 
 			if(inventory.getStackInSlot(i+6).isEmpty()) {
-				amat.fill(new FluidStack(ModForgeFluids.amat, (Integer)res[1]), true);
+				tankAmat.fill(Fluids.AMAT, (Integer)res[1], true);
 				inventory.getStackInSlot(i).shrink(1);
 				inventory.getStackInSlot(i+3).shrink(1);
 				inventory.setStackInSlot(i+6, out);
 				continue;
 			}
-
 			if(inventory.getStackInSlot(i+6).getItem() == out.getItem() && inventory.getStackInSlot(i+6).getItemDamage() == out.getItemDamage() && inventory.getStackInSlot(i+6).getCount() < out.getMaxStackSize()) {
-
-				amat.fill(new FluidStack(ModForgeFluids.amat, (Integer)res[1]), true);
+				tankAmat.fill(Fluids.AMAT, (Integer)res[1], true);
 				inventory.getStackInSlot(i).shrink(1);
 				inventory.getStackInSlot(i+3).shrink(1);
 				inventory.getStackInSlot(i+6).grow(1);
@@ -605,28 +589,49 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-
-		coolant.readFromNBT(compound.getCompoundTag("coolant"));
-		amat.readFromNBT(compound.getCompoundTag("amat"));
-
+		tankCoolant.readFromNBT(compound, "tankCoolant");
+		tankAmat.readFromNBT(compound, "tankAmat");
 		this.isOn = compound.getBoolean("isOn");
 		this.countdown = compound.getInteger("countdown");
 		this.progress = compound.getInteger("progress");
 		this.plugs = compound.getByte("plugs");
 		this.power = compound.getLong("power");
 	}
-	
+
+	@NotNull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setTag("coolant", coolant.writeToNBT(new NBTTagCompound()));
-		compound.setTag("amat", amat.writeToNBT(new NBTTagCompound()));
-
+		super.writeToNBT(compound);
+		tankCoolant.writeToNBT(compound, "tankCoolant");
+		tankAmat.writeToNBT(compound, "tankAmat");
 		compound.setBoolean("isOn", isOn);
 		compound.setInteger("countdown", countdown);
 		compound.setByte("plugs", plugs);
 		compound.setInteger("progress", progress);
 		compound.setLong("power", power);
-		return super.writeToNBT(compound);
+		return compound;
+	}
+
+	@Override
+	public void serialize(ByteBuf buf){
+		super.serialize(buf);
+		buf.writeBoolean(isOn);
+		buf.writeByte(plugs);
+		buf.writeInt(progress);
+		buf.writeLong(power);
+		tankCoolant.serialize(buf);
+		tankAmat.serialize(buf);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		isOn = buf.readBoolean();
+		plugs = buf.readByte();
+		progress = buf.readInt();
+		power = buf.readLong();
+		tankCoolant.deserialize(buf);
+		tankAmat.deserialize(buf);
 	}
 	
 	public void setPlug(int index) {
@@ -660,69 +665,39 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
+		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
 		}
 		return super.getCapability(capability, facing);
 	}
-	
-	public void fillFluidInit(FluidTank tank) {
 
-		fillFluid(pos.getX() + 3, pos.getY(), pos.getZ() + 1, tank);
-		fillFluid(pos.getX() + 3, pos.getY(), pos.getZ() - 1, tank);
-		fillFluid(pos.getX() - 3, pos.getY(), pos.getZ() + 1, tank);
-		fillFluid(pos.getX() - 3, pos.getY(), pos.getZ() - 1, tank);
-
-		fillFluid(pos.getX() + 1, pos.getY(), pos.getZ() + 3, tank);
-		fillFluid(pos.getX() - 1, pos.getY(), pos.getZ() + 3, tank);
-		fillFluid(pos.getX() + 1, pos.getY(), pos.getZ() - 3, tank);
-		fillFluid(pos.getX() - 1, pos.getY(), pos.getZ() - 3, tank);
-	}
-
-	public void fillFluid(int x, int y, int z, FluidTank tank) {
-		FFUtils.fillFluid(this, tank, world, new BlockPos(x, y, z), 2000);
-	}
-	
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[]{coolant.getTankProperties()[0], amat.getTankProperties()[0]};
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource != null && resource.getFluid() == ModForgeFluids.coolant){
-			return coolant.fill(resource, doFill);
-		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return amat.drain(resource, doDrain);
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return amat.drain(maxDrain, doDrain);
-	}
-	
-	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length == 2){
-			coolant.readFromNBT(tags[0]);
-			amat.readFromNBT(tags[1]);
-		}
+	public void fillFluidInit(FluidTankNTM tank) {
+		sendFluid(tank, world, pos.add( 3, 0,  1), ForgeDirection.WEST);
+		sendFluid(tank, world, pos.add( 3, 0, -1), ForgeDirection.WEST);
+		sendFluid(tank, world, pos.add(-3, 0,  1), ForgeDirection.EAST);
+		sendFluid(tank, world, pos.add(-3, 0, -1), ForgeDirection.EAST);
+		sendFluid(tank, world, pos.add( 1, 0,  3), ForgeDirection.NORTH);
+		sendFluid(tank, world, pos.add(-1, 0,  3), ForgeDirection.NORTH);
+		sendFluid(tank, world, pos.add( 1, 0, -3), ForgeDirection.SOUTH);
+		sendFluid(tank, world, pos.add(-1, 0, -3), ForgeDirection.SOUTH);
 	}
 
 	@Override
@@ -739,6 +714,29 @@ public class TileEntityMachineCyclotron extends TileEntityMachineBase implements
 	public long getMaxPower() {
 		return maxPower;
 	}
-	
 
+	@Override
+	public FluidTankNTM[] getSendingTanks() {
+		return new FluidTankNTM[]{tankAmat};
+	}
+
+	@Override
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[]{tankCoolant};
+	}
+
+	@Override
+	public FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{tankCoolant, tankAmat};
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineCyclotron(player.inventory, this);
+	}
+
+	@Override
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineCyclotron(player.inventory, this);
+	}
 }

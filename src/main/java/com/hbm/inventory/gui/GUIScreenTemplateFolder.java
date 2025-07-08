@@ -1,10 +1,10 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.inventory.AssemblerRecipes;
-import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.inventory.PressRecipes;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.recipes.ChemplantRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemCassette;
 import com.hbm.lib.RefStrings;

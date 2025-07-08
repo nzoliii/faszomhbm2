@@ -5,7 +5,6 @@ import com.hbm.dim.ChunkProviderCelestial;
 import com.hbm.dim.mapgen.MapGenCrater;
 import com.hbm.dim.mapgen.MapGenGreg;
 import com.hbm.dim.mapgen.MapgenRavineButBased;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;

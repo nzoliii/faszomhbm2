@@ -16,7 +16,7 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 
 	public static final long maxTransfer = 10_000_000_000_000_000L; //10E
 	//									9,223,372,036,854,775,807 is long max
-	
+
 	public float prevRotation = 0F;
 	public float rotation = 0F;
 
@@ -53,7 +53,7 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) { 
+	public void networkUnpack(NBTTagCompound nbt) {
 		this.power = nbt.getLong("power");
 		this.delta = nbt.getLong("delta");
 		this.redLow = nbt.getShort("redLow");
@@ -89,29 +89,17 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 	}
 
 	@Override
-	public long transferPower(long power) {
-
-		long overshoot = 0;
-
-		// if power exceeds our transfer limit, truncate
-		if(power > maxTransfer) {
-			overshoot += power - maxTransfer;
-			power = maxTransfer;
-		}
-
-		// this check is in essence the same as the default implementation, but re-arranged to never overflow the int64 range
-		// if the remaining power exceeds the power cap, truncate again
+	public long transferPower(long power, boolean simulate) {
 		long freespace = this.getMaxPower() - this.getPower();
-
-		if(freespace < power) {
-			overshoot += power - freespace;
-			power = freespace;
+		long powerToAccept = Math.min(power, maxTransfer);
+		powerToAccept = Math.min(powerToAccept, freespace);
+		if (powerToAccept < 0) {
+			powerToAccept = 0;
 		}
-
-		// what remains is sure to not exceed the transfer limit and the power cap (and therefore the int64 range)
-		this.setPower(this.getPower() + power);
-
-		return overshoot;
+		if (!simulate) {
+			this.setPower(this.getPower() + powerToAccept);
+		}
+		return power - powerToAccept;
 	}
 
 	@Override
@@ -119,7 +107,7 @@ public class TileEntityMachineFENSU extends TileEntityMachineBattery {
 		this.color = EnumDyeColor.byMetadata(compound.getByte("color"));
 		super.readFromNBT(compound);
 	}
-	
+
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setByte("color", (byte) this.color.getMetadata());

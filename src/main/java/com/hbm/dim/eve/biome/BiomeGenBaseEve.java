@@ -3,12 +3,9 @@
 package com.hbm.dim.eve.biome;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.config.SpaceConfig;
 import com.hbm.dim.BiomeDecoratorCelestial;
 import com.hbm.dim.BiomeGenBaseCelestial;
-
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 
 public abstract class BiomeGenBaseEve extends BiomeGenBaseCelestial {
 

@@ -1,7 +1,6 @@
 package com.hbm.capability;
 
 import com.hbm.inventory.FluidContainerRegistry;
-import com.hbm.inventory.fluid.FluidType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;

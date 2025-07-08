@@ -1,12 +1,8 @@
 package com.hbm.render.tileentity;
 
 import com.hbm.main.ResourceManager;
-import com.hbm.render.NTMRenderHelper;
 import com.hbm.tileentity.machine.TileEntityMachineCrystallizer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;

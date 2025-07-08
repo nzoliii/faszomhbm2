@@ -1,6 +1,5 @@
 package com.hbm.dim.noise;
 
-import com.hbm.util.BobMathUtil;
 import com.hbm.util.Tuple.Pair;
 import net.minecraft.util.math.MathHelper;
 

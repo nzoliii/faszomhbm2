@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonWriter;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.dim.CelestialBody;
 import com.hbm.dim.trait.CBT_Atmosphere;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -76,7 +75,7 @@ public class TileEntityCondenser extends TileEntityLoadedBase implements ITickab
 	@Override
 	public void update() {
 		if (!converted){
-			convertAndSetFluids(new Fluid[]{ModForgeFluids.spentsteam, FluidRegistry.WATER}, tanksOld, tanks);
+			convertAndSetFluids(new Fluid[]{Fluids.SPENTSTEAM.getFF(), FluidRegistry.WATER}, tanksOld, tanks);
 			converted = true;
 		}
 		if(!world.isRemote) {

@@ -1,29 +1,30 @@
 package com.hbm.dim;
 
+import com.hbm.capability.HbmLivingProps;
+import com.hbm.dim.SolarSystem.AstroMetric;
+import com.hbm.dim.trait.CBT_Atmosphere;
+import com.hbm.dim.trait.CelestialBodyTrait.CBT_Destroyed;
+import com.hbm.lib.RefStrings;
 import com.hbm.render.Shader;
+import com.hbm.saveddata.satellites.Satellite;
 import com.hbm.saveddata.satellites.SatelliteSavedData;
+import com.hbm.util.BobMathUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.IRenderHandler;
+import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-
-import com.hbm.dim.SolarSystem.AstroMetric;
-import com.hbm.dim.trait.CBT_Atmosphere;
-import com.hbm.dim.trait.CelestialBodyTrait.CBT_Destroyed;
-import com.hbm.capability.HbmLivingProps;
-import com.hbm.lib.RefStrings;
-import com.hbm.saveddata.satellites.Satellite;
-import com.hbm.util.BobMathUtil;
 
 public class SkyProviderCelestial extends IRenderHandler {
 	

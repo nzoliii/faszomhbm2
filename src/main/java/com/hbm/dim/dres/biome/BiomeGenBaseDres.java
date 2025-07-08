@@ -8,10 +8,8 @@
 package com.hbm.dim.dres.biome;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.config.SpaceConfig;
 import com.hbm.dim.BiomeDecoratorCelestial;
 import com.hbm.dim.BiomeGenBaseCelestial;
-
 import net.minecraft.world.biome.Biome;
 
 public abstract class BiomeGenBaseDres extends BiomeGenBaseCelestial {

@@ -1,13 +1,5 @@
 package com.hbm.dim.orbit;
 
-import java.util.List;
-
-import com.hbm.render.amlfrom1710.Vec3;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.dim.CelestialBody;
 import com.hbm.dim.SkyProviderCelestial;
 import com.hbm.dim.SolarSystem;
@@ -15,11 +7,14 @@ import com.hbm.dim.SolarSystem.AstroMetric;
 import com.hbm.dim.orbit.OrbitalStation.StationState;
 import com.hbm.lib.Library;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+
+import java.util.List;
 
 public class SkyProviderOrbit extends SkyProviderCelestial {
 

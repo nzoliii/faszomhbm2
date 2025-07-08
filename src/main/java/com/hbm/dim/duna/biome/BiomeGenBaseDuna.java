@@ -4,10 +4,7 @@ package com.hbm.dim.duna.biome;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.dim.BiomeDecoratorCelestial;
 import com.hbm.dim.BiomeGenBaseCelestial;
-
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public abstract class BiomeGenBaseDuna extends BiomeGenBaseCelestial {
     

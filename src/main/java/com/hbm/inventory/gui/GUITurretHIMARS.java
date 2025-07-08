@@ -45,8 +45,7 @@ public class GUITurretHIMARS extends GUITurretBase {
 
     if (guiLeft + 151 <= x && guiLeft + 151 + 18 > x && guiTop + 16 < y && guiTop + 16 + 18 >= y) {
 
-      mc.getSoundHandler()
-          .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+      playPressSound();
       PacketDispatcher.wrapper.sendToServer(
           new AuxButtonPacket(
               turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 5));
@@ -54,8 +53,8 @@ public class GUITurretHIMARS extends GUITurretBase {
   }
 
   @Override
-  protected void drawGuiContainerBackgroundLayer(float partialTicks, int mX, int mY) {
-    super.drawGuiContainerBackgroundLayer(partialTicks, mX, mY);
+  protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    super.drawDefaultBackground();
 
     TileEntityTurretHIMARS.FiringMode mode = ((TileEntityTurretHIMARS) turret).mode;
     if (mode == TileEntityTurretHIMARS.FiringMode.MANUAL)

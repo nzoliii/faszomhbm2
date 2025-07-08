@@ -1,13 +1,11 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.BlockDummyable;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,8 +13,8 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 
 	public TileEntityDeuteriumTower() {
 		super();
-		tanks[0] = new FluidTank(FluidRegistry.WATER, 0, 50000);
-		tanks[1] = new FluidTank(ModForgeFluids.heavywater, 0, 5000);
+		tanks[0] = new FluidTankNTM(Fluids.WATER, 50000);
+		tanks[1] = new FluidTankNTM(Fluids.HEAVYWATER, 5000);
 	}
 
 	@Override
@@ -26,16 +24,8 @@ public class TileEntityDeuteriumTower extends TileEntityDeuteriumExtractor {
 			this.trySubscribe(world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
 		}
 	}
-	
-	@Override
-	public void fillFluidInit(FluidTank tank) {
 
-		for(DirPos pos : getConPos()) {
-			FFUtils.fillFluid(this, tank, world, pos.getPos(), 5000);
-		}
-	}
 
-	
 	private DirPos[] getConPos() {
 		
 		ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset);

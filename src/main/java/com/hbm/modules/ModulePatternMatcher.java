@@ -1,7 +1,6 @@
 package com.hbm.modules;
 
 import com.hbm.util.ItemStackUtil;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

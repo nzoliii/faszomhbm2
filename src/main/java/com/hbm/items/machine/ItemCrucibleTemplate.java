@@ -1,8 +1,8 @@
 package com.hbm.items.machine;
 
 import com.hbm.interfaces.IHasCustomModel;
-import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.inventory.material.Mats;
+import com.hbm.inventory.recipes.CrucibleRecipes;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;

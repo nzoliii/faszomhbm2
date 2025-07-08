@@ -2,6 +2,7 @@ package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
@@ -17,6 +18,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 
 public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, INBTPacketReceiver {
 
@@ -312,5 +315,23 @@ public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITi
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemStack, int amount){
 		return slot > 10 && slot != 22 && slot != 23 && slot != 24;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 }

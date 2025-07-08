@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntitySolarBoiler;
@@ -14,7 +15,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -71,18 +71,16 @@ public class MachineSolarBoiler extends BlockDummyable implements ITooltipProvid
 
         TileEntity te = world.getTileEntity(new BlockPos(pos[0], pos[1], pos[2]));
 
-        if (!(te instanceof TileEntitySolarBoiler))
+        if (!(te instanceof TileEntitySolarBoiler heater))
             return;
-
-        TileEntitySolarBoiler heater = (TileEntitySolarBoiler) te;
 
         List<String> text = new ArrayList<>();
         text.add(String.format("%,d", heater.heat) + " TU");
         text.add("§a-> §r"+String.format("%,d", heater.heatInput) + " TU/t");
-        if(heater.types[0] != null)
-			text.add("§a-> §r" + heater.types[0].getLocalizedName(new FluidStack(heater.types[0], 1)) + ": " + heater.tanks[0].getFluidAmount() + "/" + heater.tanks[0].getCapacity() + "mB");
-		if(heater.types[1] != null)
-			text.add("§c<- §r" + heater.types[1].getLocalizedName(new FluidStack(heater.types[1], 1)) + ": " + heater.tanks[1].getFluidAmount() + "/" + heater.tanks[1].getCapacity() + "mB");
+        if(heater.tanks[0].getTankType() != Fluids.NONE)
+			text.add("§a-> §r" + heater.tanks[0].getTankType().getLocalizedName() + ": " + heater.tanks[0].getFill() + "/" + heater.tanks[0].getMaxFill() + "mB");
+		if(heater.tanks[1].getTankType() != Fluids.NONE)
+			text.add("§c<- §r" + heater.tanks[0].getTankType().getLocalizedName() + ": " + heater.tanks[1].getFill() + "/" + heater.tanks[1].getMaxFill() + "mB");
 		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);
     }
 }

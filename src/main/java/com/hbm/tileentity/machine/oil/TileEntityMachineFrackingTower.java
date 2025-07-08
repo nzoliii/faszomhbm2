@@ -54,7 +54,7 @@ public class TileEntityMachineFrackingTower extends TileEntityOilDrillBase {
     public TileEntityMachineFrackingTower() {
         super();
         tanksOld[2] = new FluidTank(64000);
-        tankTypes[2] = ModForgeFluids.fracksol;
+        tankTypes[2] = Fluids.FRACKSOL.getFF();
 
         tanks = new FluidTankNTM[3];
         tanks[0] = new FluidTankNTM(Fluids.OIL, 64_000);

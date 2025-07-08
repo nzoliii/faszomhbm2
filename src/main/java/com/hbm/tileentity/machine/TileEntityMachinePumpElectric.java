@@ -1,23 +1,14 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
-import com.hbm.forgefluid.FFUtils;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.DirPos;
-import com.hbm.lib.ForgeDirection;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
+import net.minecraftforge.energy.CapabilityEnergy;
 
 public class TileEntityMachinePumpElectric extends TileEntityMachinePumpBase implements IEnergyReceiverMK2 {
 
@@ -76,5 +67,23 @@ public class TileEntityMachinePumpElectric extends TileEntityMachinePumpBase imp
     @Override
     public void setPower(long power) {
         this.power = power;
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(
+                    new NTMEnergyCapabilityWrapper(this)
+            );
+        }
+        return super.getCapability(capability, facing);
     }
 }

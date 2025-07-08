@@ -1,7 +1,11 @@
 package com.hbm.items;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,7 +18,9 @@ import java.util.List;
  */
 public interface IDynamicModels {
 
-    /** Should be populated by implementors in constructors. */
+    /**
+     * Should be populated by implementors in constructors.
+     */
     List<IDynamicModels> INSTANCES = new ArrayList<>();
 
     @SideOnly(Side.CLIENT)
@@ -22,23 +28,40 @@ public interface IDynamicModels {
         INSTANCES.forEach(blockMeta -> blockMeta.bakeModel(event));
     }
 
-    void bakeModel(ModelBakeEvent event);
-
-
     @SideOnly(Side.CLIENT)
-    static void registerModels(){
+    static void registerModels() {
         INSTANCES.forEach(IDynamicModels::registerModel);
     }
 
-    void registerModel();
-
-
     @SideOnly(Side.CLIENT)
-    static void registerSprites(TextureMap map){
+    static void registerSprites(TextureMap map) {
         INSTANCES.forEach(dynamicSprite -> dynamicSprite.registerSprite(map));
     }
+
+    public static void registerCustomStateMappers() {
+        for (IDynamicModels model : INSTANCES) {
+            if (model.getBlock() == null) continue;
+            StateMapperBase mapper = model.getStateMapper(model.getBlock().getRegistryName());
+            if (mapper != null)
+                ModelLoader.setCustomStateMapper(
+                        model.getBlock(),
+                        mapper
+                );
+        }
+
+    }
+
+    void bakeModel(ModelBakeEvent event);
+
+    Block getBlock();
+
+    void registerModel();
 
     @SideOnly(Side.CLIENT)
     void registerSprite(TextureMap map);
 
+    @SideOnly(Side.CLIENT)
+    default StateMapperBase getStateMapper(ResourceLocation loc) {
+        return null;
+    }
 }

@@ -3,6 +3,7 @@ package com.hbm.blocks.machine;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityDeuteriumExtractor;
 import com.hbm.util.I18nUtil;
@@ -57,7 +58,7 @@ public class MachineDeuteriumExtractor extends BlockContainer implements ILookOv
 		if(extractor.tanks[0] != null)
 			text.add("§a-> §r" + FluidRegistry.WATER.getLocalizedName(new FluidStack(FluidRegistry.WATER, 1)) + ": " + extractor.tanks[0].getFluidAmount() + "/" + extractor.tanks[0].getCapacity() + "mB");
 		if(extractor.tanks[1] != null)
-			text.add("§c<- §r" + ModForgeFluids.heavywater.getLocalizedName(new FluidStack(ModForgeFluids.heavywater, 1)) + ": " + extractor.tanks[1].getFluidAmount() + "/" + extractor.tanks[1].getCapacity() + "mB");
+			text.add("§c<- §r" + Fluids.HEAVYWATER.getLocalizedName() + ": " + extractor.tanks[1].getFluidAmount() + "/" + extractor.tanks[1].getCapacity() + "mB");
 		
 		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);
 	}

@@ -1,13 +1,12 @@
 package com.hbm.dim.eve.GenLayerEve;
 
-import java.util.Random;
-
 import com.hbm.dim.eve.biome.BiomeGenBaseEve;
-
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;
+
+import java.util.Random;
 
 public class GenLayerEveSeismicPlains extends GenLayer {
 	public GenLayerEveSeismicPlains(long seed, GenLayer genLayer) {

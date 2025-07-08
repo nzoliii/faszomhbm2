@@ -1,6 +1,5 @@
 package com.hbm.inventory;
 
-import com.hbm.blocks.BlockEnums;
 import com.hbm.config.GeneralConfig;
 import com.hbm.hazard.HazardData;
 import com.hbm.hazard.HazardEntry;
@@ -9,9 +8,7 @@ import com.hbm.hazard.HazardSystem;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.NTMMaterial;
-import com.hbm.items.ItemEnums;
-import com.hbm.items.ItemEnums.EnumCokeType;
-import com.hbm.items.ItemEnums.EnumTarType;
+import com.hbm.items.ItemEnums.*;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import net.minecraft.block.Block;
@@ -28,13 +25,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.hbm.blocks.BlockEnums.*;
+import static com.hbm.blocks.BlockEnums.EnumBasaltOreType;
+import static com.hbm.blocks.BlockEnums.EnumStoneType;
 import static com.hbm.blocks.ModBlocks.*;
 import static com.hbm.inventory.OreDictManager.DictFrame.fromAll;
 import static com.hbm.inventory.OreDictManager.DictFrame.fromOne;
 import static com.hbm.inventory.material.MaterialShapes.*;
-import static com.hbm.items.ItemEnums.*;
-import static com.hbm.items.ItemEnums.EnumAshType;
 import static com.hbm.items.ModItems.*;
 
 //the more i optimize this, the more it starts looking like gregtech

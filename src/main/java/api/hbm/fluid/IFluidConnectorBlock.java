@@ -3,7 +3,6 @@ package api.hbm.fluid;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fluids.Fluid;
 
 public interface IFluidConnectorBlock {
 

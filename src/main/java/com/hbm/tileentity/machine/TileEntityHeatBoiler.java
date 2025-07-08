@@ -5,7 +5,6 @@ import api.hbm.tile.IHeatSource;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
@@ -54,8 +53,8 @@ public class TileEntityHeatBoiler extends TileEntityLoadedBase implements INBTPa
         tanks[0] = new FluidTank(FluidRegistry.WATER, 0, 640000);
         types[0] = FluidRegistry.WATER;
 
-        tanks[1] = new FluidTank(ModForgeFluids.steam, 0, 64000000);
-        types[1] = ModForgeFluids.steam;
+        tanks[1] = new FluidTank(Fluids.STEAM.getFF(), 0, 64000000);
+        types[1] = Fluids.STEAM.getFF();;
         converted = true;
 
     }

@@ -1,8 +1,5 @@
 package com.hbm.entity.missile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import api.hbm.entity.IRadarDetectableNT;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.bomb.BlockTaint;
@@ -19,7 +16,6 @@ import com.hbm.items.weapon.ItemMissile.FuelType;
 import com.hbm.items.weapon.ItemMissile.PartSize;
 import com.hbm.items.weapon.ItemMissile.WarheadType;
 import com.hbm.main.MainRegistry;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,6 +25,9 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntityMissileCustom extends EntityMissileBaseNT implements IChunkLoader {
 
@@ -150,21 +149,14 @@ public class EntityMissileCustom extends EntityMissileBaseNT implements IChunkLo
 		switch(type) {
 			case BALEFIRE: smoke = "exBalefire"; break;
 			case HYDROGEN: smoke = "exHydrogen"; break;
-			case KEROSENE:
-            case HYDRAZINE:
-            case METHALOX:
-                smoke = "exKerosene"; break;
+			case KEROSENE: smoke = "exKerosene"; break;
 			case SOLID: smoke = "exSolid"; break;
 			case XENON: break;
-        }
-
-		if(!smoke.isEmpty())
-		{
-			for(int i = 0; i < velocity; i++)
-			{
-				MainRegistry.proxy.spawnParticle(posX - v.x * i, posY - v.y * i, posZ - v.z * i, smoke, null);
-			}
+			case HYDRAZINE:
+			case METHALOX: smoke = "exKerosene"; break;
 		}
+
+		if(!smoke.isEmpty()) for(int i = 0; i < velocity; i++) MainRegistry.proxy.spawnParticle(posX - v.x * i, posY - v.y * i, posZ - v.z * i, smoke, null);
 	}
 
 	@Override

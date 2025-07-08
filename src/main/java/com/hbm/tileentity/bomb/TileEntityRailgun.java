@@ -1,6 +1,7 @@
 package com.hbm.tileentity.bomb;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.config.RadiationConfig;
 import com.hbm.entity.projectile.EntityRailgunBlast;
 import com.hbm.items.ModItems;
@@ -24,11 +25,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityRailgun extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2 {
 
@@ -271,15 +274,23 @@ public class TileEntityRailgun extends TileEntityLoadedBase implements ITickable
 	{
 		return 65536.0D;
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		return super.getCapability(capability, facing);
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public boolean hasCapability(@NotNull Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
 		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(@NotNull Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 
 	@Override

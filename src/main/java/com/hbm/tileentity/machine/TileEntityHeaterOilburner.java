@@ -3,7 +3,6 @@ package com.hbm.tileentity.machine;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import api.hbm.tile.IHeatSource;
 import com.hbm.capability.NTMFluidHandlerWrapper;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.container.ContainerOilburner;
@@ -61,7 +60,7 @@ public class TileEntityHeaterOilburner extends TileEntityMachineBase implements 
 
         tankNew = new FluidTankNTM(Fluids.HEATINGOIL, 16000);
         tank = new FluidTank(16000);
-        fluidType = ModForgeFluids.gas;
+        fluidType = Fluids.GAS.getFF();;
         smoke = new FluidTankNTM(Fluids.SMOKE, buffer);
         smoke_leaded = new FluidTankNTM(Fluids.SMOKE_LEADED, buffer);
         smoke_poison = new FluidTankNTM(Fluids.SMOKE_POISON, buffer);

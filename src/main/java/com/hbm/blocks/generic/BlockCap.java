@@ -2,20 +2,13 @@ package com.hbm.blocks.generic;
 
 import com.hbm.blocks.BlockEnumMeta;
 import com.hbm.blocks.BlockEnums;
-import com.hbm.blocks.ModBlocks;
-import com.hbm.items.ModItems;
-
 import com.hbm.render.block.BlockBakeFrame;
-
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 
 import java.util.*;
 

@@ -18,7 +18,6 @@ import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 

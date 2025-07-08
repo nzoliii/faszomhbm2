@@ -186,6 +186,7 @@ public class Fluids {
     public static FluidType AMMONIA;
     public static FluidType HYDRAZINE;
     public static FluidType BLOODGAS;
+    public static FluidType SODIUM_ALUMINATE;
     public static FluidType SOLVENT; //oranic solvent in fact
     public static FluidType HCL;
     public static FluidType SYNGAS;
@@ -398,6 +399,7 @@ public class Fluids {
         AMMONIA = new FluidType("AMMONIA", 0x00A0F7, 2, 0, 1, EnumSymbol.ASPHYXIANT).addTraits(new FT_Poison(true, 4), GASEOUS);
         HYDRAZINE = new FluidType("HYDRAZINE", 0x31517D, 2, 3, 2, EnumSymbol.NONE).addContainers(new CD_Canister(0x31517D)).addTraits((new FT_Flammable(500_000)), new FT_Combustible(FuelGrade.HIGH, 1_250_000), new FT_Corrosive(30), LIQUID, new FT_Rocket(210, 277810));
         BLOODGAS = new FluidType("BLOODGAS", 0x591000, 3, 1, 1, EnumSymbol.NONE).addContainers(new CD_Canister(0x591000)).addTraits(new FT_Flammable(1_000_000), new FT_Combustible(FuelGrade.AERO, 2_500_000)).addTraits(LIQUID);
+        SODIUM_ALUMINATE = new FluidType("SODIUM_ALUMINATE", 0xFFD191, 3, 0, 1, EnumSymbol.ACID).addTraits(new FT_Corrosive(30), LIQUID);
         AIR = new FluidType("AIR", 0xD1CEBE, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS);
         BLOOD_HOT = new FluidType("BLOOD_HOT", 0xF22419, 3, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, VISCOUS).setTemp(666); //it's funny because it's the satan number
         SOLVENT = new FluidType("SOLVENT", 0xE4E3EF, 2, 3, 0, EnumSymbol.NONE).addContainers(new CD_Canister(0xE4E3EF)).addTraits(LIQUID, new FT_Corrosive(30));
@@ -459,9 +461,9 @@ public class Fluids {
         CHLOROCALCITE_CLEANED = new FluidType("CHLOROCALCITE_CLEANED", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, NOCON, new FT_Corrosive(60));
         POTASSIUM_CHLORIDE = new FluidType("POTASSIUM_CHLORIDE", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, NOCON, new FT_Corrosive(60));
         CALCIUM_CHLORIDE = new FluidType("CALCIUM_CHLORIDE", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, NOCON, new FT_Corrosive(60));
-        CALCIUM_SOLUTION = new FluidType(149, "CALCIUM_SOLUTION", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, NOCON, new FT_Corrosive(60));
+        CALCIUM_SOLUTION = new FluidType("CALCIUM_SOLUTION",	0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(LIQUID, NOCON, new FT_Corrosive(60));
         SMOKE = new FluidType("SMOKE", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS, NOID, NOCON);
-        SMOKE_LEADED = new FluidType(151, "SMOKE_LEADED", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS, NOID, NOCON);
+        SMOKE_LEADED = new FluidType("SMOKE_LEADED",0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS, NOID, NOCON);
         SMOKE_POISON = new FluidType("SMOKE_POISON", 0x808080, 0, 0, 0, EnumSymbol.NONE).addTraits(GASEOUS, NOID, NOCON);
         JOOLGAS = new FluidType("JOOLGAS", 0x829F82, 0, 0, 0, EnumSymbol.ASPHYXIANT).addTraits(GASEOUS);
         SARNUSGAS = new FluidType("SARNUSGAS", 0xE47D5C, 0, 0, 0, EnumSymbol.ASPHYXIANT).addTraits(GASEOUS);
@@ -655,6 +657,7 @@ public class Fluids {
         metaOrder.add(PLUTONIUM_BROMIDE);
         metaOrder.add(SCHRABIDIUM_BROMIDE);
         metaOrder.add(THORIUM_BROMIDE);
+        metaOrder.add(SODIUM_ALUMINATE);
         //meths
         metaOrder.add(CHLOROMETHANE);
         metaOrder.add(METHANOL);

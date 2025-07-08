@@ -1,6 +1,6 @@
 package com.hbm.inventory.container;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.ItemMachineUpgrade;
@@ -74,7 +74,7 @@ public class ContainerOreSlopper extends Container {
                     if(!this.mergeItemStack(var5, 1, 2, false)) {
                         return null;
                     }
-                } else if(var3.getItem() instanceof IBatteryItem || var3.getItem() == ModItems.battery_creative) {
+                } else if(NTMBatteryCapabilityHandler.isBattery(var3)) {
                     if(!this.mergeItemStack(var5, 0, 1, false)) {
                         return null;
                     }

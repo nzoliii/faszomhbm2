@@ -1,50 +1,46 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyProviderMK2;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.inventory.EngineRecipes;
 import com.hbm.inventory.EngineRecipes.FuelGrade;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
-import net.minecraftforge.items.CapabilityItemHandler;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class TileEntityMachineDiesel extends TileEntityMachineBase implements ITickable, IEnergyProviderMK2, IFluidHandler, ITankPacketAcceptor {
+public class TileEntityMachineDiesel extends TileEntityMachinePolluting implements ITickable, IEnergyProviderMK2, IFluidStandardTransceiver {
 
 	public long power;
 	public int soundCycle = 0;
 	public static final long maxPower = 50000;
 	public long powerCap = 50000;
 	public int age = 0;
-	public FluidTank tank;
-	public Fluid tankType;
-	public boolean needsUpdate;
+	public FluidTankNTM tank;
 
 	private static final int[] slots_top = new int[] { 0 };
 	private static final int[] slots_bottom = new int[] { 1, 2 };
 	private static final int[] slots_side = new int[] { 2 };
 
-	public static HashMap<FuelGrade, Double> fuelEfficiency = new HashMap();
+	public static HashMap<FuelGrade, Double> fuelEfficiency = new HashMap<>();
 	static {
 		fuelEfficiency.put(FuelGrade.MEDIUM,	0.5D);
 		fuelEfficiency.put(FuelGrade.HIGH,		0.75D);
@@ -52,8 +48,8 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	}
 
 	public TileEntityMachineDiesel() {
-		super(3);
-		tank = new FluidTank(16000);
+		super(3, 100);
+		tank = new FluidTankNTM(Fluids.NONE, 16000);
 	}
 	
 	@Override
@@ -65,7 +61,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setLong("powerTime", power);
 		compound.setLong("powerCap", powerCap);
-		tank.writeToNBT(compound);
+		tank.writeToNBT(compound, "tank");
 		return super.writeToNBT(compound);
 	}
 	
@@ -73,7 +69,7 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	public void readFromNBT(NBTTagCompound compound) {
 		this.power = compound.getLong("powerTime");
 		this.powerCap = compound.getLong("powerCap");
-		tank.readFromNBT(compound);
+		tank.readFromNBT(compound, "tank");
 		super.readFromNBT(compound);
 	}
 	
@@ -89,48 +85,42 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	
 	@Override
 	public void update() {
-		if(tank.getFluid() != null)
-			tankType = tank.getFluid().getFluid();
 		if (!world.isRemote) {
-			if (needsUpdate) {
-				needsUpdate = false;
-			}
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 				this.tryProvide(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
+				this.sendSmoke(pos.getX() + dir.offsetX, pos.getX() + dir.offsetY, pos.getX() + dir.offsetZ, dir);
 			}
 
-
 			//Tank Management
-			if(this.inputValidForTank(-1, 0))
-				if(FFUtils.fillFromFluidContainer(inventory, tank, 0, 1))
-					needsUpdate = true;
-
-			Fluid type = tank.getFluid() == null ? null : tank.getFluid().getFluid();
-			if(type != null && type == ModForgeFluids.nitan)
+			tank.loadTank(0, 1, inventory);
+			if(tank.getTankType() == Fluids.NITAN)
 				powerCap = maxPower * 10;
 			else
 				powerCap = maxPower;
 			
 			// Battery Item
 			power = Library.chargeItemsFromTE(inventory, 2, power, powerCap);
-
 			generate();
-
-			NBTTagCompound data = new NBTTagCompound();
-			data.setInteger("power", (int) power);
-			data.setInteger("powerCap", (int) powerCap);
-			this.networkPack(data, 50);
-			
-			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, new FluidTank[] {tank}), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 10));
+			this.networkPackNT(50);
 		}
 	}
-	
+
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		power = data.getInteger("power");
-		powerCap = data.getInteger("powerCap");
+	public void serialize(ByteBuf buf){
+		super.serialize(buf);
+		buf.writeLong(power);
+		buf.writeLong(powerCap);
+		tank.serialize(buf);
 	}
-	
+
+	@Override
+	public void deserialize(ByteBuf buf){
+		super.deserialize(buf);
+		power = buf.readLong();
+		powerCap = buf.readLong();
+		tank.deserialize(buf);
+	}
+
 	public boolean hasAcceptableFuel() {
 		return getHEFromFuel() > 0;
 	}
@@ -162,7 +152,6 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 					soundCycle = 0;
 
 				tank.drain(1, true);
-				needsUpdate = true;
 				if (power + getHEFromFuel() <= powerCap) {
 					power += getHEFromFuel();
 				} else {
@@ -187,57 +176,26 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[]{tank.getTankProperties()[0]};
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if (isValidFluid(resource)) {
-			return tank.fill(resource, doFill);
-		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length != 1){
-			return;
-		} else {
-			tank.readFromNBT(tags[0]);
-		}
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return true;
-		} else {
-			return super.hasCapability(capability, facing);
 		}
+		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-		} else {
-			return super.getCapability(capability, facing);
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
 		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 
 	@Override
@@ -253,5 +211,20 @@ public class TileEntityMachineDiesel extends TileEntityMachineBase implements IT
 	@Override
 	public long getMaxPower() {
 		return maxPower;
+	}
+
+	@Override
+	public FluidTankNTM[] getSendingTanks() {
+		return this.getSmokeTanks();
+	}
+
+	@Override
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[]{tank};
+	}
+
+	@Override
+	public FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{tank};
 	}
 }

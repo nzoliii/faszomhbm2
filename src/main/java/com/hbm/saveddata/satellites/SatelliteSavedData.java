@@ -1,13 +1,13 @@
 package com.hbm.saveddata.satellites;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class SatelliteSavedData extends WorldSavedData {
 

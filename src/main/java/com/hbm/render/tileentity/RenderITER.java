@@ -1,6 +1,7 @@
 package com.hbm.render.tileentity;
 
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.main.ResourceManager;
 import com.hbm.tileentity.machine.TileEntityITER;
 import net.minecraft.client.renderer.GlStateManager;
@@ -91,17 +92,17 @@ public class RenderITER extends TileEntitySpecialRenderer<TileEntityITER> {
 	}
 	
 	private int getColor(Fluid type){
-		if(type == ModForgeFluids.plasma_dt){
+		if(type == Fluids.PLASMA_DT.getFF()){
 			return 0xFF3FC2;
-		} else if(type == ModForgeFluids.plasma_hd){
+		} else if(type == Fluids.PLASMA_HD.getFF()){
 			return 0xEB3FFF;
-		} else if(type == ModForgeFluids.plasma_ht){
+		} else if(type == Fluids.PLASMA_HT.getFF()){
 			return 0x9F3FFF;
-		} else if(type == ModForgeFluids.plasma_put){
-			return 0x3F99FF;
-		} else if(type == ModForgeFluids.plasma_xm){
+//		} else if(type == Fluids.plasma_put){
+//			return 0x3F99FF;
+		} else if(type == Fluids.PLASMA_XM.getFF()){
 			return 0x3FFFFF;
-		} else if(type == ModForgeFluids.plasma_bf){
+		} else if(type == Fluids.PLASMA_BF.getFF()){
 			return 0xB8FF3F;
 		}
 		return 0;

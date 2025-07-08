@@ -1,7 +1,6 @@
 package com.hbm.inventory.container;
 
-import api.hbm.energymk2.IBatteryItem;
-import com.hbm.items.ModItems;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.tileentity.machine.TileEntityMachineRadarNT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -48,7 +47,7 @@ public class ContainerMachineRadarNT extends Container {
                 }
             } else {
 
-                if(var3.getItem() instanceof IBatteryItem || var3.getItem() == ModItems.battery_creative) {
+                if(NTMBatteryCapabilityHandler.isBattery(var3)) {
                     if(!this.mergeItemStack(var5, 9, 10, false)) {
                         return ItemStack.EMPTY;
                     }

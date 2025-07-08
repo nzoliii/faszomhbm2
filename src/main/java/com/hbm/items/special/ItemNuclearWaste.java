@@ -1,7 +1,6 @@
 package com.hbm.items.special;
 
 import com.hbm.items.ItemBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 

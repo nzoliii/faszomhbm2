@@ -1,19 +1,32 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
-import com.hbm.forgefluid.ModForgeFluids;
+import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.handler.CompatHandler;
 import com.hbm.interfaces.ILaserable;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import com.hbm.inventory.container.ContainerCoreEmitter;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUICoreEmitter;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.ModDamageSource;
-import com.hbm.packet.AuxGaugePacket;
-import com.hbm.packet.AuxLongPacket;
-import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -22,151 +35,138 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidHandler, ILaserable, ITankPacketAcceptor {
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2,  ILaserable, IFluidStandardReceiver, IGUIProvider, SimpleComponent, CompatHandler.OCComponent {
 
 	public long power;
 	public static final long maxPower = 1000000000L;
-	public int watts = 1;
+	public int watts;
 	public int beam;
 	public long joules;
 	public boolean isOn;
-	public FluidTank tank;
+	public FluidTankNTM tank;
 	public long prev;
-	public int prevWatts = -1;
-			
+
 	public static final int range = 50;
 	
 	public TileEntityCoreEmitter() {
 		super(0);
-		tank = new FluidTank(64000);
+		tank = new FluidTankNTM(Fluids.CRYOGEL,64000);
 	}
 
 	@Override
 	public void update() {
 		if (!world.isRemote) {
-
 			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) this.trySubscribe(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
-			
+			this.subscribeToAllAround(tank.getTankType(), this);
+
 			watts = MathHelper.clamp(watts, 1, 100);
 			long demand = maxPower * watts / 2000;
 
+
 			beam = 0;
-			
+
 			if(joules > 0 || prev > 0) {
 
-				if(tank.getFluidAmount() >= 20) {
-					tank.drain(20, true);
+				if(tank.getFill() >= 20) {
+					tank.setFill(tank.getFill() - 20);
 				} else {
 					world.setBlockState(pos, Blocks.FLOWING_LAVA.getDefaultState());
 					return;
 				}
 			}
-			
+
 			if(isOn) {
+
 				//i.e. 50,000,000 HE = 10,000 SPK
 				//1 SPK = 5,000HE
-				
+
 				if(power >= demand) {
 					power -= demand;
-					long add = watts * 100;
-					if(add > Long.MAX_VALUE-joules)
-						joules = Long.MAX_VALUE;
-					else
-						joules += add;
+					long add = watts * 100L;
+					joules += add;
 				}
 				prev = joules;
-				
+
 				if(joules > 0) {
-					
-					long out = joules;
-					
-					EnumFacing dir = EnumFacing.byIndex(this.getBlockMetadata());
+
+					long out = joules * 95 / 100;
+
+					ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata());
 					for(int i = 1; i <= range; i++) {
-						
+
 						beam = i;
-		
-						int x = pos.getX() + dir.getXOffset() * i;
-						int y = pos.getY() + dir.getYOffset() * i;
-						int z = pos.getZ() + dir.getZOffset() * i;
-						
-						BlockPos pos1 = new BlockPos(x, y, z);
-						
-						TileEntity te = world.getTileEntity(pos1);
-						
-						if(te instanceof ILaserable) {
-							
-							((ILaserable)te).addEnergy(out * 100 * watts / 10000, dir);
-							break;
-						}
-						
-						if(te instanceof TileEntityCore) {
-							out = Math.max(0, ((TileEntityCore)te).burn(out));
-							continue;
-						}
-						
-						IBlockState b = world.getBlockState(pos1);
-						
-						if(b.getBlock() != Blocks.AIR) {
-							
-							if(b.getMaterial().isLiquid()) {
+
+						int x = pos.getX() + dir.offsetX * i;
+						int y = pos.getY() + dir.offsetY * i;
+						int z = pos.getZ() + dir.offsetZ * i;
+						BlockPos affectedPos = new BlockPos(x, y, z);
+
+						IBlockState state = world.getBlockState( affectedPos);
+						Block block = state.getBlock();
+						TileEntity te = world.getTileEntity(affectedPos);
+
+						if(block instanceof ILaserable) { ((ILaserable)block).addEnergy(world, affectedPos, out, dir.toEnumFacing()); break; }
+						if(te instanceof ILaserable) { ((ILaserable)te).addEnergy(world, affectedPos, out, dir.toEnumFacing()); break; }
+						if(te instanceof TileEntityCore) { out = ((TileEntityCore)te).burn(out); continue; }
+
+
+						if(!world.isAirBlock(pos)) {
+
+							if(state.getMaterial().isLiquid()) {
 								world.playSound(null, x + 0.5, y + 0.5, z + 0.5, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-								world.setBlockToAir(pos1);
+								world.setBlockToAir(pos);
 								break;
 							}
-							
+
 							@SuppressWarnings("deprecation")
-							float hardness = b.getBlock().getExplosionResistance(null);
+							float hardness = block.getExplosionResistance(null);
 							if(hardness < 10000 && world.rand.nextDouble() < (out * 0.00000001F)/hardness) {
 								world.playSound(null, x + 0.5, y + 0.5, z + 0.5, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 1.0F, 1.0F);
-								world.destroyBlock(pos1, false);
+								world.destroyBlock(affectedPos, false);
 							}
-							
 							break;
 						}
 					}
-					
-					double blx = Math.min(pos.getX(), pos.getX() + dir.getXOffset() * beam) + 0.2;
-					double bux = Math.max(pos.getX(), pos.getX() + dir.getXOffset() * beam) + 0.8;
-					double bly = Math.min(pos.getY(), pos.getY() + dir.getYOffset() * beam) + 0.2;
-					double buy = Math.max(pos.getY(), pos.getY() + dir.getYOffset() * beam) + 0.8;
-					double blz = Math.min(pos.getZ(), pos.getZ() + dir.getZOffset() * beam) + 0.2;
-					double buz = Math.max(pos.getZ(), pos.getZ() + dir.getZOffset() * beam) + 0.8;
-					
-					List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blx, bly, blz, bux, buy, buz));
-					
-					for(Entity e : list) {
-						e.attackEntityFrom(ModDamageSource.amsCore, joules*0.000001F);
-						e.setFire(10);
-					}
+
 
 					joules = 0;
+
+					double blx = Math.min(pos.getX(), pos.getX() + dir.offsetX * beam) + 0.2;
+					double bux = Math.max(pos.getX(), pos.getX() + dir.offsetX * beam) + 0.8;
+					double bly = Math.min(pos.getY(), pos.getY() + dir.offsetY * beam) + 0.2;
+					double buy = Math.max(pos.getY(), pos.getY() + dir.offsetY * beam) + 0.8;
+					double blz = Math.min(pos.getZ(), pos.getZ() + dir.offsetZ * beam) + 0.2;
+					double buz = Math.max(pos.getZ(), pos.getZ() + dir.offsetZ * beam) + 0.8;
+
+					List<Entity> list = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(blx, bly, blz, bux, buy, buz));
+
+					for(Entity e : list) {
+						e.attackEntityFrom(ModDamageSource.amsCore, 50);
+						e.setFire(10);
+					}
 				}
 			} else {
 				joules = 0;
 				prev = 0;
 			}
-			
+
 			this.markDirty();
-			
-			PacketDispatcher.wrapper.sendToAllTracking(new AuxGaugePacket(pos, beam, 0), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
-			if(watts != prevWatts) PacketDispatcher.wrapper.sendToAllTracking(new AuxGaugePacket(pos, watts, 1), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
-			PacketDispatcher.wrapper.sendToAllTracking(new AuxLongPacket(pos, prev, 0), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
-			prevWatts = watts;
-			
-			//this.networkPack(data, 250);
+
+			this.networkPackNT(250);
 		}
+
 	}
 
 	@Override
@@ -203,38 +203,36 @@ public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITic
 	}
 
 	@Override
-	public void addEnergy(long energy, EnumFacing dir) {
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+
+		buf.writeLong(power);
+		buf.writeInt(watts);
+		buf.writeLong(prev);
+		buf.writeInt(beam);
+		buf.writeBoolean(isOn);
+		tank.serialize(buf);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+
+		this.power = buf.readLong();
+		this.watts = buf.readInt();
+		this.prev = buf.readLong();
+		this.beam = buf.readInt();
+		this.isOn = buf.readBoolean();
+		tank.deserialize(buf);
+	}
+
+	@Override
+	public void addEnergy(World world, BlockPos pos, long energy, EnumFacing dir) {
 		//do not accept lasers from the front
-		if(dir.getOpposite().ordinal() != this.getBlockMetadata()){
-			if(Long.MAX_VALUE - joules < energy)
-				joules = Long.MAX_VALUE;
-			else
-				joules += energy;
-		}
+		if(dir.getOpposite().ordinal() != this.getBlockMetadata())
+			joules += energy;
 	}
 
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return tank.getTankProperties();
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource != null && resource.getFluid() == ModForgeFluids.cryogel)
-			return tank.fill(resource, doFill);
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return null;
-	}
-	
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return TileEntity.INFINITE_EXTENT_AABB;
@@ -249,13 +247,14 @@ public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITic
 	
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
+		super.readFromNBT(compound);
+
 		power = compound.getLong("power");
 		watts = compound.getInteger("watts");
 		joules = compound.getLong("joules");
 		prev = compound.getLong("prev");
 		isOn = compound.getBoolean("isOn");
-		tank.readFromNBT(compound.getCompoundTag("tank"));
-		super.readFromNBT(compound);
+		tank.readFromNBT(compound, "tank");
 	}
 	
 	@Override
@@ -265,27 +264,105 @@ public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITic
 		compound.setLong("joules", joules);
 		compound.setLong("prev", prev);
 		compound.setBoolean("isOn", isOn);
-		compound.setTag("tank", tank.writeToNBT(new NBTTagCompound()));
+		tank.writeToNBT(compound, "tank");
 		return super.writeToNBT(compound);
 	}
 
+
 	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length == 1)
-			tank.readFromNBT(tags[0]);
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[] { tank };
 	}
-	
+
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
+	public FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{tank};
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), null)
+			);
+		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	// do some opencomputer stuff
+	@Override
+	@Optional.Method(modid = "OpenComputers")
+	public String getComponentName() {
+		return "dfc_emitter";
+	}
+
+	@Callback(direct = true)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getEnergyInfo(Context context, Arguments args) {
+		return new Object[] {getPower(), getMaxPower()};
+	}
+
+	@Callback(direct = true)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getCryogel(Context context, Arguments args) {
+		return new Object[] {tank.getFill()};
+	}
+
+	@Callback(direct = true)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getInput(Context context, Arguments args) {
+		return new Object[] {watts};
+	}
+
+	@Callback(direct = true)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] getInfo(Context context, Arguments args) {
+		return new Object[] {getPower(), getMaxPower(), tank.getFill(), watts, isOn};
+	}
+
+	@Callback(direct = true)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] isActive(Context context, Arguments args) {
+		return new Object[] {isOn};
+	}
+
+	@Callback(direct = true, limit = 4)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] setActive(Context context, Arguments args) {
+		isOn = args.checkBoolean(0);
+		return new Object[] {};
+	}
+
+	@Callback(direct = true, limit = 4)
+	@Optional.Method(modid = "OpenComputers")
+	public Object[] setInput(Context context, Arguments args) {
+		int newOutput = args.checkInteger(0);
+		watts = MathHelper.clamp(newOutput, 0, 100);
+		return new Object[] {};
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerCoreEmitter(player, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUICoreEmitter(player, this);
 	}
 
 }

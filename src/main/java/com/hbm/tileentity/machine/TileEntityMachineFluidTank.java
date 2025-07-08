@@ -6,7 +6,6 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmCapability;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.explosion.vanillant.ExplosionVNT;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MultiblockHandlerXR;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
@@ -86,7 +85,7 @@ public class TileEntityMachineFluidTank extends TileEntityMachineBase implements
 	public void readFromNBT(NBTTagCompound compound) {
 		if(!converted) {
 			tank.readFromNBT(compound);
-			oldFluid = tank.getFluid() != null ? tank.getFluid().getFluid() : ModForgeFluids.none;
+			oldFluid = tank.getFluid() != null ? tank.getFluid().getFluid() :Fluids.NONE.getFF();;
 		} else tankNew.readFromNBT(compound, "tank");
 		mode = compound.getShort("mode");
 		super.readFromNBT(compound);

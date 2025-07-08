@@ -1,14 +1,9 @@
 package com.hbm.dim;
 
-import java.util.HashMap;
-import java.util.Random;
-import java.util.Map.Entry;
-
 import com.hbm.config.SpaceConfig;
 import com.hbm.dim.orbit.OrbitalStation;
 import com.hbm.dim.orbit.OrbitalStation.StationState;
 import com.hbm.dim.trait.CelestialBodyTrait;
-
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.ChunkPos;
@@ -17,6 +12,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Random;
 
 public class SolarSystemWorldSavedData extends WorldSavedData {
 

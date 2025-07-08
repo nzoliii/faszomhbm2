@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
+@SuppressWarnings({"deprecation", "NullableProblems"})
 public class LaunchTable extends BlockContainer implements IMultiBlock, IBomb {
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;

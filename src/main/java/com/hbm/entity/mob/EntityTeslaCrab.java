@@ -1,11 +1,9 @@
 package com.hbm.entity.mob;
 
-import com.hbm.inventory.material.Mats;
 import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.TileEntityTesla;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;

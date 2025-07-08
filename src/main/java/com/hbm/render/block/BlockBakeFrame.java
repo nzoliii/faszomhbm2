@@ -3,6 +3,7 @@ package com.hbm.render.block;
 import com.google.common.collect.ImmutableMap;
 import com.hbm.lib.RefStrings;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,6 +69,11 @@ public class BlockBakeFrame {
         return frames;
     }
 
+    public static BlockBakeFrame simpleSouthRotatable(String sides, String front){
+        return new BlockBakeFrame(FULL_CUSTOM, sides, sides, sides, front, sides, sides);
+    }
+
+
     public void registerBlockTextures(TextureMap map) {
         for (String texture : this.textureArray) {
             ResourceLocation spriteLoc = new ResourceLocation(RefStrings.MODID, ROOT_PATH + texture);
@@ -99,9 +105,9 @@ public class BlockBakeFrame {
         CROSS("minecraft:block/cross", 1, new String[]{"cross"}),
         PILLAR("minecraft:block/cube_column", 2, new String[]{"end", "side"}),
         PILLAR_BOTTOM("minecraft:block/cube_column", 3, new String[]{"end", "side", "bottom"}),
-        FULL_CUSTOM("minecraft:block/cube_all", 6, new String[]{
-                "top",
-                "bottom",
+        FULL_CUSTOM("minecraft:block/cube", 6, new String[]{
+                "up",
+                "down",
                 "north",
                 "south",
                 "west",
@@ -118,5 +124,15 @@ public class BlockBakeFrame {
             this.textureWrap = textureWrap;
         }
 
+    }
+
+    public  static  int getYRotationForFacing(EnumFacing facing) {
+        switch (facing) {
+            case SOUTH: return 0;
+            case WEST:  return 90;
+            case NORTH: return 180;
+            case EAST:  return 270;
+            default:    return 0;
+        }
     }
 }

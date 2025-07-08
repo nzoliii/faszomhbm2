@@ -312,10 +312,10 @@ public class EntityNukeExplosionMK3 extends Entity implements IChunkLoader {
 	}
 
 	public static class ATEntry {
-		int dim;
-		int x;
-		int y;
-		int z;
+		public int dim;
+		public int x;
+		public int y;
+		public int z;
 		
 		public ATEntry(int dim, int x, int y, int z) {
 			this.dim = dim;

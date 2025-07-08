@@ -5,7 +5,6 @@ import com.hbm.entity.logic.EntityEMP;
 import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.items.ModItems;
-import com.hbm.render.amlfrom1710.Vec3;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;

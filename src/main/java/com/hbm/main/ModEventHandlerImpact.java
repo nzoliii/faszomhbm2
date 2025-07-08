@@ -1,7 +1,6 @@
 package com.hbm.main;
 
 import com.hbm.blocks.ModBlocks;
-import com.hbm.dim.SkyProviderCelestial;
 import com.hbm.dim.WorldProviderEarth;
 import com.hbm.entity.projectile.EntityTom;
 import com.hbm.handler.BossSpawnHandler;
@@ -9,21 +8,15 @@ import com.hbm.handler.ImpactWorldHandler;
 import com.hbm.saveddata.TomSaveData;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldProvider;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
 import net.minecraftforge.event.terraingen.BiomeEvent;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
@@ -37,7 +30,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 public class ModEventHandlerImpact {
 	

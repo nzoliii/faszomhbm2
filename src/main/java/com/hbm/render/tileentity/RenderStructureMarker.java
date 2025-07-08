@@ -3,7 +3,6 @@ package com.hbm.render.tileentity;
 import com.hbm.render.NTMRenderHelper;
 import com.hbm.tileentity.machine.TileEntityStructureMarker;
 import com.hbm.world.FactoryTitanium;
-import com.hbm.world.NuclearReactor;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -20,16 +19,7 @@ public class RenderStructureMarker extends TileEntitySpecialRenderer<TileEntityS
 		{ null, null }, 
 		{ null, null } 
 		};
-	public static final TextureAtlasSprite[][] reactor = 
-		{ 
-		{ null, null }, 
-		{ null, null }, 
-		{ null, null }, 
-		{ null, null }, 
-		{ null, null }, 
-		{ null, null }, 
-		};
-	public static final TextureAtlasSprite[][] fusion = 
+	public static final TextureAtlasSprite[][] fusion =
 		{ 
 		{ null, null }, 
 		{ null, null }, 
@@ -125,91 +115,6 @@ public class RenderStructureMarker extends TileEntitySpecialRenderer<TileEntityS
 						}
 						if(texture >= 0) {
 							renderSmolBlockAt(fac_ti[texture][0], fac_ti[texture][1], a, b, c);
-						}
-					}
-				}
-			}
-		}
-		if(type == 1) {
-			if(meta == 1) {
-				offsetZ = 0;
-				offsetX = 7;
-			}
-			if(meta == 2) {
-				offsetZ = 0;
-				offsetX = 1;
-			}
-			if(meta == 3) {
-				offsetX = 4;
-				offsetZ = -3;
-			}
-			if(meta == 4) {
-				offsetZ = 3;
-				offsetX = 4;
-			}
-
-			GL11.glTranslatef(-2 + offsetX, 1, -2 + offsetZ);
-			for(int a = 0; a < 5; a++) {
-				for(int b = 0; b < 5; b++) {
-					for(int c = 0; c < 5; c++) {
-				
-						int texture = -1;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("R"))
-							texture = 0;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("#"))
-							texture = 1;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("C"))
-							texture = 2;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("A"))
-							texture = 3;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("I"))
-							texture = 4;
-						if(texture >= 0) {
-							renderSmolBlockAt(reactor[texture][0], reactor[texture][1], a, b, c);
-						}
-					}
-				}
-			}
-		}
-		if(type == 2) {
-
-			if(meta == 1) {
-				offsetZ = 0;
-				offsetX = 7;
-			}
-			if(meta == 2) {
-				offsetZ = 0;
-				offsetX = 1;
-			}
-			if(meta == 3) {
-				offsetX = 4;
-				offsetZ = -3;
-			}
-			if(meta == 4) {
-				offsetZ = 3;
-				offsetX = 4;
-			}
-
-			GL11.glTranslatef(-2 + offsetX, 0, -2 + offsetZ);
-			for(int a = 0; a < 5; a++) {
-				for(int b = 0; b < 5; b++) {
-					for(int c = 0; c < 5; c++) {
-				
-						int texture = -1;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("R"))
-							texture = 0;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("#"))
-							texture = 1;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("C"))
-							texture = 2;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("A"))
-							texture = 3;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("I"))
-							texture = 4;
-						if(NuclearReactor.array2[b][a].substring(c, c + 1).equals("B"))
-							texture = 5;
-						if(texture >= 0) {
-							renderSmolBlockAt(reactor[texture][0], reactor[texture][1], a, b, c);
 						}
 					}
 				}

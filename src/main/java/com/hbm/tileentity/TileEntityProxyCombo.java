@@ -6,7 +6,6 @@ import api.hbm.tile.IHeatSource;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.fluid.FluidType;
-import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.main.MainRegistry;
 import net.minecraft.nbt.NBTTagCompound;

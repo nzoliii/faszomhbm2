@@ -1,13 +1,13 @@
 package com.hbm.wiaj;
 
+import com.hbm.util.BobMathUtil;
+import com.hbm.wiaj.actors.ISpecialActor;
+import net.minecraft.util.math.MathHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
-import com.hbm.util.BobMathUtil;
-import com.hbm.wiaj.actors.ISpecialActor;
-import net.minecraft.util.math.MathHelper;
 
 public class JarScript {
 

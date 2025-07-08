@@ -1,9 +1,6 @@
 package com.hbm.world.feature;
 
-import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.ModBlocks;
-
-import com.hbm.blocks.PlantEnums;
 import com.hbm.blocks.generic.BlockDeadPlant;
 import com.hbm.blocks.generic.BlockPlantEnumMeta;
 import net.minecraft.block.*;
@@ -14,8 +11,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 
-import static com.hbm.blocks.PlantEnums.*;
-import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.*;
+import static com.hbm.blocks.PlantEnums.EnumDeadPlantType;
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.MUSTARD_WILLOW_0;
+import static com.hbm.blocks.PlantEnums.EnumFlowerPlantType.MUSTARD_WILLOW_1;
 import static com.hbm.blocks.PlantEnums.EnumTallPlantType.*;
 import static com.hbm.blocks.generic.BlockMeta.META;
 

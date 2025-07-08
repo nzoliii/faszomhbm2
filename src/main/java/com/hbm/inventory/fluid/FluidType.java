@@ -1,5 +1,6 @@
 package com.hbm.inventory.fluid;
 
+import com.hbm.capability.NTMFluidCapabilityHandler;
 import com.hbm.config.GeneralConfig;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Corrosive;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -103,6 +105,10 @@ public class FluidType {
 	public FluidType noFF(boolean bool) {
 		this.ffBan = bool;
 		return this;
+	}
+
+	public Fluid getFF(){
+		return NTMFluidCapabilityHandler.getForgeFluid(this);
 	}
 
 	public FluidType addContainers(Object... containers) {

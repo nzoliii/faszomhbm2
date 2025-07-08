@@ -1,32 +1,32 @@
 package com.hbm.render.tileentity;
 
-import java.awt.Color;
-import java.util.Objects;
-
-import com.hbm.main.MainRegistry;
-import com.hbm.wiaj.WorldInAJar;
-import com.hbm.wiaj.actors.ITileActorRenderer;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.IRenderFoundry;
 import com.hbm.tileentity.machine.TileEntityFoundryCastingBase;
-
+import com.hbm.wiaj.WorldInAJar;
+import com.hbm.wiaj.actors.ITileActorRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.items.ItemStackHandler;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.util.Objects;
 
 public class RenderFoundry extends TileEntitySpecialRenderer<TileEntityFoundryCastingBase> implements ITileActorRenderer {
 	

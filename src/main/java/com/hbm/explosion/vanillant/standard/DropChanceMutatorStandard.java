@@ -2,7 +2,6 @@ package com.hbm.explosion.vanillant.standard;
 
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.interfaces.IDropChanceMutator;
-
 import net.minecraft.block.Block;
 
 public class DropChanceMutatorStandard implements IDropChanceMutator {

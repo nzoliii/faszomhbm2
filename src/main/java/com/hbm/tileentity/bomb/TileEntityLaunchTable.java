@@ -1,12 +1,15 @@
 package com.hbm.tileentity.bomb;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.missile.EntityMissileCustom;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MissileStruct;
-import com.hbm.interfaces.IBomb;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import com.hbm.inventory.container.ContainerLaunchTable;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUIMachineLaunchTable;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.items.weapon.ItemMissile;
@@ -16,15 +19,21 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.*;
-import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.packet.PacketDispatcher;
+import com.hbm.packet.TEMissileMultipartPacket;
+import com.hbm.tileentity.IBufPacketReceiver;
+import com.hbm.tileentity.IGUIProvider;
+import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -32,527 +41,493 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityLaunchTable extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, IFluidHandler, ITankPacketAcceptor, SimpleComponent {
+public class TileEntityLaunchTable extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IBufPacketReceiver, IFluidStandardReceiver, SimpleComponent, IGUIProvider {
 
-	public ItemStackHandler inventory;
+    public static final long maxPower = 100000;
+    public static final int maxSolid = 100000;
+    public static final int clearingDuration = 100;
 
-	public long power;
-	public static final long maxPower = 100000;
-	public int solid;
-	public static final int maxSolid = 100000;
-	public FluidTank[] tanks;
-	public Fluid[] tankTypes;
-	public boolean needsUpdate;
-	public PartSize padSize;
-	public int height;
-	
-	public MissileStruct load;
+    public long power;
+    public int solid;
+    public FluidTankNTM[] tanks;
+    public PartSize padSize;
+    public int clearingTimer = 0;
+    public MissileStruct load;
+    public int height;
 
-	//private static final int[] access = new int[] { 0 };
+    public int redstonePower = 0;
+    private int prevRedstonePower = 0;
 
-	public static final int clearingDuraction = 100;
-	public int clearingTimer = 0;
-	
-	private String customName;
-	
-	public TileEntityLaunchTable() {
-		inventory = new ItemStackHandler(8){
-			@Override
-			protected void onContentsChanged(int slot) {
-				markDirty();
-				super.onContentsChanged(slot);
-			}
-		};
-		tanks = new FluidTank[2];
-		tankTypes = new Fluid[2];
-		tanks[0] = new FluidTank(100000);
-		tankTypes[0] = null;
-		tanks[1] = new FluidTank(100000);
-		tankTypes[1] = null;
-		needsUpdate = false;
-		padSize = PartSize.SIZE_10;
-		height = 10;
-	}
-	
-	public String getInventoryName() {
-		return this.hasCustomInventoryName() ? this.customName : "container.launchTable";
-	}
+    private ItemStack lastMissileStack = ItemStack.EMPTY;
 
-	public boolean hasCustomInventoryName() {
-		return this.customName != null && this.customName.length() > 0;
-	}
+    public TileEntityLaunchTable() {
+        super(8);
+        tanks = new FluidTankNTM[2];
+        tanks[0] = new FluidTankNTM(Fluids.NONE, 100000);
+        tanks[1] = new FluidTankNTM(Fluids.NONE, 100000);
+        padSize = PartSize.SIZE_10;
+    }
 
-	public void setCustomName(String name) {
-		this.customName = name;
-	}
-	
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		if (world.getTileEntity(pos) != this) {
-			return false;
-		} else {
-			return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64;
-		}
-	}
-	
-	public long getPowerScaled(long i) {
-		return (power * i) / maxPower;
-	}
-	
-	public int getSolidScaled(int i) {
-		return (solid * i) / maxSolid;
-	}
-	
-	@Override
-	public void update() {
-		updateTypes();
-		if (!world.isRemote) {
-			
-			if(clearingTimer > 0) clearingTimer--;
-			//updateTypes();
-			if(world.getTotalWorldTime() % 20 == 0)
-				this.updateConnections();
+    public static MissileStruct getStruct(ItemStack stack) {
+        return ItemCustomMissile.getStruct(stack);
+    }
 
-			if(inputValidForTank(0, 2))
-				if(FFUtils.fillFromFluidContainer(inventory, tanks[0], 2, 6))
-					needsUpdate = true;
-			if(inputValidForTank(1, 3))
-				if(FFUtils.fillFromFluidContainer(inventory, tanks[1], 3, 7))
-					needsUpdate = true;
-			
-			power = Library.chargeTEFromItems(inventory, 5, power, maxPower);
-			
-			if(inventory.getStackInSlot(4).getItem() == ModItems.rocket_fuel && solid + 250 <= maxSolid) {
-				
-				inventory.getStackInSlot(4).shrink(1);
-				if(inventory.getStackInSlot(4).isEmpty())
-					inventory.setStackInSlot(4, ItemStack.EMPTY);
-				solid += 250;
-			}
-			
-			PacketDispatcher.wrapper.sendToAllAround(new AuxElectricityPacket(pos, power), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxGaugePacket(pos, solid, 0), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxGaugePacket(pos, padSize.ordinal(), 1), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxGaugePacket(pos, clearingTimer, 2), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, new FluidTank[]{tanks[0], tanks[1]}), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			
-			MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-			if(needsUpdate){
-				needsUpdate = false;
-			}
-			if(multipart != null)
-				PacketDispatcher.wrapper.sendToAllAround(new TEMissileMultipartPacket(pos, multipart), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 200));
-			else
-				PacketDispatcher.wrapper.sendToAllAround(new TEMissileMultipartPacket(pos, new MissileStruct()), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 200));
+    @Override
+    public String getName() {
+        return "container.launchTable";
+    }
 
-			outer:
-			for(int x = -4; x <= 4; x++) {
-				for(int z = -4; z <= 4; z++) {
-					
-					if(world.getStrongPower(pos.add(x, 0, z)) > 0 && canLaunch()) {
-						launch();
-						break outer;
-					}
-				}
-			}
-		} else {
-			
-			List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, pos.getX() + 1.5, pos.getY() + 10, pos.getZ() + 1.5));
-			
-			for(Entity e : entities) {
-				
-				if(e instanceof EntityMissileCustom) {
-					
-					for(int i = 0; i < 15; i++)
-						MainRegistry.proxy.spawnParticle(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5, "launchsmoke", null);
-					
-					break;
-				}
-			}
-		}
-	}
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player) {
+        if (world.getTileEntity(pos) != this) {
+            return false;
+        } else {
+            return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64;
+        }
+    }
 
-	private void updateConnections() {
+    public long getPowerScaled(long i) {
+        return (power * i) / maxPower;
+    }
 
-		for(int i = -4; i <= 4; i++) {
-			this.trySubscribe(world, pos.getX() + 5, pos.getY(), pos.getZ() + i, ForgeDirection.EAST);
-			this.trySubscribe(world, pos.getX() - 5, pos.getY(), pos.getZ() + i, ForgeDirection.WEST);
-			this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() + 5, ForgeDirection.SOUTH);
-			this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() - 5, ForgeDirection.NORTH);
-		}
-	}
-	
-	public boolean canLaunch() {
-		
-		if(power >= maxPower * 0.75 && isMissileValid() && hasDesignator() && hasFuel() && clearingTimer == 0)
-			return true;
-		
-		return false;
-	}
-	
-	public void launch() {
+    public int getSolidScaled(int i) {
+        return (solid * i) / maxSolid;
+    }
 
-		world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.missileTakeoff, SoundCategory.BLOCKS, 10.0F, 1.0F);
+    @Override
+    public void update() {
+        ItemStack currentMissile = this.inventory.getStackInSlot(0);
+        if (!ItemStack.areItemStacksEqual(currentMissile, this.lastMissileStack)) {
+            this.lastMissileStack = currentMissile.copy();
+            this.updateTypes();
+        }
 
-		int tX = inventory.getStackInSlot(1).getTagCompound().getInteger("xCoord");
-		int tZ = inventory.getStackInSlot(1).getTagCompound().getInteger("zCoord");
-		
-		EntityMissileCustom missile = new EntityMissileCustom(world, pos.getX() + 0.5F, pos.getY() + 1.5F, pos.getZ() + 0.5F, tX, tZ, getStruct(inventory.getStackInSlot(0)));
-		world.spawnEntity(missile);
-		
-		subtractFuel();
-		clearingTimer = clearingDuraction;
-		inventory.setStackInSlot(0, ItemStack.EMPTY);
-	}
-	
-	private boolean hasFuel() {
+        if (!world.isRemote) {
+            if (clearingTimer > 0) clearingTimer--;
 
-		return solidState() != 0 && liquidState() != 0 && oxidizerState() != 0;
-	}
-	
-	private void subtractFuel() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		float f = (Float)fuselage.attributes[1];
-		int fuel = (int)f;
-		
-		switch((FuelType)fuselage.attributes[0]) {
-			case KEROSENE:
-				tanks[0].drain(fuel, true);
-				tanks[1].drain(fuel, true);
-				break;
-			case HYDROGEN:
-				tanks[0].drain(fuel, true);
-				tanks[1].drain(fuel, true);
-				break;
-			case XENON:
-				tanks[0].drain(fuel, true);
-				break;
-			case BALEFIRE:
-				tanks[0].drain(fuel, true);
-				tanks[1].drain(fuel, true);
-				break;
-			case SOLID:
-				this.solid -= fuel; break;
-			default: break;
-		}
-		needsUpdate = true;
-		this.power -= maxPower * 0.75;
-	}
-	
-	public static MissileStruct getStruct(ItemStack stack) {
-		
-		return ItemCustomMissile.getStruct(stack);
-	}
-	
-	public boolean isMissileValid() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return false;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		return fuselage.top == padSize;
-	}
-	
-	public boolean hasDesignator() {
-		
-		if(!inventory.getStackInSlot(1).isEmpty()) {
-			
-			return (inventory.getStackInSlot(1).getItem() == ModItems.designator || inventory.getStackInSlot(1).getItem() == ModItems.designator_range || inventory.getStackInSlot(1).getItem() == ModItems.designator_manual) && inventory.getStackInSlot(1).hasTagCompound();
-		}
-		
-		return false;
-	}
-	
-	public int solidState() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return -1;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		if((FuelType)fuselage.attributes[0] == FuelType.SOLID) {
-			
-			if(solid >= (Float)fuselage.attributes[1])
-				return 1;
-			else
-				return 0;
-		}
-		
-		return -1;
-	}
-	
-	public int liquidState() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return -1;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		switch((FuelType)fuselage.attributes[0]) {
-			case KEROSENE:
-			case HYDROGEN:
-			case XENON:
-			case BALEFIRE:
-				
-				if(tanks[0].getFluidAmount() >= (Float)fuselage.attributes[1])
-					return 1;
-				else
-					return 0;
-			default: break;
-		}
-		
-		return -1;
-	}
-	
-	public int oxidizerState() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return -1;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		switch((FuelType)fuselage.attributes[0]) {
-			case KEROSENE:
-			case HYDROGEN:
-			case BALEFIRE:
-				
-				if(tanks[1].getFluidAmount() >= (Float)fuselage.attributes[1])
-					return 1;
-				else
-					return 0;
-			default: break;
-		}
-		
-		return -1;
-	}
-	
-	public void updateTypes() {
-		
-		MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
-		
-		if(multipart == null || multipart.fuselage == null)
-			return;
-		
-		ItemMissile fuselage = (ItemMissile)multipart.fuselage;
-		
-		switch((FuelType)fuselage.attributes[0]) {
-			case KEROSENE:
-				tankTypes[0] = ModForgeFluids.kerosene;
-				tankTypes[1] = ModForgeFluids.acid;
-				break;
-			case HYDROGEN:
-				tankTypes[0] = ModForgeFluids.hydrogen;
-				tankTypes[1] = ModForgeFluids.oxygen;
-				break;
-			case XENON:
-				tankTypes[0] = ModForgeFluids.xenon;
-				break;
-			case BALEFIRE:
-				tankTypes[0] = ModForgeFluids.balefire;
-				tankTypes[1] = ModForgeFluids.acid;
-				break;
-			default: break;
-		}
-	}
+            if (world.getTotalWorldTime() % 20 == 0) this.updateConnections();
 
-	protected boolean inputValidForTank(int tank, int slot){
-		if(tanks[tank] != null){
-			if(isValidFluidForTank(tank, FluidUtil.getFluidContained(inventory.getStackInSlot(slot)))){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean isValidFluidForTank(int tank, FluidStack stack) {
-		if(stack == null || tanks[tank] == null)
-			return false;
-		return stack.getFluid() == tankTypes[tank];
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setTag("inventory", inventory.serializeNBT());
-		nbt.setTag("tanks", FFUtils.serializeTankArray(tanks));
-		if(tankTypes[0] != null)
-			nbt.setString("tankType0", tankTypes[0].getName());
-		if(tankTypes[1] != null)
-			nbt.setString("tankType1", tankTypes[1].getName());
-		nbt.setInteger("solidfuel", solid);
-		nbt.setLong("power", power);
-		nbt.setInteger("padSize", padSize.ordinal());
-		return super.writeToNBT(nbt);
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		if(nbt.hasKey("inventory"))
-			inventory.deserializeNBT(nbt.getCompoundTag("inventory"));
-		if(nbt.hasKey("tanks"))
-			FFUtils.deserializeTankArray(nbt.getTagList("tanks", 10), tanks);
-		if(nbt.hasKey("tankType0"))
-			tankTypes[0] = FluidRegistry.getFluid(nbt.getString("tankType0"));
-		if(nbt.hasKey("tankType1"))
-			tankTypes[1] = FluidRegistry.getFluid(nbt.getString("tankType1"));
-		solid = nbt.getInteger("solidfuel");
-		power = nbt.getLong("power");
-		padSize = PartSize.values()[nbt.getInteger("padSize")];
-		super.readFromNBT(nbt);
-	}
+            tanks[0].loadTank(2, 6, inventory);
+            tanks[1].loadTank(3, 7, inventory);
 
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return TileEntity.INFINITE_EXTENT_AABB;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return 65536.0D;
-	}
-	
-	@Override
-	public void setPower(long i) {
-		this.power = i;
-	}
+            power = Library.chargeTEFromItems(inventory, 5, power, maxPower);
 
-	@Override
-	public long getPower() {
-		return this.power;
-	}
+            if (!inventory.getStackInSlot(4).isEmpty() && inventory.getStackInSlot(4).getItem() == ModItems.rocket_fuel && solid + 250 <= maxSolid) {
+                inventory.getStackInSlot(4).shrink(1);
+                if (inventory.getStackInSlot(4).isEmpty()) inventory.setStackInSlot(4, ItemStack.EMPTY);
+                solid += 250;
+            }
 
-	@Override
-	public long getMaxPower() {
-		return TileEntityLaunchTable.maxPower;
-	}
+            MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+            if (multipart != null) {
+                PacketDispatcher.wrapper.sendToAllAround(new TEMissileMultipartPacket(pos, multipart), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 200));
+            } else
+                PacketDispatcher.wrapper.sendToAllAround(new TEMissileMultipartPacket(pos, new MissileStruct()), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 200));
 
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[]{tanks[0].getTankProperties()[0], tanks[1].getTankProperties()[0]};
-	}
+            networkPackNT(20);
 
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource == null){
-			return 0;
-		} else if(resource.getFluid() == tankTypes[0]){
-			return tanks[0].fill(resource, doFill);
-		} else if(resource.getFluid() == tankTypes[1]){
-			return tanks[1].fill(resource, doFill);
-		} else {
-			return 0;
-		}
-	}
+            this.prevRedstonePower = this.redstonePower;
+            this.redstonePower = 0;
+            for (int x = -4; x <= 4; x++) {
+                for (int z = -4; z <= 4; z++) {
+                    if (world.getStrongPower(pos.add(x, 0, z)) > 0) {
+                        this.redstonePower++;
+                    }
+                }
+            }
 
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return null;
-	}
+            // Launch only when signal goes from off to on
+            if (this.redstonePower > 0 && this.prevRedstonePower <= 0 && canLaunch()) {
+                launch();
+            }
 
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return null;
-	}
+        } else {
+            List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, pos.getX() + 1.5, pos.getY() + 10, pos.getZ() + 1.5));
+            for (Entity e : entities) {
+                if (e instanceof EntityMissileCustom) {
+                    for (int i = 0; i < 15; i++)
+                        MainRegistry.proxy.spawnParticle(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5, "launchsmoke", null);
+                    break;
+                }
+            }
+        }
+    }
 
-	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length != 2){
-			return;
-		} else {
-			tanks[0].readFromNBT(tags[0]);
-			tanks[1].readFromNBT(tags[1]);
-		}
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-			return true;
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return true;
-		} else {
-			return super.hasCapability(capability, facing);
-		}
-	}
-	
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY){
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-		} else {
-			return super.getCapability(capability, facing);
-		}
-	}
+    @Override
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+        buf.writeLong(power);
+        buf.writeInt(solid);
+        buf.writeInt(padSize.ordinal());
+        buf.writeInt(clearingTimer);
+        tanks[0].serialize(buf);
+        tanks[1].serialize(buf);
+    }
 
-	public boolean setCoords(int x, int z){
-		if(!inventory.getStackInSlot(1).isEmpty() && (inventory.getStackInSlot(1).getItem() == ModItems.designator || inventory.getStackInSlot(1).getItem() == ModItems.designator_range || inventory.getStackInSlot(1).getItem() == ModItems.designator_manual)){
-			NBTTagCompound nbt;
-			if(inventory.getStackInSlot(1).hasTagCompound())
-				nbt = inventory.getStackInSlot(1).getTagCompound();
-			else
-				nbt = new NBTTagCompound();
-			nbt.setInteger("xCoord", x);
-			nbt.setInteger("zCoord", z);
-			inventory.getStackInSlot(1).setTagCompound(nbt);
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        power = buf.readLong();
+        solid = buf.readInt();
+        padSize = PartSize.values()[buf.readInt()];
+        clearingTimer = buf.readInt();
+        tanks[0].deserialize(buf);
+        tanks[1].deserialize(buf);
+    }
 
-	// opencomputers interface
+    private void updateConnections() {
+        for (int i = -4; i <= 4; i++) {
+            this.trySubscribe(world, pos.getX() + 5, pos.getY(), pos.getZ() + i, ForgeDirection.EAST);
+            this.trySubscribe(tanks[0].getTankType(), world, pos.getX() + 5, pos.getY(), pos.getZ() + i, ForgeDirection.EAST);
+            this.trySubscribe(tanks[1].getTankType(), world, pos.getX() + 5, pos.getY(), pos.getZ() + i, ForgeDirection.EAST);
 
-	@Override
-	public String getComponentName() {
-		return "launchtable";
-	}
+            this.trySubscribe(world, pos.getX() - 5, pos.getY(), pos.getZ() + i, ForgeDirection.WEST);
+            this.trySubscribe(tanks[0].getTankType(), world, pos.getX() - 5, pos.getY(), pos.getZ() + i, ForgeDirection.WEST);
+            this.trySubscribe(tanks[1].getTankType(), world, pos.getX() - 5, pos.getY(), pos.getZ() + i, ForgeDirection.WEST);
 
-	@Callback(doc = "setTarget(x:int, z:int); saves coords in target designator item - returns true if it worked")
-	public Object[] setTarget(Context context, Arguments args) {
-		int x = args.checkInteger(0);
-		int z = args.checkInteger(1);
-		
-		return new Object[] {setCoords(x, z)};
-	}
+            this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() + 5, ForgeDirection.SOUTH);
+            this.trySubscribe(tanks[0].getTankType(), world, pos.getX() + i, pos.getY(), pos.getZ() + 5, ForgeDirection.SOUTH);
+            this.trySubscribe(tanks[1].getTankType(), world, pos.getX() + i, pos.getY(), pos.getZ() + 5, ForgeDirection.SOUTH);
 
-	@Callback(doc = "launch(); tries to launch the rocket")
-	public Object[] launch(Context context, Arguments args) {
-		Block b = world.getBlockState(pos).getBlock();
-		if(b instanceof IBomb){
-			((IBomb)b).explode(world, pos);
-		}
-		return new Object[] {null};
-	}
+            this.trySubscribe(world, pos.getX() + i, pos.getY(), pos.getZ() - 5, ForgeDirection.NORTH);
+            this.trySubscribe(tanks[0].getTankType(), world, pos.getX() + i, pos.getY(), pos.getZ() - 5, ForgeDirection.NORTH);
+            this.trySubscribe(tanks[1].getTankType(), world, pos.getX() + i, pos.getY(), pos.getZ() - 5, ForgeDirection.NORTH);
+        }
+    }
+
+    public boolean canLaunch() {
+        return power >= maxPower * 0.75 && isMissileValid() && hasDesignator() && hasFuel() && clearingTimer == 0;
+    }
+
+    public void launch() {
+        world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.missileTakeoff, SoundCategory.BLOCKS, 10.0F, 1.0F);
+
+        int tX = inventory.getStackInSlot(1).getTagCompound().getInteger("xCoord");
+        int tZ = inventory.getStackInSlot(1).getTagCompound().getInteger("zCoord");
+
+        EntityMissileCustom missile = new EntityMissileCustom(world, pos.getX() + 0.5F, pos.getY() + 1.5F, pos.getZ() + 0.5F, tX, tZ, getStruct(inventory.getStackInSlot(0)));
+        world.spawnEntity(missile);
+
+        subtractFuel();
+        clearingTimer = clearingDuration;
+        inventory.setStackInSlot(0, ItemStack.EMPTY);
+    }
+
+    private boolean hasFuel() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return false;
+
+        ItemMissile fuselage = multipart.fuselage;
+        float requiredFuel = (Float) fuselage.attributes[1];
+        FuelType fuelType = (FuelType) fuselage.attributes[0];
+
+        return switch (fuelType) {
+            case SOLID -> this.solid >= requiredFuel;
+            case KEROSENE, HYDROGEN, BALEFIRE ->
+                    tanks[0].getFill() >= requiredFuel && tanks[1].getFill() >= requiredFuel;
+            case XENON -> tanks[0].getFill() >= requiredFuel;
+            default -> false;
+        };
+    }
+
+    private void subtractFuel() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return;
+
+        ItemMissile fuselage = multipart.fuselage;
+        int fuel = (int) (float) fuselage.attributes[1];
+
+        switch ((FuelType) fuselage.attributes[0]) {
+            case KEROSENE:
+            case HYDROGEN:
+            case BALEFIRE:
+                tanks[0].setFill(tanks[0].getFill() - fuel);
+                tanks[1].setFill(tanks[1].getFill() - fuel);
+                break;
+            case XENON:
+                tanks[0].setFill(tanks[0].getFill() - fuel);
+                break;
+            case SOLID:
+                this.solid -= fuel;
+                break;
+            default:
+                break;
+        }
+        this.power -= (long) (maxPower * 0.75);
+    }
+
+    public boolean isMissileValid() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return false;
+        return multipart.fuselage.top == padSize;
+    }
+
+    public boolean hasDesignator() {
+        ItemStack designator = inventory.getStackInSlot(1);
+        if (!designator.isEmpty()) {
+            Item item = designator.getItem();
+            return (item == ModItems.designator || item == ModItems.designator_range || item == ModItems.designator_manual) && designator.hasTagCompound();
+        }
+        return false;
+    }
+
+    public void updateTypes() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+
+        if (multipart == null || multipart.fuselage == null) {
+            tanks[0].setTankType(Fluids.NONE);
+            tanks[1].setTankType(Fluids.NONE);
+            return;
+        }
+
+        ItemMissile fuselage = multipart.fuselage;
+        switch ((FuelType) fuselage.attributes[0]) {
+            case KEROSENE:
+                tanks[0].setTankType(Fluids.KEROSENE);
+                tanks[1].setTankType(Fluids.PEROXIDE);
+                break;
+            case HYDROGEN:
+                tanks[0].setTankType(Fluids.HYDROGEN);
+                tanks[1].setTankType(Fluids.OXYGEN);
+                break;
+            case XENON:
+                tanks[0].setTankType(Fluids.XENON);
+                tanks[1].setTankType(Fluids.NONE);
+                break;
+            case BALEFIRE:
+                tanks[0].setTankType(Fluids.BALEFIRE);
+                tanks[1].setTankType(Fluids.PEROXIDE);
+                break;
+            default:
+                tanks[0].setTankType(Fluids.NONE);
+                tanks[1].setTankType(Fluids.NONE);
+                break;
+        }
+    }
+
+    @NotNull
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+        tanks[0].writeToNBT(nbt, "tank0");
+        tanks[1].writeToNBT(nbt, "tank1");
+        nbt.setInteger("solidfuel", solid);
+        nbt.setLong("power", power);
+        nbt.setInteger("padSize", padSize.ordinal());
+        nbt.setInteger("redstonePower", this.redstonePower);
+        nbt.setInteger("prevRedstonePower", this.prevRedstonePower);
+        return nbt;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        this.tanks[0].readFromNBT(nbt, "tank0");
+        this.tanks[1].readFromNBT(nbt, "tank1");
+        this.solid = nbt.getInteger("solidfuel");
+        this.power = nbt.getLong("power");
+        this.padSize = PartSize.values()[nbt.getInteger("padSize")];
+        this.redstonePower = nbt.getInteger("redstonePower");
+        this.prevRedstonePower = nbt.getInteger("prevRedstonePower");
+    }
+
+    @NotNull
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return TileEntity.INFINITE_EXTENT_AABB;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return 65536.0D;
+    }
+
+    @Override
+    public long getPower() {
+        return this.power;
+    }
+
+    @Override
+    public void setPower(long i) {
+        this.power = i;
+    }
+
+    @Override
+    public long getMaxPower() {
+        return TileEntityLaunchTable.maxPower;
+    }
+
+
+    @Override
+    public FluidTankNTM[] getReceivingTanks() {
+        return this.tanks;
+    }
+
+    @Override
+    public FluidTankNTM[] getAllTanks() {
+        return this.tanks;
+    }
+
+    @Override
+    public boolean hasCapability(@NotNull Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(@NotNull Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
+        }
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new NTMFluidHandlerWrapper(getReceivingTanks(), null));
+        }
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(new NTMEnergyCapabilityWrapper(this));
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    public boolean setCoords(int x, int z) {
+        ItemStack designator = inventory.getStackInSlot(1);
+        if (!designator.isEmpty() && (designator.getItem() == ModItems.designator || designator.getItem() == ModItems.designator_range || designator.getItem() == ModItems.designator_manual)) {
+            NBTTagCompound nbt = designator.hasTagCompound() ? designator.getTagCompound() : new NBTTagCompound();
+            nbt.setInteger("xCoord", x);
+            nbt.setInteger("zCoord", z);
+            designator.setTagCompound(nbt);
+            return true;
+        }
+        return false;
+    }
+
+    public int liquidState() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return -1;
+
+        ItemMissile fuselage = multipart.fuselage;
+        float requiredFuel = (Float) fuselage.attributes[1];
+        FuelType fuelType = (FuelType) fuselage.attributes[0];
+
+        return switch (fuelType) {
+            case KEROSENE, HYDROGEN, XENON, BALEFIRE -> tanks[0].getFill() >= requiredFuel ? 1 : 0;
+            default -> -1;
+        };
+    }
+
+    public int oxidizerState() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return -1;
+
+        ItemMissile fuselage = multipart.fuselage;
+        float requiredFuel = (Float) fuselage.attributes[1];
+        FuelType fuelType = (FuelType) fuselage.attributes[0];
+
+        return switch (fuelType) {
+            case KEROSENE, HYDROGEN, BALEFIRE -> tanks[1].getFill() >= requiredFuel ? 1 : 0;
+            default -> -1;
+        };
+    }
+
+    public int solidState() {
+        MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
+        if (multipart == null || multipart.fuselage == null) return -1;
+
+        ItemMissile fuselage = multipart.fuselage;
+        float requiredFuel = (Float) fuselage.attributes[1];
+        FuelType fuelType = (FuelType) fuselage.attributes[0];
+
+        if (fuelType == FuelType.SOLID) {
+            return this.solid >= requiredFuel ? 1 : 0;
+        }
+
+        return -1;
+    }
+
+    @Override
+    public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new ContainerLaunchTable(player.inventory, this);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new GUIMachineLaunchTable(player.inventory, this);
+    }
+
+    // --- OpenComputers Interface ---
+
+    @Override
+    public String getComponentName() {
+        return "launchtable";
+    }
+
+    @Callback(doc = "setTarget(x:integer, z:integer) -- Sets the target coordinates in the designator. Returns true on success.")
+    public Object[] setTarget(Context context, Arguments args) {
+        int x = args.checkInteger(0);
+        int z = args.checkInteger(1);
+        return new Object[]{setCoords(x, z)};
+    }
+
+    @Callback(doc = "launch() -- Tries to launch the missile. Returns true on success, or false and a reason on failure.")
+    public Object[] launch(Context context, Arguments args) {
+        if (!isMissileValid()) return new Object[]{false, "Invalid or no missile."};
+        if (!hasDesignator()) return new Object[]{false, "Missing or unlinked designator."};
+        if (power < maxPower * 0.75) return new Object[]{false, "Insufficient power."};
+        if (!hasFuel()) return new Object[]{false, "Insufficient fuel."};
+        if (clearingTimer > 0) return new Object[]{false, "Launch pad is cooling down."};
+        launch();
+        return new Object[]{true};
+    }
+
+    @Callback(doc = "getPower() -- Returns current and maximum stored power.", direct = true)
+    public Object[] getPower(Context context, Arguments args) {
+        return new Object[]{this.power, maxPower};
+    }
+
+    @Callback(doc = "getSolidFuel() -- Returns current and maximum solid fuel.", direct = true)
+    public Object[] getSolidFuel(Context context, Arguments args) {
+        return new Object[]{this.solid, maxSolid};
+    }
+
+    @Callback(doc = "getLiquidFuel() -- Returns fuel tank info: current amount, max capacity, and fluid name.", direct = true)
+    public Object[] getLiquidFuel(Context context, Arguments args) {
+        return new Object[]{tanks[0].getFill(), tanks[0].getMaxFill(), tanks[0].getTankType().getTranslationKey()};
+    }
+
+    @Callback(doc = "getOxidizer() -- Returns oxidizer tank info: current amount, max capacity, and fluid name.", direct = true)
+    public Object[] getOxidizer(Context context, Arguments args) {
+        return new Object[]{tanks[1].getFill(), tanks[1].getMaxFill(), tanks[1].getTankType().getTranslationKey()};
+    }
+
+    @Callback(doc = "canLaunch() -- Returns true if all conditions for launch are met.", direct = true)
+    public Object[] canLaunch(Context context, Arguments args) {
+        return new Object[]{canLaunch()};
+    }
+
+    @Callback(doc = "getMissileInfo() -- Returns the display name of the loaded missile.", direct = true)
+    public Object[] getMissileInfo(Context context, Arguments args) {
+        ItemStack missile = inventory.getStackInSlot(0);
+        if (missile.isEmpty()) {
+            return new Object[]{null, "No missile loaded."};
+        }
+        return new Object[]{missile.getDisplayName()};
+    }
 }

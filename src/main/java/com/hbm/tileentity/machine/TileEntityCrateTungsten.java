@@ -16,6 +16,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -103,7 +105,7 @@ public class TileEntityCrateTungsten extends TileEntityLockableBase implements I
 	}
 
 	@Override
-	public void addEnergy(long energy, EnumFacing dir) {
+	public void addEnergy(World world, BlockPos pos, long energy, EnumFacing dir) {
 		heatTimer = 5;
 		
 		for(int i = 0; i < inventory.getSlots(); i++) {

@@ -3,6 +3,8 @@ package com.hbm.tileentity.machine;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.UpgradeManager;
@@ -30,6 +32,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,12 +40,17 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -107,7 +115,7 @@ public class TileEntityMachineArcWelder extends TileEntityMachineBase
   }
 
   @Override
-  public String getName() {
+  public @NotNull String getName() {
     return "container.machineArcWelder";
   }
 
@@ -171,9 +179,7 @@ public class TileEntityMachineArcWelder extends TileEntityMachineBase
             if (inventory.getStackInSlot(3).isEmpty()) {
               inventory.setStackInSlot(3, recipe.output.copy());
             } else {
-              inventory
-                  .getStackInSlot(3)
-                  .setCount(inventory.getStackInSlot(3).getCount() + recipe.output.getCount());
+              inventory.getStackInSlot(3).grow(recipe.output.getCount());
             }
 
             this.markDirty();
@@ -370,7 +376,7 @@ public class TileEntityMachineArcWelder extends TileEntityMachineBase
   }
 
   @Override
-  public boolean isItemValidForSlot(int slot, ItemStack stack) {
+  public boolean isItemValidForSlot(int slot, @NotNull ItemStack stack) {
     return slot < 3;
   }
 
@@ -380,36 +386,38 @@ public class TileEntityMachineArcWelder extends TileEntityMachineBase
   }
 
   @Override
-  public int[] getAccessibleSlotsFromSide(EnumFacing side) {
-    return new int[] {1, 3};
-  }
-
-  @Override
-  public boolean canInsertItem(int slot, ItemStack itemStack, int amount) {
+  public boolean canInsertItem(int slot, ItemStack stack, int side) {
     return slot < 3;
   }
 
-//  @Override
-//  public int[] getAccessibleSlotsFromSide(int x, int y, int z, EnumFacing side) {
-//    BlockPos pos = new BlockPos(x, y, z);
-//    ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata() - 10);
-//    ForgeDirection rot = dir.getRotation(ForgeDirection.UP);
-//    BlockPos core = new BlockPos(xCoord, yCoord, zCoord);
-//
-//    // Red
-//    if (pos.equals(core.clone().offset(rot))
-//        || pos.equals(core.clone().offset(rot.getOpposite()).offset(dir.getOpposite())))
-//      return new int[] {0, 3};
-//
-//    // Yellow
-//    if (pos.equals(core.clone().offset(dir.getOpposite()))) return new int[] {1, 3};
-//
-//    // Green
-//    if (pos.equals(core.clone().offset(rot.getOpposite()))
-//        || pos.equals(core.clone().offset(rot).offset(dir.getOpposite()))) return new int[] {2, 3};
-//
-//    return new int[] {};
-//  }
+  @Override
+  public int[] getAccessibleSlotsFromSide(EnumFacing side) {
+    EnumFacing dir = EnumFacing.byIndex(this.getBlockMetadata() - 10);
+    EnumFacing rot = dir.rotateY();
+    BlockPos core = this.pos;
+
+    // Red
+    BlockPos red1 = core.offset(rot);
+    BlockPos red2 = core.offset(rot.getOpposite()).offset(dir.getOpposite());
+    if (this.pos.equals(red1) || this.pos.equals(red2)) {
+      return new int[] {0, 3};
+    }
+
+    // Yellow
+    BlockPos yellow = core.offset(dir.getOpposite());
+    if (this.pos.equals(yellow)) {
+      return new int[] {1, 3};
+    }
+
+    // Green
+    BlockPos green1 = core.offset(rot.getOpposite());
+    BlockPos green2 = core.offset(rot).offset(dir.getOpposite());
+    if (this.pos.equals(green1) || this.pos.equals(green2)) {
+      return new int[] {2, 3};
+    }
+
+    return new int[] {};
+  }
 
   @Override
   public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -487,5 +495,28 @@ public class TileEntityMachineArcWelder extends TileEntityMachineBase
   @Override
   public FluidTankNTM getTankToPaste() {
     return tank;
+  }
+
+  @Override
+  public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
+      return true;
+    }
+    return super.hasCapability(capability, facing);
+  }
+
+  @Override
+  public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+    if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+      return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+              new NTMFluidHandlerWrapper(this.getReceivingTanks(), null)
+      );
+    }
+    if (capability == CapabilityEnergy.ENERGY) {
+      return CapabilityEnergy.ENERGY.cast(
+              new NTMEnergyCapabilityWrapper(this)
+      );
+    }
+    return super.getCapability(capability, facing);
   }
 }

@@ -1,16 +1,15 @@
 package com.hbm.dim.trait;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.trait.FluidTrait;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CBT_Atmosphere extends CelestialBodyTrait {

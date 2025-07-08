@@ -1,8 +1,8 @@
 package com.hbm.interfaces;
 
-import java.util.Set;
-
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+
+import java.util.Set;
 
 public interface IHasCustomMetaModels {
 

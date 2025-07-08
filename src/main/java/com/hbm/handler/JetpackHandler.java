@@ -1,23 +1,11 @@
 package com.hbm.handler;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector4f;
-
 import com.hbm.animloader.AnimationWrapper;
 import com.hbm.animloader.AnimationWrapper.EndResult;
 import com.hbm.animloader.AnimationWrapper.EndType;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.items.ModItems;
 import com.hbm.items.gear.JetpackGlider;
 import com.hbm.lib.HBMSoundHandler;
@@ -34,7 +22,6 @@ import com.hbm.render.NTMRenderHelper;
 import com.hbm.render.misc.ColorGradient;
 import com.hbm.sound.MovingSoundJetpack;
 import com.hbm.util.BobMathUtil;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -60,14 +47,20 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector2f;
+import org.lwjgl.util.vector.Vector4f;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class JetpackHandler {
 
@@ -80,7 +73,7 @@ public class JetpackHandler {
 	private static boolean hud_key_down = false;
 	
 	//I should be able to use this cheesily for both server and client, since they're technically different entities.
-	private static Map<PlayerKey, JetpackInfo> perPlayerInfo = new HashMap<>();
+	private static final Map<PlayerKey, JetpackInfo> perPlayerInfo = new HashMap<>();
 	
 	public static JetpackInfo get(EntityPlayer p){
 		return perPlayerInfo.get(new PlayerKey(p));
@@ -93,85 +86,83 @@ public class JetpackHandler {
 	public static boolean hasJetpack(EntityPlayer p){
 		ItemStack chest = p.inventory.armorInventory.get(2);
 		ItemStack stack = ArmorModHandler.pryMod(chest, 1);
-		if(stack.getItem() == ModItems.jetpack_glider)
-			return true;
-		return false;
-	}
+        return stack.getItem() == ModItems.jetpack_glider;
+    }
 	
-	public static FluidTank getTank(EntityPlayer p){
+	public static FluidTankNTM getTank(EntityPlayer p){
 		ItemStack chest = p.inventory.armorInventory.get(2);
 		ItemStack stack = ArmorModHandler.pryMod(chest, 1);
 		return ((JetpackGlider)stack.getItem()).getTank(stack);
 	}
 	
-	public static void setTank(EntityPlayer p, FluidTank tank){
+	public static void setTank(EntityPlayer p, FluidTankNTM tank){
 		ItemStack chest = p.inventory.armorInventory.get(2);
 		ItemStack stack = ArmorModHandler.pryMod(chest, 1);
 		((JetpackGlider)stack.getItem()).setTank(stack, tank);
 	}
 	
-	public static float getSpeed(Fluid f){
-		if(f == null)
+	public static float getSpeed(FluidType type){
+		if(type == null)
 			return 0;
-		if(f == ModForgeFluids.kerosene){
+		if(type == Fluids.KEROSENE){
 			return 0.3F;
-		} else if(f == ModForgeFluids.nitan){
+		} else if(type == Fluids.NITAN){
 			return 0.5F;
-		} else if(f == ModForgeFluids.balefire){
+		} else if(type == Fluids.BALEFIRE){
 			return 1.5F;
 		}
 		return 0;
 	}
 	
-	public static int getDrain(Fluid f){
-		if(f == null)
+	public static int getDrain(FluidType type){
+		if(type == null)
 			return 0;
 		//Drain is already scaled by thrust, which is greater with the higher tier fuels
-		if(f == ModForgeFluids.kerosene){
+		if(type == Fluids.KEROSENE){
 			return 1;
-		} else if(f == ModForgeFluids.nitan){
+		} else if(type == Fluids.NITAN){
 			return 1;
-		} else if(f == ModForgeFluids.balefire){
+		} else if(type == Fluids.BALEFIRE){
 			return 1;
 		}
 		return 0;
 	}
 	
-	private static float[] keroseneColor = new float[]{1, 0.6F, 0.5F};
-	private static float[] nitanColor = new float[]{1F, 0.5F, 1F};
-	private static float[] bfColor = new float[]{0.4F, 1, 0.7F};
-	private static ColorGradient keroseneGradient = new ColorGradient(
+	private static final float[] keroseneColor = new float[]{1, 0.6F, 0.5F};
+	private static final float[] nitanColor = new float[]{1F, 0.5F, 1F};
+	private static final float[] bfColor = new float[]{0.4F, 1, 0.7F};
+	private static final ColorGradient keroseneGradient = new ColorGradient(
 			new float[]{1, 0.918F, 0.882F, 1, 0},
 			new float[]{0.887F, 1, 0, 1, 0.177F},
 			new float[]{1, 0.19F, 0, 1, 0.336F},
 			new float[]{1, 0.14F, 0, 1, 0.85F},
 			new float[]{1, 0.14F, 0, 0, 1});
-	private static ColorGradient nitanGradient = new ColorGradient(
+	private static final ColorGradient nitanGradient = new ColorGradient(
 			new float[]{0.845F, 0.779F, 1F, 1, 0},
 			new float[]{1F, 0.3F, 1F, 1, 0.122F},
 			new float[]{0.7F, 0.4F, 1F, 1, 0.389F},
 			new float[]{0.35F, 0.2F, 1F, 1, 0.891F},
 			new float[]{0.1F, 0.1F, 1F, 0, 1});
-	private static ColorGradient bfGradient = new ColorGradient(
+	private static final ColorGradient bfGradient = new ColorGradient(
 			new float[]{1F, 0.95F, 0.279F, 1, 0},
 			new float[]{1F, 0.9F, 0.1F, 1, 0.122F},
 			new float[]{0.013F, 1F, 0.068F, 1, 0.389F},
 			new float[]{0.2F, 1F, 0.3F, 1, 0.891F},
 			new float[]{0, 1F, 0.4F, 0, 1});
 	
-	public static ColorGradient getGradientFromFuel(Fluid fuel){
-		if(fuel == ModForgeFluids.balefire){
+	public static ColorGradient getGradientFromFuel(FluidType fuel){
+		if(fuel == Fluids.BALEFIRE){
 			return bfGradient;
-		} else if(fuel == ModForgeFluids.nitan){
+		} else if(fuel == Fluids.NITAN){
 			return nitanGradient;
 		}
 		return keroseneGradient;
 	}
 	
-	public static float[] getBrightnessColorFromFuel(Fluid fuel){
-		if(fuel == ModForgeFluids.balefire){
+	public static float[] getBrightnessColorFromFuel(FluidType fuel){
+		if(fuel == Fluids.BALEFIRE){
 			return bfColor;
-		} else if(fuel == ModForgeFluids.nitan){
+		} else if(fuel == Fluids.NITAN){
 			return nitanColor;
 		}
 		return keroseneColor;
@@ -184,7 +175,7 @@ public class JetpackHandler {
 		EntityPlayer player = e.getEntityPlayer();
 		if(!hasJetpack(player))
 			return;
-		FluidTank fuelTank = getTank(player);
+		FluidTankNTM fuelTank = getTank(player);
 		JetpackInfo info = get(player);
 		if(info == null){
 			info = new JetpackInfo(true);
@@ -210,8 +201,8 @@ public class JetpackHandler {
 		if(jetpackActive(player) && player.isInWater()){
 			info.failureTicks = 80;
 		}
-		if(jetpackActive(player) && !player.onGround && info.failureTicks <= 0 && fuelTank.getFluidAmount() > 0){
-			float speed = getSpeed(fuelTank.getFluid().getFluid());
+		if(jetpackActive(player) && !player.onGround && info.failureTicks <= 0 && fuelTank.getFill() > 0){
+			float speed = getSpeed(fuelTank.getTankType());
 			player.capabilities.isFlying = false;
 			MovementInput m = e.getMovementInput();
 			boolean sprint = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
@@ -287,8 +278,8 @@ public class JetpackHandler {
 			if(!player.world.isRemote){
 				JetpackInfo info = e.getValue();
 				if(jetpackActive(player)){
-					FluidTank tank = getTank(player);
-					int drain = (int) Math.ceil(getDrain(tank.getFluid() == null ? null : tank.getFluid().getFluid())*info.thrust);
+					FluidTankNTM tank = getTank(player);
+					int drain = (int) Math.ceil(getDrain(tank.getTankType() == null ? null : tank.getTankType())*info.thrust);
 					if(info.thrust < 0.0001)
 						drain = 0;
 
@@ -440,7 +431,7 @@ public class JetpackHandler {
 			NTMRenderHelper.drawGuiRect(oX*50, res.getScaledHeight()-(maxHeightPixels-maxHeightPixels*oY), oX, oY, width*50, height*50, oX+width, oY+height);
 			GL11.glPopMatrix();
 			//Fuel
-			FluidTank tank = getTank(p);
+			FluidTankNTM tank = getTank(p);
 			float fuelDegrees = ((float)tank.getFluidAmount()/tank.getCapacity());
 			fuelDegrees = fuelDegrees * 227 - 27;
 			GL11.glPushMatrix();
@@ -529,7 +520,7 @@ public class JetpackHandler {
 			NTMRenderHelper.drawGuiRect(oX*80, res.getScaledHeight()-(80-oY*80), 0.5F+oX*0.5F, oY, width*80, height*80, 0.5F+(width+oX)*0.5F, oY+height);
 			GL11.glPopMatrix();
 			//Fuel
-			FluidTank tank = getTank(p);
+			FluidTankNTM tank = getTank(p);
 			float fuelDegrees = ((float)tank.getFluidAmount()/tank.getCapacity());
 			fuelDegrees = fuelDegrees * 227 - 27;
 			GL11.glPushMatrix();
@@ -541,7 +532,7 @@ public class JetpackHandler {
 			//GlStateManager.disableBlend();
 			if(tank.getFluid() != null){
 				Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-				TextureAtlasSprite fuel = FFUtils.getTextureFromFluid(tank.getFluid().getFluid());
+				TextureAtlasSprite fuel = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(tank.getFluid().getFluid().getStill().toString());
 				NTMRenderHelper.drawGuiRect(66.8F, res.getScaledHeight()-71.3F, fuel.getMinU(), fuel.getMinV(), 6.5F, 6.8F, fuel.getMaxU(), fuel.getMaxV());
 			}
 		}
@@ -706,10 +697,10 @@ public class JetpackHandler {
 						it.remove();
 				}
 				boolean active = jetpackActive(player);
-				FluidTank tank = active ? getTank(player) : null;
+				FluidTankNTM tank = active ? getTank(player) : null;
 				if(active && !player.onGround && tank.getFluid() != null){
-					ColorGradient grad = getGradientFromFuel(tank.getFluid().getFluid());
-					float[] color = getBrightnessColorFromFuel(tank.getFluid().getFluid());
+					ColorGradient grad = getGradientFromFuel(tank.getTankType());
+					float[] color = getBrightnessColorFromFuel(tank.getTankType());
 					if(j.thrust > 0.05F){
 						float thrust = j.thrust - 0.4F;
 						float speed = -1-2*thrust;

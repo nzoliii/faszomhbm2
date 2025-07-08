@@ -1,7 +1,6 @@
 package com.hbm.dim.minmus.GenLayerMinmus;
 
 import com.hbm.dim.minmus.biome.BiomeGenBaseMinmus;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;

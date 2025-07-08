@@ -1,192 +1,224 @@
 package com.hbm.tileentity.machine;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.interfaces.ITankPacketAcceptor;
-import com.hbm.packet.AuxGaugePacket;
-import com.hbm.packet.FluidTankPacket;
-import com.hbm.packet.PacketDispatcher;
+import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.handler.CompatHandler;
+import com.hbm.inventory.container.ContainerCoreInjector;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUICoreInjector;
+import com.hbm.lib.ForgeDirection;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
-import net.minecraft.init.Blocks;
+import io.netty.buffer.ByteBuf;
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityCoreInjector extends TileEntityMachineBase implements ITickable, IFluidHandler, ITankPacketAcceptor {
+import static com.hbm.tileentity.machine.TileEntityMachineFluidTank.slots;
 
-	public FluidTank[] tanks;
-	public static final int range = 15;
-	public int beam;
-	
-	public TileEntityCoreInjector() {
-		super(0);
-		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(2560000);
-		tanks[1] = new FluidTank(2560000);
-	}
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+public class TileEntityCoreInjector extends TileEntityMachineBase implements ITickable, IFluidStandardReceiver, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
 
-	@Override
-	public void update() {
-		if(!world.isRemote) {
+    public static final int range = 15;
+    public FluidTankNTM[] tanks;
+    public int beam;
 
-			beam = 0;
-			
-			EnumFacing dir = EnumFacing.byIndex(this.getBlockMetadata());
-			for(int i = 1; i <= range; i++) {
+    public TileEntityCoreInjector() {
+        super(4);
+        tanks = new FluidTankNTM[2];
+        tanks[0] = new FluidTankNTM(Fluids.DEUTERIUM, 128000);
+        tanks[1] = new FluidTankNTM(Fluids.TRITIUM, 128000);
+    }
 
-				int x = pos.getX() + dir.getXOffset() * i;
-				int y = pos.getY() + dir.getYOffset() * i;
-				int z = pos.getZ() + dir.getZOffset() * i;
-				BlockPos pos1 = new BlockPos(x, y, z);
-				TileEntity te = world.getTileEntity(pos1);
-				
-				if(te instanceof TileEntityCore) {
-					
-					fillDFC((TileEntityCore)te);
-					
-					beam = i;
-					break;
-				}
-				
-				if(world.getBlockState(pos1).getBlock() != Blocks.AIR)
-					break;
-			}
-			
-			this.markDirty();
+    @Override
+    public void update() {
 
-			PacketDispatcher.wrapper.sendToAllTracking(new FluidTankPacket(pos, tanks), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
-			PacketDispatcher.wrapper.sendToAllTracking(new AuxGaugePacket(pos, beam, 0), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
-		}
-	}
+        if (!world.isRemote) {
 
-	public void fillDFC(TileEntityCore core){
-		Fluid tank0 = null;
-		Fluid tank1 = null;
-		Fluid dfcTank0 = null;
-		Fluid dfcTank1 = null;
+            this.subscribeToAllAround(tanks[0].getTankType(), this);
+            this.subscribeToAllAround(tanks[1].getTankType(), this);
 
-		if(tanks[0].getFluid() != null)
-			tank0 = tanks[0].getFluid().getFluid();
-		if(tanks[1].getFluid() != null)
-			tank1 = tanks[1].getFluid().getFluid();
+            tanks[0].setType(0, 1, inventory);
+            tanks[1].setType(2, 3, inventory);
 
-		if(tank0 == null && tank1 == null) return;
+            beam = 0;
 
-		if(core.tanks[0].getFluid() != null)
-			dfcTank0 = core.tanks[0].getFluid().getFluid();
-		if(core.tanks[1].getFluid() != null)
-			dfcTank1 = core.tanks[1].getFluid().getFluid();
-		
-		if((tank0 == dfcTank0 || dfcTank0 == null) && tank0 != dfcTank1)
-			if(tanks[0].drain(core.tanks[0].fill(tanks[0].getFluid(), true), true) != null){
-				dfcTank0 = tank0;
-				core.markDirty();
-			}
+            ForgeDirection dir = ForgeDirection.getOrientation(this.getBlockMetadata());
+            for (int i = 1; i <= range; i++) {
 
-		if((tank1 == dfcTank1 || dfcTank1 == null) && tank1 != dfcTank0)
-			if(tanks[1].drain(core.tanks[1].fill(tanks[1].getFluid(), true), true) != null){
-				dfcTank1 = tank1;
-				core.markDirty();
-			}
+                int x = pos.getX() + dir.offsetX * i;
+                int y = pos.getY() + dir.offsetY * i;
+                int z = pos.getZ() + dir.offsetZ * i;
+                BlockPos pos = new BlockPos(x, y, z);
 
-		if((tank0 == dfcTank1 || dfcTank1 == null) && tank0 != dfcTank0)
-			if(tanks[0].drain(core.tanks[1].fill(tanks[0].getFluid(), true), true) != null)
-				core.markDirty();
+                TileEntity te = world.getTileEntity(pos);
 
-		if((tank1 == dfcTank0 || dfcTank0 == null) && tank1 != dfcTank1)
-			if(tanks[1].drain(core.tanks[0].fill(tanks[1].getFluid(), true), true) != null)
-				core.markDirty();
-	}
+                if (te instanceof TileEntityCore) {
 
-	@Override
-	public String getName() {
-		return "container.dfcInjector";
-	}
+                    TileEntityCore core = (TileEntityCore) te;
 
-	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[]{tanks[0].getTankProperties()[0], tanks[1].getTankProperties()[0]};
-	}
+                    for (int t = 0; t < 2; t++) {
 
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource == null)
-			return 0;
-		if(tanks[0].getFluid() == null || tanks[0].getFluid().getFluid() == resource.getFluid()){
-			return tanks[0].fill(resource, doFill);
-		}
-		if(tanks[1].getFluid() == null || tanks[1].getFluid().getFluid() == resource.getFluid()){
-			return tanks[1].fill(resource, doFill);
-		}
-		return 0;
-	}
+                        if (core.tanks[t].getTankType() == tanks[t].getTankType()) {
 
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return null;
-	}
+                            int f = Math.min(tanks[t].getFill(), core.tanks[t].getMaxFill() - core.tanks[t].getFill());
 
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return null;
-	}
+                            tanks[t].setFill(tanks[t].getFill() - f);
+                            core.tanks[t].setFill(core.tanks[t].getFill() + f);
+                            core.markDirty();
 
-	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length == 2){
-			tanks[0].readFromNBT(tags[0]);
-			tanks[1].readFromNBT(tags[1]);
-		}
-	}
-	
-	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return TileEntity.INFINITE_EXTENT_AABB;
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return 65536.0D;
-	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		if(compound.hasKey("tanks"))
-			FFUtils.deserializeTankArray(compound.getTagList("tanks", 10), tanks);
-		super.readFromNBT(compound);
-	}
-	
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setTag("tanks", FFUtils.serializeTankArray(tanks));
-		return super.writeToNBT(compound);
-	}
-	
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
-	}
-	
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY){
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-		}
-		return super.getCapability(capability, facing);
-	}
+                        } else if (core.tanks[t].getFill() == 0) {
+
+                            core.tanks[t].setTankType(tanks[t].getTankType());
+                            int f = Math.min(tanks[t].getFill(), core.tanks[t].getMaxFill() - core.tanks[t].getFill());
+
+                            tanks[t].setFill(tanks[t].getFill() - f);
+                            core.tanks[t].setFill(core.tanks[t].getFill() + f);
+                            core.markDirty();
+                        }
+                    }
+
+                    beam = i;
+                    break;
+                }
+
+                if (!world.isAirBlock(pos))
+                    break;
+            }
+
+            this.markDirty();
+
+            this.networkPackNT(250);
+        }
+    }
+
+
+    @Override
+    public String getName() {
+        return "container.dfcInjector";
+    }
+
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return TileEntity.INFINITE_EXTENT_AABB;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared() {
+        return 65536.0D;
+    }
+
+
+    @Override
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+
+        buf.writeInt(beam);
+        tanks[0].serialize(buf);
+        tanks[1].serialize(buf);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+
+        this.beam = buf.readInt();
+        tanks[0].deserialize(buf);
+        tanks[1].deserialize(buf);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+
+        tanks[0].readFromNBT(nbt, "fuel1");
+        tanks[1].readFromNBT(nbt, "fuel2");
+        super.readFromNBT(nbt);
+    }
+
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        tanks[0].writeToNBT(compound, "fuel1");
+        tanks[1].writeToNBT(compound, "fuel2");
+        return super.writeToNBT(compound);
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(new NTMFluidHandlerWrapper(getReceivingTanks(), null));
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public FluidTankNTM[] getReceivingTanks() {
+        return new FluidTankNTM[]{tanks[0], tanks[1]};
+    }
+
+    @Override
+    public FluidTankNTM[] getAllTanks() {
+        return tanks;
+    }
+
+    // do some opencomputer stuff
+    @Override
+    @Optional.Method(modid = "OpenComputers")
+    public String getComponentName() {
+        return "dfc_injector";
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getFuel(Context context, Arguments args) {
+        return new Object[]{tanks[0].getFill(), tanks[1].getFill()};
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getTypes(Context context, Arguments args) {
+        return new Object[]{tanks[0].getTankType().getName(), tanks[1].getTankType().getName()};
+    }
+
+    @Callback(direct = true)
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getInfo(Context context, Arguments args) {
+        return new Object[]{tanks[0].getFill(), tanks[0].getTankType().getName(), tanks[1].getFill(), tanks[1].getTankType().getName()};
+    }
+
+    @Override
+    public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new ContainerCoreInjector(player.inventory, this);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new GUICoreInjector(player.inventory, this);
+    }
 
 }

@@ -2,7 +2,6 @@ package com.hbm.dim.tekto.GenLayerTekto;
 
 import com.hbm.dim.eve.biome.BiomeGenBaseEve;
 import com.hbm.dim.tekto.biome.BiomeGenBaseTekto;
-
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;

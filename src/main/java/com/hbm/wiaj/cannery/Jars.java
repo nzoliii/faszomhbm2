@@ -1,13 +1,13 @@
 package com.hbm.wiaj.cannery;
 
-import java.util.HashMap;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.PlantEnums;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.items.ItemEnums;
 import com.hbm.items.ModItems;
+
+import java.util.HashMap;
 
 public class Jars {
 

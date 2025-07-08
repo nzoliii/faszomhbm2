@@ -1,16 +1,9 @@
 package com.hbm.world;
 
-import com.hbm.config.SpaceConfig;
-import com.hbm.dim.Ike.BiomeGenIke;
-import com.hbm.dim.dres.biome.BiomeGenBaseDres;
 import com.hbm.dim.duna.biome.BiomeGenBaseDuna;
 import com.hbm.dim.eve.biome.BiomeGenBaseEve;
 import com.hbm.dim.laythe.biome.BiomeGenBaseLaythe;
 import com.hbm.dim.minmus.biome.BiomeGenBaseMinmus;
-import com.hbm.dim.moho.biome.BiomeGenBaseMoho;
-import com.hbm.dim.moon.BiomeGenMoon;
-import com.hbm.dim.orbit.BiomeGenOrbit;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
 public class ModBiomes

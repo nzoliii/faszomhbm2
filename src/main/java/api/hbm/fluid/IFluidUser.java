@@ -14,18 +14,21 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public interface IFluidUser extends IFluidConnector {
 
-    public default void sendFluid(FluidTankNTM tank, World world, int x, int y, int z, ForgeDirection dir) {
+    default void sendFluid(FluidTankNTM tank, World world, BlockPos pos, ForgeDirection dir) {
+        sendFluid(tank.getTankType(), tank.getPressure(), world, pos.getX(), pos.getY(), pos.getZ(), dir);
+    }
+
+    default void sendFluid(FluidTankNTM tank, World world, int x, int y, int z, ForgeDirection dir) {
         sendFluid(tank.getTankType(), tank.getPressure(), world, x, y, z, dir);
     }
 
-    public default void sendFluid(FluidType type, int pressure, World world, int x, int y, int z, ForgeDirection dir) {
+    default void sendFluid(FluidType type, int pressure, World world, int x, int y, int z, ForgeDirection dir) {
 
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         boolean wasSubscribed = false;
         boolean red = false;
 
-        if(te instanceof IFluidConductor) {
-            IFluidConductor con = (IFluidConductor) te;
+        if(te instanceof IFluidConductor con) {
 
             if(con.getPipeNet(type) != null && con.getPipeNet(type).isSubscribed(this)) {
                 con.getPipeNet(type).unsubscribe(this);
@@ -33,8 +36,7 @@ public interface IFluidUser extends IFluidConnector {
             }
         }
 
-        if(te instanceof IFluidConnector) {
-            IFluidConnector con = (IFluidConnector) te;
+        if(te instanceof IFluidConnector con) {
 
             if(con.canConnect(type, dir.getOpposite())) {
                 long toSend = this.getTotalFluidForSend(type, pressure);
@@ -47,10 +49,9 @@ public interface IFluidUser extends IFluidConnector {
             }
         }
 
-        if(wasSubscribed && te instanceof IFluidConductor) {
+        if(wasSubscribed) {
             IFluidConductor con = (IFluidConductor) te;
-
-            if(con.getPipeNet(type) != null && !con.getPipeNet(type).isSubscribed(this)) {
+            if (con.getPipeNet(type) != null && !con.getPipeNet(type).isSubscribed(this)) {
                 con.getPipeNet(type).subscribe(this);
             }
         }
@@ -70,7 +71,7 @@ public interface IFluidUser extends IFluidConnector {
         }
     }
 
-    public static IPipeNet getPipeNet(World world, int x, int y, int z, FluidType type) {
+    static IPipeNet getPipeNet(World world, int x, int y, int z, FluidType type) {
 
         TileEntity te = Compat.getTileStandard(world, x, y, z);
 
@@ -86,36 +87,36 @@ public interface IFluidUser extends IFluidConnector {
     }
 
     /** Use more common conPos method instead */
-    @Deprecated public default void sendFluidToAll(FluidTankNTM tank, TileEntity te) {
+    @Deprecated default void sendFluidToAll(FluidTankNTM tank, TileEntity te) {
         sendFluidToAll(tank.getTankType(), tank.getPressure(), te);
     }
 
     /** Use more common conPos method instead */
-    @Deprecated public default void sendFluidToAll(FluidType type, int pressure, TileEntity te) {
+    @Deprecated default void sendFluidToAll(FluidType type, int pressure, TileEntity te) {
 
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             sendFluid(type, pressure, te.getWorld(), te.getPos().getX() + dir.offsetX, te.getPos().getY() + dir.offsetY, te.getPos().getZ() + dir.offsetZ, dir);
         }
     }
 
-    public default long getTotalFluidForSend(FluidType type, int pressure) { return 0; }
-    public default void removeFluidForTransfer(FluidType type, int pressure, long amount) { }
+    default long getTotalFluidForSend(FluidType type, int pressure) { return 0; }
+    default void removeFluidForTransfer(FluidType type, int pressure, long amount) { }
 
-    public default void subscribeToAllAround(FluidType type, TileEntity te) {
+    default void subscribeToAllAround(FluidType type, TileEntity te) {
         subscribeToAllAround(type, te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
     }
 
-    public default void subscribeToAllAround(FluidType type, World world, int x, int y, int z) {
+    default void subscribeToAllAround(FluidType type, World world, int x, int y, int z) {
 
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
             this.trySubscribe(type, world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ, dir);
     }
 
-    public default void unsubscribeToAllAround(FluidType type, TileEntity te) {
+    default void unsubscribeToAllAround(FluidType type, TileEntity te) {
         unsubscribeToAllAround(type, te.getWorld(), te.getPos().getX(), te.getPos().getY(), te.getPos().getZ());
     }
 
-    public default void unsubscribeToAllAround(FluidType type, World world, int x, int y, int z) {
+    default void unsubscribeToAllAround(FluidType type, World world, int x, int y, int z) {
 
         for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
             this.tryUnsubscribe(type, world, x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
@@ -126,5 +127,5 @@ public interface IFluidUser extends IFluidConnector {
      * The array is either composed of the original tank or outright the original tank array, so changes done to this array will extend to the IFluidUser.
      * @return
      */
-    public FluidTankNTM[] getAllTanks();
+    FluidTankNTM[] getAllTanks();
 }

@@ -3,7 +3,6 @@ package com.hbm.inventory.material;
 import com.hbm.inventory.OreDictManager;
 import com.hbm.inventory.OreDictManager.DictFrame;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-import com.hbm.inventory.material.Mats.*;
 import com.hbm.items.ItemEnums.EnumAshType;
 import com.hbm.items.ModItems;
 import net.minecraft.block.Block;

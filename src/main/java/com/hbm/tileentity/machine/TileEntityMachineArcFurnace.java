@@ -1,8 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.machine.MachineArcFurnace;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
@@ -16,6 +17,8 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 public class TileEntityMachineArcFurnace extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2 {
@@ -257,8 +260,7 @@ public class TileEntityMachineArcFurnace extends TileEntityMachineBase implement
 			return itemStack.getItem() == ModItems.arc_electrode_burnt;
 
 		if(slot == 5)
-			if (itemStack.getItem() instanceof IBatteryItem && ((IBatteryItem)itemStack.getItem()).getCharge(itemStack) == 0)
-				return true;
+			return NTMBatteryCapabilityHandler.isEmptyBattery(itemStack);
 		
 		return false;
 	}
@@ -268,9 +270,27 @@ public class TileEntityMachineArcFurnace extends TileEntityMachineBase implement
 		if(slot == 2 || slot == 3 || slot == 4)
 			return stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh;
 		if(slot == 5)
-			return (stack.getItem() instanceof IBatteryItem);
+			return NTMBatteryCapabilityHandler.isBattery(stack);
 		if(slot == 0)
-			return (!(stack.getItem() instanceof IBatteryItem) && !(stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh));
+			return (!NTMBatteryCapabilityHandler.isBattery(stack) && !(stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh));
 		return false;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 }

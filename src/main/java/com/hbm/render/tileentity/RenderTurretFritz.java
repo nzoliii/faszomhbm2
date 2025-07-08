@@ -18,7 +18,7 @@ public class RenderTurretFritz extends RenderTurretBase<TileEntityTurretFritz> {
 		GlStateManager.enableCull();
 		GlStateManager.shadeModel(GL11.GL_SMOOTH);
 		
-		this.renderConnectors(turret, true, true, turret.tankOld.getFluid() == null ? null : turret.tankOld.getFluid().getFluid());
+		this.renderConnectors(turret, true, true, turret.tankOld.getFluid() == null ? null : turret.tank.getTankType());
 
 		bindTexture(ResourceManager.turret_base_tex);
 		ResourceManager.turret_chekhov.renderPart("Base");

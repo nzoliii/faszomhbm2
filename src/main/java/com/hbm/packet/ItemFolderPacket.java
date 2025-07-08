@@ -1,13 +1,7 @@
 package com.hbm.packet;
 
-import java.io.IOException;
-
 import com.hbm.items.ModItems;
-import com.hbm.items.machine.ItemAssemblyTemplate;
-import com.hbm.items.machine.ItemCassette;
-import com.hbm.items.machine.ItemChemistryTemplate;
-import com.hbm.items.machine.ItemCrucibleTemplate;
-import com.hbm.items.machine.ItemForgeFluidIdentifier;
+import com.hbm.items.machine.*;
 import com.hbm.lib.Library;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -19,6 +13,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.io.IOException;
 
 public class ItemFolderPacket implements IMessage {
 

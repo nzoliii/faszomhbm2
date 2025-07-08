@@ -1,24 +1,20 @@
 package com.hbm.particle;
 
-import java.awt.Color;
-
-import net.minecraft.client.renderer.Tessellator;
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.RefStrings;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 public class ParticleFoundry extends Particle {
 

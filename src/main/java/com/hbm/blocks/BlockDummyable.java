@@ -147,8 +147,9 @@ public abstract class BlockDummyable extends BlockContainer implements ICustomBl
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase player, ItemStack itemStack) {
     	if(!(player instanceof EntityPlayer))
 			return;
-		
+		safeRem = true;
     	world.setBlockToAir(pos);
+		safeRem = false;
     	
 		EntityPlayer pl = (EntityPlayer) player;
 		EnumHand hand = pl.getHeldItemMainhand() == itemStack ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;

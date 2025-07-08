@@ -12,28 +12,43 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 /** If it receives energy, use this */
 public interface IEnergyReceiverMK2 extends IEnergyHandlerMK2 {
-    public default long transferPower(long power) {
+    /**
+     * Transfers a specified amount of energy to this receiver.
+     * If the receiver has enough capacity, all the energy is absorbed.
+     * Otherwise, it absorbs as much as it can and returns the excess energy.
+     *
+     * @param power The amount of energy to transfer.
+     * @param simulate If true, the transfer is simulated and no energy is actually transferred.
+     * @return The amount of energy that could not be absorbed (excess energy), or 0 if all energy was absorbed.
+     */
+    default long transferPower(long power, boolean simulate) {
         if(power + this.getPower() <= this.getMaxPower()) {
-            this.setPower(power + this.getPower());
+            if (!simulate) this.setPower(power + this.getPower());
             return 0;
         }
         long capacity = this.getMaxPower() - this.getPower();
         long overshoot = power - capacity;
-        this.setPower(this.getMaxPower());
+        if (!simulate) this.setPower(this.getMaxPower());
         return overshoot;
     }
 
-    public default long getReceiverSpeed() {
+    /**
+     * Retrieves the maximum speed at which this energy receiver can accept energy.
+     * By default, it returns the maximum power capacity of the receiver.
+     *
+     * @return The maximum energy reception speed, which is equal to the receiver's maximum power capacity.
+     */
+    default long getReceiverSpeed() {
+        // Return the maximum power capacity as the default reception speed
         return this.getMaxPower();
     }
 
-    public default void trySubscribe(World world, int x, int y, int z, ForgeDirection dir) {
+    default void trySubscribe(World world, int x, int y, int z, ForgeDirection dir) {
 
         TileEntity te = Compat.getTileStandard(world, x, y, z);
         boolean red = false;
 
-        if(te instanceof IEnergyConductorMK2) {
-            IEnergyConductorMK2 con = (IEnergyConductorMK2) te;
+        if(te instanceof IEnergyConductorMK2 con) {
             if(!con.canConnect(dir.getOpposite())) return;
 
             Nodespace.PowerNode node = Nodespace.getNode(world, new BlockPos(x, y, z));
@@ -58,12 +73,11 @@ public interface IEnergyReceiverMK2 extends IEnergyHandlerMK2 {
         }
     }
 
-    public default void tryUnsubscribe(World world, int x, int y, int z) {
+    default void tryUnsubscribe(World world, int x, int y, int z) {
 
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 
-        if(te instanceof IEnergyConductorMK2) {
-            IEnergyConductorMK2 con = (IEnergyConductorMK2) te;
+        if(te instanceof IEnergyConductorMK2 con) {
             Nodespace.PowerNode node = con.createNode();
 
             if(node != null && node.net != null) {
@@ -94,12 +108,12 @@ public interface IEnergyReceiverMK2 extends IEnergyHandlerMK2 {
      *
      * wtf is that lol xd (Slize's reaction be like)
      * */
-    public default ConnectionPriority getPriority() {
+    default ConnectionPriority getPriority() {
         return ConnectionPriority.NORMAL;
     }
 
     /** More is better-er */
-    public enum ConnectionPriority {
+    enum ConnectionPriority {
         LOWEST,
         LOW,
         NORMAL,

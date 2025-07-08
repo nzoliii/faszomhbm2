@@ -1,14 +1,9 @@
 package com.hbm.particle.rocket;
 
-import java.nio.FloatBuffer;
-
-import org.lwjgl.opengl.GL11;
-
 import com.hbm.main.ClientProxy;
 import com.hbm.particle.ParticleLayerBase;
 import com.hbm.particle.ParticleRenderLayer;
 import com.hbm.render.misc.ColorGradient;
-
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -16,6 +11,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.nio.FloatBuffer;
 
 public class ParticleRocketPlasma extends ParticleLayerBase {
 

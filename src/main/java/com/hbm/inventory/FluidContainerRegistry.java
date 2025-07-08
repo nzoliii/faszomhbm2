@@ -72,7 +72,7 @@ public class FluidContainerRegistry {
                 FluidContainerRegistry.registerContainer(cell);
             }
         }
-        NTMFluidCapabilityHandler.setContainerRegistryReady();
+        NTMFluidCapabilityHandler.initialize();
     }
 
     public static void registerContainer(FluidContainer con) {

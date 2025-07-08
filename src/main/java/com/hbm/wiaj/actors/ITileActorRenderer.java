@@ -1,7 +1,6 @@
 package com.hbm.wiaj.actors;
 
 import com.hbm.wiaj.WorldInAJar;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;

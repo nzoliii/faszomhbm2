@@ -4,10 +4,10 @@ package com.hbm.dim.Ike;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.SpaceConfig;
 import com.hbm.dim.WorldProviderCelestial;
-
 import net.minecraft.block.Block;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.biome.*;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.gen.IChunkGenerator;
 
 public class WorldProviderIke extends WorldProviderCelestial {

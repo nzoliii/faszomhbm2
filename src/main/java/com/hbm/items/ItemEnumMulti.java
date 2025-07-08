@@ -3,6 +3,7 @@ package com.hbm.items;
 import com.google.common.collect.ImmutableMap;
 import com.hbm.lib.RefStrings;
 import com.hbm.util.EnumUtil;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.model.ModelRotation;
@@ -20,7 +21,9 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Locale;
 
 public class ItemEnumMulti extends ItemBase implements IDynamicModels {
 
@@ -45,6 +48,17 @@ public class ItemEnumMulti extends ItemBase implements IDynamicModels {
                 .toArray(String[]::new);
     }
 
+    public ItemEnumMulti(String registryName, Class<? extends Enum> theEnum, boolean multiName, String texture) {
+        super(registryName);
+        this.setHasSubtypes(true);
+        this.theEnum = theEnum;
+        this.multiName = multiName;
+        this.multiTexture = false;
+        INSTANCES.add(this);
+        this.textures = new String[]{texture};
+    }
+
+
 
     @SideOnly(Side.CLIENT)
     public void registerSprite(TextureMap map) {
@@ -56,7 +70,7 @@ public class ItemEnumMulti extends ItemBase implements IDynamicModels {
     @SideOnly(Side.CLIENT)
     public void registerModel() {
         for (int i = 0; i < theEnum.getEnumConstants().length; i++) {
-            ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(new ResourceLocation(RefStrings.MODID, ROOT_PATH + textures[i]), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(this, i, new ModelResourceLocation(new ResourceLocation(RefStrings.MODID, ROOT_PATH + ( multiTexture ? textures[i] : textures[0])), "inventory"));
         }
     }
 
@@ -91,6 +105,11 @@ public class ItemEnumMulti extends ItemBase implements IDynamicModels {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Block getBlock() {
+        return null;
     }
 
 

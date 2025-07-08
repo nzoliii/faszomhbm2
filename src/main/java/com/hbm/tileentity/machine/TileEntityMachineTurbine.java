@@ -1,11 +1,11 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.container.ContainerMachineTurbine;
 import com.hbm.inventory.fluid.FluidType;
@@ -31,6 +31,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
@@ -39,6 +40,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -70,14 +72,13 @@ public class TileEntityMachineTurbine extends TileEntityLoadedBase implements IT
 			}
 
 			@Override
-			public boolean isItemValid(int slot, ItemStack stack) {
+			public boolean isItemValid(int slot, @NotNull ItemStack stack) {
 				if(slot == 0)
-					return stack != null && stack.getItem() == ModItems.forge_fluid_identifier;
+					return stack.getItem() == ModItems.forge_fluid_identifier;
 				if(slot == 4)
-					if(stack != null && stack.getItem() instanceof IBatteryItem)
-						return true;
+					return NTMBatteryCapabilityHandler.isBattery(stack);
 
-				return slot != 4 && stack != null;
+				return true;
 			}
 
 			@Override
@@ -94,9 +95,9 @@ public class TileEntityMachineTurbine extends TileEntityLoadedBase implements IT
 		tanks = new FluidTank[2];
 		tankTypes = new Fluid[2];
 		tanks[0] = new FluidTank(64000);
-		tankTypes[0] = ModForgeFluids.steam;
+		tankTypes[0] = Fluids.STEAM.getFF();
 		tanks[1] = new FluidTank(128000);
-		tankTypes[1] = ModForgeFluids.spentsteam;
+		tankTypes[1] = Fluids.SPENTSTEAM.getFF();;
 
 		converted = true;
 	}
@@ -290,7 +291,7 @@ public class TileEntityMachineTurbine extends TileEntityLoadedBase implements IT
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -301,6 +302,11 @@ public class TileEntityMachineTurbine extends TileEntityLoadedBase implements IT
 		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
 					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
+		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
 			);
 		}
 		return super.getCapability(capability, facing);

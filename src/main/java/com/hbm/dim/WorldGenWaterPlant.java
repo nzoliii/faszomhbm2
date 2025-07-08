@@ -1,13 +1,12 @@
 package com.hbm.dim;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class WorldGenWaterPlant extends WorldGenerator {
 

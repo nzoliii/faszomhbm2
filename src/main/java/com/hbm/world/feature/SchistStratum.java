@@ -1,10 +1,7 @@
 package com.hbm.world.feature;
 
-import com.hbm.blocks.ModBlocks;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;

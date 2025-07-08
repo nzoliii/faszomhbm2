@@ -1,9 +1,10 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.CentrifugeRecipes;
 import com.hbm.inventory.container.ContainerCentrifuge;
 import com.hbm.inventory.gui.GUIMachineCentrifuge;
@@ -26,6 +27,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -85,16 +88,15 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 	
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack stack) {
-		if(i == 2 || i == 3 || i == 4 || i == 5)
-		{
+		if(i == 2 || i == 3 || i == 4 || i == 5) {
 			return false;
 		}
 		
 		if(i == 1) {
-			return stack.getItem() instanceof IBatteryItem;
+			return NTMBatteryCapabilityHandler.isBattery(stack);
 		}
 		
-		return !(stack.getItem() instanceof IBatteryItem);
+		return !(NTMBatteryCapabilityHandler.isBattery(stack));
 	}
 	
 	@Override
@@ -378,5 +380,23 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 	@SideOnly(Side.CLIENT)
 	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		return new GUIMachineCentrifuge(player.inventory, this);
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 }

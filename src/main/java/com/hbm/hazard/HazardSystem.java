@@ -1,15 +1,12 @@
 package com.hbm.hazard;
-import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ItemStackUtil;
-
-import java.util.*;
 
 import com.hbm.hazard.modifier.HazardModifier;
 import com.hbm.hazard.transformer.HazardTransformerBase;
 import com.hbm.hazard.type.HazardTypeBase;
 import com.hbm.interfaces.Untested;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
-
+import com.hbm.util.ContaminationUtil;
+import com.hbm.util.ItemStackUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,10 +15,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.*;
 
 @Untested
 public class HazardSystem {

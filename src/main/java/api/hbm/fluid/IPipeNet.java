@@ -1,7 +1,6 @@
 package api.hbm.fluid;
 
 import com.hbm.inventory.fluid.FluidType;
-import net.minecraftforge.fluids.Fluid;
 
 import java.math.BigInteger;
 import java.util.HashSet;

@@ -1,17 +1,15 @@
 package com.hbm.dim.mapgen;
 
-import java.util.Random;
-
 import com.hbm.dim.noise.DoublePerlinNoiseSampler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.MapGenBase;
+
+import java.util.Random;
 
 public class MapGenTiltedSpires extends MapGenBase {
 	

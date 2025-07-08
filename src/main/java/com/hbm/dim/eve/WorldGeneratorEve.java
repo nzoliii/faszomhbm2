@@ -1,7 +1,5 @@
 package com.hbm.dim.eve;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.SpaceConfig;
 import com.hbm.config.WorldConfig;
@@ -9,7 +7,6 @@ import com.hbm.dim.CelestialBody;
 import com.hbm.dim.eve.GenLayerEve.WorldGenElectricVolcano;
 import com.hbm.dim.eve.GenLayerEve.WorldGenEveSpike;
 import com.hbm.dim.eve.biome.BiomeGenBaseEve;
-
 import com.hbm.world.OilBubble;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,6 +14,8 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
+
+import java.util.Random;
 
 public class WorldGeneratorEve implements IWorldGenerator {
 

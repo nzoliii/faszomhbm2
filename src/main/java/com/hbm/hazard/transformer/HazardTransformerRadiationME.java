@@ -1,13 +1,12 @@
 package com.hbm.hazard.transformer;
 
-import java.util.List;
-
 import com.hbm.hazard.HazardEntry;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.util.Compat;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 public class HazardTransformerRadiationME extends HazardTransformerBase {
 

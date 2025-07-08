@@ -1,12 +1,10 @@
 package com.hbm.dim.orbit;
 
-import java.util.Random;
-
 import com.hbm.dim.BiomeGenBaseCelestial;
-
-import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
+
+import java.util.Random;
 
 public class BiomeGenOrbit extends BiomeGenBaseCelestial {
 

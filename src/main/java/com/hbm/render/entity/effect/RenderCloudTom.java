@@ -3,7 +3,6 @@ package com.hbm.render.entity.effect;
 import com.hbm.entity.effect.EntityCloudTom;
 import com.hbm.main.ClientProxy;
 import com.hbm.main.ResourceManager;
-import com.hbm.render.amlfrom1710.Vec3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

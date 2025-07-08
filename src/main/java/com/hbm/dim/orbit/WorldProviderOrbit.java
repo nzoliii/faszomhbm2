@@ -10,7 +10,6 @@ import com.hbm.handler.atmosphere.ChunkAtmosphereManager;
 import com.hbm.lib.Library;
 import com.hbm.util.AstronomyUtil;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;

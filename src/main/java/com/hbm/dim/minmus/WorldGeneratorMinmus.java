@@ -1,18 +1,16 @@
 package com.hbm.dim.minmus;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.BlockEnums.EnumStoneType;
 import com.hbm.config.SpaceConfig;
 import com.hbm.config.WorldConfig;
 import com.hbm.dim.CelestialBody;
 import com.hbm.world.generator.DungeonToolbox;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
+
+import java.util.Random;
 
 public class WorldGeneratorMinmus implements IWorldGenerator {
 

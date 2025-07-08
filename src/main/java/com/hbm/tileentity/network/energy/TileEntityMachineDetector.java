@@ -2,9 +2,14 @@ package com.hbm.tileentity.network.energy;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.network.energy.PowerDetector;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMachineDetector extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2 {
 
@@ -31,7 +36,7 @@ public class TileEntityMachineDetector extends TileEntityLoadedBase implements I
 			}
 
 			if(meta != state) {
-				PowerDetector.updateBlockState(state==1 ? true: false, world, pos);
+				PowerDetector.updateBlockState(state == 1, world, pos);
 				this.markDirty();
 			}
 		}
@@ -52,4 +57,21 @@ public class TileEntityMachineDetector extends TileEntityLoadedBase implements I
 		return 30;
 	}
 
+	@Override
+	public boolean hasCapability(@NotNull Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
+		return super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public <T> T getCapability(@NotNull Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
+	}
 }

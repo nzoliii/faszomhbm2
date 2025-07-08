@@ -1,12 +1,11 @@
 package com.hbm.inventory.container;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.inventory.SlotNonRetarded;
 import com.hbm.inventory.SlotUpgrade;
 import com.hbm.inventory.recipes.SolderingRecipes;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.tileentity.machine.TileEntityMachineSolderingStation;
@@ -66,8 +65,7 @@ public class ContainerMachineSolderingStation extends Container {
         }
       } else {
 
-        if (rStack.getItem() instanceof IBatteryItem
-            || rStack.getItem() == ModItems.battery_creative) {
+        if (NTMBatteryCapabilityHandler.isBattery(rStack)) {
           if (!this.mergeItemStack(stack, 7, 8, false)) return ItemStack.EMPTY;
         } else if (rStack.getItem() instanceof IItemFluidIdentifier) {
           if (!this.mergeItemStack(stack, 8, 9, false)) return ItemStack.EMPTY;

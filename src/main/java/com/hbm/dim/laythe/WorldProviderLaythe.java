@@ -1,21 +1,13 @@
 package com.hbm.dim.laythe;
 
 import com.hbm.config.SpaceConfig;
-import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.dim.WorldChunkManagerCelestial;
+import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.dim.WorldProviderCelestial;
-import com.hbm.dim.laythe.GenLayerLaythe.GenLayerDiversifyLaythe;
-import com.hbm.dim.laythe.GenLayerLaythe.GenLayerLaytheBiomes;
-import com.hbm.dim.laythe.GenLayerLaythe.GenLayerLaytheIslands;
-import com.hbm.dim.laythe.GenLayerLaythe.GenLayerLaytheOceans;
-import com.hbm.dim.laythe.GenLayerLaythe.GenLayerLaythePolar;
+import com.hbm.dim.laythe.GenLayerLaythe.*;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.layer.GenLayer;
-import net.minecraft.world.gen.layer.GenLayerFuzzyZoom;
-import net.minecraft.world.gen.layer.GenLayerSmooth;
-import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
-import net.minecraft.world.gen.layer.GenLayerZoom;
+import net.minecraft.world.gen.layer.*;
 import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

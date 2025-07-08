@@ -26,7 +26,7 @@ public class GUITurretArty extends GUITurretBase {
         super.drawScreen(mouseX, mouseY, f);
 
 		/*List<Object[]> objects = new ArrayList();
-		objects.add(new Object[]{EnumChatFormatting.YELLOW + "Title"});
+		objects.add(new Object[]{TextFormatting.YELLOW + "Title"});
 		objects.add(new Object[]{"Stack:", new ItemStack(ModItems.upgrade_5g)});
 		objects.add(new Object[]{new ItemStack(ModItems.upgrade_afterburn_1), new ItemStack(ModItems.upgrade_afterburn_2), new ItemStack(ModItems.upgrade_afterburn_3)});
 		objects.add(new Object[]{new ItemStack(ModItems.upgrade_5g), "is the stack"});

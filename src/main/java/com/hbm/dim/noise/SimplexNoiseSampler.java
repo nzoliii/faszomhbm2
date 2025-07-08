@@ -1,9 +1,8 @@
 package com.hbm.dim.noise;
 
-import java.util.Random;
-
-import com.hbm.util.BobMathUtil;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Random;
 
 public class SimplexNoiseSampler {
 	protected static final int[][] GRADIENTS = new int[][]{{1, 1, 0}, {-1, 1, 0}, {1, -1, 0}, {-1, -1, 0}, {1, 0, 1}, {-1, 0, 1}, {1, 0, -1}, {-1, 0, -1}, {0, 1, 1}, {0, -1, 1}, {0, 1, -1}, {0, -1, -1}, {1, 1, 0}, {0, -1, 1}, {-1, 1, 0}, {0, -1, -1}};

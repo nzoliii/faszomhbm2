@@ -61,10 +61,10 @@ public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHe
         this.tanks = new FluidTank[2];
         this.tankTypes = new Fluid[2];
 
-        this.tanks[0] = new FluidTank(ModForgeFluids.coolant_hot, 0, 24_000);
-        this.tankTypes[0] = ModForgeFluids.coolant_hot;
-        this.tanks[1] = new FluidTank(ModForgeFluids.coolant, 0, 24_000);
-        this.tankTypes[1] = ModForgeFluids.coolant;
+        this.tanks[0] = new FluidTank(Fluids.COOLANT_HOT.getFF(), 0, 24_000);
+        this.tankTypes[0] = Fluids.COOLANT_HOT.getFF();
+        this.tanks[1] = new FluidTank(Fluids.COOLANT.getFF(), 0, 24_000);
+        this.tankTypes[1] = Fluids.COOLANT.getFF();
 
         converted = true;
     }

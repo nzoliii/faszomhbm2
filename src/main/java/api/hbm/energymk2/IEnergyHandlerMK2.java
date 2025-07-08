@@ -3,6 +3,7 @@ package api.hbm.energymk2;
 import api.hbm.tile.ILoadedTile;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.energy.IEnergyStorage;
 
 /** DO NOT USE DIRECTLY! This is simply the common ancestor to providers and receivers, because all this behavior has to be excluded from conductors! */
 public interface IEnergyHandlerMK2 extends IEnergyConnectorMK2, ILoadedTile {
@@ -18,4 +19,5 @@ public interface IEnergyHandlerMK2 extends IEnergyConnectorMK2, ILoadedTile {
         Vec3d vec = new Vec3d(te.getPos().getX() + 0.5, te.getPos().getY() + 1, te.getPos().getZ() + 0.5);
         return vec;
     }
+
 }

@@ -46,6 +46,15 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
         inventory = getNewInventory(scount, slotlimit);
     }
 
+    public void markChanged() {
+        this.markDirty(); // Пометить TileEntity как изменённый (для сохранения)
+        if (this.world != null && !this.world.isRemote) {
+            this.world.markChunkDirty(pos, this); // Уведомить мир об изменении TileEntity
+            IBlockState state = this.world.getBlockState(pos);
+            this.world.notifyBlockUpdate(pos, state, state, 3); // Отправить обновление на клиент
+        }
+    }
+
     public ItemStackHandler getNewInventory(int scount, int slotlimit) {
         return new ItemStackHandler(scount) {
             @Override
@@ -79,7 +88,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
     public abstract String getName();
 
     public boolean hasCustomInventoryName() {
-        return this.customName != null && this.customName.length() > 0;
+        return this.customName != null && !this.customName.isEmpty();
     }
 
     public void setCustomName(String name) {

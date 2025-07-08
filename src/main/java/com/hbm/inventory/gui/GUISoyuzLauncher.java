@@ -1,7 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerSoyuzLauncher;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
@@ -20,8 +18,8 @@ import java.io.IOException;
 
 public class GUISoyuzLauncher extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_soyuz.png");
-	private TileEntitySoyuzLauncher launcher;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_soyuz.png");
+	private final TileEntitySoyuzLauncher launcher;
 	
 	public GUISoyuzLauncher(InventoryPlayer invPlayer, TileEntitySoyuzLauncher tedf) {
 		super(new ContainerSoyuzLauncher(invPlayer, tedf));
@@ -34,9 +32,8 @@ public class GUISoyuzLauncher extends GuiInfoContainer {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
-
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 36, 16, 52, launcher.tanks[0], ModForgeFluids.kerosene);
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 36, 16, 52, launcher.tanks[1], ModForgeFluids.oxygen);
+		launcher.tanks[0].renderTankInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 36, 16, 52);
+		launcher.tanks[1].renderTankInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 36, 16, 52);
 		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 49, guiTop + 72, 6, 34, launcher.power, TileEntitySoyuzLauncher.maxPower);
 
 		this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 43, guiTop + 17, 18, 18, mouseX, mouseY, new String[]{"The Soyuz goes here"} );
@@ -136,8 +133,7 @@ public class GUISoyuzLauncher extends GuiInfoContainer {
 			drawTexturedModalRect(guiLeft + 49, guiTop + 59, 212, 0, 6, 8);
 		else
 			drawTexturedModalRect(guiLeft + 49, guiTop + 59, 218, 0, 6, 8);
-		
-		FFUtils.drawLiquid(launcher.tanks[0], guiLeft, guiTop, zLevel, 16, 52, 8, 116);
-		FFUtils.drawLiquid(launcher.tanks[1], guiLeft, guiTop, zLevel, 16, 52, 26, 116);
+		launcher.tanks[0].renderTank(guiLeft + 8, guiTop + 36, zLevel, 16, 52);
+		launcher.tanks[1].renderTank(guiLeft + 26, guiTop + 36, zLevel, 16, 52);
 	}
 }

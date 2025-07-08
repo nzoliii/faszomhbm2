@@ -2,7 +2,6 @@ package com.hbm.dim.mapgen;
 
 import com.hbm.dim.noise.NoiseCaveGenerator;
 import com.hbm.util.BobMathUtil;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.state.IBlockState;

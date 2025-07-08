@@ -1,12 +1,5 @@
 package com.hbm.forgefluid;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import com.hbm.interfaces.IFluidPipeMk2;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,6 +10,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import java.util.*;
+
+@Deprecated
 public class FFPipeNetworkMk2 implements IFluidHandler {
 
 	protected static Random rand = new Random();
@@ -102,38 +98,6 @@ public class FFPipeNetworkMk2 implements IFluidHandler {
 		fillables.clear();
 	}
 
-	public void checkForRemoval(TileEntity te) {
-		if(te == null)
-			return;
-		if(te instanceof IFluidPipeMk2) {
-			pipes.remove(te.getPos());
-		} else{
-			try{
-				if(te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
-					fillables.remove(te.getPos());
-				}
-			} catch(Throwable t){
-			}
-		}
-	}
-
-	public boolean tryAdd(TileEntity te) {
-		if(te == null)
-			return false;
-		if(te instanceof IFluidPipeMk2) {
-			if(!pipes.containsKey(te.getPos()) && ((IFluidPipeMk2) te).getType() == this.type) {
-				pipes.put(te.getPos(), (IFluidPipeMk2) te);
-				return true;
-			}
-		} else if(te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null)) {
-			if(!fillables.containsKey(te.getPos())) {
-				fillables.put(te.getPos(), te);
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public static FFPipeNetworkMk2 mergeNetworks(FFPipeNetworkMk2 net1, FFPipeNetworkMk2 net2) {
 		if((net1 == null || net2 == null) || net1 == net2)
 			return net1;

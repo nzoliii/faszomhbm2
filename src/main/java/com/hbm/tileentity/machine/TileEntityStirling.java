@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.entity.projectile.EntityCog;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
@@ -16,9 +17,12 @@ import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
@@ -240,5 +244,22 @@ public class TileEntityStirling extends TileEntityLoadedBase implements INBTPack
         writer.name("I:maxHeatNormal").value(maxHeatNormal);
         writer.name("I:maxHeatSteel").value(maxHeatSteel);
         writer.name("I:overspeedLimit").value(overspeedLimit);
+    }
+    @Override
+    public boolean hasCapability(@NotNull Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return true;
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(@NotNull Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(
+                    new NTMEnergyCapabilityWrapper(this)
+            );
+        }
+        return super.getCapability(capability, facing);
     }
 }

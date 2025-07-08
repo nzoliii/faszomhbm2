@@ -1,7 +1,5 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.inventory.container.ContainerCoreReceiver;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;
@@ -31,7 +29,7 @@ public class GUICoreReceiver extends GuiInfoContainer {
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 
-		FFUtils.renderTankInfo(this, mouseX, mouseY, guiLeft + 17, guiTop + 16, 16, 52, receiver.tank, ModForgeFluids.cryogel);
+		receiver.tank.renderTankInfo(this, mouseX, mouseY, guiLeft + 8, guiTop + 17, 16, 52);
 		super.renderHoveredToolTip(mouseX, mouseY);
 	}
 
@@ -58,6 +56,6 @@ public class GUICoreReceiver extends GuiInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 
-		FFUtils.drawLiquid(receiver.tank, guiLeft, guiTop, zLevel, 16, 52, 17, 97);
+		receiver.tank.renderTank(guiLeft + 8, guiTop + 69, this.zLevel, 16, 52);
 	}
 }

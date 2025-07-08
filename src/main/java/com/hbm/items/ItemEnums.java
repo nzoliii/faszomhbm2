@@ -86,13 +86,7 @@ public class ItemEnums {
   }
 
   public enum EnumCasingType {
-    SMALL,
-    LARGE,
-    SMALL_STEEL,
-    LARGE_STEEL,
-    SHOTSHELL,
-    BUCKSHOT,
-    BUCKSHOT_ADVANCED
+    SMALL, LARGE, SMALL_STEEL, LARGE_STEEL, SHOTSHELL, BUCKSHOT, BUCKSHOT_ADVANCED
   }
 
   public enum EnumCircuitType {

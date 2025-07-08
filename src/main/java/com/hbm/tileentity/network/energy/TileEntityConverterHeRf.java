@@ -18,11 +18,11 @@ import net.minecraftforge.fml.common.Optional;
 public class TileEntityConverterHeRf extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, IEnergyProvider, IEnergyStorage {
 
 	//Thanks to the great people of Fusion Warfare for helping me with the original implementation of the RF energy API
-	
+
 	public TileEntityConverterHeRf() {
 		super();
 	}
-	
+
 	@Override
 	public void update() {
 		if (!world.isRemote) {
@@ -54,21 +54,18 @@ public class TileEntityConverterHeRf extends TileEntityLoadedBase implements ITi
 	private boolean recursionBrake = false;
 
 	@Optional.Method(modid="redstoneflux")
-	public int transferToRFMachine(TileEntity entity, int rf, EnumFacing dir){
-		if(entity != null && entity instanceof IEnergyReceiver) {
-				
-			IEnergyReceiver receiver = (IEnergyReceiver) entity;
-			return receiver.receiveEnergy(dir, rf, false);
+	public int transferToRFMachine(TileEntity entity, int rf, EnumFacing dir, boolean simulate){
+		if(entity instanceof IEnergyReceiver receiver) {
+            return receiver.receiveEnergy(dir, rf, simulate);
 		}
 		return 0;
 	}
 
-	public int transferToFEMachine(TileEntity entity, int fe, EnumFacing dir){
+	public int transferToFEMachine(TileEntity entity, int fe, EnumFacing dir, boolean simulate){
 		if(entity != null && entity.hasCapability(CapabilityEnergy.ENERGY, dir)) {
-			
 			IEnergyStorage storage = entity.getCapability(CapabilityEnergy.ENERGY, dir);
-			if(storage.canReceive()){
-				return storage.receiveEnergy(fe, false);
+			if(storage != null && storage.canReceive()){
+				return storage.receiveEnergy(fe, simulate);
 			}
 		}
 		return 0;
@@ -76,42 +73,45 @@ public class TileEntityConverterHeRf extends TileEntityLoadedBase implements ITi
 
 	//NTM
 	@Override
-	public long transferPower(long power) {
-		
+	public long transferPower(long power, boolean simulate) {
+
 		if(recursionBrake)
 			return power;
-		
+
 		recursionBrake = true;
-		
-		// we have to limit the transfer amount because otherwise FEnSUs would overflow the RF output, twice
-		int toRF = (int) Math.min(Integer.MAX_VALUE, power*GeneralConfig.conversionRateHeToRF);
-		int transfer = 0;
+
+		int toRF = (int) Math.min(Integer.MAX_VALUE, power * GeneralConfig.conversionRateHeToRF);
+		int transfer;
 		int totalTransferred = 0;
 		boolean skipRF = false;
+
 		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			if (toRF <= 0) break;
 
 			TileEntity entity = world.getTileEntity(pos.add(dir.offsetX, dir.offsetY, dir.offsetZ));
+			if (entity == null) continue;
+
 			if(!skipRF){
 				try{
-					transfer = transferToRFMachine(entity, toRF, dir.getOpposite().toEnumFacing());
+					transfer = transferToRFMachine(entity, toRF, dir.getOpposite().toEnumFacing(), simulate);
 					totalTransferred += transfer;
-					toRF -= transfer; //to prevent energy duping
-				} catch(NoSuchMethodError e){
+					toRF -= transfer;
+				} catch (NoSuchMethodError | NoClassDefFoundError e){
 					skipRF = true;
-				} //RF not
+				}
 			}
-
-			transfer = transferToFEMachine(entity, toRF, dir.getOpposite().toEnumFacing());
+			transfer = transferToFEMachine(entity, toRF, dir.getOpposite().toEnumFacing(), simulate);
 			totalTransferred += transfer;
-			toRF -= transfer; //to prevent energy duping
+			toRF -= transfer;
 		}
 
 		recursionBrake = false;
-		lastTransfer = (long)(totalTransferred / GeneralConfig.conversionRateHeToRF);
-		
+		if(!simulate) {
+			lastTransfer = (long)(totalTransferred / GeneralConfig.conversionRateHeToRF);
+		}
 		return power - (long)(totalTransferred / GeneralConfig.conversionRateHeToRF);
 	}
-	
+
 	@Override
 	public long getPower() {
 		return 0;

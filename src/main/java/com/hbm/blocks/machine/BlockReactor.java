@@ -30,8 +30,6 @@ public class BlockReactor extends Block implements IFluidVisualConnectable {
 
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if(this != ModBlocks.reactor_element)
-			return super.onBlockActivated(worldIn, pos, state, playerIn, hand, facing, hitX, hitY, hitZ);
 
 		if(playerIn.isSneaking()) {
 			if(state.getValue(ACTIVATED) == false) {
@@ -68,7 +66,7 @@ public class BlockReactor extends Block implements IFluidVisualConnectable {
 
 	@Override
 	public boolean shouldConnect(Fluid f) {
-		return this == ModBlocks.reactor_conductor;
+		return false;
 	}
 
 }

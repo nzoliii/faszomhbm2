@@ -1,12 +1,14 @@
 package com.hbm.tileentity.bomb;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.missile.EntityMissileCustom;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.MissileStruct;
 import com.hbm.interfaces.IBomb;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.items.weapon.ItemMissile;
@@ -16,9 +18,11 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.*;
+import com.hbm.packet.PacketDispatcher;
+import com.hbm.packet.TEMissileMultipartPacket;
 import com.hbm.render.amlfrom1710.Vec3;
-import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -37,68 +41,39 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityCompactLauncher extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, IFluidHandler, ITankPacketAcceptor, SimpleComponent {
-
-	public ItemStackHandler inventory;
+public class TileEntityCompactLauncher extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, SimpleComponent {
 
 	public long power;
 	public static final long maxPower = 100000;
 	public int solid;
 	public static final int maxSolid = 25000;
-	public FluidTank[] tanks;
-	public Fluid[] tankTypes;
-	public boolean needsUpdate;
-
-	public MissileStruct load;
-
-	private static final int[] access = new int[] { 0 };
-
-	public static final int clearingDuraction = 100;
+	public FluidTankNTM[] tanks;
+    public MissileStruct load;
+    public static final int clearingDuraction = 100;
 	public int clearingTimer = 0;
-	
-	private String customName;
 
 	public TileEntityCompactLauncher() {
-		inventory = new ItemStackHandler(8) {
-			@Override
-			protected void onContentsChanged(int slot) {
-				markDirty();
-				super.onContentsChanged(slot);
-			}
-		};
-		tanks = new FluidTank[2];
-		tankTypes = new Fluid[2];
-		tanks[0] = new FluidTank(25000);
-		tankTypes[0] = null;
-		tanks[1] = new FluidTank(25000);
-		tankTypes[1] = null;
-		needsUpdate = false;
-	}
+		super(8);
+		tanks = new FluidTankNTM[2];
+		tanks[0] = new FluidTankNTM(Fluids.NONE, 25000);
+		tanks[1] = new FluidTankNTM(Fluids.NONE,25000);
+    }
 
-	public String getInventoryName() {
-		return this.hasCustomInventoryName() ? this.customName : "container.compactLauncher";
-	}
-
-	public boolean hasCustomInventoryName() {
-		return this.customName != null && this.customName.length() > 0;
-	}
-
-	public void setCustomName(String name) {
-		this.customName = name;
+	@Override
+	public String getName() {
+		return "container.compactLauncher";
 	}
 
 	public boolean isUseableByPlayer(EntityPlayer player) {
@@ -123,17 +98,11 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 		if(!world.isRemote) {
 
 			if(clearingTimer > 0) clearingTimer--;
-			if(this.inputValidForTank(0, 2))
-				if(FFUtils.fillFromFluidContainer(inventory, tanks[0], 2, 6))
-					needsUpdate = true;
-			if(this.inputValidForTank(1, 3))
-				if(FFUtils.fillFromFluidContainer(inventory, tanks[1], 3, 7))
-					needsUpdate = true;
-
+			if(tanks[0].loadTank(2, 6, inventory)) ;
+			if(tanks[1].loadTank(3, 7, inventory)) ;
 			power = Library.chargeTEFromItems(inventory, 5, power, maxPower);
 
 			if(inventory.getStackInSlot(4).getItem() == ModItems.rocket_fuel && solid + 250 <= maxSolid) {
-
 				if (inventory.getStackInSlot(4).getCount() <= 1) {
 					inventory.setStackInSlot(4, ItemStack.EMPTY);
 				}
@@ -143,17 +112,10 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 				}
 				solid += 250;
 			}
-
-			if(needsUpdate) {
-				needsUpdate = false;
-			}
 			if(world.getTotalWorldTime() % 20 == 0)
 				this.updateConnections();
 
-			PacketDispatcher.wrapper.sendToAllAround(new AuxElectricityPacket(pos, power), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxGaugePacket(pos, solid, 0), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new AuxGaugePacket(pos, clearingTimer, 1), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
-			PacketDispatcher.wrapper.sendToAllAround(new FluidTankPacket(pos, new FluidTank[] { tanks[0], tanks[1] }), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 20));
+			networkPackNT(20);
 			MissileStruct multipart = getStruct(inventory.getStackInSlot(0));
 
 			if(multipart != null)
@@ -174,44 +136,51 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 				}
 			}
 		} else {
-
 			List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(null, new AxisAlignedBB(pos.getX() - 0.5, pos.getY(), pos.getZ() - 0.5, pos.getX() + 1.5, pos.getY() + 10, pos.getZ() + 1.5));
-
 			for(Entity e : entities) {
-
 				if(e instanceof EntityMissileCustom) {
-
 					for(int i = 0; i < 15; i++)
 						MainRegistry.proxy.spawnParticle(pos.getX() + 0.5, pos.getY() + 0.25, pos.getZ() + 0.5, "launchsmoke", null);
-
 					break;
 				}
 			}
 		}
 	}
 
+	@Override
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeLong(power);
+		buf.writeInt(solid);
+		buf.writeInt(clearingTimer);
+		tanks[0].serialize(buf);
+		tanks[1].serialize(buf);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		this.solid = buf.readInt();
+		this.clearingTimer = buf.readInt();
+		tanks[0].deserialize(buf);
+		tanks[1].deserialize(buf);
+	}
+
+	//TODO: replace this ugly shit with TileEntityProxyCombo
 	private void updateConnections() {
-		this.trySubscribe(world, pos.getX() + 2, pos.getY(), pos.getZ() + 1, ForgeDirection.EAST);
-		this.trySubscribe(world, pos.getX()+ 2, pos.getY(), pos.getZ() + 1, ForgeDirection.EAST);
-		this.trySubscribe(world, pos.getX()+ 2, pos.getY(), pos.getZ() - 1, ForgeDirection.EAST);
-		this.trySubscribe(world, pos.getX()- 2, pos.getY(), pos.getZ() + 1, ForgeDirection.WEST);
-		this.trySubscribe(world, pos.getX()- 2, pos.getY(), pos.getZ() - 1, ForgeDirection.WEST);
-		this.trySubscribe(world, pos.getX()+ 1, pos.getY(), pos.getZ() + 2, ForgeDirection.NORTH);
-		this.trySubscribe(world, pos.getX()- 1, pos.getY(), pos.getZ() + 2, ForgeDirection.NORTH);
-		this.trySubscribe(world, pos.getX()+ 1, pos.getY(), pos.getZ() - 2, ForgeDirection.SOUTH);
-		this.trySubscribe(world, pos.getX()- 1, pos.getY(), pos.getZ() - 2, ForgeDirection.SOUTH);
-		this.trySubscribe(world, pos.getX()+ 1, pos.getY() - 1, pos.getZ() + 1, ForgeDirection.DOWN);
-		this.trySubscribe(world, pos.getX()+ 1, pos.getY() - 1, pos.getZ() - 1, ForgeDirection.DOWN);
-		this.trySubscribe(world, pos.getX()- 1, pos.getY() - 1, pos.getZ() + 1, ForgeDirection.DOWN);
-		this.trySubscribe(world, pos.getX()- 1, pos.getY() - 1, pos.getZ() - 1, ForgeDirection.DOWN);
+		int[][] offsets = {{2,0,1},{2,0,-1},{-2,0,1},{-2,0,-1},{1,0,2},{-1,0,2},{1,0,-2},{-1,0,-2},{1,-1,1},{1,-1,-1},{-1,-1,1},{-1,-1,-1}};
+		ForgeDirection[] dirs = {ForgeDirection.EAST,ForgeDirection.EAST,ForgeDirection.WEST,ForgeDirection.WEST,ForgeDirection.NORTH,ForgeDirection.NORTH,ForgeDirection.SOUTH,ForgeDirection.SOUTH,ForgeDirection.DOWN,ForgeDirection.DOWN,ForgeDirection.DOWN,ForgeDirection.DOWN};
+		for (int i = 0; i < offsets.length; i++) {
+			this.trySubscribe(world, pos.getX() + offsets[i][0], pos.getY() + offsets[i][1], pos.getZ() + offsets[i][2], dirs[i]);
+			this.trySubscribe(tanks[0].getTankType(), world, pos.getX() + offsets[i][0], pos.getY() + offsets[i][1], pos.getZ() + offsets[i][2], dirs[i]);
+			this.trySubscribe(tanks[1].getTankType(), world, pos.getX() + offsets[i][0], pos.getY() + offsets[i][1], pos.getZ() + offsets[i][2], dirs[i]);
+		}
 	}
 
 	public boolean canLaunch() {
-		if(power >= maxPower * 0.75 && isMissileValid() && hasDesignator() && hasFuel() && clearingTimer == 0)
-			return true;
-
-		return false;
-	}
+        return power >= maxPower * 0.75 && isMissileValid() && hasDesignator() && hasFuel() && clearingTimer == 0;
+    }
 
 	public void launch() {
 
@@ -282,23 +251,7 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 		default:
 			break;
 		}
-		needsUpdate = true;
-		this.power -= maxPower * 0.75;
-	}
-
-	protected boolean inputValidForTank(int tank, int slot) {
-		if(tanks[tank] != null) {
-			if(isValidFluidForTank(tank, FluidUtil.getFluidContained(inventory.getStackInSlot(slot)))) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isValidFluidForTank(int tank, FluidStack stack) {
-		if(stack == null || tanks[tank] == null)
-			return false;
-		return stack.getFluid() == tankTypes[tank];
+        this.power -= maxPower * 0.75;
 	}
 
 	public static MissileStruct getStruct(ItemStack stack) {
@@ -406,65 +359,47 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 		if(multipart == null || multipart.fuselage == null)
 			return;
 
-		ItemMissile fuselage = (ItemMissile) multipart.fuselage;
+		ItemMissile fuselage = multipart.fuselage;
 
 		switch((FuelType) fuselage.attributes[0]) {
 		case KEROSENE:
-			tankTypes[0] = ModForgeFluids.kerosene;
-			tankTypes[1] = ModForgeFluids.acid;
+			tanks[0].setTankType(Fluids.KEROSENE);
+			tanks[1].setTankType(Fluids.PEROXIDE);
 			break;
 		case HYDROGEN:
-			tankTypes[0] = ModForgeFluids.hydrogen;
-			tankTypes[1] = ModForgeFluids.oxygen;
+			tanks[0].setTankType(Fluids.HYDROGEN);
+			tanks[1].setTankType(Fluids.OXYGEN);
 			break;
 		case XENON:
-			tankTypes[0] = ModForgeFluids.xenon;
+			tanks[0].setTankType(Fluids.XENON);
 			break;
 		case BALEFIRE:
-			tankTypes[0] = ModForgeFluids.balefire;
-			tankTypes[1] = ModForgeFluids.acid;
+			tanks[0].setTankType(Fluids.BALEFIRE);
+			tanks[1].setTankType(Fluids.PEROXIDE);
 			break;
 		default:
 			break;
-		}
-
-		if(tanks[0].getFluid() != null && tanks[0].getFluid().getFluid() != tankTypes[0]) {
-			tanks[0].drain(tanks[0].getCapacity(), true);
-		}
-		if(tanks[1].getFluid() != null && tanks[1].getFluid().getFluid() != tankTypes[1]) {
-			tanks[1].drain(tanks[1].getCapacity(), true);
 		}
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
-		if(compound.hasKey("inventory"))
-			inventory.deserializeNBT(compound.getCompoundTag("inventory"));
-		if(compound.hasKey("tanks"))
-			FFUtils.deserializeTankArray(compound.getTagList("tanks", 10), tanks);
-		if(compound.hasKey("tankType0"))
-			tankTypes[0] = FluidRegistry.getFluid(compound.getString("tankType0"));
-		if(compound.hasKey("tankType1"))
-			tankTypes[1] = FluidRegistry.getFluid(compound.getString("tankType1"));
-
+		super.readFromNBT(compound);
+		tanks[0].readFromNBT(compound, "tank0");
+		tanks[0].readFromNBT(compound, "tank1");
 		solid = compound.getInteger("solidfuel");
 		power = compound.getLong("power");
-		super.readFromNBT(compound);
 	}
 
+	@NotNull
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setTag("inventory", inventory.serializeNBT());
-		compound.setTag("tanks", FFUtils.serializeTankArray(tanks));
-		if(tankTypes[0] != null)
-			compound.setString("tankType0", tankTypes[0].getName());
-		if(tankTypes[1] != null)
-			compound.setString("tankType1", tankTypes[1].getName());
-
+		super.writeToNBT(compound);
+		tanks[0].writeToNBT(compound, "tank0");
+		tanks[1].writeToNBT(compound, "tank1");
 		compound.setInteger("solidfuel", solid);
 		compound.setLong("power", power);
-
-		return super.writeToNBT(compound);
+		return compound;
 	}
 
 	@Override
@@ -494,63 +429,26 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[] { tanks[0].getTankProperties()[0], tanks[1].getTankProperties()[0] };
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource == null) {
-			return 0;
-		} else if(resource.getFluid() == tankTypes[0]) {
-			return tanks[0].fill(resource, doFill);
-		} else if(resource.getFluid() == tankTypes[1]) {
-			return tanks[1].fill(resource, doFill);
-		} else {
-			return 0;
-		}
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length != 2) {
-			return;
-		} else {
-			tanks[0].readFromNBT(tags[0]);
-			tanks[1].readFromNBT(tags[1]);
-		}
-	}
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			return true;
-		} else {
-			return super.hasCapability(capability, facing);
 		}
+		return super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
-		} else if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-		} else {
-			return super.getCapability(capability, facing);
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
 		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+		return super.getCapability(capability, facing);
 	}
 
 	public boolean setCoords(int x, int z){
@@ -566,6 +464,21 @@ public class TileEntityCompactLauncher extends TileEntityLoadedBase implements I
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public FluidTankNTM[] getSendingTanks() {
+		return null;
+	}
+
+	@Override
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[]{tanks[0], tanks[1]};
+	}
+
+	@Override
+	public FluidTankNTM[] getAllTanks() {
+		return new FluidTankNTM[]{tanks[0], tanks[1]};
 	}
 
 	// opencomputers interface

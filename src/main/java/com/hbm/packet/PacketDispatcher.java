@@ -32,8 +32,6 @@ public class PacketDispatcher {
 		wrapper.registerMessage(AuxParticlePacket.Handler.class, AuxParticlePacket.class, i++, Side.CLIENT);
 		//Chemplant packet
 		wrapper.registerMessage(TEChemplantPacket.Handler.class, TEChemplantPacket.class, i++, Side.CLIENT);
-		//Syncing fluid tanks
-		wrapper.registerMessage(FluidTankPacket.Handler.class, FluidTankPacket.class, i++, Side.CLIENT);
 		//Assembler Recipe Sync Packet, so clients can see the right recipes
 		wrapper.registerMessage(AssemblerRecipeSyncPacket.Handler.class, AssemblerRecipeSyncPacket.class, i++, Side.CLIENT);
 		//Universal package for machine gauges and states
@@ -68,12 +66,8 @@ public class PacketDispatcher {
 		wrapper.registerMessage(TESirenPacket.Handler.class, TESirenPacket.class, i++, Side.CLIENT);
 		//Door packet for animations and stuff
 		wrapper.registerMessage(TEVaultPacket.Handler.class, TEVaultPacket.class, i++, Side.CLIENT);
-		//Information packet for the reactor control block
-		wrapper.registerMessage(TEControlPacket.Handler.class, TEControlPacket.class, i++, Side.CLIENT);
 		//Machine type for marker rendering
 		wrapper.registerMessage(TEStructurePacket.Handler.class, TEStructurePacket.class, i++, Side.CLIENT);
-		//Mega packet for large reactor so it doesn't use quite as much network traffic
-		wrapper.registerMessage(LargeReactorPacket.Handler.class, LargeReactorPacket.class, i++, Side.CLIENT);
 		//Packet to send missile multipart information to TEs
 		wrapper.registerMessage(TEMissileMultipartPacket.Handler.class, TEMissileMultipartPacket.class, i++, Side.CLIENT);
 		//Signals server to consume items and create template

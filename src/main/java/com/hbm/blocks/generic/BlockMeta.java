@@ -57,6 +57,7 @@ public class BlockMeta extends BlockBase implements ICustomBlockItem, IDynamicMo
 
     }
 
+
     public BlockMeta(Material m, String s) {
         super(m, s);
         INSTANCES.add(this);
@@ -130,6 +131,11 @@ public class BlockMeta extends BlockBase implements ICustomBlockItem, IDynamicMo
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public Block getBlock() {
+        return this;
     }
 
 

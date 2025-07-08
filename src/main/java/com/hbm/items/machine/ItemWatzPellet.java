@@ -2,7 +2,6 @@ package com.hbm.items.machine;
 
 import com.google.common.collect.ImmutableMap;
 import com.hbm.items.IDynamicModels;
-import com.hbm.items.IDynamicSprites;
 import com.hbm.items.ItemEnumMulti;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;

@@ -90,20 +90,6 @@ public class AuxGaugePacket implements IMessage {
                             cent.progress = m.value;
                         if (m.id == 1)
                             cent.isProgressing = m.value == 1;
-                    } else if (te instanceof TileEntityMachineBoiler) {
-                        TileEntityMachineBoiler boiler = (TileEntityMachineBoiler) te;
-
-                        if (m.id == 0)
-                            boiler.heat = m.value;
-                        if (m.id == 1)
-                            boiler.burnTime = m.value;
-                    } else if (te instanceof TileEntityMachineBoilerRTG) {
-                        TileEntityMachineBoilerRTG rtgBoiler = (TileEntityMachineBoilerRTG) te;
-
-                        if (m.id == 0)
-                            rtgBoiler.heat = m.value;
-                        if (m.id == 1)
-                            rtgBoiler.rtgPower = m.value;
                     } else if (te instanceof TileEntityMachineElectricFurnace) {
                         TileEntityMachineElectricFurnace furn = (TileEntityMachineElectricFurnace) te;
 
@@ -114,16 +100,6 @@ public class AuxGaugePacket implements IMessage {
 
                         if (m.id == 0)
                             furn.dualCookTime = m.value;
-                    } else if (te instanceof TileEntityMachineBoilerElectric) {
-                        TileEntityMachineBoilerElectric boiler = (TileEntityMachineBoilerElectric) te;
-
-                        if (m.id == 0)
-                            boiler.heat = m.value;
-                    } else if (te instanceof TileEntityMachineReactorLarge) {
-                        TileEntityMachineReactorLarge reactor = (TileEntityMachineReactorLarge) te;
-
-                        if (m.id == 0)
-                            reactor.size = m.value;
                     } else if (te instanceof TileEntityCompactLauncher) {
                         TileEntityCompactLauncher launcher = (TileEntityCompactLauncher) te;
 

@@ -1,12 +1,11 @@
 package com.hbm.blocks;
 
 import com.hbm.items.ModItems;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
 
-import static com.hbm.blocks.OreEnumUtil.*;
+import static com.hbm.blocks.OreEnumUtil.OreEnum;
 
 public class BlockEnums {
 

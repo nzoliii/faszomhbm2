@@ -1,13 +1,5 @@
 package com.hbm.explosion.vanillant.standard;
 
-import com.hbm.explosion.vanillant.ExplosionVNT;
-import com.hbm.explosion.vanillant.interfaces.IEntityProcessor;
-import com.hbm.util.EntityDamageUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.DamageSource;
-
-
 public class EntityProcessorCrossSmooth extends EntityProcessorCross {
 
     protected float fixedDamage;

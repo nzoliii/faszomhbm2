@@ -52,6 +52,7 @@ public class ItemBoltgun extends Item implements IAnimatedItem {
         ToolType.BOLT.register(new ItemStack(this));
         ModItems.ALL_ITEMS.add(this);
     }
+
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
 

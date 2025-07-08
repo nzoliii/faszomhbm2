@@ -5,10 +5,8 @@ package com.hbm.dim.tekto.biome;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.dim.BiomeDecoratorCelestial;
 import com.hbm.dim.BiomeGenBaseCelestial;
-
 import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 
 public abstract class BiomeGenBaseTekto extends BiomeGenBaseCelestial {
 

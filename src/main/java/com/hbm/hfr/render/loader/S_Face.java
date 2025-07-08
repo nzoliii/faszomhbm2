@@ -2,7 +2,6 @@ package com.hbm.hfr.render.loader;
 
 import com.hbm.render.amlfrom1710.TextureCoordinate;
 import com.hbm.render.amlfrom1710.Vertex;
-
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.Side;

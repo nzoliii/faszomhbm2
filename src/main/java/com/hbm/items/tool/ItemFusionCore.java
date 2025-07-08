@@ -1,6 +1,6 @@
 package com.hbm.items.tool;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.items.ModItems;
 import com.hbm.items.armor.ArmorFSBPowered;
 import com.hbm.items.gear.ArmorFSB;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ItemFusionCore extends Item {
 
-	private int charge;
+	private final int charge;
 	
 	public ItemFusionCore(int charge, String s) {
 		this.setTranslationKey(s);
@@ -37,18 +37,8 @@ public class ItemFusionCore extends Item {
 			ItemStack stack = player.getHeldItem(hand);
 
         	for(ItemStack st : player.inventory.armorInventory) {
-
-        		if(st == null)
-        			continue;
-
-        		if(st.getItem() instanceof IBatteryItem) {
-
-        			long maxcharge = ((IBatteryItem)st.getItem()).getMaxCharge();
-        			long charge = ((IBatteryItem)st.getItem()).getCharge(st);
-        			long newcharge = Math.min(charge + this.charge, maxcharge);
-
-        			((IBatteryItem)st.getItem()).setCharge(st, newcharge);
-        		}
+        		if(st == null) continue;
+				NTMBatteryCapabilityHandler.addChargeIfValid(st, this.charge, true);
         	}
 
         	stack.shrink(1);

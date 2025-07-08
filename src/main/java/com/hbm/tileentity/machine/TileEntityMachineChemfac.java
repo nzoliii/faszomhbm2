@@ -53,8 +53,8 @@ public class TileEntityMachineChemfac extends TileEntityMachineChemplantBase imp
 		waterNew = new FluidTankNTM(Fluids.WATER, 64_000, tanksNew.length);
 		steamNew = new FluidTankNTM(Fluids.SPENTSTEAM, 64_000, tanksNew.length + 1);
 
-		water = new TypedFluidTank(ModForgeFluids.coolant, new FluidTank(6400));
-		steam = new TypedFluidTank(ModForgeFluids.coolant_hot, new FluidTank(6400));
+		water = new TypedFluidTank(Fluids.COOLANT.getFF(), new FluidTank(6400));
+		steam = new TypedFluidTank(Fluids.COOLANT_HOT.getFF(), new FluidTank(6400));
 
 		inventory = new ItemStackHandler(77) {
 			@Override

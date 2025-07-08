@@ -2,7 +2,6 @@ package com.hbm.blocks.generic;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.hazard.HazardSystem;
-import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
@@ -11,10 +10,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -24,8 +21,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-
-import static com.hbm.blocks.OreEnumUtil.*;
+import static com.hbm.blocks.OreEnumUtil.OreEnum;
 
 public class BlockNTMOre extends BlockOre {
 

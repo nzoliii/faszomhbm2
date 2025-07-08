@@ -1,7 +1,8 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IBatteryItem;
 import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.PressRecipes;
 import com.hbm.items.machine.ItemStamp;
 import com.hbm.lib.ForgeDirection;
@@ -19,6 +20,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -55,7 +57,7 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IT
 		if(stack.getItem() instanceof ItemStamp && i == 1)
 			return true;
 		
-		if(i == 0 && stack.getItem() instanceof IBatteryItem)
+		if(i == 0 && NTMBatteryCapabilityHandler.isBattery(stack))
 			return true;
 		
 		if(!(stack.getItem() instanceof ItemStamp) && i == 2)
@@ -230,14 +232,22 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IT
 	public long getMaxPower() {
 		return maxPower;
 	}
-	
+
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return true;
+		}
 		return super.hasCapability(capability, facing);
 	}
-	
+
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
 		return super.getCapability(capability, facing);
 	}
 }

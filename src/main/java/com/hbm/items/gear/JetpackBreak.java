@@ -3,8 +3,8 @@ package com.hbm.items.gear;
 import com.hbm.capability.HbmCapability;
 import com.hbm.capability.HbmCapability.IHBMData;
 import com.hbm.handler.HbmKeybinds.EnumKeybind;
-import com.hbm.handler.threading.PacketThreading;
-import com.hbm.items.armor.JetpackBase;
+import com.hbm.inventory.fluid.FluidType;
+import com.hbm.items.armor.JetpackFueledBase;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
@@ -14,20 +14,18 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
 import java.util.List;
 
-public class JetpackBreak extends JetpackBase {
+public class JetpackBreak extends JetpackFueledBase {
 
-	public JetpackBreak(ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn, Fluid fuel, int maxFuel, String s) {
-		super(materialIn, renderIndexIn, equipmentSlotIn, fuel, maxFuel, s);
+	public JetpackBreak(FluidType fuel, int maxFuel, String s) {
+		super(fuel, maxFuel, s);
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class JetpackBreak extends JetpackBase {
 				NBTTagCompound data = new NBTTagCompound();
 				data.setString("type", "jetpack");
 				data.setInteger("player", player.getEntityId());
-				PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, player.posX, player.posY, player.posZ), new TargetPoint(world.provider.getDimension(), player.posX, player.posY, player.posZ, 100));
+				PacketDispatcher.wrapper.sendToAllAround(new AuxParticlePacketNT(data, player.posX, player.posY, player.posZ), new TargetPoint(world.provider.getDimension(), player.posX, player.posY, player.posZ, 100));
 			}
 		}
 		if(getFuel(stack) > 0) {

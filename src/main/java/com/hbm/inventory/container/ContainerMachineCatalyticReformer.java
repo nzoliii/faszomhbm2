@@ -1,6 +1,6 @@
 package com.hbm.inventory.container;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
@@ -69,7 +69,7 @@ public class ContainerMachineCatalyticReformer extends Container {
                 }
             } else {
 
-                if(var3.getItem() instanceof IBatteryItem) {
+                if(NTMBatteryCapabilityHandler.isBattery(var3)) {
                     if(!this.mergeItemStack(var5, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }

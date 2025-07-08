@@ -1,13 +1,9 @@
 package com.hbm.explosion.vanillant.standard;
 
-import java.util.HashMap;
-import java.util.List;
-
 import com.hbm.explosion.vanillant.ExplosionVNT;
 import com.hbm.explosion.vanillant.interfaces.ICustomDamageHandler;
 import com.hbm.explosion.vanillant.interfaces.IEntityProcessor;
 import com.hbm.explosion.vanillant.interfaces.IEntityRangeMutator;
-
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.Entity;
@@ -19,6 +15,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.HashMap;
+import java.util.List;
 
 /** The amount of good decisions in NTM is few and far between, but the VNT explosion surely is one of them. */
 public class EntityProcessorCross implements IEntityProcessor {

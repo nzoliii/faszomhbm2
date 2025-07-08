@@ -5,7 +5,6 @@ import com.hbm.explosion.vanillant.interfaces.ICustomDamageHandler;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 

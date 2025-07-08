@@ -1,14 +1,10 @@
 package com.hbm.dim.laythe;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hbm.blocks.ModBlocks;
 import com.hbm.dim.ChunkProviderCelestial;
 import com.hbm.dim.laythe.biome.BiomeGenBaseLaythe;
 import com.hbm.dim.mapgen.MapGenGreg;
 import com.hbm.dim.mapgen.MapGenTiltedSpires;
-
 import com.hbm.entity.mob.EntityCreeperFlesh;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
@@ -19,6 +15,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkPrimer;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChunkProviderLaythe extends ChunkProviderCelestial {
 

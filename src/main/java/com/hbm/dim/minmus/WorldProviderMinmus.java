@@ -1,24 +1,18 @@
 package com.hbm.dim.minmus;
 
-import com.hbm.config.SpaceConfig;
-import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.blocks.ModBlocks;
+import com.hbm.config.SpaceConfig;
 import com.hbm.dim.WorldChunkManagerCelestial;
+import com.hbm.dim.WorldChunkManagerCelestial.BiomeGenLayers;
 import com.hbm.dim.WorldProviderCelestial;
 import com.hbm.dim.minmus.GenLayerMinmus.GenLayerDiversifyMinmus;
 import com.hbm.dim.minmus.GenLayerMinmus.GenLayerMinmusBasins;
 import com.hbm.dim.minmus.GenLayerMinmus.GenLayerMinmusBiomes;
 import com.hbm.dim.minmus.GenLayerMinmus.GenLayerMinmusPlains;
-
 import net.minecraft.block.Block;
 import net.minecraft.world.DimensionType;
-import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.layer.GenLayer;
-import net.minecraft.world.gen.layer.GenLayerFuzzyZoom;
-import net.minecraft.world.gen.layer.GenLayerSmooth;
-import net.minecraft.world.gen.layer.GenLayerVoronoiZoom;
-import net.minecraft.world.gen.layer.GenLayerZoom;
+import net.minecraft.world.gen.layer.*;
 
 public class WorldProviderMinmus extends WorldProviderCelestial {
 	

@@ -1,7 +1,6 @@
 package com.hbm.dim.laythe.GenLayerLaythe;
 
 import com.hbm.dim.laythe.biome.BiomeGenBaseLaythe;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;

@@ -1,9 +1,9 @@
 package com.hbm.wiaj;
 
+import com.hbm.wiaj.actions.IJarAction;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.hbm.wiaj.actions.IJarAction;
 
 /**
  * A scene is a simple sequence of tasks, every script can have multiple scenes

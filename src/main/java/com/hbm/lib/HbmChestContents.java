@@ -1,9 +1,6 @@
 package com.hbm.lib;
 
-import java.util.Random;
-
 import com.hbm.blocks.ModBlocks;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.WeightedRandomChestContentFrom1710;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
@@ -13,11 +10,11 @@ import com.hbm.items.machine.ItemBreedingRod;
 import com.hbm.items.special.ItemCell;
 import com.hbm.items.tool.ItemBombCaller;
 import com.hbm.items.tool.ItemBombCaller.EnumCallerType;
-import com.hbm.items.tool.ItemFluidCanister;
-
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import java.util.Random;
 
 public class HbmChestContents {
 
@@ -331,7 +328,6 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.powder_niobium, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.fusion_conductor), 0, 2, 4, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.fusion_heater), 0, 1, 3, 5),
-			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.reactor_element), 0, 1, 2, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.block_tungsten), 0, 3, 8, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.red_wire_coated), 0, 4, 8, 5),
 			new WeightedRandomChestContentFrom1710(Item.getItemFromBlock(ModBlocks.red_cable), 0, 8, 16, 5),

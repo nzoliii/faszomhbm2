@@ -1,6 +1,7 @@
 package com.hbm.inventory.container;
 
 import com.hbm.blocks.machine.ItemSelfcharger;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.inventory.SlotUpgrade;
 import com.hbm.items.ModItems;
@@ -14,6 +15,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerMachineAssembler extends Container {
 
@@ -25,9 +27,9 @@ public class ContainerMachineAssembler extends Container {
 		//Battery
 		this.addSlotToContainer(new SlotItemHandler(te.inventory, 0, 80, 18){
 			@Override
-			public boolean isItemValid(ItemStack stack) {
-				return stack != null && (stack.getItem() instanceof ItemBattery || stack.getItem() instanceof ItemSelfcharger || stack.getItem() == ModItems.meteorite_sword_alloyed);
-			};
+			public boolean isItemValid(@NotNull ItemStack stack) {
+				return NTMBatteryCapabilityHandler.isBattery(stack) || stack.getItem() == ModItems.meteorite_sword_alloyed;
+			}
 		});
 		//Upgrades
 		this.addSlotToContainer(new SlotUpgrade(te.inventory, 1, 152, 18));
@@ -36,8 +38,8 @@ public class ContainerMachineAssembler extends Container {
 		//Schematic
 		this.addSlotToContainer(new SlotItemHandler(te.inventory, 4, 80, 54){
 			@Override
-			public boolean isItemValid(ItemStack stack) {
-				return stack != null && stack.getItem() instanceof ItemAssemblyTemplate;
+			public boolean isItemValid(@NotNull ItemStack stack) {
+				return stack.getItem() instanceof ItemAssemblyTemplate;
 			};
 		});
 		//Output

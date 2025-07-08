@@ -7,7 +7,6 @@ import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.RadiationSystemNT;
 import com.hbm.items.IDynamicModels;
-import com.hbm.items.IDynamicSprites;
 import com.hbm.items.IModelRegister;
 import com.hbm.lib.RefStrings;
 import com.hbm.potion.HbmPotion;

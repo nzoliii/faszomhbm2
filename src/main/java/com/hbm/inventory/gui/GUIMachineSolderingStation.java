@@ -82,8 +82,7 @@ public class GUIMachineSolderingStation extends GuiInfoContainer {
     super.mouseClicked(x, y, i);
 
     if (guiLeft + 5 <= x && guiLeft + 5 + 10 > x && guiTop + 66 < y && guiTop + 66 + 10 >= y) {
-      mc.getSoundHandler()
-          .playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+      playPressSound();
       NBTTagCompound data = new NBTTagCompound();
       data.setBoolean("collision", true);
       PacketDispatcher.wrapper.sendToServer(new NBTControlPacket(data, soldering_station.getPos()));

@@ -1,7 +1,6 @@
 package com.hbm.dim.duna.GenLayerDuna;
 
 import com.hbm.dim.duna.biome.BiomeGenBaseDuna;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.layer.GenLayer;
 import net.minecraft.world.gen.layer.IntCache;

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.items.IDynamicModels;
-import com.hbm.items.IDynamicSprites;
 import com.hbm.lib.RefStrings;
 import com.hbm.render.icon.TextureAtlasSpriteMultipass;
 import net.minecraft.block.SoundType;

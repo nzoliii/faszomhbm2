@@ -5,8 +5,8 @@ import api.hbm.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.CompatHandler;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.fluid.FluidType;
@@ -36,6 +36,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
@@ -62,7 +63,7 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 	private float audioDesync;
 	
 	public FluidTank[] tanksOld;
-	public Fluid[] types = new Fluid[]{ ModForgeFluids.steam, ModForgeFluids.spentsteam };
+	public Fluid[] types;
 	// for convertation (for explanation. in some cases you can see here I did rename new tanks instead of old ones because I did port them before doing IFFtoNTMF. From this tileentity, I'm doing that in exact opposite order)
 	public FluidTankNTM[] tanks;
 	private static boolean converted = false;
@@ -79,8 +80,8 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 		types = new Fluid[2];
 		tanksOld[0] = new FluidTank(2000000000);
 		tanksOld[1] = new FluidTank(2000000000);
-		types[0] = ModForgeFluids.steam;
-		types[1] = ModForgeFluids.spentsteam;
+		types[0] = Fluids.STEAM.getFF();
+		types[1] = Fluids.SPENTSTEAM.getFF();
 
 		tanks = new FluidTankNTM[2];
 		tanks[0] = new FluidTankNTM(Fluids.STEAM, inputTankSize);
@@ -411,7 +412,7 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -422,6 +423,11 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
 			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
 					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
+		}
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
 			);
 		}
 		return super.getCapability(capability, facing);

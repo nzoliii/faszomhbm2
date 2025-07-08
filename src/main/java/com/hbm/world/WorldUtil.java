@@ -7,7 +7,6 @@ import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraftforge.common.chunkio.ChunkIOExecutor;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 
 public class WorldUtil {
@@ -24,13 +23,7 @@ public class WorldUtil {
 
     private static Chunk loadChunk(WorldServer world, ChunkProviderServer provider, int chunkX, int chunkZ) {
         long chunkCoord = ChunkPos.asLong(chunkX, chunkZ);
-        try {
-            Field droppedChunksSetField = ChunkProviderServer.class.getDeclaredField("droppedChunksSet");
-            droppedChunksSetField.setAccessible(true);
-            ((Map<Long, Boolean>) droppedChunksSetField.get(provider)).remove(chunkCoord);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        provider.droppedChunks.remove(chunkCoord);
         Chunk chunk = provider.loadedChunks.get(chunkCoord);
         AnvilChunkLoader loader = null;
 

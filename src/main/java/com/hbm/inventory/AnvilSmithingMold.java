@@ -1,15 +1,14 @@
 package com.hbm.inventory;
 
-import java.util.List;
-
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.items.ModItems;
 import com.hbm.util.ItemStackUtil;
-
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 // Th3_Sl1ze: special for Alcater - we don't use OreNames now, they're moved into MaterialShapes
 public class AnvilSmithingMold extends AnvilSmithingRecipe {

@@ -8,7 +8,8 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import org.lwjgl.opengl.GL11;
-import static com.hbm.render.util.SmallBlockPronter.*;
+
+import static com.hbm.render.util.SmallBlockPronter.renderSimpleBlockAt;
 
 public class RenderSoyuzMultiblock extends TileEntitySpecialRenderer<TileEntitySoyuzStruct> {
 	

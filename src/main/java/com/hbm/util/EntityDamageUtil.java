@@ -2,7 +2,6 @@ package com.hbm.util;
 
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.items.ModItems;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

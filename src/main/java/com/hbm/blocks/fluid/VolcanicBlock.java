@@ -1,7 +1,5 @@
 package com.hbm.blocks.fluid;
 
-import com.hbm.blocks.BlockEnumMeta;
-import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.ModDamageSource;
@@ -31,8 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
-import static com.hbm.blocks.BlockEnumMeta.*;
-import static com.hbm.blocks.BlockEnums.*;
+import static com.hbm.blocks.BlockEnumMeta.stateFromEnum;
 import static com.hbm.blocks.BlockEnums.EnumBasaltOreType.*;
 import static com.hbm.blocks.ModBlocks.basalt_ore;
 

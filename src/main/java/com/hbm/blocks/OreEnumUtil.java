@@ -45,7 +45,6 @@ public class OreEnumUtil {
             Item.getItemFromBlock(ModBlocks.watz_element),
             Item.getItemFromBlock(ModBlocks.ore_rare),
             Item.getItemFromBlock(ModBlocks.fusion_conductor),
-            Item.getItemFromBlock(ModBlocks.reactor_computer),
             Item.getItemFromBlock(ModBlocks.machine_diesel),
             Item.getItemFromBlock(ModBlocks.machine_rtg_grey),
             pellet_rtg,

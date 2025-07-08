@@ -1,6 +1,7 @@
 package com.hbm.inventory.gui;
 
 import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.NBTControlPacket;
@@ -379,13 +380,13 @@ public class GUIRBMKConsole extends GuiScreen {
 
 				Fluid fluid = FluidRegistry.getFluid(col.data.getString("type"));
 				
-				if(fluid == ModForgeFluids.steam)
+				if(fluid == Fluids.STEAM.getFF())
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 1, 44, 183, 2, 2);
-				if(fluid == ModForgeFluids.hotsteam)
+				if(fluid == Fluids.HOTSTEAM.getFF())
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 3, 44, 185, 2, 2);
-				if(fluid == ModForgeFluids.superhotsteam)
+				if(fluid == Fluids.SUPERHOTSTEAM.getFF())
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 5, 44, 187, 2, 2);
-				if(fluid == ModForgeFluids.ultrahotsteam)
+				if(fluid == Fluids.ULTRAHOTSTEAM.getFF())
 					drawTexturedModalRect(guiLeft + x + 4, guiTop + y + 7, 44, 189, 2, 2);
 				
 				break;

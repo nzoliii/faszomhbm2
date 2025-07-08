@@ -1,7 +1,6 @@
 package com.hbm.inventory.container;
 
 import com.hbm.inventory.FluidContainerRegistry;
-import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.tileentity.machine.TileEntitySILEX;
 import net.minecraft.entity.player.EntityPlayer;

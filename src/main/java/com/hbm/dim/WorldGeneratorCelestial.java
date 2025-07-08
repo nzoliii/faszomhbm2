@@ -1,20 +1,14 @@
 package com.hbm.dim;
 
-import java.util.List;
-import java.util.Random;
-
 import com.google.common.base.Predicate;
-import com.hbm.blocks.BlockEnums.EnumStoneType;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.config.GeneralConfig;
 import com.hbm.config.WorldConfig;
 import com.hbm.dim.laythe.biome.BiomeGenBaseLaythe;
 import com.hbm.main.MainRegistry;
-import com.hbm.util.WeightedRandomGeneric;
 import com.hbm.world.feature.DepthDeposit;
 import com.hbm.world.generator.CellularDungeonFactory;
 import com.hbm.world.generator.DungeonToolbox;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockMatcher;
@@ -28,6 +22,8 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.event.terraingen.OreGenEvent.GenerateMinable;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+import java.util.Random;
 
 public class WorldGeneratorCelestial implements IWorldGenerator {
 

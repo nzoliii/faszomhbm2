@@ -2,7 +2,6 @@ package com.hbm.handler.jei;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.recipes.FractionRecipes;
-
 import mezz.jei.api.IGuiHelper;
 import net.minecraft.item.ItemStack;
 

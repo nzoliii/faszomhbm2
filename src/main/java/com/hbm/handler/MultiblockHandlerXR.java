@@ -2,7 +2,6 @@ package com.hbm.handler;
 
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.lib.ForgeDirection;
-
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +35,7 @@ public class MultiblockHandlerXR {
 					if(a == ox && b == oy && c == oz)
 						continue;
 					
-					if(!world.getBlockState(pos.setPos(a, b, c)).getBlock().canPlaceBlockAt(world, pos.setPos(a, b, c))) {
+					if(!world.getBlockState(pos.setPos(a, b, c)).getBlock().isReplaceable(world, pos.setPos(a, b, c))) {
 						return false;
 					}
 					

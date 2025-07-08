@@ -7,11 +7,11 @@ import java.util.*;
 public class PowerNetMK2 {
 
     public boolean valid = true;
-    public Set<Nodespace.PowerNode> links = new HashSet();
+    public Set<Nodespace.PowerNode> links = new HashSet<>();
 
     /** Maps all active subscribers to a timestamp, handy for handling timeouts. In a good system this shouldn't be necessary, but the previous system taught me to be cautious anyway */
-    public HashMap<IEnergyReceiverMK2, Long> receiverEntries = new HashMap();
-    public HashMap<IEnergyProviderMK2, Long> providerEntries = new HashMap();
+    public HashMap<IEnergyReceiverMK2, Long> receiverEntries = new HashMap<>();
+    public HashMap<IEnergyProviderMK2, Long> providerEntries = new HashMap<>();
 
     public long energyTracker = 0L;
 
@@ -52,7 +52,7 @@ public class PowerNetMK2 {
 
         if(network == this) return; //wtf?!
 
-        List<Nodespace.PowerNode> oldNodes = new ArrayList(network.links.size());
+        List<Nodespace.PowerNode> oldNodes = new ArrayList<>(network.links.size());
         oldNodes.addAll(network.links); // might prevent oddities related to joining - nvm it does nothing
 
         for(Nodespace.PowerNode conductor : oldNodes) forceJoinLink(conductor);
@@ -122,11 +122,12 @@ public class PowerNetMK2 {
             Map.Entry<IEnergyProviderMK2, Long> entry = provIt.next();
             if(timestamp - entry.getValue() > timeout) { provIt.remove(); continue; }
             long src = Math.min(entry.getKey().getPower(), entry.getKey().getProviderSpeed());
-            providers.add(new Tuple.Pair(entry.getKey(), src));
+            providers.add(new Tuple.Pair<>(entry.getKey(), src));
             if(powerAvailable < transferCap) powerAvailable += src;
         }
 
         powerAvailable = Math.min(powerAvailable, transferCap);
+        if(powerAvailable <= 0) return;
 
         List<Tuple.Pair<IEnergyReceiverMK2, Long>>[] receivers = new ArrayList[IEnergyReceiverMK2.ConnectionPriority.values().length];
         for(int i = 0; i < receivers.length; i++) receivers[i] = new ArrayList();
@@ -139,38 +140,60 @@ public class PowerNetMK2 {
             Map.Entry<IEnergyReceiverMK2, Long> entry = recIt.next();
             if(timestamp - entry.getValue() > timeout) { recIt.remove(); continue; }
             long rec = Math.min(entry.getKey().getMaxPower() - entry.getKey().getPower(), entry.getKey().getReceiverSpeed());
-            int p = entry.getKey().getPriority().ordinal();
-            receivers[p].add(new Tuple.Pair(entry.getKey(), rec));
-            demand[p] += rec;
-            totalDemand += rec;
+            if (rec > 0) {
+                int p = entry.getKey().getPriority().ordinal();
+                receivers[p].add(new Tuple.Pair<>(entry.getKey(), rec));
+                demand[p] += rec;
+                totalDemand += rec;
+            }
         }
 
-        long toTransfer = Math.min(powerAvailable, totalDemand);
-        long energyUsed = 0;
+        if(totalDemand <= 0) return;
 
+        long powerToDistribute = Math.min(powerAvailable, totalDemand);
+        long totalEnergyTransferred = 0;
+
+        // Distribute power, from highest priority to lowest
         for(int i = IEnergyReceiverMK2.ConnectionPriority.values().length - 1; i >= 0; i--) {
+            if (powerToDistribute <= 0) break;
+
             List<Tuple.Pair<IEnergyReceiverMK2, Long>> list = receivers[i];
             long priorityDemand = demand[i];
 
-            for(Tuple.Pair<IEnergyReceiverMK2, Long> entry : list) {
-                double weight = (double) entry.getValue() / (double) (priorityDemand);
-                long toSend = (long) Math.max(toTransfer * weight, 0D);
-                energyUsed += (toSend - entry.getKey().transferPower(toSend)); //leftovers are subtracted from the intended amount to use up
-            }
+            if (priorityDemand <= 0) continue;
 
-            toTransfer -= energyUsed;
+            long powerForThisPriority = Math.min(powerToDistribute, priorityDemand);
+            long transferredInThisPriority = 0;
+
+            // Distribute power within the priority level based on relative demand (weight)
+            for(Tuple.Pair<IEnergyReceiverMK2, Long> entry : list) {
+                double weight = (double) entry.getValue() / (double) priorityDemand;
+                long toSend = (long) Math.ceil(powerForThisPriority * weight);
+
+                if (toSend > 0) {
+                    long remainder = entry.getKey().transferPower(toSend, false);
+                    transferredInThisPriority += (toSend - remainder);
+                }
+            }
+            totalEnergyTransferred += transferredInThisPriority;
+            powerToDistribute -= transferredInThisPriority;
         }
 
-        this.energyTracker += energyUsed;
+        this.energyTracker += totalEnergyTransferred;
 
-        for(Tuple.Pair<IEnergyProviderMK2, Long> entry : providers) {
-            double weight = (double) entry.getValue() / (double) powerAvailable;
-            long toUse = (long) Math.max(energyUsed * weight, 0D);
-            entry.getKey().usePower(toUse);
+        if (totalEnergyTransferred > 0) {
+            for(Tuple.Pair<IEnergyProviderMK2, Long> entry : providers) {
+                double weight = (double) entry.getValue() / (double) powerAvailable;
+                long toUse = (long) Math.ceil(totalEnergyTransferred * weight);
+                if (toUse > 0) {
+                    entry.getKey().usePower(toUse);
+                }
+            }
         }
     }
 
-    @Deprecated public void transferPowerOld() {
+    @Deprecated
+    public void transferPowerOld() {
 
         if(providerEntries.isEmpty()) return;
         if(receiverEntries.isEmpty()) return;
@@ -204,10 +227,9 @@ public class PowerNetMK2 {
 
         long toTransfer = Math.min(supply, demand);
         if(toTransfer > transferCap) toTransfer = transferCap;
-        if(toTransfer <= 0) return;
 
-        List<IEnergyProviderMK2> buffers = new ArrayList();
-        List<IEnergyProviderMK2> providers = new ArrayList();
+        List<IEnergyProviderMK2> buffers = new ArrayList<>();
+        List<IEnergyProviderMK2> providers = new ArrayList<>();
         Set<IEnergyReceiverMK2> receiverSet = receiverEntries.keySet();
         for(IEnergyProviderMK2 provider : providerEntries.keySet()) {
             if(receiverSet.contains(provider)) {
@@ -217,7 +239,7 @@ public class PowerNetMK2 {
             }
         }
         providers.addAll(buffers); //makes buffers go last
-        List<IEnergyReceiverMK2> receivers = new ArrayList() {{ addAll(receiverSet); }};
+        List<IEnergyReceiverMK2> receivers = new ArrayList<>() {{ addAll(receiverSet); }};
 
         receivers.sort(COMP);
 
@@ -268,7 +290,7 @@ public class PowerNetMK2 {
             long finalTransfer = Math.min(toDrain, toFill);
             if(toFill <= 0) { receivers.remove(0); prevDest = 0; continue; }
 
-            finalTransfer -= dest.transferPower(finalTransfer);
+            finalTransfer -= dest.transferPower(finalTransfer, false);
             src.usePower(finalTransfer);
 
             prevSrc += finalTransfer;
@@ -282,9 +304,8 @@ public class PowerNetMK2 {
         }
     }
 
-    public long sendPowerDiode(long power) {
-
-        if(receiverEntries.isEmpty()) return power;
+    public long sendPowerDiode(long power, boolean simulate) {
+        if(receiverEntries.isEmpty() || power <= 0) return power;
 
         long timestamp = System.currentTimeMillis();
 
@@ -297,33 +318,57 @@ public class PowerNetMK2 {
 
         while(recIt.hasNext()) {
             Map.Entry<IEnergyReceiverMK2, Long> entry = recIt.next();
-            if(timestamp - entry.getValue() > timeout) { recIt.remove(); continue; }
+            if(timestamp - entry.getValue() > timeout) {
+                if (!simulate) {
+                    recIt.remove();
+                }
+                continue;
+            }
             long rec = Math.min(entry.getKey().getMaxPower() - entry.getKey().getPower(), entry.getKey().getReceiverSpeed());
-            int p = entry.getKey().getPriority().ordinal();
-            receivers[p].add(new Tuple.Pair(entry.getKey(), rec));
-            demand[p] += rec;
-            totalDemand += rec;
+            if (rec > 0) {
+                int p = entry.getKey().getPriority().ordinal();
+                receivers[p].add(new Tuple.Pair<>(entry.getKey(), rec));
+                demand[p] += rec;
+                totalDemand += rec;
+            }
         }
 
-        long toTransfer = Math.min(power, totalDemand);
-        long energyUsed = 0;
+        if (totalDemand <= 0) return power;
 
+        long powerToDistribute = Math.min(power, totalDemand);
+        long totalEnergyTransferred = 0;
+
+        // Distribute power, from highest priority to lowest
         for(int i = IEnergyReceiverMK2.ConnectionPriority.values().length - 1; i >= 0; i--) {
+            if (powerToDistribute <= 0) break;
+
             List<Tuple.Pair<IEnergyReceiverMK2, Long>> list = receivers[i];
             long priorityDemand = demand[i];
 
-            for(Tuple.Pair<IEnergyReceiverMK2, Long> entry : list) {
-                double weight = (double) entry.getValue() / (double) (priorityDemand);
-                long toSend = (long) Math.max(toTransfer * weight, 0D);
-                energyUsed += (toSend - entry.getKey().transferPower(toSend)); //leftovers are subtracted from the intended amount to use up
-            }
+            if (priorityDemand <= 0) continue;
 
-            toTransfer -= energyUsed;
+            long powerForThisPriority = Math.min(powerToDistribute, priorityDemand);
+            long transferredInThisPriority = 0;
+
+            // Distribute power within the priority level based on relative demand (weight)
+            for(Tuple.Pair<IEnergyReceiverMK2, Long> entry : list) {
+                double weight = (double) entry.getValue() / (double) priorityDemand;
+                long toSend = (long) Math.ceil(powerForThisPriority * weight);
+
+                if (toSend > 0) {
+                    long remainder = entry.getKey().transferPower(toSend, simulate);
+                    transferredInThisPriority += (toSend - remainder);
+                }
+            }
+            totalEnergyTransferred += transferredInThisPriority;
+            powerToDistribute -= transferredInThisPriority;
         }
 
-        this.energyTracker += energyUsed;
+        if(!simulate) {
+            this.energyTracker += totalEnergyTransferred;
+        }
 
-        return power - energyUsed;
+        return power - totalEnergyTransferred;
     }
 
     public static final ReceiverComparator COMP = new ReceiverComparator();

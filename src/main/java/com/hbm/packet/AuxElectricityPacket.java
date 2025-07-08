@@ -1,6 +1,5 @@
 package com.hbm.packet;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import com.hbm.tileentity.machine.TileEntityMachineRTG;
 import io.netty.buffer.ByteBuf;

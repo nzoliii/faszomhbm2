@@ -6,7 +6,6 @@ import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.items.IDynamicModels;
 import com.hbm.items.IModelRegister;
 import com.hbm.lib.RefStrings;
-import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -135,6 +134,11 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Block getBlock() {
+        return this;
     }
 
     @Override

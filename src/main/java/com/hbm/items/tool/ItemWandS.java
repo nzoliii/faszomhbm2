@@ -2,7 +2,9 @@ package com.hbm.items.tool;
 
 import com.hbm.items.ModItems;
 import com.hbm.util.I18nUtil;
-import com.hbm.world.*;
+import com.hbm.world.FactoryAdvanced;
+import com.hbm.world.FactoryTitanium;
+import com.hbm.world.ParticleAccelerator;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -45,12 +47,9 @@ public class ItemWandS extends Item {
 				tooltip.add(I18nUtil.resolveKey("desc.structurewand.factoryadvanced"));
 				break;
 			case 2:
-				tooltip.add(I18nUtil.resolveKey("desc.structurewand.nuclear"));
-				break;
-			case 3:
 				tooltip.add(I18nUtil.resolveKey("desc.structurewand.hadron"));
 				break;
-			case 4:
+			case 3:
 				tooltip.add(I18nUtil.resolveKey("desc.structurewand.watz"));
 				break;
 			}
@@ -86,9 +85,6 @@ public class ItemWandS extends Item {
 				new FactoryAdvanced().generate(world, rand, new BlockPos(pos.getX(), up ? pos.getY() - 2 : pos.getY(), pos.getZ()));
 				break;
 			case 2:
-				new NuclearReactor().generate(world, rand, new BlockPos(pos.getX(), up ? pos.getY() - 4 : pos.getY(), pos.getZ()));
-				break;
-			case 3:
 				new ParticleAccelerator().generate(world, rand, new BlockPos(pos.getX(), up ? pos.getY()-5 : pos.getY(), pos.getZ()));
 				break;
 			}

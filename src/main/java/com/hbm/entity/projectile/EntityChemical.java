@@ -2,7 +2,6 @@ package com.hbm.entity.projectile;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmLivingProps;
-import com.hbm.entity.effect.EntityMist;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.handler.RadiationSystemNT;
 import com.hbm.inventory.fluid.FluidType;

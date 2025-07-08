@@ -2,9 +2,9 @@ package com.hbm.handler;
 
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.config.VersatileConfig;
-import com.hbm.forgefluid.ModForgeFluids;
+import com.hbm.inventory.fluid.Fluids;
 import com.hbm.items.ModItems;
-import com.hbm.items.armor.JetpackBase;
+import com.hbm.items.armor.JetpackFueledBase;
 import com.hbm.items.weapon.ItemGunBase;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
@@ -181,12 +181,12 @@ public class ConsumableHandler {
 
     private static void handleJetpackTank(final Context context) {
         final ItemStack jetpack = context.target.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-        if (jetpack.getItem() instanceof JetpackBase jetItem) {
-            if (jetItem.fuel != ModForgeFluids.kerosene) return;
+        if (jetpack.getItem() instanceof JetpackFueledBase jetItem) {
+            if (jetItem.fuel != Fluids.KEROSENE) return;
 
-            final int newFuel = Math.min(JetpackBase.getFuel(jetpack) + 1000, jetItem.maxFuel);
-            if (JetpackBase.getFuel(jetpack) != newFuel) {
-                JetpackBase.setFuel(jetpack, newFuel);
+            final int newFuel = Math.min(JetpackFueledBase.getFuel(jetpack) + 1000, jetItem.maxFuel);
+            if (JetpackFueledBase.getFuel(jetpack) != newFuel) {
+                JetpackFueledBase.setFuel(jetpack, newFuel);
                 context.playSound(HBMSoundHandler.jetpackTank);
                 context.shrinkCurrentItem();
             }

@@ -28,13 +28,12 @@ public class ResourceManager {
 	
 	public static final IModelCustom cat = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/weapons/cat.obj"));
 
-	//Drillgon200 model loading test
-	//Hey it worked! I wonder if I can edit the tessellator to call 1.12.2 builder buffer commands, because that's a lot less laggy.
-	//Tip: There is no reason not to spam VBO as far as I know, so just do it!
+	//Press
 	public static final IModelCustom press_body = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/press_body.obj")).asVBO();
 	public static final IModelCustom press_head = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/press_head.obj")).asVBO();
 	public static final IModelCustom epress_body = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/epress_body.obj")).asVBO();
 	public static final IModelCustom epress_head = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/epress_head.obj")).asVBO();
+	public static final IModelCustom ammo_press = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/ammo_press.obj")).asVBO();
 
 	public static final IModelCustom bm_box_lever = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bm_box_lever.obj")).asVBO();
 	
@@ -316,6 +315,9 @@ public class ResourceManager {
 	
 	//Belt
 	public static final IModelCustom arrow = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/blocks/arrow.obj")).asVBO();
+
+	//RotaryFurnace
+	public static final IModelCustom rotary_furnace = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/rotary_furnace.obj")).asVBO();
 
 	//Selenium Engine
 	public static final IModelCustom selenium_body = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/selenium_engine_body.obj")).asVBO();
@@ -742,6 +744,9 @@ public class ResourceManager {
 	public static final ResourceLocation zirnox_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/zirnox.png");
 	public static final ResourceLocation zirnox_destroyed_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/zirnox_destroyed.png");
 
+	//Rotary Furnace
+	public static final ResourceLocation rotary_furnace_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/rotary_furnace.png");
+
 	//Large Cable
 	public static final ResourceLocation pylon_large_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/pylon_large.png");
 	public static final ResourceLocation substation_tex = new ResourceLocation(RefStrings.MODID, "textures/models/network/substation.png");
@@ -798,6 +803,7 @@ public class ResourceManager {
 	public static final ResourceLocation press_head_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/press_head.png");
 	public static final ResourceLocation epress_body_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/epress_body.png");
 	public static final ResourceLocation epress_head_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/epress_head.png");
+	public static final ResourceLocation ammo_press_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/ammo_press.png");
 
 	public static final ResourceLocation bm_box_lever_tex = new ResourceLocation(RefStrings.MODID, "textures/models/turrets/bm_box_lever.png");
 	

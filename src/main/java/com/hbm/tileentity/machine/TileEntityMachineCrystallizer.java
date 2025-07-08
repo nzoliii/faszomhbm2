@@ -3,15 +3,15 @@ package com.hbm.tileentity.machine;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardReceiver;
 import com.hbm.capability.HbmCapability;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
-import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.interfaces.IFFtoNTMF;
-import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerCrystallizer;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.gui.GUICrystallizer;
+import com.hbm.inventory.recipes.CrystallizerRecipes;
 import com.hbm.items.machine.ItemMachineUpgrade;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
@@ -33,6 +33,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -57,7 +58,7 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 
 	public FluidTankNTM tankNew;
 	public FluidTank tank;
-	private Fluid oldFluid = ModForgeFluids.none;
+	private Fluid oldFluid =Fluids.NONE.getFF();;
 	private static boolean converted = false;
 	public UpgradeManager manager = new UpgradeManager();
 
@@ -318,7 +319,7 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 		power = nbt.getLong("power");
 		if(!converted){
 			tank.readFromNBT(nbt.getCompoundTag("tank"));
-			oldFluid = tank.getFluid() != null ? tank.getFluid().getFluid() : ModForgeFluids.none;
+			oldFluid = tank.getFluid() != null ? tank.getFluid().getFluid() :Fluids.NONE.getFF();;
 		} else {
 			tankNew.readFromNBT(nbt, "tankNew");
 			nbt.removeTag("tank");
@@ -385,7 +386,7 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
@@ -398,6 +399,11 @@ public class TileEntityMachineCrystallizer extends TileEntityMachineBase impleme
 					new NTMFluidHandlerWrapper(this.getReceivingTanks(), null)
 			);
 		}
-		return super.getCapability(capability, facing);
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
+		}
+			return super.getCapability(capability, facing);
 	}
 }

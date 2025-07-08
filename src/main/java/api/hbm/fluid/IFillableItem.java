@@ -2,8 +2,6 @@ package api.hbm.fluid;
 
 import com.hbm.inventory.fluid.FluidType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 
 public interface IFillableItem {
 

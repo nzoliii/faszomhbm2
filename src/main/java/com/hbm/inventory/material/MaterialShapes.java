@@ -1,6 +1,5 @@
 package com.hbm.inventory.material;
 
-import com.hbm.main.MainRegistry;
 import net.minecraftforge.fml.common.Loader;
 
 import java.util.ArrayList;

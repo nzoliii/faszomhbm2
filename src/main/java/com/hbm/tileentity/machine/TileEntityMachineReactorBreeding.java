@@ -2,9 +2,9 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.ReactorResearch;
-import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.inventory.container.ContainerMachineReactorBreeding;
 import com.hbm.inventory.gui.GUIMachineReactorBreeding;
+import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;

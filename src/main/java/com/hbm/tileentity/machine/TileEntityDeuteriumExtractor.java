@@ -1,65 +1,59 @@
 package com.hbm.tileentity.machine;
 
 import api.hbm.energymk2.IEnergyReceiverMK2;
-import com.hbm.forgefluid.FFUtils;
-import com.hbm.forgefluid.ModForgeFluids;
-import com.hbm.interfaces.ITankPacketAcceptor;
+import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.tileentity.INBTPacketReceiver;
-import com.hbm.tileentity.TileEntityLoadedBase;
+import com.hbm.tileentity.IFluidCopiable;
+import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import org.jetbrains.annotations.Nullable;
 
-public class TileEntityDeuteriumExtractor extends TileEntityLoadedBase implements ITickable, IFluidHandler, IEnergyReceiverMK2, ITankPacketAcceptor, INBTPacketReceiver {
+public class TileEntityDeuteriumExtractor extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, IFluidCopiable {
 	
-	public int age = 0;
 	public long power = 0;
-	public FluidTank[] tanks;
+	public FluidTankNTM[] tanks;
 
 	public TileEntityDeuteriumExtractor() {
-		tanks = new FluidTank[2];
-		tanks[0] = new FluidTank(FluidRegistry.WATER, 0, 1000);
-		tanks[1] = new FluidTank(ModForgeFluids.heavywater, 0, 100);
+		super(0);
+		tanks = new FluidTankNTM[2];
+		tanks[0] = new FluidTankNTM(Fluids.WATER, 0, 1000);
+		tanks[1] = new FluidTankNTM(Fluids.HEAVYWATER, 0, 100);
+	}
+
+	@Override
+	public String getName() {
+		return "container.deuterium";
 	}
 
 	@Override
 	public void update() {
 		
 		if(!world.isRemote) {
-			
-			updateConnections();
+			this.updateConnections();
 
-			age++;
-			if(age >= 20) {
-				age = 0;
-			}
+			if(hasPower() && hasEnoughWater() && tanks[1].getMaxFill() > tanks[1].getFill()) {
+				int convert = Math.min(tanks[1].getMaxFill(), tanks[0].getFill()) / 50;
+				convert = Math.min(convert, tanks[1].getMaxFill() - tanks[1].getFill());
 
-			if(age == 9 || age == 19)
-				fillFluidInit(tanks[1]);
-			
-			if(hasPower() && hasEnoughWater() && tanks[1].getCapacity() > tanks[1].getFluidAmount()) {
-				int convert = Math.min(tanks[1].getCapacity(), tanks[0].getFluidAmount()) / 50;
-				convert = Math.min(convert, tanks[1].getCapacity() - tanks[1].getFluidAmount());
-				
-				tanks[0].drain(convert * 50, true); //dividing first, then multiplying, will remove any rounding issues
-				tanks[1].fill(new FluidStack(ModForgeFluids.heavywater, convert), true);
+				tanks[0].setFill(tanks[0].getFill() - convert * 50); //dividing first, then multiplying, will remove any rounding issues
+				tanks[1].setFill(tanks[1].getFill() + convert);
 				power -= this.getMaxPower() / 20;
-				this.markDirty();
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setTag("tanks", FFUtils.serializeTankArray(tanks));
-			
-			INBTPacketReceiver.networkPack(this, data, 50);
+			this.subscribeToAllAround(tanks[0].getTankType(), this);
+			this.sendFluidToAll(tanks[1], this);
+
+			this.networkPackNT(50);
 		}
 	}
 	
@@ -67,20 +61,21 @@ public class TileEntityDeuteriumExtractor extends TileEntityLoadedBase implement
 		for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) this.trySubscribe(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
 	}
 
-	public void fillFluidInit(FluidTank tank) {
-		FFUtils.fillFluid(this, tank, world, pos.west(), 100);
-		FFUtils.fillFluid(this, tank, world, pos.east(), 100);
-		FFUtils.fillFluid(this, tank, world, pos.down(), 100);
-		FFUtils.fillFluid(this, tank, world, pos.up(), 100);
-		FFUtils.fillFluid(this, tank, world, pos.north(), 100);
-		FFUtils.fillFluid(this, tank, world, pos.south(), 100);
+
+	@Override
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeLong(power);
+		tanks[0].serialize(buf);
+		tanks[1].serialize(buf);
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.power = data.getLong("power");
-		if(data.hasKey("tanks"))
-			FFUtils.deserializeTankArray(data.getTagList("tanks", 10), tanks);
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		tanks[0].deserialize(buf);
+		tanks[1].deserialize(buf);
 	}
 
 	public boolean hasPower() {
@@ -95,14 +90,15 @@ public class TileEntityDeuteriumExtractor extends TileEntityLoadedBase implement
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		this.power = nbt.getLong("power");
-		if(nbt.hasKey("tanks"))
-			FFUtils.deserializeTankArray(nbt.getTagList("tanks", 10), tanks);
+		tanks[0].readFromNBT(nbt, "water");
+		tanks[1].readFromNBT(nbt, "heavyWater");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setLong("power", power);
-		nbt.setTag("tanks", FFUtils.serializeTankArray(tanks));
+		tanks[0].writeToNBT(nbt, "water");
+		tanks[1].writeToNBT(nbt, "heavyWater");
 		return super.writeToNBT(nbt);
 	}
 
@@ -122,52 +118,45 @@ public class TileEntityDeuteriumExtractor extends TileEntityLoadedBase implement
 	}
 
 	@Override
-	public void recievePacket(NBTTagCompound[] tags) {
-		if(tags.length != 2) {
-			return;
-		} else {
-			tanks[0].readFromNBT(tags[0]);
-			tanks[1].readFromNBT(tags[1]);
+	public FluidTankNTM[] getSendingTanks() {
+		return new FluidTankNTM[] { tanks[1] };
+	}
+
+	@Override
+	public FluidTankNTM[] getReceivingTanks() {
+		return new FluidTankNTM[] { tanks[0] };
+	}
+
+	@Override
+	public FluidTankNTM[] getAllTanks() {
+		return tanks;
+	}
+
+	@Override
+	public FluidTankNTM getTankToPaste() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
+			return true;
 		}
+		return super.hasCapability(capability, facing);
 	}
 
 	@Override
-	public IFluidTankProperties[] getTankProperties() {
-		return new IFluidTankProperties[] { tanks[0].getTankProperties()[0], tanks[1].getTankProperties()[0] };
-	}
-
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if(resource.getFluid() == FluidRegistry.WATER) {
-			return tanks[0].fill(resource, doFill);
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
+					new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+			);
 		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if(resource == null || !resource.isFluidEqual(tanks[1].getFluid())) {
-			return null;
+		if (capability == CapabilityEnergy.ENERGY) {
+			return CapabilityEnergy.ENERGY.cast(
+					new NTMEnergyCapabilityWrapper(this)
+			);
 		}
-		return tanks[1].drain(resource.amount, doDrain);
-	}
-
-	@Override
-	public FluidStack drain(int maxDrain, boolean doDrain) {
-		return tanks[1].drain(maxDrain, doDrain);
-	}
-
-	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
-	}
-
-	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-			return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(this);
-		} else {
-			return super.getCapability(capability, facing);
-		}
+		return super.getCapability(capability, facing);
 	}
 }

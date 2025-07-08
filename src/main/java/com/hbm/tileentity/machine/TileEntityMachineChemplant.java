@@ -3,8 +3,8 @@ package com.hbm.tileentity.machine;
 import api.hbm.energymk2.IEnergyReceiverMK2;
 import api.hbm.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
-import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.RecipesCommon.AStack;
 import com.hbm.inventory.UpgradeManager;
 import com.hbm.inventory.container.ContainerMachineChemplant;
@@ -41,36 +41,28 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TileEntityMachineChemplant extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiver, IGUIProvider, ITickable, IFFtoNTMF {
+public class TileEntityMachineChemplant extends TileEntityMachineBase implements IEnergyReceiverMK2, IFluidStandardTransceiver, IGUIProvider, ITickable {
 
     public static final long maxPower = 100000;
     public long power;
     public int progress;
     public int maxProgress = 100;
     public boolean isProgressing;
-    public FluidTank[] tanks;
-    public Fluid[] tankTypes;
     public FluidTankNTM[] tanksNew;
-    public ItemStack previousTemplate = ItemStack.EMPTY;
-    //Drillgon200: Yeah I don't even know what I was doing originally
-    public ItemStack previousTemplate2 = ItemStack.EMPTY;
     public UpgradeManager manager = new UpgradeManager();
     //upgraded stats
     int consumption = 100;
@@ -81,7 +73,6 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
     int lsu0 = 0;
     int lsu1 = 0;
     private AudioWrapper audio;
-    private boolean converted;
     public TileEntityMachineChemplant() {
         super(21);
         /*
@@ -99,15 +90,6 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
         for (int i = 0; i < 4; i++) {
             tanksNew[i] = new FluidTankNTM(Fluids.NONE, 24_000);
         }
-
-        tanks = new FluidTank[4];
-        tanks[0] = new FluidTank(24000);
-        tanks[1] = new FluidTank(24000);
-        tanks[2] = new FluidTank(24000);
-        tanks[3] = new FluidTank(24000);
-        tankTypes = new Fluid[]{null, null, null, null};
-
-        converted = true;
     }
 
     public boolean isUseableByPlayer(EntityPlayer player) {
@@ -121,50 +103,20 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        String[] types;
         this.power = nbt.getLong("powerTime");
         isProgressing = nbt.getBoolean("progressing");
-        if (!converted) {
-            tanks[0].readFromNBT(nbt.getCompoundTag("input1"));
-            tanks[1].readFromNBT(nbt.getCompoundTag("input2"));
-            tanks[2].readFromNBT(nbt.getCompoundTag("output1"));
-            tanks[3].readFromNBT(nbt.getCompoundTag("output2"));
-
-            types = new String[]{nbt.getString("tankType0"), nbt.getString("tankType1"), nbt.getString("tankType2"), nbt.getString("tankType3")};
-            if (!types[0].equals("empty")) {
-                tankTypes[0] = FluidRegistry.getFluid(types[0]);
-            } else {
-                tankTypes[0] = null;
-            }
-            if (!types[1].equals("empty")) {
-                tankTypes[1] = FluidRegistry.getFluid(types[1]);
-            } else {
-                tankTypes[1] = null;
-            }
-            if (!types[2].equals("empty")) {
-                tankTypes[2] = FluidRegistry.getFluid(types[2]);
-            } else {
-                tankTypes[2] = null;
-            }
-            if (!types[3].equals("empty")) {
-                tankTypes[3] = FluidRegistry.getFluid(types[3]);
-            } else {
-                tankTypes[3] = null;
-            }
-        } else {
-            for (int i = 0; i < tanksNew.length; i++) {
-                tanksNew[i].readFromNBT(nbt, "t" + i);
-            }
-            if (nbt.hasKey("input1")) {
-                nbt.removeTag("input1");
-                nbt.removeTag("input2");
-                nbt.removeTag("output1");
-                nbt.removeTag("output2");
-                nbt.removeTag("tankType0");
-                nbt.removeTag("tankType1");
-                nbt.removeTag("tankType2");
-                nbt.removeTag("tankType3");
-            }
+        for (int i = 0; i < tanksNew.length; i++) {
+            tanksNew[i].readFromNBT(nbt, "t" + i);
+        }
+        if (nbt.hasKey("input1")) {
+            nbt.removeTag("input1");
+            nbt.removeTag("input2");
+            nbt.removeTag("output1");
+            nbt.removeTag("output2");
+            nbt.removeTag("tankType0");
+            nbt.removeTag("tankType1");
+            nbt.removeTag("tankType2");
+            nbt.removeTag("tankType3");
         }
         if (nbt.hasKey("inventory"))
             inventory.deserializeNBT((NBTTagCompound) nbt.getTag("inventory"));
@@ -174,36 +126,10 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setLong("powerTime", power);
-
         nbt.setBoolean("progressing", isProgressing);
-        if (!converted) {
-            String[] types = new String[]{tankTypes[0] != null ? tankTypes[0].getName() : "empty", tankTypes[1] != null ? tankTypes[1].getName() : "empty", tankTypes[2] != null ? tankTypes[2].getName() : "empty", tankTypes[3] != null ? tankTypes[3].getName() : "empty"};
-
-            NBTTagCompound input1 = new NBTTagCompound();
-            NBTTagCompound input2 = new NBTTagCompound();
-            NBTTagCompound output1 = new NBTTagCompound();
-            NBTTagCompound output2 = new NBTTagCompound();
-
-            tanks[0].writeToNBT(input1);
-            tanks[1].writeToNBT(input2);
-            tanks[2].writeToNBT(output1);
-            tanks[3].writeToNBT(output2);
-
-            nbt.setTag("input1", input1);
-            nbt.setTag("input2", input2);
-            nbt.setTag("output1", output1);
-            nbt.setTag("output2", output2);
-
-            nbt.setString("tankType0", types[0] != null ? types[0] : "empty");
-            nbt.setString("tankType1", types[1] != null ? types[1] : "empty");
-            nbt.setString("tankType2", types[2] != null ? types[2] : "empty");
-            nbt.setString("tankType3", types[3] != null ? types[3] : "empty");
-        } else {
-            for (int i = 0; i < tanksNew.length; i++) {
-                tanksNew[i].writeToNBT(nbt, "t" + i);
-            }
+        for (int i = 0; i < tanksNew.length; i++) {
+            tanksNew[i].writeToNBT(nbt, "t" + i);
         }
-
         NBTTagCompound inv = inventory.serializeNBT();
         nbt.setTag("inventory", inv);
         return nbt;
@@ -217,8 +143,7 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
         buf.writeInt(maxProgress);
         buf.writeBoolean(isProgressing);
 
-        for (int i = 0; i < tanks.length; i++)
-            tanksNew[i].serialize(buf);
+        for (FluidTankNTM fluidTankNTM : tanksNew) fluidTankNTM.serialize(buf);
     }
 
     @Override
@@ -229,8 +154,7 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
         maxProgress = buf.readInt();
         isProgressing = buf.readBoolean();
 
-        for (int i = 0; i < tanks.length; i++)
-            tanksNew[i].deserialize(buf);
+        for (FluidTankNTM fluidTankNTM : tanksNew) fluidTankNTM.deserialize(buf);
     }
 
     public long getPowerScaled(long i) {
@@ -268,11 +192,6 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
 
     @Override
     public void update() {
-        if (!converted) {
-            convertAndSetFluids(tankTypes, tanks, tanksNew);
-            converted = true;
-        }
-
         if (!world.isRemote) {
 
             this.speed = 100;
@@ -527,21 +446,6 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
         }
     }
 
-    //private int extractIngredient(IItemHandler container)
-
-    //I can't believe that worked.
-    public IItemHandlerModifiable cloneItemStackProper(IItemHandlerModifiable array) {
-        IItemHandlerModifiable stack = new ItemStackHandler(array.getSlots());
-
-        for (int i = 0; i < array.getSlots(); i++)
-            if (array.getStackInSlot(i) != null)
-                stack.setStackInSlot(i, array.getStackInSlot(i).copy());
-            else
-                stack.setStackInSlot(i, ItemStack.EMPTY);
-
-        return stack;
-    }
-
     //Unloads output into chests. Capability version.
     public boolean tryFillContainerCap(IItemHandler chest, int slot) {
         //Check if we have something to output
@@ -611,7 +515,7 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
         if (recipeIngredients == null) //No recipe template found
             return false;
         else {
-            Map<Integer, ItemStack> itemStackMap = new HashMap<Integer, ItemStack>();
+            Map<Integer, ItemStack> itemStackMap = new HashMap<>();
 
             for (int slot : allowedSlots) {
                 container.getStackInSlot(slot);
@@ -621,13 +525,13 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
                     itemStackMap.put(slot, container.getStackInSlot(slot).copy());
                 }
             }
-            if (itemStackMap.size() == 0) {
+            if (itemStackMap.isEmpty()) {
                 return false;
             }
 
-            for (int ig = 0; ig < recipeIngredients.size(); ig++) {
+            for (AStack recipeIngredient : recipeIngredients) {
 
-                AStack nextIngredient = recipeIngredients.get(ig).copy(); // getting new ingredient
+                AStack nextIngredient = recipeIngredient.copy(); // getting new ingredient
 
                 int ingredientSlot = getValidSlot(nextIngredient);
 
@@ -682,9 +586,9 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
 
         if (stack == null)
             return true;
-        for (int i = 0; i < stack.size(); i++) {
-            for (int j = 0; j < stack.get(i).count(); j++) {
-                AStack sta = stack.get(i).copy();
+        for (AStack aStack : stack) {
+            for (int j = 0; j < aStack.count(); j++) {
+                AStack sta = aStack.copy();
                 sta.setCount(1);
                 if (!canRemoveItemFromArray(sta, array))
                     return false;
@@ -707,11 +611,9 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
 
                 if (st.isApplicable(sta) && array.getStackInSlot(i).getCount() > 0) {
                     array.getStackInSlot(i).shrink(1);
-                    ;
 
                     if (array.getStackInSlot(i).isEmpty())
                         array.setStackInSlot(i, ItemStack.EMPTY);
-                    ;
 
                     return true;
                 }
@@ -731,9 +633,9 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
             int[] ids2 = OreDictionary.getOreIDs(stack2);
 
             if (ids1.length > 0 && ids2.length > 0) {
-                for (int i = 0; i < ids1.length; i++)
-                    for (int j = 0; j < ids2.length; j++)
-                        if (ids1[i] == ids2[j])
+                for (int k : ids1)
+                    for (int i : ids2)
+                        if (k == i)
                             return true;
             }
         }
@@ -817,18 +719,23 @@ public class TileEntityMachineChemplant extends TileEntityMachineBase implements
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || capability == CapabilityEnergy.ENERGY) {
             return true;
         }
         return super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.cast(
                     new NTMFluidHandlerWrapper(this.getReceivingTanks(), this.getSendingTanks())
+            );
+        }
+        if (capability == CapabilityEnergy.ENERGY) {
+            return CapabilityEnergy.ENERGY.cast(
+                    new NTMEnergyCapabilityWrapper(this)
             );
         }
         return super.getCapability(capability, facing);

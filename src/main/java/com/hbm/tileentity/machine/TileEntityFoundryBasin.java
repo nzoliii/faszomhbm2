@@ -1,10 +1,8 @@
 package com.hbm.tileentity.machine;
 
-import com.hbm.lib.ForgeDirection;
 import com.hbm.inventory.material.Mats.MaterialStack;
 import com.hbm.inventory.material.NTMMaterial;
-
-import com.hbm.main.MainRegistry;
+import com.hbm.lib.ForgeDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

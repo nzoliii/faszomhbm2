@@ -1,9 +1,6 @@
 package com.hbm.dim.mapgen;
 
-import java.util.Random;
-
 import com.hbm.dim.noise.PerlinFestival;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
@@ -12,6 +9,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.MapGenBase;
+
+import java.util.Random;
 
 public class ExperimentalCaveGenerator extends MapGenBase {
 

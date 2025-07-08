@@ -1,6 +1,6 @@
 package com.hbm.items.food;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.items.ModItems;
 import com.hbm.items.gear.ArmorFSB;
 import net.minecraft.client.util.ITooltipFlag;
@@ -30,13 +30,8 @@ public class ItemPancake extends ItemFood {
 	@Override
 	protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player) {
 		for(ItemStack st : player.inventory.armorInventory) {
-
-    		if(st == null)
-    			continue;
-
-    		if(st.getItem() instanceof IBatteryItem) {
-    			((IBatteryItem)st.getItem()).setCharge(st, ((IBatteryItem)st.getItem()).getMaxCharge());
-    		}
+    		if(st == null) continue;
+			NTMBatteryCapabilityHandler.addChargeIfValid(st, Long.MAX_VALUE, true);
     	}
 	}
 	
