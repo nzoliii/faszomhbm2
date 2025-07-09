@@ -24,6 +24,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMachineEPress extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2 {
 
@@ -81,7 +82,7 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IT
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger("progress", progress);
 		compound.setLong("power", power);
 		compound.setBoolean("ret", isRetracting);

@@ -6,11 +6,13 @@ import com.hbm.blocks.ICustomBlockHighlight;
 import com.hbm.inventory.material.Mats;
 import com.hbm.items.machine.ItemScraps;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.TileEntityProxyCombo;
 import com.hbm.tileentity.machine.TileEntityCrucible;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,12 +24,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor {
 
@@ -39,28 +38,34 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
         this.bounding.add(new AxisAlignedBB(-1.25D, 0.5D, -1.25D, -1D, 1.5D, 1.25D));
         this.bounding.add(new AxisAlignedBB(-1.25D, 0.5D, 1D, 1.25D, 1.5D, 1.25D));
         this.bounding.add(new AxisAlignedBB(1D, 0.5D, -1.25D, 1.25D, 1.5D, 1.25D));
-        this.FULL_BLOCK_AABB.setMaxY(0.999D); //item bounce prevention
+        FULL_BLOCK_AABB.setMaxY(0.999D); //item bounce prevention
     }
 
     @Override
-    public TileEntity createNewTileEntity(World world, int meta) {
+    public TileEntity createNewTileEntity(@NotNull World world, int meta) {
 
         if(meta >= 12) return new TileEntityCrucible();
         return new TileEntityProxyCombo(true, false, false);
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing facing, float hitX, float hitY, float hitZ) {
 
         if(world.isRemote) {
             return true;
-        } else if(!player.isSneaking()) {
-            int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
+        }
 
-            if(posC == null)
-                return false;
-            if(!player.getHeldItem(hand).isEmpty() && player.getHeldItem(hand).getItem() instanceof ItemTool && ((ItemTool) player.getHeldItem(hand).getItem()).getToolClasses(player.getHeldItem(hand)).contains("shovel")) {
-                TileEntityCrucible crucible = (TileEntityCrucible) world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
+        if(!player.isSneaking()) {
+            BlockPos corePos = findCore(world, pos);
+
+            if(corePos == null) return false;
+
+            ItemStack heldItem = player.getHeldItem(hand);
+
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemTool && heldItem.getItem().getToolClasses(heldItem).contains("shovel")) {
+                TileEntityCrucible crucible = (TileEntityCrucible) world.getTileEntity(corePos);
+                if (crucible == null) return false;
+
                 List<Mats.MaterialStack> stacks = new ArrayList<>();
                 stacks.addAll(crucible.recipeStack);
                 stacks.addAll(crucible.wasteStack);
@@ -77,14 +82,10 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
                 crucible.recipeStack.clear();
                 crucible.wasteStack.clear();
                 crucible.markDirty();
-
-            } else {
-                FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, posC[0], posC[1], posC[2]);
             }
-            return true;
-        } else {
-            return true;
         }
+
+        return this.standardOpenBehavior(world, pos.getX(), pos.getY(), pos.getZ(), player, 0);
     }
 
     @Override
@@ -102,10 +103,8 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
 
         TileEntity te = world.getTileEntity(pos);
 
-        if(te instanceof TileEntityCrucible) {
-            TileEntityCrucible crucible = (TileEntityCrucible) te;
-
-            List<Mats.MaterialStack> stacks = new ArrayList();
+        if(te instanceof TileEntityCrucible crucible) {
+            List<Mats.MaterialStack> stacks = new ArrayList<>();
             stacks.addAll(crucible.recipeStack);
             stacks.addAll(crucible.wasteStack);
 
@@ -135,18 +134,17 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
         int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
         if(posC == null) return;
         TileEntity tile = world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
-        if(!(tile instanceof TileEntityCrucible)) return;
-        TileEntityCrucible crucible = (TileEntityCrucible) tile;
+        if(!(tile instanceof TileEntityCrucible crucible)) return;
 
         int x = crucible.getPos().getX();
         int y = crucible.getPos().getY();
         int z = crucible.getPos().getZ();
 
         EntityPlayer player = event.getPlayer();
-        float interp = event.getPartialTicks();
-        double dX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) interp;
-        double dY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) interp;
-        double dZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)interp;
+        float partialTicks = event.getPartialTicks();
+        double dX = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
+        double dY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
+        double dZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
         float exp = 0.002F;
 
         ICustomBlockHighlight.setup();
@@ -155,7 +153,7 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
 		event.context.drawOutlinedBoundingBox(AxisAlignedBB.getBoundingBox(x - 0.5, y + 0.75, z - 0.5, x + 1.5, y + 1.5, z + 1.5).expand(exp, exp, exp).getOffsetBoundingBox(-dX, -dY, -dZ), -1);*/
         for (AxisAlignedBB aabb : this.bounding) {
             AxisAlignedBB transformedAABB = aabb.expand(exp, exp, exp).offset(x - dX + 0.5, y - dY, z - dZ + 0.5);
-            event.getContext().drawSelectionBoundingBox(transformedAABB, 0, 0, 0, -1);
+            RenderGlobal.drawSelectionBoundingBox(transformedAABB, 0, 0, 0, -1);
         }
         ICustomBlockHighlight.cleanup();
     }
@@ -163,11 +161,10 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
     @Override
     public boolean canAcceptPartialPour(World world, BlockPos pos, double dX, double dY, double dZ, ForgeDirection side, Mats.MaterialStack stack) {
 
-        int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
-        if(posC == null) return false;
-        TileEntity tile = world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
-        if(!(tile instanceof TileEntityCrucible)) return false;
-        TileEntityCrucible crucible = (TileEntityCrucible) tile;
+        BlockPos corePos = this.findCore(world, pos);
+        if(corePos == null) return false;
+        TileEntity tile = world.getTileEntity(corePos);
+        if(!(tile instanceof TileEntityCrucible crucible)) return false;
 
         return crucible.canAcceptPartialPour(world, pos, dX, dY, dZ, side, stack);
     }
@@ -175,11 +172,10 @@ public class MachineCrucible extends BlockDummyable implements ICrucibleAcceptor
     @Override
     public Mats.MaterialStack pour(World world, BlockPos pos, double dX, double dY, double dZ, ForgeDirection side, Mats.MaterialStack stack) {
 
-        int[] posC = this.findCore(world, pos.getX(), pos.getY(), pos.getZ());
-        if(posC == null) return stack;
-        TileEntity tile = world.getTileEntity(new BlockPos(posC[0], posC[1], posC[2]));
-        if(!(tile instanceof TileEntityCrucible)) return stack;
-        TileEntityCrucible crucible = (TileEntityCrucible) tile;
+        BlockPos corePos = this.findCore(world, pos);
+        if(corePos == null) return stack;
+        TileEntity tile = world.getTileEntity(corePos);
+        if(!(tile instanceof TileEntityCrucible crucible)) return stack;
 
         return crucible.pour(world, pos, dX, dY, dZ, side, stack);
     }

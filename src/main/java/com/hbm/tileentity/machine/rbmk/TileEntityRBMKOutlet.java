@@ -16,6 +16,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityRBMKOutlet extends TileEntityLoadedBase implements ITickable, IFluidStandardSender, IBufPacketReceiver {
 
@@ -61,7 +62,7 @@ public class TileEntityRBMKOutlet extends TileEntityLoadedBase implements ITicka
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         this.steam.writeToNBT(nbt, "tank");
         return nbt;

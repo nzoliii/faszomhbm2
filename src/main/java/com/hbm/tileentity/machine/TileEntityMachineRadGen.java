@@ -175,7 +175,7 @@ public class TileEntityMachineRadGen extends TileEntityMachineBase implements IT
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setIntArray("progress", this.progress);
 		nbt.setIntArray("maxProgress", this.maxProgress);
 		nbt.setIntArray("production", this.production);

@@ -48,7 +48,7 @@ public class TileEntityRadiobox extends TileEntityLoadedBase implements ITickabl
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setLong("power", power);
 		compound.setBoolean("infinite", infinite);
 		return super.writeToNBT(compound);

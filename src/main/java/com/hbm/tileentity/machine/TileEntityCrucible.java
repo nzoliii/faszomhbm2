@@ -365,7 +365,7 @@ public class TileEntityCrucible extends TileEntityMachineBase implements IGUIPro
                 }
             }
 
-            this.inventory.getStackInSlot(slot).shrink(1);
+            inventory.getStackInSlot(slot).shrink(1);
         }
 
         return true;

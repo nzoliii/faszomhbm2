@@ -91,7 +91,7 @@ public class TileEntityMachineGasCent extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setLong("power", power);
 		nbt.setShort("progress", (short) progress);
 		if(!converted) tank.writeToNBT(nbt); else tankNew.writeToNBT(nbt, "tank");

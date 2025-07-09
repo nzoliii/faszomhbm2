@@ -115,7 +115,7 @@ public class TileEntityMachineRTG extends TileEntityLoadedBase implements ITicka
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger("heat", this.heat);
 		compound.setLong("power", this.power);
 		compound.setTag("inventory", inventory.serializeNBT());

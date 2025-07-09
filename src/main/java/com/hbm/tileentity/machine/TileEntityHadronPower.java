@@ -52,7 +52,7 @@ public class TileEntityHadronPower extends TileEntityTickingBase implements IEne
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound){
 		compound.setLong("power", power);
 		return super.writeToNBT(compound);
 	}

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 public interface IBufPacketReceiver {
 
-    public void serialize(ByteBuf buf);
-    public void deserialize(ByteBuf buf);
+  void serialize(ByteBuf buf);
+
+  void deserialize(ByteBuf buf);
 }

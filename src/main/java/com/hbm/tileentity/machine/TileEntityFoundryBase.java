@@ -15,6 +15,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for all foundry channel type blocks - channels, casts, basins, tanks, etc.
@@ -70,7 +71,7 @@ public abstract class TileEntityFoundryBase extends TileEntityLoadedBase impleme
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("type", this.type == null ? -1 : this.type.id);
 		nbt.setInteger("amount", this.amount);
 		return super.writeToNBT(nbt);

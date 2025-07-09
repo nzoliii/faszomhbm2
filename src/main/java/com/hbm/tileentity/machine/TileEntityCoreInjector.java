@@ -30,6 +30,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import static com.hbm.tileentity.machine.TileEntityMachineFluidTank.slots;
 
@@ -156,7 +157,7 @@ public class TileEntityCoreInjector extends TileEntityMachineBase implements ITi
 
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
         tanks[0].writeToNBT(compound, "fuel1");
         tanks[1].writeToNBT(compound, "fuel2");
         return super.writeToNBT(compound);

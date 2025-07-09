@@ -200,7 +200,7 @@ public class TileEntityMachineRotaryFurnace extends TileEntityMachinePolluting
           this.maxBurnTime =
               this.burnTime = burnModule.getBurnTime(inventory.getStackInSlot(4)) / 2;
           inventory.getStackInSlot(4).shrink(1);
-          this.markChanged();
+          markDirty();
         }
 
         if (this.canProcess(recipe)) {
@@ -247,7 +247,7 @@ public class TileEntityMachineRotaryFurnace extends TileEntityMachinePolluting
 
       this.isVenting = false;
 
-      this.networkPackNT(50);
+      networkPackNT(50);
 
     } else {
 
@@ -345,7 +345,7 @@ public class TileEntityMachineRotaryFurnace extends TileEntityMachinePolluting
   }
 
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+  public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
     super.writeToNBT(nbt);
     this.tanks[0].writeToNBT(nbt, "t0");
     this.tanks[1].writeToNBT(nbt, "t1");

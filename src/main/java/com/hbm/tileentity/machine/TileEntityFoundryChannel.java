@@ -14,6 +14,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -166,7 +167,7 @@ public class TileEntityFoundryChannel extends TileEntityFoundryBase {
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setByte("flow", (byte) this.lastFlow);
 		nbt.setInteger("nType", this.neighborType != null ? this.neighborType.id : -1);
 		nbt.setBoolean("init", hasCheckedNeighbors);

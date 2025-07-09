@@ -397,6 +397,25 @@ public class ChemplantRecipes extends SerializableRecipe {
 				.outputItems(
 						new ItemStack(ModItems.nugget_u233, 1),
 						new ItemStack(ModItems.nuclear_waste_tiny, 1)));
+
+		// ↓↓↓↓ REMOVE THE FOLLOWING ENTRIES WHEN THE NEW CIRCUITS ARE PORTED ↓↓↓↓
+		recipes.add(new ChemRecipe(201, "CIRCUIT_4", 200)
+				.inputFluids(new FluidStack(Fluids.PEROXIDE, 400))
+				.inputItems(new ComparableStack(ModItems.circuit_red_copper),
+						new OreDictStack(GOLD.wireFine(), 4),
+						new OreDictStack(LAPIS.dust()),
+						new OreDictStack(ANY_PLASTIC.ingot()))
+				.outputItems(
+						new ItemStack(ModItems.circuit_gold)));
+		recipes.add(new ChemRecipe(202, "CIRCUIT_5", 250)
+				.inputFluids(new FluidStack(Fluids.PEROXIDE, 800),
+						new FluidStack(Fluids.PETROLEUM, 400))
+				.inputItems(new ComparableStack(ModItems.circuit_gold),
+						new OreDictStack(SA326.wireFine(), 4),
+						new OreDictStack(DIAMOND.dust()),
+						new OreDictStack(DESH.ingot()))
+				.outputItems(
+						new ItemStack(ModItems.circuit_schrabidium)));
 	}
 
 

@@ -7,6 +7,7 @@ import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControlManual.RBMKColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityRBMKControlAuto extends TileEntityRBMKControl implements IControlReceiver {
 	
@@ -85,7 +86,7 @@ public class TileEntityRBMKControlAuto extends TileEntityRBMKControl implements 
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
 		nbt.setDouble("levelLower", levelLower);

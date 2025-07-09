@@ -10,6 +10,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityRtgFurnace extends TileEntityMachineBase implements ITickable {
 
@@ -65,7 +66,7 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements ITick
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setShort("cookTime", (short) dualCookTime);
 		compound.setTag("inventory", this.inventory.serializeNBT());
 		return super.writeToNBT(compound);

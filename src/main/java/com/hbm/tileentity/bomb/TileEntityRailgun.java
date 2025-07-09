@@ -122,7 +122,7 @@ public class TileEntityRailgun extends TileEntityLoadedBase implements ITickable
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setLong("power", power);
 		nbt.setFloat("pitch", pitch);
 		nbt.setFloat("yaw", yaw);

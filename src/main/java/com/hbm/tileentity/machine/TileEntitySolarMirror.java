@@ -10,6 +10,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySolarMirror extends TileEntityTickingBase {
 
@@ -101,7 +102,7 @@ public class TileEntitySolarMirror extends TileEntityTickingBase {
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger("targetX", tX);
 		compound.setInteger("targetY", tY);
 		compound.setInteger("targetZ", tZ);

@@ -29,6 +29,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMachineShredder extends TileEntityMachineBase implements ITickable, IGUIProvider, IEnergyReceiverMK2 {
 
@@ -101,7 +102,7 @@ public class TileEntityMachineShredder extends TileEntityMachineBase implements 
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setLong("powerTime", power);
 		compound.setTag("inventory", inventory.serializeNBT());
 		return super.writeToNBT(compound);

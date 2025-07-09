@@ -14,6 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityWasteDrum extends TileEntityMachineBase implements ITickable {
 
@@ -72,7 +73,7 @@ public class TileEntityWasteDrum extends TileEntityMachineBase implements ITicka
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound){
 		compound.setInteger("water", water);
 		return super.writeToNBT(compound);
 	}

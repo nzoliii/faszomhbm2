@@ -23,8 +23,8 @@ import java.io.IOException;
 
 public class GUIMachineLaunchTable extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_table.png");
-	private TileEntityLaunchTable launcher;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_table.png");
+	private final TileEntityLaunchTable launcher;
 	
 	public GUIMachineLaunchTable(InventoryPlayer invPlayer, TileEntityLaunchTable tedf) {
 		super(new ContainerLaunchTable(invPlayer, tedf));
@@ -142,8 +142,8 @@ public class GUIMachineLaunchTable extends GuiInfoContainer {
 		
 		this.drawInfoPanel(guiLeft - 16, guiTop + 36, 16, 16, 2);
 		this.drawInfoPanel(guiLeft - 16, guiTop + 36 + 16, 16, 16, 11);
-		launcher.tanks[0].renderTank(guiLeft + 116, guiTop + 98, this.zLevel, 16, 34);
-		launcher.tanks[1].renderTank(guiLeft + 134, guiTop + 98, this.zLevel, 16, 34);
+		launcher.tanks[0].renderTank(guiLeft + 116, guiTop + 70, this.zLevel, 16, 34);
+		launcher.tanks[1].renderTank(guiLeft + 134, guiTop + 70, this.zLevel, 16, 34);
 		/// DRAW MISSILE START
 		GL11.glPushMatrix();
 

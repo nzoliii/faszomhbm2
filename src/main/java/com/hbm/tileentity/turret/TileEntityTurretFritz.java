@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -177,7 +178,7 @@ public class TileEntityTurretFritz extends TileEntityTurretBaseNT implements IFl
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt){
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt){
 		if(!converted && tank.getTankType() == Fluids.NONE){
 			nbt.setInteger("cap", tankOld.getCapacity());
 			tankOld.writeToNBT(nbt);

@@ -370,7 +370,10 @@ public class ResourceManager {
 	
 	//Deuterium Tower
 	public static final ResourceLocation deuterium_tower_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/machine_deuterium_tower.png");
-	
+
+	//Strand Caster
+	public static final IModelCustom strand_caster = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/strand_caster.obj")).asVBO();
+
 	//IGen
 	public static final IModelCustom igen = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/igen.obj")).asVBO();
 	
@@ -567,7 +570,10 @@ public class ResourceManager {
 	//Xenon
 	public static final ResourceLocation xenon_thruster_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/xenon_thruster.png");
 	public static final ResourceLocation xenon_exhaust_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/xenon_trail.png");
-	
+
+	//Strand Caster
+	public static final ResourceLocation strand_caster_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/strand_caster.png");
+
 	//FENSU
 	public static final ResourceLocation[] fensu_tex = new ResourceLocation[] { 
 		new ResourceLocation(RefStrings.MODID, "textures/models/machines/fensus/fensu_white.png"),

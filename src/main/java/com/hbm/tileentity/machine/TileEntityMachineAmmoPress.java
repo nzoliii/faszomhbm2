@@ -217,7 +217,7 @@ public class TileEntityMachineAmmoPress extends TileEntityMachineBase
   }
 
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+  public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
     super.writeToNBT(nbt);
     nbt.setInteger("recipe", selectedRecipe);
     return nbt;

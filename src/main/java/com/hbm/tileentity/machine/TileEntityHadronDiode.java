@@ -4,6 +4,7 @@ import com.hbm.blocks.machine.BlockHadronDiode;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.TileEntityTickingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityHadronDiode extends TileEntityTickingBase {
 
@@ -92,7 +93,7 @@ public class TileEntityHadronDiode extends TileEntityTickingBase {
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		for(int i = 0; i < 6; i++) {
 
 			if(sides[i] != null) {

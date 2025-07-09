@@ -59,6 +59,8 @@ public class GUIMachineRotaryFurnace extends GuiInfoContainer {
           };
       this.drawCustomInfoStat(mouseX, mouseY, guiLeft + 98, guiTop + 18, 16, 52, mouseX, mouseY, text);
     }
+
+    super.renderHoveredToolTip(mouseX, mouseY);
   }
 
   @Override
@@ -70,8 +72,10 @@ public class GUIMachineRotaryFurnace extends GuiInfoContainer {
   @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int x, int y) {
     super.drawDefaultBackground();
+
     GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
     GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
     drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
@@ -96,8 +100,7 @@ public class GUIMachineRotaryFurnace extends GuiInfoContainer {
       drawTexturedModalRect(guiLeft + 98, guiTop + 70 - amount, 176, 76 - amount, 16, amount);
       GlStateManager.disableBlend();
 
-      GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-      GlStateManager.color(255, 255, 255);
+      GlStateManager.color(1.0F, 1.0F, 1.0F);
     }
 
     furnace.tanks[0].renderTank(guiLeft + 8, guiTop + 52, this.zLevel, 52, 16, 1);

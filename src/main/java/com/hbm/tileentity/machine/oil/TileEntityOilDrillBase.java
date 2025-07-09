@@ -31,6 +31,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public abstract class TileEntityOilDrillBase extends TileEntityMachineBase imple
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setLong("powerTime", power);
         if (!converted) {
             compound.setTag("tanks", FFUtils.serializeTankArray(tanksOld));

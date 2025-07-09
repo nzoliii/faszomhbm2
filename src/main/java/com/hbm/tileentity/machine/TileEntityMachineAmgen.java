@@ -27,7 +27,7 @@ public class TileEntityMachineAmgen extends TileEntityLoadedBase implements ITic
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setLong("power", power);
 		return super.writeToNBT(compound);
 	}

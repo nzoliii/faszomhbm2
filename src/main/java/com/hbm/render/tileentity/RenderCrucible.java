@@ -8,6 +8,7 @@ import com.hbm.tileentity.machine.TileEntityCrucible;
 import com.hbm.wiaj.WorldInAJar;
 import com.hbm.wiaj.actors.ITileActorRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -25,23 +26,23 @@ public class RenderCrucible extends TileEntitySpecialRenderer<TileEntityCrucible
 
     @Override
     public void render(TileEntityCrucible crucible, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
-        GL11.glPushMatrix();
-        GL11.glTranslated(x + 0.5D, y, z + 0.5D);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_CULL_FACE);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x + 0.5D, y, z + 0.5D);
+        GlStateManager.enableLighting();
+        GlStateManager.enableCull();
 
         switch (crucible.getBlockMetadata() - BlockDummyable.offset) {
-            case 3 -> GL11.glRotatef(270, 0F, 1F, 0F);
-            case 5 -> GL11.glRotatef(0, 0F, 1F, 0F);
-            case 2 -> GL11.glRotatef(90, 0F, 1F, 0F);
-            case 4 -> GL11.glRotatef(180, 0F, 1F, 0F);
+            case 3 -> GlStateManager.rotate(270, 0F, 1F, 0F);
+            case 5 -> GlStateManager.rotate(0, 0F, 1F, 0F);
+            case 2 -> GlStateManager.rotate(90, 0F, 1F, 0F);
+            case 4 -> GlStateManager.rotate(180, 0F, 1F, 0F);
         }
 
         ITileActorRenderer.bindTexture(ResourceManager.crucible_tex);
         ResourceManager.crucible_heat.renderAll();
 
         if (!crucible.recipeStack.isEmpty() || !crucible.wasteStack.isEmpty()) {
-            int totalCap = crucible.recipeZCapacity + crucible.wasteZCapacity;
+            int totalCap = TileEntityCrucible.recipeZCapacity + TileEntityCrucible.wasteZCapacity;
             int totalMass = 0;
 
             for (Mats.MaterialStack stack : crucible.recipeStack)
@@ -51,10 +52,10 @@ public class RenderCrucible extends TileEntitySpecialRenderer<TileEntityCrucible
 
             double level = ((double) totalMass / (double) totalCap) * 0.875D;
 
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
             GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_CULL_FACE);
+            GlStateManager.disableLighting();
+            GlStateManager.disableCull();
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
 
             ITileActorRenderer.bindTexture(lava);
@@ -72,21 +73,21 @@ public class RenderCrucible extends TileEntitySpecialRenderer<TileEntityCrucible
 
             tessellator.draw();
 
-            GL11.glEnable(GL11.GL_LIGHTING);
+            GlStateManager.enableLighting();
             GL11.glPopAttrib();
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
 
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
 
     }
 
     @Override
-    public void renderActor(WorldInAJar world, int ticks, float interp, NBTTagCompound data) {
+    public void renderActor(WorldInAJar world, int ticks, float partialTicks, NBTTagCompound data) {
         int x = data.getInteger("x");
         int y = data.getInteger("y");
         int z = data.getInteger("z");
-        render((TileEntityCrucible) Objects.requireNonNull(world.getTileEntity(new BlockPos(x, y, z))), x, y, z, interp, 0, 0);
+        render((TileEntityCrucible) Objects.requireNonNull(world.getTileEntity(new BlockPos(x, y, z))), x, y, z, partialTicks, 0, 0);
     }
 
     @Override

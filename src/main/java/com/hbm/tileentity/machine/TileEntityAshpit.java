@@ -22,6 +22,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -161,7 +162,7 @@ public class TileEntityAshpit extends TileEntityMachineBase implements ITickable
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("ashLevelWood", ashLevelWood);
         nbt.setInteger("ashLevelCoal", ashLevelCoal);
         nbt.setInteger("ashLevelMisc", ashLevelMisc);

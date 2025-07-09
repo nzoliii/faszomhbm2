@@ -9,6 +9,7 @@ import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
+import com.hbm.inventory.material.MatDistribution;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.Tuple;
@@ -47,6 +48,7 @@ public abstract class SerializableRecipe {
     recipeHandlers.add(new SolderingRecipes());
     recipeHandlers.add(new ArcWelderRecipes());
     recipeHandlers.add(new RotaryFurnaceRecipes());
+    recipeHandlers.add(new MatDistribution());
   }
 
   public static void initialize() {
@@ -275,7 +277,7 @@ public abstract class SerializableRecipe {
       int stacksize = array.size() > 2 ? array.get(1).getAsInt() : 1;
       int meta = array.size() > 3 ? array.get(2).getAsInt() : 0;
       float chance = array.get(array.size() - 1).getAsFloat();
-      if (item != null) return new Tuple.Pair(new ItemStack(item, stacksize, meta), chance);
+      if (item != null) return new Tuple.Pair<>(new ItemStack(item, stacksize, meta), chance);
     } catch (Exception ignored) {
     }
     MainRegistry.logger.error(

@@ -12,6 +12,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +89,7 @@ public abstract class TileEntityMachinePolluting extends TileEntityMachineBase i
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         smoke.writeToNBT(nbt, "smoke0");
         smoke_leaded.writeToNBT(nbt, "smoke1");
         smoke_poison.writeToNBT(nbt, "smoke2");

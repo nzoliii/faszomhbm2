@@ -35,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -350,7 +351,7 @@ public class TileEntityCore extends TileEntityMachineBase implements ITickable, 
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
         tanks[0].writeToNBT(compound, "fuel1");
         tanks[1].writeToNBT(compound, "fuel2");
         compound.setInteger("field", this.field);

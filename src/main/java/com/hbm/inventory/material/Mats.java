@@ -2,6 +2,8 @@ package com.hbm.inventory.material;
 
 import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.material.NTMMaterial.SmeltingBehavior;
+import com.hbm.items.ModItems;
+import com.hbm.items.machine.ItemScraps;
 import com.hbm.util.I18nUtil;
 import com.hbm.util.ItemStackUtil;
 import net.minecraft.item.ItemStack;
@@ -23,11 +25,11 @@ import static com.hbm.inventory.material.MaterialShapes.*;
  */
 public class Mats {
 
-	public static List<NTMMaterial> orderedList = new ArrayList();
-	public static HashMap<Integer, NTMMaterial> matById = new HashMap();
-	public static HashMap<String, NTMMaterial> matByName = new HashMap();
-	public static HashMap<ComparableStack, List<MaterialStack>> materialEntries = new HashMap();
-	public static HashMap<String, List<MaterialStack>> materialOreEntries = new HashMap();
+	public static List<NTMMaterial> orderedList = new ArrayList<>();
+	public static HashMap<Integer, NTMMaterial> matById = new HashMap<>();
+	public static HashMap<String, NTMMaterial> matByName = new HashMap<>();
+	public static HashMap<ComparableStack, List<MaterialStack>> materialEntries = new HashMap<>();
+	public static HashMap<String, List<MaterialStack>> materialOreEntries = new HashMap<>();
 	
 	/*
 	 * ItemStacks are saved with their metadata being truncated to a short, so the max meta is 32767
@@ -220,19 +222,17 @@ public class Mats {
 		if(entries != null) {
 			list.addAll(entries);
 		}
-		/*
-		  for when crucible becomes real
-		 
+
 		if(stack.getItem() == ModItems.scraps) {
 			list.add(ItemScraps.getMats(stack));
-		}*/
+		}
 		
 		return list;
 	}
 
 	public static List<MaterialStack> getSmeltingMaterialsFromItem(ItemStack stack) {
 		List<MaterialStack> baseMats = getMaterialsFromItem(stack);
-		List<MaterialStack> smelting = new ArrayList();
+		List<MaterialStack> smelting = new ArrayList<>();
 		baseMats.forEach(x -> smelting.add(new MaterialStack(x.material.smeltsInto, (int) (x.amount * x.material.convOut / x.material.convIn))));
 		return smelting;
 	}

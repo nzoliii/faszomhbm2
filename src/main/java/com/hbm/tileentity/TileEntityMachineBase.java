@@ -27,6 +27,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -44,15 +45,6 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 
     public TileEntityMachineBase(int scount, int slotlimit) {
         inventory = getNewInventory(scount, slotlimit);
-    }
-
-    public void markChanged() {
-        this.markDirty(); // Пометить TileEntity как изменённый (для сохранения)
-        if (this.world != null && !this.world.isRemote) {
-            this.world.markChunkDirty(pos, this); // Уведомить мир об изменении TileEntity
-            IBlockState state = this.world.getBlockState(pos);
-            this.world.notifyBlockUpdate(pos, state, state, 3); // Отправить обновление на клиент
-        }
     }
 
     public ItemStackHandler getNewInventory(int scount, int slotlimit) {
@@ -143,7 +135,7 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setTag("inventory", inventory.serializeNBT());
         return super.writeToNBT(compound);
     }

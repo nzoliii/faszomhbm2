@@ -22,6 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -352,7 +353,7 @@ public class TileEntityTurretHIMARS extends TileEntityTurretBaseArtillery implem
   }
 
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+  public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
     super.writeToNBT(nbt);
     nbt.setShort("mode", (short) this.mode.ordinal());
     nbt.setInteger("type", this.typeLoaded);

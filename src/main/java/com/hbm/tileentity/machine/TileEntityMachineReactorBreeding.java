@@ -22,6 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityMachineReactorBreeding extends TileEntityMachineBase implements IGUIProvider, ITickable {
 
@@ -175,7 +176,7 @@ public class TileEntityMachineReactorBreeding extends TileEntityMachineBase impl
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("flux", flux);
         nbt.setFloat("progress", progress);
         return super.writeToNBT(nbt);

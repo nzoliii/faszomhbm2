@@ -5,6 +5,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class MachineTab extends CreativeTabs {
 
@@ -12,11 +13,9 @@ public class MachineTab extends CreativeTabs {
 		super(index, label);
 	}
 
+	@NotNull
 	@Override
 	public ItemStack createIcon() {
-//		if(ModBlocks.reactor_element != null)
-//			return new ItemStack(Item.getItemFromBlock(ModBlocks.reactor_element));
-		return new ItemStack(Items.IRON_PICKAXE);
-	}
-
+        return new ItemStack(Item.getItemFromBlock(ModBlocks.pwr_controller));
+    }
 }

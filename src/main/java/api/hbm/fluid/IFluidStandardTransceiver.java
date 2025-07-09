@@ -5,11 +5,11 @@ import com.hbm.inventory.fluid.tank.FluidTankNTM;
 
 public interface IFluidStandardTransceiver extends IFluidUser {
 
-    public FluidTankNTM[] getSendingTanks();
-    public FluidTankNTM[] getReceivingTanks();
+    FluidTankNTM[] getSendingTanks();
+    FluidTankNTM[] getReceivingTanks();
 
     @Override
-    public default long getTotalFluidForSend(FluidType type, int pressure) {
+    default long getTotalFluidForSend(FluidType type, int pressure) {
 
         for(FluidTankNTM tank : getSendingTanks()) {
             if(tank.getTankType() == type && tank.getPressure() == pressure) {
@@ -21,7 +21,7 @@ public interface IFluidStandardTransceiver extends IFluidUser {
     }
 
     @Override
-    public default void removeFluidForTransfer(FluidType type, int pressure, long amount) {
+    default void removeFluidForTransfer(FluidType type, int pressure, long amount) {
 
         for(FluidTankNTM tank : getSendingTanks()) {
             if(tank.getTankType() == type && tank.getPressure() == pressure) {
@@ -32,7 +32,7 @@ public interface IFluidStandardTransceiver extends IFluidUser {
     }
 
     @Override
-    public default long getDemand(FluidType type, int pressure) {
+    default long getDemand(FluidType type, int pressure) {
 
         for(FluidTankNTM tank : getReceivingTanks()) {
             if(tank.getTankType() == type && tank.getPressure() == pressure) {
@@ -44,7 +44,7 @@ public interface IFluidStandardTransceiver extends IFluidUser {
     }
 
     @Override
-    public default long transferFluid(FluidType type, int pressure, long amount) {
+    default long transferFluid(FluidType type, int pressure, long amount) {
 
         for(FluidTankNTM tank : getReceivingTanks()) {
             if(tank.getTankType() == type && tank.getPressure() == pressure) {

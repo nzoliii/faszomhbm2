@@ -1,18 +1,22 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.material.Mats.MaterialStack;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMold;
 import com.hbm.items.machine.ItemMold.Mold;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.ItemStackHandlerWrapper;
+import com.hbm.packet.BufPacket;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +36,11 @@ public abstract class TileEntityFoundryCastingBase extends TileEntityFoundryBase
 	public int cooloff = 100;
 
 	public TileEntityFoundryCastingBase() {
-		inventory = getNewInventory(2);
+		this(2);
+	}
+
+	public TileEntityFoundryCastingBase(int scount) {
+		inventory = getNewInventory(scount);
 	}
 
 	public ItemStackHandler getNewInventory(int scount){
@@ -166,6 +174,17 @@ public abstract class TileEntityFoundryCastingBase extends TileEntityFoundryBase
 			inventory.deserializeNBT(tag.getCompoundTag("inventory"));
 	}
 
+	/**
+	 * Sends a sync packet that uses ByteBuf for efficient information-cramming
+	 */
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+	}
+
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return false;
+	}
 
 	public int[] getAccessibleSlotsFromSide(EnumFacing face) {
 		return new int[] { 0, 1 };

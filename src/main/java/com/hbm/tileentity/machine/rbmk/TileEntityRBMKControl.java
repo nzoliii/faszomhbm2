@@ -6,6 +6,7 @@ import com.hbm.inventory.control_panel.DataValueFloat;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public abstract class TileEntityRBMKControl extends TileEntityRBMKSlottedBase {
 	}
 	
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 
 		nbt.setDouble("level", this.level);

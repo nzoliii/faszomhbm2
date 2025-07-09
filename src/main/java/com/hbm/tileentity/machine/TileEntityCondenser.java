@@ -23,6 +23,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -156,7 +157,7 @@ public class TileEntityCondenser extends TileEntityLoadedBase implements ITickab
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		if(!converted){
 			nbt.setTag("steam", tanksOld[0].writeToNBT(new NBTTagCompound()));
 			nbt.setTag("water", tanksOld[1].writeToNBT(new NBTTagCompound()));

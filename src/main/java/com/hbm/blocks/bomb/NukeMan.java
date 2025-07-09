@@ -200,7 +200,7 @@ public class NukeMan extends BlockContainer implements IBomb {
 	@Override
 	public BombReturnCode explode(World world, BlockPos pos) {
 
-		if (world.isRemote) {
+		if (!world.isRemote) {
 			if (!(world.getTileEntity(pos) instanceof TileEntityNukeMan))
 				return BombReturnCode.UNDEFINED;
 			TileEntityNukeMan entity = (TileEntityNukeMan) world.getTileEntity(pos);

@@ -416,7 +416,7 @@ public class TileEntityMachineAutosaw extends TileEntityLoadedBase
   }
 
   @Override
-  public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+  public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
     super.writeToNBT(nbt);
 
     nbt.setBoolean("isOn", this.isOn);

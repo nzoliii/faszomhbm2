@@ -192,7 +192,7 @@ public class TileEntityMachineTurbine extends TileEntityLoadedBase implements IT
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
 		if(!converted){
 			nbt.setTag("tanks", FFUtils.serializeTankArray(tanks));

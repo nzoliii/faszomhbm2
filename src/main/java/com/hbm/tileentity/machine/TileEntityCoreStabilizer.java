@@ -164,7 +164,7 @@ public class TileEntityCoreStabilizer extends TileEntityMachineBase implements I
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setLong("power", power);
         compound.setInteger("watts", watts);
         compound.setBoolean("isOn", isOn);
