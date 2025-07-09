@@ -262,12 +262,12 @@ public class fhbm2KabanStatue extends BlockBase {
             player.addPotionEffect(new PotionEffect(MobEffects.NAUSEA, 600, 49));
         });
 
-        fhbm2Scheduler.schedule(6 * 20, (event) -> {
+        fhbm2Scheduler.schedule(5 * 20, (event) -> {
             world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_lobotomy, SoundCategory.HOSTILE, 35.0F, 1.0F);
             fhbm2CopperPigLobotomyCutscene.startPlayback(player.getUniqueID());
         });
 
-        fhbm2Scheduler.schedule(26 * 20, (event) -> {
+        fhbm2Scheduler.schedule(25 * 20, (event) -> {
             world.playSound(null, x, y, z, HBMSoundHandler.fhbm2_copper_pig_explosion, SoundCategory.HOSTILE, 35.0F, 1.0F);
             player.addPotionEffect(new PotionEffect(MobEffects.INSTANT_DAMAGE, 1, 49));
             player.attackEntityFrom(ModDamageSource.copper_pig, 40);
