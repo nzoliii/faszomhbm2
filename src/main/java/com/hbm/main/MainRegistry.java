@@ -1,7 +1,6 @@
 package com.hbm.main;
 
 //FIXME This may have gotten mangled in a merge
-import com.hbm.*;
 import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
@@ -35,6 +34,7 @@ import com.hbm.entity.particle.*;
 import com.hbm.entity.projectile.*;
 import com.hbm.entity.siege.SiegeTier;
 import com.hbm.explosion.ExplosionNukeGeneric;
+import com.hbm.fhbm2.*;
 import com.hbm.forgefluid.FFPipeNetwork;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.*;
@@ -155,6 +155,9 @@ public class MainRegistry {
     public static CreativeTabs weaponTab = new WeaponTab(CreativeTabs.getNextID(), "tabWeapon");
     // drinks, kits, tools
     public static CreativeTabs consumableTab = new ConsumableTab(CreativeTabs.getNextID(), "tabConsumable");
+    // fhbm2 - every item thats added by me
+    public static CreativeTabs fhbm2Tab = new fhbm2CreativeTab(CreativeTabs.getNextID(), "tabfhbm2");
+
     public static int generalOverride = 0;
     public static int polaroidID = 1;
     public static int x;
@@ -246,6 +249,14 @@ public class MainRegistry {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+
+        // fhbm2
+        fhbm2Window.apply(
+                "FaszomHBM 2 - Community Edition (Minecraft 1.12.2)",
+                "/assets/hbm/textures/branding/icon16.png",
+                "/assets/hbm/textures/branding/icon32.png"
+        );
+
         if (logger == null)
             logger = event.getModLog();
 

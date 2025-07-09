@@ -16,6 +16,7 @@ import com.hbm.blocks.test.KeypadTest;
 import com.hbm.blocks.test.TestObjTester;
 import com.hbm.blocks.test.TestRender;
 import com.hbm.blocks.turret.*;
+import com.hbm.fhbm2.fhbm2KabanStatue;
 import com.hbm.hazard.HazardRegistry;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.main.MainRegistry;
@@ -1425,9 +1426,9 @@ public class ModBlocks {
 	public static final Block orbital_station = new BlockOrbitalStation(Material.IRON, "orbital_station").setBlockUnbreakable().setResistance(Float.POSITIVE_INFINITY).setCreativeTab(null);
 	public static final Block orbital_station_port = new BlockOrbitalStation(Material.IRON, "orbital_station_port").setHardness(1.0F).setCreativeTab(MainRegistry.machineTab);
 
-	public static final Block fhbm2_meteor_brick_kaban = new BlockBase(Material.ROCK, "fhbm2_meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setHardness(15.0F).setResistance(900.0F);
-
-	public static final Block fhbm2_kaban_statue = new fhbm2KabanStatue(Material.IRON, "fhbm2_kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
+	// fhbm2
+	public static final Block fhbm2_meteor_brick_kaban = new BlockBase(Material.ROCK, "fhbm2_meteor_brick_kaban").setCreativeTab(MainRegistry.blockTab).setCreativeTab(MainRegistry.fhbm2Tab).setHardness(15.0F).setResistance(900.0F);
+	public static final Block fhbm2_kaban_statue = new fhbm2KabanStatue(Material.IRON, "fhbm2_kaban_statue").makeBeaconable().addRad3d(6900).setCreativeTab(MainRegistry.resourceTab).setCreativeTab(MainRegistry.fhbm2Tab).setHardness(Float.POSITIVE_INFINITY).setResistance(Float.POSITIVE_INFINITY);
 
 	public static void preInit(){
 		for(Block block : ALL_BLOCKS){

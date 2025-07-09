@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 import com.hbm.lib.RefStrings;
 import net.minecraft.client.Minecraft;
@@ -9,9 +9,7 @@ import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.GuiModList;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 
 public class fhbm2CustomMainMenu extends GuiMainMenu {
 

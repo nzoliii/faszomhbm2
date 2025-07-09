@@ -1,4 +1,4 @@
-package com.hbm.world;
+package com.hbm.fhbm2;
 
 import com.hbm.lib.RefStrings;
 import net.minecraft.block.state.IBlockState;

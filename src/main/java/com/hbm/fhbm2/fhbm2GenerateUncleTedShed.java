@@ -1,4 +1,4 @@
-package com.hbm.world;
+package com.hbm.fhbm2;
 
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;

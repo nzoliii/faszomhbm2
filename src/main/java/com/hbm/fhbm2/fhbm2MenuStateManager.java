@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 public class fhbm2MenuStateManager {
     private static boolean isCustomMenuEnabled = true;

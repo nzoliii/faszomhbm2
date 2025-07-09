@@ -1,9 +1,8 @@
-package com.hbm.items.food;
+package com.hbm.fhbm2;
 
 import java.util.List;
 import java.util.UUID;
 
-import com.hbm.blocks.fhbm2KabanStatue;
 import com.hbm.config.VersatileConfig;
 import com.hbm.items.ModItems;
 import com.hbm.config.BombConfig;
@@ -17,20 +16,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.item.ItemFood;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.minecraft.entity.player.EntityPlayer;
-
-import com.hbm.fhbm2KabanTracker;
 
 public class fhbm2Consumables extends ItemFood {
 
@@ -97,7 +87,7 @@ public class fhbm2Consumables extends ItemFood {
             list.add("God knows when it was made.");
             list.add("Tastes awful, yet we still drink it.");
         }
-        if(this == ModItems.fhbm2_abalt_salonna) {
+        if(this == ModItems.fhbm2_abalt_szalonna) {
             list.add("The mighty Abált Szalonna.");
             list.add("Best food ever.");
         }
@@ -173,8 +163,8 @@ public class fhbm2Consumables extends ItemFood {
             player.addPotionEffect(new PotionEffect(MobEffects.POISON, 15 * 60, 4));
         }
 
-        if(stack.getItem() == ModItems.fhbm2_abalt_salonna){
-            player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
+        if(stack.getItem() == ModItems.fhbm2_abalt_szalonna){
+            // player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 15 * 60, 4));
         }
 
         if(stack.getItem() == ModItems.fhbm2_bucket_abale_old){

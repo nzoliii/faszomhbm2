@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -16,11 +16,11 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.util.*;
 
-public class fhbm2FleshCutscene {
+public class fhbm2KabanPTSDCutscene {
 
-    private static final int TOTAL_FRAMES = 220;
+    private static final int TOTAL_FRAMES = 30;
     private static final int FRAME_INTERVAL_TICKS = 2; // 10 FPS
-    private static final String BASE_PATH = "textures/gui/flesh_cutscene/flesh";
+    private static final String BASE_PATH = "textures/gui/kabanptsd_cutscene/kabanptsd";
 
     private static final Map<UUID, Integer> frameIndices = new HashMap<>();
     private static final Map<UUID, Integer> tickCounters = new HashMap<>();
@@ -47,7 +47,8 @@ public class fhbm2FleshCutscene {
         if (event.phase != TickEvent.Phase.END) return;
 
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.player == null) return;
+
+        if (mc.player == null || mc.isGamePaused()) return;
 
         UUID playerId = mc.player.getUniqueID();
         if (!isPlaying(playerId)) return;
@@ -113,7 +114,7 @@ public class fhbm2FleshCutscene {
 
     private static ResourceLocation getFrameResource(int frameNumber) {
         Minecraft mc = Minecraft.getMinecraft();
-        String padded = String.format("%03d", frameNumber);
+        String padded = String.format("%02d", frameNumber);
 
         // Try PNG
         ResourceLocation png = new ResourceLocation("hbm", BASE_PATH + padded + ".png");

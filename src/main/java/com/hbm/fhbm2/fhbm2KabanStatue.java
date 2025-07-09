@@ -1,7 +1,7 @@
-package com.hbm.blocks;
+package com.hbm.fhbm2;
 
-import com.hbm.fhbm2Scheduler;
-import com.hbm.fhbm2CopperPigLobotomyCutscene;
+import com.hbm.blocks.BlockBase;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
@@ -35,10 +35,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.Random;
 
-import com.hbm.fhbm2KabanTracker;
-
 public class fhbm2KabanStatue extends BlockBase {
-
 
     private float radIn = 0.0F;
     private float radMax = 0.0F;

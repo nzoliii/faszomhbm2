@@ -57,6 +57,9 @@ public class RBMKOutgasserRecipes extends SerializableRecipe {
 
 		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.COAL)),	new Tuple.Pair(null, new FluidStack(Fluids.COALOIL, 100)));
 		recipes.put(new ComparableStack(DictFrame.fromOne(ModItems.oil_tar, ItemEnums.EnumTarType.WAX)),	new Tuple.Pair(null, new FluidStack(Fluids.RADIOSOLVENT, 100)));
+
+		// fhbm2 abale
+		recipes.put(new ComparableStack(Items.MILK_BUCKET),	new Tuple.Pair(new ItemStack(ModItems.fhbm2_bucket_abale_old), null));
 	}
 
 	public static Tuple.Pair<ItemStack, FluidStack> getOutput(ItemStack input) {

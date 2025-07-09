@@ -8,6 +8,9 @@ import com.hbm.blocks.generic.BlockModDoor;
 import com.hbm.blocks.items.ItemFuelBlock;
 import com.hbm.blocks.machine.ItemSelfcharger;
 import com.hbm.config.BombConfig;
+import com.hbm.fhbm2.fhbm2Consumables;
+import com.hbm.fhbm2.fhbm2Mail;
+import com.hbm.fhbm2.fhbm2Package;
 import com.hbm.handler.ToolAbility;
 import com.hbm.handler.ToolAbility.LuckAbility;
 import com.hbm.handler.WeaponAbility;
@@ -3504,22 +3507,21 @@ public class ModItems {
     public static final Item part_generic = new ItemEnumMulti("part_generic", EnumPartType.class, true, true).setCreativeTab(MainRegistry.partsTab);
 
     // fhbm2
-	public static final Item fhbm2_iceberg_arasaka = new fhbm2Consumables(3, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_black = new fhbm2Consumables(3, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_crazy_mix = new fhbm2Consumables(3, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_dragonfire = new fhbm2Consumables(3, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_emerald = new fhbm2Consumables(3, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_iceberg_sour_berries = new fhbm2Consumables(3, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_mini_pablo = new fhbm2Consumables(3, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_zyn = new fhbm2Consumables(3, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_som = new fhbm2Consumables(3, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_abalt_salonna = new fhbm2Consumables(3, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_copper_pig_fragment = new fhbm2Consumables(3, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_bucket_abale_old = new fhbm2Consumables(3, "fhbm2_bucket_abale_old").setCreativeTab(MainRegistry.consumableTab);
-	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
-	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab);
-
-	public static final Item fhbm2_key_kaban = new ItemCustomLore("fhbm2_key_kaban").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab);
+	public static final Item fhbm2_iceberg_arasaka = new fhbm2Consumables(3, "fhbm2_iceberg_arasaka").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_iceberg_black = new fhbm2Consumables(3, "fhbm2_iceberg_black").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_iceberg_crazy_mix = new fhbm2Consumables(3, "fhbm2_iceberg_crazy_mix").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_iceberg_dragonfire = new fhbm2Consumables(3, "fhbm2_iceberg_dragonfire").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_iceberg_emerald = new fhbm2Consumables(3, "fhbm2_iceberg_emerald").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_iceberg_sour_berries = new fhbm2Consumables(3, "fhbm2_iceberg_sour_berries").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_mini_pablo = new fhbm2Consumables(3, "fhbm2_mini_pablo").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_zyn = new fhbm2Consumables(3, "fhbm2_zyn").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_som = new fhbm2Consumables(3, "fhbm2_som").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_abalt_szalonna = new fhbm2Consumables(420, "fhbm2_abalt_szalonna").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_copper_pig_fragment = new fhbm2Consumables(3, "fhbm2_copper_pig_fragment").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_bucket_abale_old = new fhbm2Consumables(3, "fhbm2_bucket_abale_old").setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_mail = new fhbm2Mail("fhbm2_mail").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_package = new fhbm2Package("fhbm2_package").setMaxStackSize(1).setCreativeTab(MainRegistry.weaponTab).setCreativeTab(MainRegistry.fhbm2Tab);
+	public static final Item fhbm2_key_kaban = new ItemCustomLore("fhbm2_key_kaban").setMaxStackSize(1).setCreativeTab(MainRegistry.consumableTab).setCreativeTab(MainRegistry.fhbm2Tab);
 
 	public static void preInit(){
 		for(Item item : ALL_ITEMS){

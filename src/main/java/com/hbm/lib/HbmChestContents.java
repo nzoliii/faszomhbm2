@@ -61,7 +61,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -101,7 +101,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -157,7 +157,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -188,7 +188,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -232,7 +232,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -274,7 +274,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),};
 
@@ -311,7 +311,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -341,7 +341,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -369,7 +369,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -396,7 +396,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -426,7 +426,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -460,7 +460,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};
@@ -495,7 +495,7 @@ public class HbmChestContents {
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mini_pablo, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_zyn, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_som, 0, 1, 1, 1),
-			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_salonna, 0, 1, 1, 1),
+			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_abalt_szalonna, 0, 1, 1, 1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_mail,0,1,1,1),
 			new WeightedRandomChestContentFrom1710(ModItems.fhbm2_package,0,1,1,1),
 	};

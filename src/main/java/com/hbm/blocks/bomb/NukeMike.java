@@ -199,6 +199,10 @@ public class NukeMike extends BlockContainer implements IBomb {
 
 	@Override
 	public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
+		tooltip.add("My friends and I were wondering:");
+		tooltip.add("if Hungary had an atomic bomb research program,");
+		tooltip.add("what would they name their bombs?");
+		tooltip.add("");
 		tooltip.add("§6["+ I18nUtil.resolveKey("trait.thermobomb")+"]"+"§r");
 		tooltip.add(" §e"+I18nUtil.resolveKey("desc.radius", BombConfig.mikeRadius)+"§r");
 		if(!BombConfig.disableNuclear){

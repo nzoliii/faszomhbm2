@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

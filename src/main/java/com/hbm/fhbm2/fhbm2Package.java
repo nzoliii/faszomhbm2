@@ -1,5 +1,6 @@
-package com.hbm.items;
+package com.hbm.fhbm2;
 
+import com.hbm.items.ModItems;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.main.MainRegistry;
 import net.minecraft.client.util.ITooltipFlag;

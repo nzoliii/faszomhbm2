@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;

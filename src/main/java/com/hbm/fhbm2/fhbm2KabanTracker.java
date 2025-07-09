@@ -1,4 +1,4 @@
-package com.hbm;
+package com.hbm.fhbm2;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

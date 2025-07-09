@@ -174,6 +174,10 @@ public class Landmine extends BlockContainer implements IBomb {
     @Override
     public void addInformation(ItemStack stack, World player, List<String> tooltip, ITooltipFlag advanced) {
         if (this == ModBlocks.mine_fat) {
+            tooltip.add("At first I thought it’d be a great idea to have nuclear landmines spawn");
+            tooltip.add("instead of regular ones with a 50% chance, but the constant");
+            tooltip.add("nuclear explosions got fucking annoying, so now it’s just 20%.");
+            tooltip.add("");
             tooltip.add("§2[Nuclear Mine]§r");
             tooltip.add(" §eRadius: " + BombConfig.fatmanRadius + "m§r");
             tooltip.add("§2[Fallout]§r");

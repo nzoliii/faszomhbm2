@@ -4,7 +4,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
-import com.hbm.fhbm2Scheduler;
+import com.hbm.fhbm2.fhbm2Scheduler;
 import com.hbm.interfaces.IBomb;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.InventoryHelper;
@@ -22,10 +22,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +30,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class NukeGadget extends BlockContainer implements IBomb {
 
