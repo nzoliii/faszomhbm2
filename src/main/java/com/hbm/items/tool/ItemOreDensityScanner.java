@@ -1,5 +1,6 @@
 package com.hbm.items.tool;
 
+import com.hbm.items.ModItems;
 import com.hbm.items.special.ItemBedrockOreBase;
 import com.hbm.items.special.ItemBedrockOreNew;
 import com.hbm.packet.PacketDispatcher;
@@ -14,6 +15,13 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class ItemOreDensityScanner extends Item {
+
+    public ItemOreDensityScanner(String s) {
+        this.setTranslationKey(s);
+        this.setRegistryName(s);
+
+        ModItems.ALL_ITEMS.add(this);
+    }
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int i, boolean bool) {

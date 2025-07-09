@@ -7,6 +7,7 @@ import com.hbm.inventory.RecipesCommon.ComparableStack;
 import com.hbm.inventory.RecipesCommon.OreDictStack;
 import com.hbm.inventory.material.MaterialShapes;
 import com.hbm.inventory.material.Mats;
+import com.hbm.items.ItemEnums.EnumCircuitType;
 import com.hbm.items.ModItems;
 import crafttweaker.CraftTweakerAPI;
 import net.minecraft.block.Block;
@@ -224,6 +225,38 @@ public class AnvilRecipes {
 				new AnvilOutput(new ItemStack(ModBlocks.machine_difurnace_off))).setTier(1));
 		
 		int ukModifier = 1;
+
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {
+						new OreDictStack(STEEL.ingot(), 8 * ukModifier),
+						new OreDictStack(CU.plate(), 4 * ukModifier),
+						new ComparableStack(ModItems.motor, 2 * ukModifier),
+						new ComparableStack(ModItems.circuit, 4 * ukModifier, EnumCircuitType.VACUUM_TUBE.ordinal())
+				}, new AnvilOutput(new ItemStack(ModBlocks.machine_assembler))).setTier(2));
+
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {
+						new ComparableStack(Blocks.STONEBRICK, 8),
+						new OreDictStack(STEEL.plate(), 16),
+						new OreDictStack(PB.pipe(), 4),
+						new ComparableStack(ModItems.motor, 2),
+						new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal())
+				}, new AnvilOutput(new ItemStack(ModBlocks.pump_electric))).setTier(3));
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {
+						new OreDictStack(STEEL.plateCast(), 2),
+						new ComparableStack(ModItems.coil_copper, 4),
+						new OreDictStack(W.bolt(), 4),
+						new ComparableStack(ModItems.circuit, 2, EnumCircuitType.VACUUM_TUBE.ordinal())
+				}, new AnvilOutput(new ItemStack(ModBlocks.machine_soldering_station))).setTier(2));
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new AStack[] {
+						new OreDictStack(STEEL.plate(), 4),
+						new OreDictStack(IRON.ingot(), 12),
+						new OreDictStack(CU.ingot(), 2),
+						new ComparableStack(ModItems.circuit, 2, EnumCircuitType.VACUUM_TUBE.ordinal()),
+						new ComparableStack(ModItems.sawblade)
+				}, new AnvilOutput(new ItemStack(ModBlocks.machine_autosaw))).setTier(2));
 		constructionRecipes.add(new AnvilConstructionRecipe(
 				new AStack[] {
 						new OreDictStack("blockGlassColorless", 4 * ukModifier),
@@ -545,6 +578,24 @@ public class AnvilRecipes {
 	}
 
 	public static void registerConstructionRecycling() {
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new ComparableStack(ModBlocks.radiorec),
+				new AnvilOutput[] {
+						new AnvilOutput(new ItemStack(ModItems.plate_steel, 4)),
+						new AnvilOutput(new ItemStack(ModItems.wire_fine, 1, Mats.MAT_COPPER.id)),
+						new AnvilOutput(new ItemStack(ModItems.circuit, 1, EnumCircuitType.VACUUM_TUBE.ordinal()), 0.5F),
+						new AnvilOutput(new ItemStack(ModItems.ingot_polymer, 1), 0.25F),
+				}
+		).setTier(2));
+		constructionRecipes.add(new AnvilConstructionRecipe(
+				new ComparableStack(ModBlocks.pole_satellite_receiver),
+				new AnvilOutput[] {
+						new AnvilOutput(new ItemStack(ModItems.ingot_steel, 3)),
+						new AnvilOutput(new ItemStack(ModItems.ingot_steel, 2), 0.5F),
+						new AnvilOutput(new ItemStack(ModItems.circuit, 1, EnumCircuitType.VACUUM_TUBE.ordinal()), 0.5F),
+						new AnvilOutput(new ItemStack(ModItems.wire_fine, 1, Mats.MAT_MINGRADE.id)),
+				}
+		).setTier(2));
 		constructionRecipes.add(new AnvilConstructionRecipe(
 				new ComparableStack(ModBlocks.solar_mirror),
 				new AnvilOutput[] {new AnvilOutput(new ItemStack(ModItems.ingot_steel, 1)), new AnvilOutput(new ItemStack(ModItems.plate_aluminium, 1))}).setTier(3));

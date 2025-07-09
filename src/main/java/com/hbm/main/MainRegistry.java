@@ -1,6 +1,7 @@
 package com.hbm.main;
 
 //FIXME This may have gotten mangled in a merge
+
 import com.hbm.blocks.BlockEnums;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockBedrockOreTE.TileEntityBedrockOre;
@@ -38,7 +39,6 @@ import com.hbm.fhbm2.*;
 import com.hbm.forgefluid.FFPipeNetwork;
 import com.hbm.forgefluid.ModForgeFluids;
 import com.hbm.handler.*;
-import com.hbm.handler.crt.NTMCraftTweaker;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.hazard.HazardRegistry;
@@ -605,8 +605,8 @@ public class MainRegistry {
         GameRegistry.registerTileEntity(TileEntityCraneUnboxer.class, new ResourceLocation(RefStrings.MODID, "tileentity_craneunboxer"));
         GameRegistry.registerTileEntity(TileEntityCraneRouter.class, new ResourceLocation(RefStrings.MODID, "tileentity_cranerouter"));
         GameRegistry.registerTileEntity(TileEntityCraneGrabber.class, new ResourceLocation(RefStrings.MODID, "tileentity_cranegrabber"));
-		GameRegistry.registerTileEntity(TileEntityPWRController.class, new ResourceLocation(RefStrings.MODID, "tileentity_pwr_controller"));
-		GameRegistry.registerTileEntity(BlockPWR.TileEntityBlockPWR.class, new ResourceLocation(RefStrings.MODID, "tileentity_block_pwr"));
+        GameRegistry.registerTileEntity(TileEntityPWRController.class, new ResourceLocation(RefStrings.MODID, "tileentity_pwr_controller"));
+        GameRegistry.registerTileEntity(BlockPWR.TileEntityBlockPWR.class, new ResourceLocation(RefStrings.MODID, "tileentity_block_pwr"));
 
         int i = 0;
         EntityRegistry.registerModEntity(new ResourceLocation(RefStrings.MODID, "entity_nuke_mk5"), EntityNukeExplosionMK5.class, "entity_nuke_mk5", i++, MainRegistry.instance, 1000, 1, true);
@@ -912,7 +912,6 @@ public class MainRegistry {
         MinecraftForge.EVENT_BUS.register(new SchistStratum(ModBlocks.stone_gneiss.getDefaultState(), 0.01D, 5, 8, 30)); //DecorateBiomeEvent.Pre
         MinecraftForge.EVENT_BUS.register(new SchistStratum(ModBlocks.stone_resource.getDefaultState().withProperty(BlockResourceStone.META, BlockEnums.EnumStoneType.HEMATITE.ordinal()), 0.02D, 5.5, 5, 45)); //DecorateBiomeEvent.Pre
 
-        NTMCraftTweaker.applyPostInitActions();
         AssemblerRecipes.generateList();
         if (event.getSide() == Side.CLIENT) {
             BedrockOreRegistry.registerOreColors();
@@ -935,6 +934,7 @@ public class MainRegistry {
     }
 
 
+    @Spaghetti("USE FUCKING INTERFACES")
     private void registerDispenserBehaviors() {
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(ModItems.grenade_generic, new BehaviorProjectileDispense() {
             @Override

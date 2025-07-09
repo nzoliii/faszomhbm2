@@ -1,10 +1,11 @@
 package com.hbm.lib;
 
+import com.hbm.Tags;
+
 public class RefStrings {
-	public static final String MODID = "hbm";
-	public static final String NAME = "FaszomHBM 2";
-	public static final String VERSION = "Community-Edition";
-	public static final String CHANGELOG = "§aCopper Pig update finally done.";
+	public static final String MODID = Tags.MODID;
+	public static final String NAME = Tags.MODNAME;
+	public static final String VERSION = Tags.VERSION;
 	//HBM's Beta Naming Convention:
 	//V T (X)
 	//V -> next release version

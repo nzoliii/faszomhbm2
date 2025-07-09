@@ -24,7 +24,7 @@ public class HTTPHandler {
 	public static void loadStats() {
 
 		try {
-			loadVersion();
+			//loadVersion();
 			loadOF();
 			loadSoyuz();
 
@@ -59,6 +59,7 @@ public class HTTPHandler {
 	    }
 	}
 
+	//TODO: make it work someday, for now there is no point
 	private static void loadVersion() throws IOException {
 
 		URL github = new URL("https://codeberg.org/nzoliii/Hbm-s-Nuclear-Tech-CE/raw/branch/master/src/main/java/com/hbm/lib/RefStrings.java");
