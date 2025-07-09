@@ -36,12 +36,11 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
 
         this.buttonList.add(new fhbm2GUIButton(101, this.width / 2 - 100, yOffset, 200, 20, "Singleplayer"));
         this.buttonList.add(new fhbm2GUIButton(102, this.width / 2 - 100, yOffset + 24, 200, 20, "Multiplayer"));
-        this.buttonList.add(new fhbm2GUIButton(103, this.width / 2 - 100, yOffset + 48, 98, 20, "Mods"));
-        this.buttonList.add(new fhbm2GUIButton(104, this.width / 2 + 2, yOffset + 48, 98, 20, "Realms"));
-        this.buttonList.add(new fhbm2GUIButtonLanguage(105, this.width / 2 - 124, j + 72 + 12));
-        this.buttonList.add(new fhbm2GUIButton(106, this.width / 2 - 100, yOffset + 84, 98, 20, "Options..."));
-        this.buttonList.add(new fhbm2GUIButton(107, this.width / 2 + 2, yOffset + 84, 98, 20, "Quit Game"));
-        this.buttonList.add(new fhbm2GUIButton(108, this.width / 2 + 104, yOffset + 84, 20, 20, "SM"));
+        this.buttonList.add(new fhbm2GUIButton(103, this.width / 2 - 100, yOffset + 48, 200, 20, "Mods"));
+        this.buttonList.add(new fhbm2GUIButtonLanguage(104, this.width / 2 - 124, j + 72 + 12));
+        this.buttonList.add(new fhbm2GUIButton(105, this.width / 2 - 100, yOffset + 84, 98, 20, "Options..."));
+        this.buttonList.add(new fhbm2GUIButton(106, this.width / 2 + 2, yOffset + 84, 98, 20, "Quit Game"));
+        this.buttonList.add(new fhbm2GUIButton(107, this.width / 2 + 104, yOffset + 84, 20, 20, "SM"));
     }
 
     @Override
@@ -105,11 +104,10 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         if (button.id == 101) { mc.displayGuiScreen(new GuiWorldSelection(this)); }
         if (button.id == 102) { mc.displayGuiScreen(new GuiMultiplayer(this)); }
         if (button.id == 103) { mc.displayGuiScreen(new GuiModList(this)); }
-        if (button.id == 104) { switchToRealms(); }
-        if (button.id == 105) { mc.displayGuiScreen(new GuiLanguage(this, mc.gameSettings, mc.getLanguageManager())); }
-        if (button.id == 106) { mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings)); }
-        if (button.id == 107) { mc.shutdown(); }
-        if (button.id == 108) { fhbm2MenuStateManager.setCustomMenuEnabled(false); mc.displayGuiScreen(new GuiMainMenu()); } else { super.actionPerformed(button); }
+        if (button.id == 104) { mc.displayGuiScreen(new GuiLanguage(this, mc.gameSettings, mc.getLanguageManager())); }
+        if (button.id == 105) { mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings)); }
+        if (button.id == 106) { mc.shutdown(); }
+        if (button.id == 107) { fhbm2MenuStateManager.setCustomMenuEnabled(false); mc.displayGuiScreen(new GuiMainMenu()); } else { super.actionPerformed(button); }
     }
 
     @Override
