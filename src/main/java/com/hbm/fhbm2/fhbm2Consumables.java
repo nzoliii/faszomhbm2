@@ -8,6 +8,7 @@ import com.hbm.items.ModItems;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
+import com.hbm.main.AdvancementManager;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.entity.player.EntityPlayer;
@@ -140,6 +141,8 @@ public class fhbm2Consumables extends ItemFood {
         }
 
         if(stack.getItem() == ModItems.fhbm2_copper_pig_fragment){
+            AdvancementManager.grantAchievement((player), AdvancementManager.fhbm2_one_with_copper_pig);
+
             player.addPotionEffect(new PotionEffect(MobEffects.BLINDNESS, 2147483647, 255));
             player.addPotionEffect(new PotionEffect(MobEffects.GLOWING, 2147483647, 255));
             player.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 2147483647, 255));

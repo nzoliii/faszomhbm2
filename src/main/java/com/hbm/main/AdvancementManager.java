@@ -55,6 +55,12 @@ public class AdvancementManager {
 	public static Advancement bossWorm;
 	public static Advancement bossUFO;
 
+	// fhbm2
+	public static Advancement fhbm2_copper_pig_bewitch;
+	public static Advancement fhbm2_copper_pig_bewitch_death;
+	public static Advancement fhbm2_one_with_copper_pig;
+	public static Advancement fhbm2_copper_pig_key;
+
 	public static void init(MinecraftServer serv){
 		net.minecraft.advancements.AdvancementManager adv = serv.getAdvancementManager();
 		
@@ -98,6 +104,12 @@ public class AdvancementManager {
 		bossMaskman = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "bossmaskman"));
 		bossWorm = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "bossworm"));
 		bossUFO = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "bossufo"));
+
+		// fhbm2
+		fhbm2_copper_pig_bewitch = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "fhbm2_copper_pig_bewitch"));
+		fhbm2_copper_pig_bewitch_death = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "fhbm2_copper_pig_bewitch_death"));
+		fhbm2_one_with_copper_pig = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "fhbm2_one_with_copper_pig"));
+		fhbm2_copper_pig_key = adv.getAdvancement(new ResourceLocation(RefStrings.MODID, "fhbm2_copper_pig_key"));
 	}
 	
 	public static void grantAchievement(EntityPlayerMP player, Advancement a){

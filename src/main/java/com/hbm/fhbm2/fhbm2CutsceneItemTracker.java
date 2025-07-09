@@ -2,6 +2,7 @@ package com.hbm.fhbm2;
 
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
+import com.hbm.main.AdvancementManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -59,6 +60,8 @@ public class fhbm2CutsceneItemTracker {
     }
 
     public void playerHasVisionsFromTouchingTheKey(EntityPlayer player) {
+        AdvancementManager.grantAchievement((player), AdvancementManager.fhbm2_copper_pig_key);
+
         fhbm2Scheduler.schedule(0, (event) -> {
 
             player.playSound(HBMSoundHandler.fhbm2_heartbeat, 1.0F, 1.0F);

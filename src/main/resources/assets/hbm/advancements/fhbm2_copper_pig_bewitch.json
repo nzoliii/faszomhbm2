@@ -1,0 +1,22 @@
+{
+	"display": {
+		"icon": {
+			"item": "hbm:fhbm2_kaban_statue"
+		},
+		"title": {
+			"translate": "hbm.achievement.fhbm2_copper_pig_bewitch"
+		},
+		"description": {
+			"translate": "hbm.achievement.fhbm2_copper_pig_bewitch.desc"
+		}
+	},
+	"parent": "hbm:root",
+	"criteria": {
+		"impossible": {
+			"trigger": "minecraft:impossible"
+		}
+	},
+    "rewards": {
+        "experience": 69
+    }
+}

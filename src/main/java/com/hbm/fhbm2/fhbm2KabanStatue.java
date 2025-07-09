@@ -6,6 +6,7 @@ import com.hbm.hazard.HazardSystem;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
+import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.potion.HbmPotion;
 import com.hbm.saveddata.RadiationSavedData;
@@ -252,6 +253,8 @@ public class fhbm2KabanStatue extends BlockBase {
     }
 
     public void copper_pig_bewitches_the_clueless_player_and_makes_them_experience_very_bad_schizophrenic_hallucinations(EntityPlayer player, World world, int x, int y, int z) {
+        AdvancementManager.grantAchievement((player), AdvancementManager.fhbm2_copper_pig_bewitch);
+
         if (fhbm2KabanTracker.isPlayerBewitched(player)) {
             return;
         }
@@ -272,6 +275,7 @@ public class fhbm2KabanStatue extends BlockBase {
             player.addPotionEffect(new PotionEffect(MobEffects.INSTANT_DAMAGE, 1, 49));
             player.attackEntityFrom(ModDamageSource.copper_pig, 40);
             fhbm2KabanTracker.setPlayerBewitched(player, false);
+            AdvancementManager.grantAchievement((player), AdvancementManager.fhbm2_copper_pig_bewitch_death);
         });
     }
 }

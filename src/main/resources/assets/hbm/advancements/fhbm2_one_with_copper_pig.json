@@ -1,0 +1,22 @@
+{
+	"display": {
+		"icon": {
+			"item": "hbm:fhbm2_copper_pig_fragment"
+		},
+		"title": {
+			"translate": "hbm.achievement.fhbm2_one_with_copper_pig"
+		},
+		"description": {
+			"translate": "hbm.achievement.fhbm2_one_with_copper_pig.desc"
+		}
+	},
+	"parent": "hbm:fhbm2_copper_pig_bewitch",
+	"criteria": {
+		"impossible": {
+			"trigger": "minecraft:impossible"
+		}
+	},
+    "rewards": {
+        "experience": 69
+    }
+}
