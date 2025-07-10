@@ -1,6 +1,6 @@
 package com.hbm.creativetabs;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.items.ModItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;

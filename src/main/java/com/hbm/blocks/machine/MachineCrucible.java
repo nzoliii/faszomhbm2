@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.block.ICrucibleAcceptor;
+import com.hbm.api.block.ICrucibleAcceptor;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ICustomBlockHighlight;
 import com.hbm.inventory.material.Mats;

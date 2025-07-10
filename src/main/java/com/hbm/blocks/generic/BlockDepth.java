@@ -1,6 +1,6 @@
 package com.hbm.blocks.generic;
 
-import api.hbm.item.IDepthRockTool;
+import com.hbm.api.item.IDepthRockTool;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.util.I18nUtil;
 import net.minecraft.block.Block;

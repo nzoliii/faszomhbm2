@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.block.ICrucibleAcceptor;
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.block.ICrucibleAcceptor;
+import com.hbm.api.tile.IHeatSource;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;

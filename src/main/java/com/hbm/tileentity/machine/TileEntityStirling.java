@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
+import com.hbm.api.tile.IHeatSource;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.blocks.BlockDummyable;

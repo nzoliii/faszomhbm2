@@ -1,6 +1,6 @@
 package com.hbm.tileentity.turret;
 
-import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.api.fluid.IFluidStandardReceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.handler.BulletConfigSyncingUtil;

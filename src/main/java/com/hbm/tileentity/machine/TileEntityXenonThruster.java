@@ -1,8 +1,8 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.fluid.IFluidStandardReceiver;
-import api.hbm.tile.IPropulsion;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.fluid.IFluidStandardReceiver;
+import com.hbm.api.tile.IPropulsion;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;

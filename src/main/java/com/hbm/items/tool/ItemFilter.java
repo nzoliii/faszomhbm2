@@ -1,7 +1,7 @@
 package com.hbm.items.tool;
 
 
-import api.hbm.item.IGasMask;
+import com.hbm.api.item.IGasMask;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.items.ModItems;

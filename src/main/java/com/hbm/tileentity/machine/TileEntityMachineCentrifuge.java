@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.capability.NTMBatteryCapabilityHandler;

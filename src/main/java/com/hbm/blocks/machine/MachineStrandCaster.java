@@ -1,7 +1,7 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.block.ICrucibleAcceptor;
-import api.hbm.block.IToolable;
+import com.hbm.api.block.ICrucibleAcceptor;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.handler.MultiblockHandlerXR;

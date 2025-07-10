@@ -1,6 +1,6 @@
 package com.hbm.items.armor;
 
-import api.hbm.item.IGasMask;
+import com.hbm.api.item.IGasMask;
 import com.google.common.collect.Multimap;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.ArmorUtil;

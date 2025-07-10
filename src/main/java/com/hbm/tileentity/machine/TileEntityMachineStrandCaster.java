@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.block.ICrucibleAcceptor;
-import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.api.block.ICrucibleAcceptor;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.inventory.container.ContainerMachineStrandCaster;

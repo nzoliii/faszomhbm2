@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.block.ICrucibleAcceptor;
+import com.hbm.api.block.ICrucibleAcceptor;
 import com.hbm.interfaces.ICopiable;
 import com.hbm.inventory.material.Mats;
 import com.hbm.inventory.material.Mats.MaterialStack;

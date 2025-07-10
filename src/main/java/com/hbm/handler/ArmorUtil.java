@@ -1,6 +1,6 @@
 package com.hbm.handler;
 
-import api.hbm.item.IGasMask;
+import com.hbm.api.item.IGasMask;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.potion.HbmPotion;

@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidStandardReceiver;
-import api.hbm.tile.IPropulsion;
+import com.hbm.api.fluid.IFluidStandardReceiver;
+import com.hbm.api.tile.IPropulsion;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.dim.CelestialBody;

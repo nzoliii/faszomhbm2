@@ -9,7 +9,7 @@ import net.minecraft.init.Blocks;
 
 import java.util.HashMap;
 
-import static api.hbm.block.IToolable.ToolType;
+import static com.hbm.api.block.IToolable.ToolType;
 import static com.hbm.inventory.RecipesCommon.*;
 
 public class NTMToolHandler {

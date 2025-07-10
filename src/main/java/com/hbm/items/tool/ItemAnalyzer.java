@@ -1,6 +1,6 @@
 package com.hbm.items.tool;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.interfaces.IFluidPipe;
 import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.TileEntityDummy;

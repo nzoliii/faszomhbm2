@@ -1,6 +1,7 @@
 package net.minecraft.client.particle;
 
 //Stupid minecraft particles have all their fields protected. Solution? Make a class in the same package!
+@Deprecated //Uhh... Why?
 public class HbmParticleUtility {
 
 	public static void setNoClip(Particle p){

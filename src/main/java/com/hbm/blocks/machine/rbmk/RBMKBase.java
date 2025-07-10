@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine.rbmk;
 
-import api.hbm.block.IToolable;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.handler.MultiblockHandlerXR;

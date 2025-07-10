@@ -1,7 +1,7 @@
 package com.hbm.blocks.generic;
 
-import api.hbm.block.IDrillInteraction;
-import api.hbm.block.IMiningDrill;
+import com.hbm.api.block.IDrillInteraction;
+import com.hbm.api.block.IMiningDrill;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

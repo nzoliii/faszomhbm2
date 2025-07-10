@@ -1,6 +1,6 @@
 package com.hbm.tileentity.network.energy;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
 import cofh.redstoneflux.api.IEnergyReceiver;
 import com.hbm.config.GeneralConfig;
 import com.hbm.lib.ForgeDirection;

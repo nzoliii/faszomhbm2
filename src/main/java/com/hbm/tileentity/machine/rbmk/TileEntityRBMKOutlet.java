@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine.rbmk;
 
-import api.hbm.fluid.IFluidStandardSender;
+import com.hbm.api.fluid.IFluidStandardSender;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.inventory.fluid.Fluids;

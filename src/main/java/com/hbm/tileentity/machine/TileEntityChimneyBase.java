@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidUser;
+import com.hbm.api.fluid.IFluidUser;
 import com.hbm.handler.pollution.PollutionHandler;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;

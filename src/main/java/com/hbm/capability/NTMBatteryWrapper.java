@@ -1,6 +1,6 @@
 package com.hbm.capability;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.config.GeneralConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.energy.IEnergyStorage;

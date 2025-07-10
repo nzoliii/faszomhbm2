@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine.oil;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
+import com.hbm.api.fluid.IFluidStandardReceiver;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.particle.EntityGasFlameFX;

@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.tile.IHeatSource;
 import com.hbm.inventory.container.ContainerFurnaceSteel;
 import com.hbm.inventory.gui.GUIFurnaceSteel;
 import com.hbm.lib.ForgeDirection;

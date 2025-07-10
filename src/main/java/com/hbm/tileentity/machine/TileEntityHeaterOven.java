@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.tile.IHeatSource;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.inventory.container.ContainerFirebox;

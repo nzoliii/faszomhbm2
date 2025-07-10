@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.util.I18nUtil;

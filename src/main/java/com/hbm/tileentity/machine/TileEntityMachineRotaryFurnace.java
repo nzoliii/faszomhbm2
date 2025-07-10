@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.handler.pollution.PollutionHandler;

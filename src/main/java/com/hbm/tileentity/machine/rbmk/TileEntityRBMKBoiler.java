@@ -1,8 +1,8 @@
 package com.hbm.tileentity.machine.rbmk;
 
-import api.hbm.fluid.IFluidStandardTransceiver;
-import api.hbm.fluid.IFluidUser;
-import api.hbm.fluid.IPipeNet;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
+import com.hbm.api.fluid.IFluidUser;
+import com.hbm.api.fluid.IPipeNet;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;

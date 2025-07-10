@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.container.ContainerMachineRTG;
 import com.hbm.inventory.gui.GUIMachineRTG;

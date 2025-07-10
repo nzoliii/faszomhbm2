@@ -1,7 +1,7 @@
 package com.hbm.tileentity;
 
-import api.hbm.fluid.IFluidStandardTransceiver;
-import api.hbm.fluid.IFluidUser;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
+import com.hbm.api.fluid.IFluidUser;
 import com.hbm.interfaces.ICopiable;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;

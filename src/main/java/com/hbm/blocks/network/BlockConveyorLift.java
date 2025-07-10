@@ -1,7 +1,7 @@
 package com.hbm.blocks.network;
 
-import api.hbm.block.IConveyorBelt;
-import api.hbm.block.IEnterableBlock;
+import com.hbm.api.block.IConveyorBelt;
+import com.hbm.api.block.IEnterableBlock;
 import com.hbm.entity.item.EntityMovingItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

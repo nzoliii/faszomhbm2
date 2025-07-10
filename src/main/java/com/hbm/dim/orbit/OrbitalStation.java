@@ -1,7 +1,7 @@
 package com.hbm.dim.orbit;
 
-import api.hbm.tile.IPropulsion;
 import cofh.core.util.helpers.MathHelper;
+import com.hbm.api.tile.IPropulsion;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.BlockOrbitalStation;

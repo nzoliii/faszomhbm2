@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.block.IToolable;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.tileentity.machine.TileEntityHadronDiode;
 import com.hbm.tileentity.machine.TileEntityHadronDiode.DiodeConfig;

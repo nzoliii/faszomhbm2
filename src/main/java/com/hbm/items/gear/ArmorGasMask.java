@@ -1,6 +1,6 @@
 package com.hbm.items.gear;
 
-import api.hbm.item.IGasMask;
+import com.hbm.api.item.IGasMask;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;

@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidStandardTransceiver;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmCapability;

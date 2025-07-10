@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.energymk2.IEnergyConnectorBlock;
+import com.hbm.api.energymk2.IEnergyConnectorBlock;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.interfaces.IDummy;
 import com.hbm.lib.ForgeDirection;

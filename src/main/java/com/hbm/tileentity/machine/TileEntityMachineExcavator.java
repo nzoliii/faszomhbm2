@@ -1,9 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.block.IDrillInteraction;
-import api.hbm.block.IMiningDrill;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.api.block.IDrillInteraction;
+import com.hbm.api.block.IMiningDrill;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.fluid.IFluidStandardReceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.gas.BlockGasBase;

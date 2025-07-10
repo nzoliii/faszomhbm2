@@ -1,11 +1,11 @@
 package com.hbm.blocks.network.energy;
 
-import api.hbm.block.IToolable;
-import api.hbm.energymk2.IEnergyConnectorBlock;
-import api.hbm.energymk2.IEnergyConnectorMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2.ConnectionPriority;
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.block.IToolable;
+import com.hbm.api.energymk2.IEnergyConnectorBlock;
+import com.hbm.api.energymk2.IEnergyConnectorMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2.ConnectionPriority;
+import com.hbm.api.energymk2.Nodespace;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;

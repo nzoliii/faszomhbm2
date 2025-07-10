@@ -1,0 +1,22 @@
+{
+	"ctm": {
+		"ctm_version": 1,
+		"type": "CTM",
+		"textures": [
+			"hbm:blocks/pwr_casing_port_ct"
+		],
+        "extra": {
+            "connect_to": [
+                { "block": "hbm:pwr_controller" },
+                { "block": "hbm:pwr_fuelrod" },
+                { "block": "hbm:pwr_control" },
+                { "block": "hbm:pwr_channel" },
+                { "block": "hbm:pwr_heatsink" },
+                { "block": "hbm:pwr_neutron_source" },
+                { "block": "hbm:pwr_reflector" },
+                { "block": "hbm:pwr_port" },
+                { "block": "hbm:pwr_block" }
+            ]
+        }
+	}
+}

@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidStandardReceiver;
+import com.hbm.api.fluid.IFluidStandardReceiver;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.RecipesCommon.ComparableStack;

@@ -1,6 +1,6 @@
 package com.hbm.items.tool;
 
-import api.hbm.item.IDepthRockTool;
+import com.hbm.api.item.IDepthRockTool;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;

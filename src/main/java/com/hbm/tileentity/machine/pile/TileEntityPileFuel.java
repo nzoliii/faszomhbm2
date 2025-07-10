@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine.pile;
 
-import api.hbm.block.IPileNeutronReceiver;
+import com.hbm.api.block.IPileNeutronReceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.pile.BlockGraphiteDrilledBase;
 import com.hbm.config.GeneralConfig;

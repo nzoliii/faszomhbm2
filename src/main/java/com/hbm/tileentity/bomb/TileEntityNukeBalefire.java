@@ -1,6 +1,6 @@
 package com.hbm.tileentity.bomb;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityBalefire;

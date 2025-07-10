@@ -22,7 +22,6 @@ import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -338,7 +337,7 @@ public class JEIConfig implements IModPlugin {
     };
 
 	@Override
-	public void registerItemSubtypes(@NotNull ISubtypeRegistry subtypeRegistry) {
+	public void registerSubtypes(@NotNull ISubtypeRegistry subtypeRegistry) {
 		if(!GeneralConfig.jei)
 			return;
         subtypeRegistry.registerSubtypeInterpreter(ModItems.cell, metadataFluidContainerInterpreter);

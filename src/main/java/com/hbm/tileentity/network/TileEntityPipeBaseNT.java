@@ -1,8 +1,8 @@
 package com.hbm.tileentity.network;
 
-import api.hbm.fluid.IFluidConductor;
-import api.hbm.fluid.IPipeNet;
-import api.hbm.fluid.PipeNet;
+import com.hbm.api.fluid.IFluidConductor;
+import com.hbm.api.fluid.IPipeNet;
+import com.hbm.api.fluid.PipeNet;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.ForgeDirection;

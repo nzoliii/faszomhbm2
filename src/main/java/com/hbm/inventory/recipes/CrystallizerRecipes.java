@@ -239,9 +239,9 @@ public class CrystallizerRecipes extends SerializableRecipe {
 		return 0;
 	}
 
-	public static HashMap getRecipes() {
+	public static HashMap<Object, Object> getRecipes() {
 
-		HashMap<Object, Object> recipes = new HashMap<Object, Object>();
+		HashMap<Object, Object> recipes = new HashMap<>();
 
 		for(Entry<Tuple.Pair<Object, FluidType>, CrystallizerRecipe> entry : CrystallizerRecipes.recipes.entrySet()) {
 

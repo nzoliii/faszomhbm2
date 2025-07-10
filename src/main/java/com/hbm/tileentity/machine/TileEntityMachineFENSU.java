@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.energymk2.Nodespace;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import net.minecraft.item.EnumDyeColor;

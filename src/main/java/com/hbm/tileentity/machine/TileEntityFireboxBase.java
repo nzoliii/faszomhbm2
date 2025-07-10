@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.tile.IHeatSource;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.modules.ModuleBurnTime;

@@ -1,7 +1,7 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.fluid.IFluidStandardTransceiver;
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
+import com.hbm.api.tile.IHeatSource;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.forgefluid.FFUtils;

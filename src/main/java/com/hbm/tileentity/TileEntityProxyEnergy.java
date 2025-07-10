@@ -1,6 +1,6 @@
 package com.hbm.tileentity;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;

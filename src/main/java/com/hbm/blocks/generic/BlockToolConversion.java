@@ -1,6 +1,6 @@
 package com.hbm.blocks.generic;
 
-import api.hbm.block.IToolable;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.BlockBase;
 import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.blocks.ILookOverlay;

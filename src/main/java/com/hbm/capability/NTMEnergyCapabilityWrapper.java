@@ -1,8 +1,8 @@
 package com.hbm.capability;
 
-import api.hbm.energymk2.IEnergyHandlerMK2;
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyHandlerMK2;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.config.GeneralConfig;
 import net.minecraftforge.energy.IEnergyStorage;
 

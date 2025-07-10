@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyProviderMK2;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.lib.Library;

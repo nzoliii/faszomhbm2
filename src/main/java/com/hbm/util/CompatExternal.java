@@ -1,8 +1,8 @@
 package com.hbm.util;
 
-import api.hbm.energymk2.IEnergyHandlerMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.fluid.IFluidUser;
+import com.hbm.api.energymk2.IEnergyHandlerMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.fluid.IFluidUser;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;

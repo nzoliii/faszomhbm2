@@ -1,6 +1,6 @@
 package com.hbm.util;
 
-import api.hbm.item.IGasMask;
+import com.hbm.api.item.IGasMask;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.handler.ArmorUtil;
 import net.minecraft.entity.EntityLivingBase;

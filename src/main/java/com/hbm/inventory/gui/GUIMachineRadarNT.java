@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import api.hbm.entity.RadarEntry;
+import com.hbm.api.entity.RadarEntry;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.NBTControlPacket;
 import com.hbm.packet.PacketDispatcher;

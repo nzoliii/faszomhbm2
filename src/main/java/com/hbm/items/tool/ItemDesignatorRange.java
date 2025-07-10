@@ -1,6 +1,6 @@
 package com.hbm.items.tool;
 
-import api.hbm.item.IDesignatorItem;
+import com.hbm.api.item.IDesignatorItem;
 import com.hbm.blocks.bomb.LaunchPad;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;

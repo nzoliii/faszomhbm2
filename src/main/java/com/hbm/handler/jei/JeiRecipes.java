@@ -57,19 +57,16 @@ public class JeiRecipes {
 	private static List<FusionRecipe> fusionByproducts = null;
 	private static List<HadronRecipe> hadronRecipes = null;
 	private static List<SILEXRecipe> silexRecipes = null;
-	private static Map<EnumWavelengths, List<SILEXRecipe>> waveSilexRecipes = new HashMap<EnumWavelengths, List<SILEXRecipe>>();
+	private static final Map<EnumWavelengths, List<SILEXRecipe>> waveSilexRecipes = new HashMap<>();
 	private static List<SmithingRecipe> smithingRecipes = null;
 	private static List<AnvilRecipe> anvilRecipes = null;
 	private static List<TransmutationRecipe> transmutationRecipes = null;
 	
 	private static List<ItemStack> batteries = null;
-	private static Map<Integer, List<ItemStack>> reactorFuelMap = new HashMap<Integer, List<ItemStack>>();
-	private static List<ItemStack> blades = null;
+    private static List<ItemStack> blades = null;
 	private static List<ItemStack> alloyFuels = null;
 
-	public static final IIngredientType<FluidStack> NTMFLUID = () -> {
-		return FluidStack.class;
-	};
+	public static final IIngredientType<FluidStack> NTMFLUID = () -> FluidStack.class;
 	
 	
 	public static class ChemRecipe implements IRecipeWrapper {
@@ -129,7 +126,10 @@ public class JeiRecipes {
 		
 		@Override
 		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInputs(VanillaTypes.ITEM, input);
+			List<List<ItemStack>> allInputs = new ArrayList<>();
+			allInputs.add(input);
+			allInputs.add(stamps);
+			ingredients.setInputLists(VanillaTypes.ITEM, allInputs);
 			ingredients.setOutput(VanillaTypes.ITEM, output);
 		}
 		
@@ -274,7 +274,7 @@ public class JeiRecipes {
 		private final ItemStack output;
 		
 		public TransmutationRecipe(List<ItemStack> inputs, ItemStack output) {
-			this.inputs = new ArrayList();
+			this.inputs = new ArrayList<>();
 			this.inputs.add(inputs);
 			this.output = output; 
 		}
@@ -650,15 +650,15 @@ public class JeiRecipes {
 	public static List<ChemRecipe> getChemistryRecipes() {
 		if(chemRecipes != null)
 			return chemRecipes;
-		chemRecipes = new ArrayList<ChemRecipe>();
+		chemRecipes = new ArrayList<>();
 		
        for(int i: ChemplantRecipes.recipeNames.keySet()){
 
-        	List<AStack> inputs = new ArrayList<AStack>(7);
+        	List<AStack> inputs = new ArrayList<>(7);
         	for(int j = 0; j < 7; j ++)
         		inputs.add(j, new ComparableStack(ModItems.nothing));
 
-        	List<ItemStack> outputs = new ArrayList<ItemStack>(6);
+        	List<ItemStack> outputs = new ArrayList<>(6);
         	for(int j = 0; j < 6; j ++)
         		outputs.add(j, new ItemStack(ModItems.nothing));
         	
@@ -704,22 +704,21 @@ public class JeiRecipes {
 		if(cyclotronRecipes != null)
 			 return cyclotronRecipes;
 		Map<ItemStack[], ItemStack> recipes = CyclotronRecipes.getRecipes();
-		cyclotronRecipes = new ArrayList<CyclotronRecipe>(recipes.size());
+		cyclotronRecipes = new ArrayList<>(recipes.size());
 		for(Entry<ItemStack[], ItemStack> e : recipes.entrySet()){
 			cyclotronRecipes.add(new CyclotronRecipe(Arrays.asList(e.getKey()), e.getValue()));
 		}
 		
 		return cyclotronRecipes;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	public static List<PressRecipe> getPressRecipes() {
 		if(pressRecipes != null)
 			return pressRecipes;
 
-		pressRecipes = new ArrayList<PressRecipe>();
+		pressRecipes = new ArrayList<>();
 		
-		for(Map.Entry<Pair<PressRecipes.PressType, AStack>, ItemStack> entry : PressRecipes.pressRecipes.entrySet()){
+		for(Map.Entry<Pair<PressRecipes.StampType, AStack>, ItemStack> entry : PressRecipes.pressRecipes.entrySet()){
 
 			pressRecipes.add(new PressRecipe(PressRecipes.getStampList(entry.getKey().getKey()), entry.getKey().getValue().getStackList(), entry.getValue()));
 		}
@@ -731,7 +730,7 @@ public class JeiRecipes {
 	public static List<AlloyFurnaceRecipe> getAlloyRecipes() {
 		if(alloyFurnaceRecipes != null)
 			return alloyFurnaceRecipes;
-		alloyFurnaceRecipes = new ArrayList<AlloyFurnaceRecipe>();
+		alloyFurnaceRecipes = new ArrayList<>();
 
 		for(Map.Entry<Pair<AStack, AStack>, ItemStack> pairEntry : DiFurnaceRecipes.diRecipes.entrySet()){
 			alloyFurnaceRecipes.add(new AlloyFurnaceRecipe(pairEntry.getKey().getKey(), pairEntry.getKey().getValue(), pairEntry.getValue()));
@@ -742,7 +741,7 @@ public class JeiRecipes {
 	public static List<RBMKFuelRecipe> getRBMKFuelRecipes() {
 		if(rbmkFuelRecipes != null)
 			return rbmkFuelRecipes;
-		rbmkFuelRecipes = new ArrayList<RBMKFuelRecipe>();
+		rbmkFuelRecipes = new ArrayList<>();
 
 		for(Map.Entry<ItemStack, ItemStack> pairEntry : RBMKFuelRecipes.recipes.entrySet()){
 			rbmkFuelRecipes.add(new RBMKFuelRecipe(pairEntry.getKey(), pairEntry.getValue()));
@@ -784,7 +783,7 @@ public class JeiRecipes {
 	public static List<ItemStack> getBatteries() {
 		if(batteries != null)
 			return batteries;
-		batteries = new ArrayList<ItemStack>();
+		batteries = new ArrayList<>();
 		batteries.add(new ItemStack(ModItems.battery_potato));
 		batteries.add(new ItemStack(ModItems.battery_potatos));
 		batteries.add(new ItemStack(ModItems.battery_su));
@@ -820,7 +819,7 @@ public class JeiRecipes {
 	public static List<CMBFurnaceRecipe> getCMBRecipes() {
 		if(cmbRecipes != null)
 			return cmbRecipes;
-		cmbRecipes = new ArrayList<CMBFurnaceRecipe>();
+		cmbRecipes = new ArrayList<>();
 		
 		cmbRecipes.add(new CMBFurnaceRecipe(Arrays.asList(new ItemStack(ModItems.ingot_advanced_alloy), new ItemStack(ModItems.ingot_magnetized_tungsten)), new ItemStack(ModItems.ingot_combine_steel, 4)));
 		cmbRecipes.add(new CMBFurnaceRecipe(Arrays.asList(new ItemStack(ModItems.powder_advanced_alloy), new ItemStack(ModItems.powder_magnetized_tungsten)), new ItemStack(ModItems.ingot_combine_steel, 4)));
@@ -831,7 +830,7 @@ public class JeiRecipes {
 	public static List<GasCentrifugeRecipe> getGasCentrifugeRecipes() {
 		if(gasCentRecipes != null)
 			return gasCentRecipes;
-		gasCentRecipes = new ArrayList<GasCentrifugeRecipe>();
+		gasCentRecipes = new ArrayList<>();
 
 		Map<Object, Object[]> recipes = GasCentrifugeRecipes.getGasCentrifugeRecipes();
 
@@ -867,7 +866,7 @@ public class JeiRecipes {
 	public static List<WasteDrumRecipe> getWasteDrumRecipes(){
 		if(wasteDrumRecipes != null)
 			return wasteDrumRecipes;
-		wasteDrumRecipes = new ArrayList<WasteDrumRecipe>();
+		wasteDrumRecipes = new ArrayList<>();
 		
 		for(Entry<ComparableStack, ItemStack> entry : WasteDrumRecipes.recipes.entrySet()){
 			wasteDrumRecipes.add(new WasteDrumRecipe(entry.getKey().getStack(), entry.getValue()));
@@ -879,7 +878,7 @@ public class JeiRecipes {
 	public static List<StorageDrumRecipe> getStorageDrumRecipes(){
 		if(storageDrumRecipes != null)
 			return storageDrumRecipes;
-		storageDrumRecipes = new ArrayList<StorageDrumRecipe>();
+		storageDrumRecipes = new ArrayList<>();
 		
 		for(Map.Entry<ComparableStack, ItemStack> entry : StorageDrumRecipes.recipeOutputs.entrySet()){
 			storageDrumRecipes.add(new StorageDrumRecipe(entry.getKey().getStack(), entry.getValue()));
@@ -891,7 +890,7 @@ public class JeiRecipes {
 	public static List<TransmutationRecipe> getTransmutationRecipes(){
 		if(transmutationRecipes != null)
 			return transmutationRecipes;
-		transmutationRecipes = new ArrayList<TransmutationRecipe>();
+		transmutationRecipes = new ArrayList<>();
 		
 		for(Map.Entry<AStack, ItemStack> entry : NuclearTransmutationRecipes.recipesOutput.entrySet()){
 			transmutationRecipes.add(new TransmutationRecipe(entry.getKey().getStackList(), entry.getValue()));
@@ -904,7 +903,7 @@ public class JeiRecipes {
 	public static List<RefineryRecipe> getRefineryRecipe() {
 		if(refineryRecipes != null)
 			return refineryRecipes;
-		refineryRecipes = new ArrayList<RefineryRecipe>();
+		refineryRecipes = new ArrayList<>();
 		
 		for(FluidType fluid : RefineryRecipes.refinery.keySet()){
 			FluidStack[] outputFluids = new FluidStack[]{RefineryRecipes.refinery.get(fluid).getX(), RefineryRecipes.refinery.get(fluid).getY(), RefineryRecipes.refinery.get(fluid).getV(), RefineryRecipes.refinery.get(fluid).getW()};
@@ -928,7 +927,7 @@ public class JeiRecipes {
 		if(blades != null)
 			return blades;
 		
-		blades = new ArrayList<ItemStack>();
+		blades = new ArrayList<>();
 		blades.add(new ItemStack(ModItems.blades_advanced_alloy));
 		blades.add(new ItemStack(ModItems.blades_aluminum));
 		blades.add(new ItemStack(ModItems.blades_combine_steel));
@@ -986,7 +985,7 @@ public class JeiRecipes {
 	public static List<SILEXRecipe> getSILEXRecipes(EnumWavelengths wavelength){
 		if(waveSilexRecipes.containsKey(wavelength))
 			return waveSilexRecipes.get(wavelength);
-		ArrayList wSilexRecipes = new ArrayList<>();
+		ArrayList<SILEXRecipe> wSilexRecipes = new ArrayList<>();
 		for(Entry<List<ItemStack>, com.hbm.inventory.SILEXRecipes.SILEXRecipe> e : com.hbm.inventory.SILEXRecipes.getRecipes().entrySet()){
 			com.hbm.inventory.SILEXRecipes.SILEXRecipe out = e.getValue();
 			if(out.laserStrength == wavelength){

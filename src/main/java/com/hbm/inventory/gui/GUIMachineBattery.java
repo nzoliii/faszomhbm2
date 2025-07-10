@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.inventory.container.ContainerMachineBattery;
 import com.hbm.lib.Library;
 import com.hbm.lib.RefStrings;

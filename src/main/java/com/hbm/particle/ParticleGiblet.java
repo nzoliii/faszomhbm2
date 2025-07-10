@@ -53,7 +53,7 @@ public class ParticleGiblet extends Particle {
 			//this.rotationYaw += this.momentumYaw;
 			
 			Particle fx = new ParticleBlockDust.Factory().createParticle(-1, world, posX, posY, posZ, 0, 0, 0, Block.getStateId(Blocks.REDSTONE_BLOCK.getDefaultState()));
-			HbmParticleUtility.setMaxAge(fx, 20 + rand.nextInt(20));
+			fx.setMaxAge(fx, 20 + rand.nextInt(20));
 			Minecraft.getMinecraft().effectRenderer.addEffect(fx);
 		}
 	}

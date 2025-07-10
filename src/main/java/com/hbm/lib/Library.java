@@ -1,9 +1,9 @@
 package com.hbm.lib;
 
-import api.hbm.energymk2.IEnergyConnectorBlock;
-import api.hbm.energymk2.IEnergyConnectorMK2;
-import api.hbm.fluid.IFluidConnector;
-import api.hbm.fluid.IFluidConnectorBlock;
+import com.hbm.api.energymk2.IEnergyConnectorBlock;
+import com.hbm.api.energymk2.IEnergyConnectorMK2;
+import com.hbm.api.fluid.IFluidConnector;
+import com.hbm.api.fluid.IFluidConnectorBlock;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;

@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine.pile;
 
-import api.hbm.block.IToolable;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockFuel;
 import com.hbm.items.ModItems;

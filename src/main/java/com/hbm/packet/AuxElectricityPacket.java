@@ -1,6 +1,6 @@
 package com.hbm.packet;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.tileentity.machine.TileEntityMachineRTG;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

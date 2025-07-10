@@ -1,8 +1,8 @@
 package com.hbm.tileentity.machine.rbmk;
 
-import api.hbm.fluid.IFluidConductor;
-import api.hbm.fluid.IFluidConnector;
-import api.hbm.fluid.IPipeNet;
+import com.hbm.api.fluid.IFluidConductor;
+import com.hbm.api.fluid.IFluidConnector;
+import com.hbm.api.fluid.IPipeNet;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.rbmk.RBMKBase;
 import com.hbm.config.MachineConfig;

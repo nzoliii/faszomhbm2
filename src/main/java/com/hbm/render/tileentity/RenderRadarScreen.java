@@ -1,6 +1,6 @@
 package com.hbm.render.tileentity;
 
-import api.hbm.entity.RadarEntry;
+import com.hbm.api.entity.RadarEntry;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.inventory.gui.GUIMachineRadarNT;
 import com.hbm.main.ResourceManager;

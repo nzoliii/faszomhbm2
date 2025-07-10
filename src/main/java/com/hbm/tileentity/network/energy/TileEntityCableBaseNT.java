@@ -1,7 +1,7 @@
 package com.hbm.tileentity.network.energy;
 
-import api.hbm.energymk2.IEnergyConductorMK2;
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.energymk2.IEnergyConductorMK2;
+import com.hbm.api.energymk2.Nodespace;
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;

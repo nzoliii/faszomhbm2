@@ -1,8 +1,8 @@
 package com.hbm.tileentity;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.fluid.IFluidConnector;
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.fluid.IFluidConnector;
+import com.hbm.api.tile.IHeatSource;
 import com.hbm.interfaces.IFluidAcceptor;
 import com.hbm.interfaces.IFluidContainer;
 import com.hbm.inventory.fluid.FluidType;

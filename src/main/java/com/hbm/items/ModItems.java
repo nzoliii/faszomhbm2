@@ -1,6 +1,6 @@
 package com.hbm.items;
 
-import api.hbm.block.IToolable.ToolType;
+import com.hbm.api.block.IToolable.ToolType;
 import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.BlockFuel;
@@ -258,30 +258,30 @@ public class ModItems {
 	public static final Item meteor_charm = new ItemModCharm("meteor_charm").setCreativeTab(MainRegistry.consumableTab);
 		
 	//Stamps
-	public static final Item stamp_stone_flat = new ItemStamp("stamp_stone_flat", 16);
-	public static final Item stamp_stone_plate = new ItemStamp("stamp_stone_plate", 16);
-	public static final Item stamp_stone_wire = new ItemStamp("stamp_stone_wire", 16);
-	public static final Item stamp_stone_circuit = new ItemStamp("stamp_stone_circuit", 16);
+	public static final Item stamp_stone_flat = new ItemStamp("stamp_stone_flat", 32);
+	public static final Item stamp_stone_plate = new ItemStamp("stamp_stone_plate", 32);
+	public static final Item stamp_stone_wire = new ItemStamp("stamp_stone_wire", 32);
+	public static final Item stamp_stone_circuit = new ItemStamp("stamp_stone_circuit", 32);
 	public static final Item stamp_iron_flat = new ItemStamp("stamp_iron_flat", 64);
 	public static final Item stamp_iron_plate = new ItemStamp("stamp_iron_plate", 64);
 	public static final Item stamp_iron_wire = new ItemStamp("stamp_iron_wire", 64);
-	public static final Item stamp_iron_circuit = new ItemStamp("stamp_iron_circuit", 128);
-	public static final Item stamp_steel_flat = new ItemStamp("stamp_steel_flat", 128);
-	public static final Item stamp_steel_plate = new ItemStamp("stamp_steel_plate", 128);
-	public static final Item stamp_steel_wire = new ItemStamp("stamp_steel_wire", 128);
-	public static final Item stamp_steel_circuit = new ItemStamp("stamp_steel_circuit", 128);
-	public static final Item stamp_titanium_flat = new ItemStamp("stamp_titanium_flat", 96);
-	public static final Item stamp_titanium_plate = new ItemStamp("stamp_titanium_plate", 96);
-	public static final Item stamp_titanium_wire = new ItemStamp("stamp_titanium_wire", 96);
-	public static final Item stamp_titanium_circuit = new ItemStamp("stamp_titanium_circuit", 96);
-	public static final Item stamp_obsidian_flat = new ItemStamp("stamp_obsidian_flat", 128);
-	public static final Item stamp_obsidian_plate = new ItemStamp("stamp_obsidian_plate", 128);
-	public static final Item stamp_obsidian_wire = new ItemStamp("stamp_obsidian_wire", 128);
-	public static final Item stamp_obsidian_circuit = new ItemStamp("stamp_obsidian_circuit", 128);
-	public static final Item stamp_schrabidium_flat = new ItemStamp("stamp_schrabidium_flat", 4096);
-	public static final Item stamp_schrabidium_plate = new ItemStamp("stamp_schrabidium_plate", 4096);
-	public static final Item stamp_schrabidium_wire = new ItemStamp("stamp_schrabidium_wire", 4096);
-	public static final Item stamp_schrabidium_circuit = new ItemStamp("stamp_schrabidium_circuit", 4096);
+	public static final Item stamp_iron_circuit = new ItemStamp("stamp_iron_circuit", 64);
+	public static final Item stamp_steel_flat = new ItemStamp("stamp_steel_flat", 192);
+	public static final Item stamp_steel_plate = new ItemStamp("stamp_steel_plate", 192);
+	public static final Item stamp_steel_wire = new ItemStamp("stamp_steel_wire", 192);
+	public static final Item stamp_steel_circuit = new ItemStamp("stamp_steel_circuit", 192);
+	public static final Item stamp_titanium_flat = new ItemStamp("stamp_titanium_flat", 256);
+	public static final Item stamp_titanium_plate = new ItemStamp("stamp_titanium_plate", 256);
+	public static final Item stamp_titanium_wire = new ItemStamp("stamp_titanium_wire", 256);
+	public static final Item stamp_titanium_circuit = new ItemStamp("stamp_titanium_circuit", 256);
+	public static final Item stamp_obsidian_flat = new ItemStamp("stamp_obsidian_flat", 512);
+	public static final Item stamp_obsidian_plate = new ItemStamp("stamp_obsidian_plate", 512);
+	public static final Item stamp_obsidian_wire = new ItemStamp("stamp_obsidian_wire", 512);
+	public static final Item stamp_obsidian_circuit = new ItemStamp("stamp_obsidian_circuit", 512);
+//	public static final Item stamp_schrabidium_flat = new ItemStamp("stamp_schrabidium_flat", 4096);
+//	public static final Item stamp_schrabidium_plate = new ItemStamp("stamp_schrabidium_plate", 4096);
+//	public static final Item stamp_schrabidium_wire = new ItemStamp("stamp_schrabidium_wire", 4096);
+//	public static final Item stamp_schrabidium_circuit = new ItemStamp("stamp_schrabidium_circuit", 4096);
 	public static final Item stamp_desh_flat = new ItemStamp("stamp_desh_flat", 0);
 	public static final Item stamp_desh_plate = new ItemStamp("stamp_desh_plate", 0);
 	public static final Item stamp_desh_wire = new ItemStamp("stamp_desh_wire", 0);
@@ -290,11 +290,12 @@ public class ModItems {
 	public static final Item stamp_desh_44 = new ItemStamp("stamp_desh_44", 0);
 	public static final Item stamp_desh_9 = new ItemStamp("stamp_desh_9", 0);
 	public static final Item stamp_desh_50 = new ItemStamp("stamp_desh_50", 0);
-	public static final Item stamp_357 = new ItemStamp("stamp_357", 512);
-	public static final Item stamp_44 = new ItemStamp("stamp_44", 512);
-	public static final Item stamp_9 = new ItemStamp("stamp_9", 512);
-	public static final Item stamp_50 = new ItemStamp("stamp_50", 512);
-	
+	public static final Item stamp_357 = new ItemStamp("stamp_357", 1000);
+	public static final Item stamp_44 = new ItemStamp("stamp_44", 1000);
+	public static final Item stamp_9 = new ItemStamp("stamp_9", 1000);
+	public static final Item stamp_50 = new ItemStamp("stamp_50", 1000);
+	// TODO: Port ItemStampBook
+
 	public static final Item blades_aluminum = new ItemBlades("blades_aluminum", 24);
 	public static final Item blades_gold = new ItemBlades("blades_gold", 32);
 	public static final Item blades_iron = new ItemBlades("blades_iron", 64);

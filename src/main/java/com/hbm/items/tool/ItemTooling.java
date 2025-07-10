@@ -1,7 +1,7 @@
 package com.hbm.items.tool;
 
-import api.hbm.block.IToolable;
-import api.hbm.block.IToolable.ToolType;
+import com.hbm.api.block.IToolable;
+import com.hbm.api.block.IToolable.ToolType;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;

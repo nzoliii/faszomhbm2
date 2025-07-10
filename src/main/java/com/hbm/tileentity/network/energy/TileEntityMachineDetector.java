@@ -1,6 +1,6 @@
 package com.hbm.tileentity.network.energy;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.network.energy.PowerDetector;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.lib.ForgeDirection;

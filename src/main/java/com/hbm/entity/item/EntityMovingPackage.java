@@ -1,7 +1,7 @@
 package com.hbm.entity.item;
 
-import api.hbm.block.IConveyorPackage;
-import api.hbm.block.IEnterableBlock;
+import com.hbm.api.block.IConveyorPackage;
+import com.hbm.api.block.IEnterableBlock;
 import com.hbm.util.ItemStackUtil;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;

@@ -1,6 +1,6 @@
 package com.hbm.inventory.container;
 
-import api.hbm.item.IDesignatorItem;
+import com.hbm.api.item.IDesignatorItem;
 import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.SlotMachineOutput;

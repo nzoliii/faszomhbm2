@@ -1,6 +1,6 @@
 package com.hbm.main;
 
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.energymk2.Nodespace;
 import com.google.common.collect.Multimap;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmCapability;

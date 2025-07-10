@@ -1,6 +1,6 @@
 package com.hbm.entity.missile;
 
-import api.hbm.entity.IRadarDetectable;
+import com.hbm.api.entity.IRadarDetectable;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;

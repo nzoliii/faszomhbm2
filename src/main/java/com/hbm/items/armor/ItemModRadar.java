@@ -1,6 +1,6 @@
 package com.hbm.items.armor;
 
-import api.hbm.entity.IRadarDetectable;
+import com.hbm.api.entity.IRadarDetectable;
 import com.hbm.capability.HbmLivingProps;
 import com.hbm.handler.ArmorModHandler;
 import com.hbm.lib.HBMSoundHandler;

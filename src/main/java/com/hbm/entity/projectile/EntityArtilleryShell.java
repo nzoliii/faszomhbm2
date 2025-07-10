@@ -1,6 +1,6 @@
 package com.hbm.entity.projectile;
 
-import api.hbm.entity.IRadarDetectable;
+import com.hbm.api.entity.IRadarDetectable;
 import com.hbm.entity.logic.IChunkLoader;
 import com.hbm.items.weapon.ItemAmmoArty;
 import com.hbm.lib.HBMSoundHandler;

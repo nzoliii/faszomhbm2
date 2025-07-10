@@ -1,9 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.entity.IRadarDetectable;
-import api.hbm.entity.IRadarDetectableNT;
-import api.hbm.entity.RadarEntry;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.entity.IRadarDetectable;
+import com.hbm.api.entity.IRadarDetectableNT;
+import com.hbm.api.entity.RadarEntry;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
 import com.hbm.capability.HbmLivingProps;

@@ -1,7 +1,7 @@
 package com.hbm.items.tool;
 
-import api.hbm.block.IToolable;
-import api.hbm.block.IToolable.ToolType;
+import com.hbm.api.block.IToolable;
+import com.hbm.api.block.IToolable.ToolType;
 import com.hbm.handler.NTMToolHandler;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.material.Mats;

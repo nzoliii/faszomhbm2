@@ -1,23 +1,17 @@
 package com.hbm.blocks.machine;
 
-import api.hbm.fluid.IFluidConnector;
+import com.hbm.api.fluid.IFluidConnector;
 import com.hbm.blocks.ILookOverlay;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.render.block.BlockBakeFrame;
 import com.hbm.tileentity.machine.TileEntityPWRController;
 import com.hbm.util.I18nUtil;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.model.ModelRotation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,39 +22,32 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import com.google.common.collect.ImmutableMap;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
-import net.minecraftforge.items.CapabilityItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 //MrNorwood: Oh my fucking god fristie,this dogshit should be thrown the fuck out
-public class BlockPWR extends BlockContainerBakeable implements ILookOverlay {
+public class BlockPWR extends BlockContainer implements ILookOverlay {
 
     public static final PropertyBool IO_ENABLED = PropertyBool.create("io");
-    private final BlockBakeFrame portFrame;
 
-    public BlockPWR(Material mat, String name, String portTexture) {
-        super(mat, name, new BlockBakeFrame(BlockBakeFrame.BlockForm.ALL, name));
-        this.portFrame = new BlockBakeFrame(BlockBakeFrame.BlockForm.ALL, portTexture);
+    public BlockPWR(Material mat, String name) {
+        super(mat);
+        this.setTranslationKey(name);
+        this.setRegistryName(name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(IO_ENABLED, false));
+        ModBlocks.ALL_BLOCKS.add(this);
     }
 
     @NotNull
@@ -118,49 +105,6 @@ public class BlockPWR extends BlockContainerBakeable implements ILookOverlay {
         }
         // Ensure the tile entity is removed AFTER we've used it.
         super.breakBlock(worldIn, pos, state);
-    }
-
-    @Override
-    public void bakeModel(ModelBakeEvent event) {
-        bakeStateModel(event, this.blockFrame, "io=false");
-        bakeStateModel(event, this.portFrame, "io=true");
-        try {
-            IModel model = ModelLoaderRegistry.getModel(new ResourceLocation(blockFrame.getBaseModel()));
-            IBakedModel bakedModel = model.retexture(ImmutableMap.of("all", blockFrame.getSpriteLoc(0).toString()))
-                    .bake(ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter());
-            ModelResourceLocation invLocation = new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), "inventory");
-            event.getModelRegistry().putObject(invLocation, bakedModel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public Block getBlock() {
-        return this;
-    }
-
-//    @Override
-//    public StateMapperBase getStateMapper(ResourceLocation loc) {
-//        return super.getStateMapper(loc);
-//    }
-
-    private void bakeStateModel(ModelBakeEvent event, BlockBakeFrame frame, String variant) {
-        try {
-            IModel model = ModelLoaderRegistry.getModel(new ResourceLocation(frame.getBaseModel()));
-            IBakedModel bakedModel = model.retexture(ImmutableMap.of("all", frame.getSpriteLoc(0).toString()))
-                    .bake(ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter());
-            ModelResourceLocation modelLocation = new ModelResourceLocation(Objects.requireNonNull(getRegistryName()), variant);
-            event.getModelRegistry().putObject(modelLocation, bakedModel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void registerSprite(TextureMap map){
-        super.registerSprite(map);
-        this.portFrame.registerBlockTextures(map);
     }
 
     @Override

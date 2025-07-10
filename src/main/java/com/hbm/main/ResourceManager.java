@@ -394,7 +394,7 @@ public class ResourceManager {
 	//Bombs
 	public static final IModelCustom bomb_solinium = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/ufp.obj")).asVBO();
 	public static final IModelCustom n2 = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/n2.obj")).asVBO();
-	public static final WavefrontObject n45_chain = new WavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/n45_chain.obj"));
+	public static final IModelCustom n45_chain = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/n45_chain.obj")).asVBO();
 	public static final IModelCustom fstbmb = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/fstbmb.obj")).asVBO();
 	public static final IModelCustom bomb_gadget = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/gadget.obj")).asVBO();
 	public static final IModelCustom bomb_boy = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/LilBoy.obj")).asVBO();

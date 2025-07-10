@@ -1169,19 +1169,19 @@ public class ClientProxy extends ServerProxy {
                     if ("normal".equals(data.getString("mode"))) {
                         int stateId = Block.getStateId(Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockStainedHardenedClay.COLOR, rand.nextBoolean() ? EnumDyeColor.LIME : EnumDyeColor.GREEN));
                         Particle fx = new ParticleBlockDust.Factory().createParticle(-1, world, ix, iy, iz, (vec.x + rand.nextGaussian() * 0.2) * 0.2, (vec.y + rand.nextGaussian() * 0.2) * 0.2, (vec.z + rand.nextGaussian() * 0.2) * 0.2, stateId);
-                        HbmParticleUtility.setMaxAge(fx, 150 + rand.nextInt(50));
+                        fx.setMaxAge(150 + rand.nextInt(50));
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
 
                     if ("blood".equals(data.getString("mode"))) {
                         Particle fx = new ParticleBlockDust.Factory().createParticle(-1, world, ix, iy, iz, (vec.x + rand.nextGaussian() * 0.2) * 0.2, (vec.y + rand.nextGaussian() * 0.2) * 0.2, (vec.z + rand.nextGaussian() * 0.2) * 0.2, Block.getStateId(Blocks.REDSTONE_BLOCK.getDefaultState()));
-                        HbmParticleUtility.setMaxAge(fx, 150 + rand.nextInt(50));
+                        fx.setMaxAge( 150 + rand.nextInt(50));
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
 
                     if ("smoke".equals(data.getString("mode"))) {
                         Particle fx = new ParticleSmokeNormal.Factory().createParticle(-1, world, ix, iy, iz, (vec.x + rand.nextGaussian() * 0.1) * 0.05, (vec.y + rand.nextGaussian() * 0.1) * 0.05, (vec.z + rand.nextGaussian() * 0.1) * 0.05);
-                        HbmParticleUtility.setMaxAge(fx, 10 + rand.nextInt(10));
+                        fx.setMaxAge( 10 + rand.nextInt(10));
                         HbmParticleUtility.resetSmokeScaleWithMult((ParticleSmokeNormal) fx, 0.2F);
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
@@ -1206,7 +1206,7 @@ public class ClientProxy extends ServerProxy {
 
 
                     Particle fx = new ParticleBlockDust.Factory().createParticle(-1, world, ix, iy, iz, 0, 0, 0, Block.getStateId(b.getStateFromMeta(meta)));
-                    HbmParticleUtility.setMaxAge(fx, 150 + rand.nextInt(50));
+                    fx.setMaxAge( 150 + rand.nextInt(50));
 
                     Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                 }
@@ -1293,7 +1293,7 @@ public class ClientProxy extends ServerProxy {
                 fx = new ParticleSmokeNormal.Factory().createParticle(-1, world, x, y, z, mX, mY, mZ);
                 float scale = 100;
                 HbmParticleUtility.setSmokeScale((ParticleSmokeNormal) fx, scale);
-                HbmParticleUtility.setMaxAge(fx, 200 + rand.nextInt(50));
+                fx.setMaxAge(200 + rand.nextInt(50));
                 HbmParticleUtility.setNoClip(fx);
                 HbmParticleUtility.setMotion(fx, rand.nextGaussian() * 0.2, 2.5 + rand.nextDouble(), rand.nextGaussian() * 0.2);
             }
@@ -1342,7 +1342,7 @@ public class ClientProxy extends ServerProxy {
                 Block b = Block.getBlockById(data.getInteger("block"));
                 int id = Block.getStateId(b.getDefaultState());
                 fx = new ParticleBlockDust.Factory().createParticle(-1, world, x, y, z, mX, mY + 0.2, mZ, id);
-                HbmParticleUtility.setMaxAge(fx, 10 + rand.nextInt(20));
+                fx.setMaxAge(10 + rand.nextInt(20));
             }
 
             if (fx != null)

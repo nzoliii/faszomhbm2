@@ -30,9 +30,6 @@ public class ItemStamp extends Item {
 				this == ModItems.stamp_obsidian_circuit ||
 				this == ModItems.stamp_obsidian_plate ||
 				this == ModItems.stamp_obsidian_wire ||
-				this == ModItems.stamp_schrabidium_circuit ||
-				this == ModItems.stamp_schrabidium_plate ||
-				this == ModItems.stamp_schrabidium_wire ||
 				this == ModItems.stamp_desh_circuit ||
 				this == ModItems.stamp_desh_plate ||
 				this == ModItems.stamp_desh_wire ||
@@ -45,7 +42,7 @@ public class ItemStamp extends Item {
 				this == ModItems.stamp_stone_circuit ||
 				this == ModItems.stamp_stone_plate ||
 				this == ModItems.stamp_stone_wire)
-			tooltip.add("§e" + I18nUtil.resolveKey("info.templatefolder"));
-			if(stack.getMaxDamage() > 0 && stack.getItemDamage() == 0) tooltip.add("Durability: "+ stack.getMaxDamage() + " / " + stack.getMaxDamage());
+			tooltip.add("§e" + I18nUtil.resolveKey("info.templatefolder", I18nUtil.resolveKey("item.template_folder.name")));
+		if(stack.getMaxDamage() > 0 && stack.getItemDamage() == 0) tooltip.add("Durability: "+ stack.getMaxDamage() + " / " + stack.getMaxDamage());
 	}
 }

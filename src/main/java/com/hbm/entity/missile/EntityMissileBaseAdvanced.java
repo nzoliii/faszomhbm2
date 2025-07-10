@@ -1,6 +1,6 @@
 package com.hbm.entity.missile;
 
-import api.hbm.entity.IRadarDetectable;
+import com.hbm.api.entity.IRadarDetectable;
 import com.hbm.config.WeaponConfig;
 import com.hbm.entity.logic.IChunkLoader;
 import com.hbm.explosion.ExplosionLarge;

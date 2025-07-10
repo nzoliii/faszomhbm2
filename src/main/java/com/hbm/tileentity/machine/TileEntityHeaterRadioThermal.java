@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.tile.IHeatSource;
+import com.hbm.api.tile.IHeatSource;
 import com.hbm.inventory.container.ContainerRadioThermal;
 import com.hbm.inventory.gui.GUIRadioThermal;
 import com.hbm.tileentity.IGUIProvider;

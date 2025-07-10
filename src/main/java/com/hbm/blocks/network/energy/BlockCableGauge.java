@@ -1,6 +1,6 @@
 package com.hbm.blocks.network.energy;
 
-import api.hbm.energymk2.PowerNetMK2;
+import com.hbm.api.energymk2.PowerNetMK2;
 import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;

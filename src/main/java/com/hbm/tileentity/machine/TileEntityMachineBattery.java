@@ -1,9 +1,9 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.energymk2.IEnergyConductorMK2;
-import api.hbm.energymk2.IEnergyProviderMK2;
-import api.hbm.energymk2.IEnergyReceiverMK2;
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.energymk2.IEnergyConductorMK2;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.Nodespace;
 import com.hbm.blocks.machine.MachineBattery;
 import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;

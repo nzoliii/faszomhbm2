@@ -1,6 +1,6 @@
 package com.hbm.packet;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.config.GeneralConfig;
 import com.hbm.entity.mob.EntityDuck;
 import com.hbm.items.weapon.ItemCrucible;

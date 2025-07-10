@@ -1,7 +1,7 @@
 package com.hbm.blocks.generic;
 
-import api.hbm.block.IDrillInteraction;
-import api.hbm.block.IMiningDrill;
+import com.hbm.api.block.IDrillInteraction;
+import com.hbm.api.block.IMiningDrill;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
 import net.minecraft.block.Block;

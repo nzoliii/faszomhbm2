@@ -1,7 +1,7 @@
 package com.hbm.wiaj.cannery;
 
-import api.hbm.energymk2.IEnergyConnectorMK2;
-import api.hbm.fluid.IFluidConnector;
+import com.hbm.api.energymk2.IEnergyConnectorMK2;
+import com.hbm.api.fluid.IFluidConnector;
 import com.hbm.inventory.fluid.FluidType;
 import net.minecraft.tileentity.TileEntity;
 

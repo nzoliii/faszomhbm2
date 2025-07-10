@@ -1,6 +1,6 @@
 package com.hbm.tileentity.network.energy;
 
-import api.hbm.energymk2.Nodespace;
+import com.hbm.api.energymk2.Nodespace;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;

@@ -1,6 +1,7 @@
 package com.hbm.items.weapon;
 
 import com.hbm.handler.GunConfiguration;
+import com.hbm.interfaces.Spaghetti;
 import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.packet.GunAnimationPacket;
@@ -8,7 +9,6 @@ import com.hbm.packet.MeathookResetStrafePacket;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.SetGunAnimPacket;
 import com.hbm.render.anim.HbmAnimations.AnimType;
-import glmath.glm.vec._2.Vec2;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,18 +19,20 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Spaghetti("This is broken as fuck")
 public class ItemGunShotty extends ItemGunBase {
 	
 	//The 
 	public static Vec3d rayTrace = null;
-	public static Vec2 screenPos = new Vec2(0, 0);
-	public static Vec2 prevScreenPos = new Vec2(0, 0);
+	public static Vec2f screenPos = new Vec2f(0, 0);
+	public static Vec2f prevScreenPos = new Vec2f(0, 0);
 	//For swinging left or right with the meathook
 	public static float motionStrafe;
 	

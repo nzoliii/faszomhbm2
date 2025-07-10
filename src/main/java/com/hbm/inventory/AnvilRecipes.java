@@ -95,7 +95,6 @@ public class AnvilRecipes {
 				new ItemStack(ModItems.stamp_steel_flat),
 				new ItemStack(ModItems.stamp_titanium_flat),
 				new ItemStack(ModItems.stamp_obsidian_flat),
-				new ItemStack(ModItems.stamp_schrabidium_flat),
 				new ItemStack(ModItems.stamp_desh_flat)
 				}));
 		smithingRecipes.add(new AnvilSmithingMold(10, new OreDictStack(STEEL.shell()), new OreDictStack(MaterialShapes.SHELL.name())));

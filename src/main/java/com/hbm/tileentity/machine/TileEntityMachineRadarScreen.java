@@ -1,6 +1,6 @@
 package com.hbm.tileentity.machine;
 
-import api.hbm.entity.RadarEntry;
+import com.hbm.api.entity.RadarEntry;
 import com.hbm.handler.threading.PacketThreading;
 import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.IBufPacketReceiver;

@@ -1,6 +1,6 @@
 package com.hbm.items.armor;
 
-import api.hbm.energymk2.IBatteryItem;
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.blocks.machine.ItemSelfcharger;
 import com.hbm.items.gear.ArmorFSB;
 import com.hbm.lib.Library;

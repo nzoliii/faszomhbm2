@@ -1,6 +1,6 @@
 package com.hbm.tileentity.network;
 
-import api.hbm.block.IConveyorBelt;
+import com.hbm.api.block.IConveyorBelt;
 import com.hbm.entity.item.EntityMovingItem;
 import com.hbm.inventory.container.ContainerCraneUnboxer;
 import com.hbm.inventory.gui.GUICraneUnboxer;

@@ -1,6 +1,6 @@
 package com.hbm.explosion;
 
-import api.hbm.energymk2.IEnergyReceiverMK2;
+import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import cofh.redstoneflux.api.IEnergyProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.WasteLog;

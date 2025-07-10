@@ -1,6 +1,6 @@
 package com.hbm.tileentity;
 
-import api.hbm.tile.ILoadedTile;
+import com.hbm.api.tile.ILoadedTile;
 import com.hbm.sound.AudioWrapper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;

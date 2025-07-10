@@ -1,6 +1,6 @@
 package com.hbm.blocks.machine.pile;
 
-import api.hbm.block.IToolable;
+import com.hbm.api.block.IToolable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.items.ModItems;
 import com.hbm.tileentity.machine.pile.TileEntityPileFuel;

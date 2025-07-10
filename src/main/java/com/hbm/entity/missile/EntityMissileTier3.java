@@ -1,6 +1,6 @@
 package com.hbm.entity.missile;
 
-import api.hbm.entity.IRadarDetectableNT;
+import com.hbm.api.entity.IRadarDetectableNT;
 import com.hbm.explosion.ExplosionChaos;
 import com.hbm.explosion.ExplosionLarge;
 import com.hbm.explosion.ExplosionNT;
