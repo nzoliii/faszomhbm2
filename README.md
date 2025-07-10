@@ -1,21 +1,22 @@
-![fhbm2_title](https://raw.githubusercontent.com/nzoliii/faszomhbm2/refs/heads/main/static_banners/fhbm2_title.png)
+![fhbm2_title](https://raw.githubusercontent.com/nzoliii/faszomhbm2/master/static_banners/fhbm2_title.png)
 
 # Description
 The sequel to [FaszomHBM](https://github.com/nzoliii/faszomhbm).<br>
-This mod is based off of [MrNorwood's Community Edition mod](https://codeberg.org/MrNorwood/Hbm-s-Nuclear-Tech-CE) which is based off of<br> [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT)<br>
-which is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).<br>
-Due to the amount and complexity of the recipes of this mod [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei) is strongly recommended.
+This mod is based off of [MrNorwood's Community Edition mod](https://github.com/MisterNorwood/Hbm-s-Nuclear-Tech-CE) which is based off of [TheSlize's Community Edition<br>
+mod](https://github.com/TheSlize/Hbm-s-Nuclear-Tech-GIT) which is based off of [Alcater's NTM Extended Edition mod](https://github.com/Alcatergit/Hbm-s-Nuclear-Tech-GIT) which is based off of [TheOriginalGolem's fork](https://github.com/TheOriginalGolem/Hbm-s-Nuclear-Tech-GIT) which<br>
+is based off of [Drillgon200's port](https://github.com/Drillgon200/Hbm-s-Nuclear-Tech-GIT) which is based off of the official [HBM's Nuclear Tech Mod](https://github.com/HbmMods/Hbm-s-Nuclear-Tech-GIT).<br>
+Due to the amount and complexity of the recipes of this mod [JEI (Just Enough Items)](https://www.curseforge.com/minecraft/mc-mods/jei) is strongly recommended.<br>
 
 # Features
 HBM's Nuclear Tech Mod is all about technology, atomic science and nuclear weapons. It features an expansive tech<br>
 tree of various processing and utility machines, craftable bombs and missiles, guns, and abandoned structures to<br>
 explore. Nukes are no longer just green TNT blocks. You will have to synthesize new types of explosives and enrich<br>
-uranium before you can send nuclear missiles towards your friends.<br>
-This version of the HBM mods takes things to the next level. You can now hear real vomit sounds from me and my<br>
-friends. There are new items exclusive to the FaszomHBM series including nicotine pouches, abált szalonna,<br>
-my pálinka Som, and The Copper Pig. The main menu has been retextured inspired by the Terraria Calamity Mod.<br>
-In summary, this mod aims to be the funniest version of the HBM mods. You can find out the rest of the features by<br>
-downloading this mod from [Curseforge (I don't really update the Curseforge page)](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
+uranium before you can send nuclear missiles towards your friends. This version of the HBM mods takes things to the<br>
+next level. You can now hear real vomit sounds from me and my friends. There are new items exclusive to the<br>
+FaszomHBM series including nicotine pouches, abált szalonna, my pálinka Som, and The Copper Pig. The main menu<br>
+has been retextured inspired by the Terraria Calamity Mod. In summary, this mod aims to be the funniest version of<br>
+the HBM mods. You can find out the rest of the features by downloading this mod from [Curseforge (I don't really<br>
+update the Curseforge page)](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
 
 # Development guide:
 For development Java 17 / 21 is used.
