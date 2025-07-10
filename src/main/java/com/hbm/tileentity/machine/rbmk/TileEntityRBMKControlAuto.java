@@ -1,15 +1,23 @@
 package com.hbm.tileentity.machine.rbmk;
 
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.inventory.container.ContainerRBMKControlAuto;
+import com.hbm.inventory.gui.GUIRBMKControlAuto;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControlManual.RBMKColor;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityRBMKControlAuto extends TileEntityRBMKControl implements IControlReceiver {
+public class TileEntityRBMKControlAuto extends TileEntityRBMKControl implements IControlReceiver, IGUIProvider {
 	
 	public RBMKFunction function = RBMKFunction.LINEAR;
 	public double levelLower;
@@ -127,5 +135,16 @@ public class TileEntityRBMKControlAuto extends TileEntityRBMKControl implements 
 	@Override
 	public ColumnType getConsoleType() {
 		return ColumnType.CONTROL_AUTO;
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRBMKControlAuto(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIRBMKControlAuto(player.inventory, this);
 	}
 }

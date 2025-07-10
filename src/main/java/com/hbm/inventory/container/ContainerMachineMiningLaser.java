@@ -9,11 +9,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ContainerMiningLaser extends Container {
+public class ContainerMachineMiningLaser extends Container {
 
 	private TileEntityMachineMiningLaser diFurnace;
 
-	public ContainerMiningLaser(InventoryPlayer invPlayer, TileEntityMachineMiningLaser tedf) {
+	public ContainerMachineMiningLaser(InventoryPlayer invPlayer, TileEntityMachineMiningLaser tedf) {
 		diFurnace = tedf;
 
 		//Battery

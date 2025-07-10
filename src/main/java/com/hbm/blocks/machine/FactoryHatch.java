@@ -20,6 +20,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class FactoryHatch extends BlockContainer {
 
@@ -59,7 +60,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(pos.add(0, 0, 1))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, pos.getX(), pos.getY(), pos.getZ() + 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ() + 1);
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factory.structurebad"));
 						}
@@ -73,7 +74,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(pos.add(0, 0, -1))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, pos.getX(), pos.getY(), pos.getZ() - 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ() - 1);
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factory.structurebad"));
 						}
@@ -87,7 +88,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(pos.add(1, 0, 0))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, pos.getX() + 1, pos.getY(), pos.getZ());
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX() + 1, pos.getY(), pos.getZ());
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factory.structurebad"));
 						}
@@ -101,7 +102,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreTitanium)world.getTileEntity(pos.add(-1, 0, 0))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_titanium, world, pos.getX() - 1, pos.getY(), pos.getZ());
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX() - 1, pos.getY(), pos.getZ());
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factory.structurebad"));
 						}
@@ -119,7 +120,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(pos.add(0, 0, 1))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, pos.getX(), pos.getY(), pos.getZ() + 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ() + 1);
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factoryadvanced.structurebad"));
 						}
@@ -133,7 +134,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(pos.add(0, 0, -1))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, pos.getX(), pos.getY(), pos.getZ() - 1);
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ() - 1);
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factoryadvanced.structurebad"));
 						}
@@ -147,7 +148,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(pos.add(1, 0, 0))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, pos.getX() + 1, pos.getY(), pos.getZ());
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX() + 1, pos.getY(), pos.getZ());
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factoryadvanced.structurebad"));
 						}
@@ -161,7 +162,7 @@ public class FactoryHatch extends BlockContainer {
 					{
 						if(((TileEntityCoreAdvanced)world.getTileEntity(pos.add(-1, 0, 0))).isStructureValid(world))
 						{
-							player.openGui(MainRegistry.instance, ModBlocks.guiID_factory_advanced, world, pos.getX() - 1, pos.getY(), pos.getZ());
+							FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX() - 1, pos.getY(), pos.getZ());
 						} else {
 							player.sendMessage(new TextComponentTranslation("chat.factoryadvanced.structurebad"));
 						}

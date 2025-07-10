@@ -18,6 +18,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class SoyuzCapsule extends BlockContainer {
 
@@ -44,9 +45,7 @@ public class SoyuzCapsule extends BlockContainer {
 			return true;
 		} else if(!player.isSneaking())
 		{
-			
-			player.openGui(MainRegistry.instance, ModBlocks.guiID_capsule, world, pos.getX(), pos.getY(), pos.getZ());
-				
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

@@ -4,19 +4,15 @@ import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.tileentity.machine.TileEntityDiFurnace;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
 public class ContainerDiFurnace extends Container {
 	private TileEntityDiFurnace diFurnace;
-	private int dualCookTime;
-	private int dualPower;
 	public ContainerDiFurnace(InventoryPlayer invPlayer, TileEntityDiFurnace tedf) {
-		dualCookTime = 0;
-		dualPower = 0;
 		diFurnace = tedf;
 		
 		//Inputs
@@ -40,13 +36,25 @@ public class ContainerDiFurnace extends Container {
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 		}
 	}
-	
+
 	@Override
-	public void addListener(IContainerListener listener) {
-		super.addListener(listener);
-		listener.sendWindowProperty(this, 0, this.diFurnace.dualCookTime);
-		listener.sendWindowProperty(this, 1, this.diFurnace.dualPower);
-		/**=====We are entering the magic realm of broken shit.=====**/
+	public ItemStack slotClick(int index, int button, ClickType mode, EntityPlayer player) {
+
+		if(index >= 0 && index < 3 && button == 1 && mode == ClickType.PICKUP) {
+			Slot slot = this.getSlot(index);
+			if(!slot.getHasStack() && player.inventory.getItemStack().isEmpty()) {
+				if(!player.world.isRemote) {
+					if(index == 0) diFurnace.sideUpper = (byte) ((diFurnace.sideUpper + 1) % 6);
+					if(index == 1) diFurnace.sideLower = (byte) ((diFurnace.sideLower + 1) % 6);
+					if(index == 2) diFurnace.sideFuel = (byte) ((diFurnace.sideFuel + 1) % 6);
+
+					diFurnace.markDirty();
+				}
+				return null;
+			}
+		}
+
+		return super.slotClick(index, button, mode, player);
 	}
 	
 	//What is this!?
@@ -89,40 +97,5 @@ public class ContainerDiFurnace extends Container {
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
 		return diFurnace.isUsableByPlayer(player);
-	}
-	
-	@Override
-	public void detectAndSendChanges() {
-		super.detectAndSendChanges();
-		
-		for(int i = 0; i < this.listeners.size(); i++)
-		{
-			IContainerListener par1 = (IContainerListener)this.listeners.get(i);
-			
-			if(this.dualCookTime != this.diFurnace.dualCookTime)
-			{
-				par1.sendWindowProperty(this, 0, this.diFurnace.dualCookTime);
-			}
-			
-			if(this.dualPower != this.diFurnace.dualPower)
-			{
-				par1.sendWindowProperty(this, 1, this.diFurnace.dualPower);
-			}
-		}
-		
-		this.dualCookTime = this.diFurnace.dualCookTime;
-		this.dualPower = this.diFurnace.dualPower;
-	}
-	
-	@Override
-	public void updateProgressBar(int i, int j) {
-		if(i == 0)
-		{
-			diFurnace.dualCookTime = j;
-		}
-		if(i == 1)
-		{
-			diFurnace.dualPower = j;
-		}
 	}
 }

@@ -4,24 +4,33 @@ import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.hazard.HazardSystem;
 import com.hbm.inventory.StorageDrumRecipes;
+import com.hbm.inventory.container.ContainerStorageDrum;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUIStorageDrum;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.saveddata.RadiationSavedData;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ContaminationUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class TileEntityStorageDrum extends TileEntityMachineBase implements ITickable, IFluidStandardTransceiver {
+public class TileEntityStorageDrum extends TileEntityMachineBase implements ITickable, IFluidStandardTransceiver, IGUIProvider {
 
 	public FluidTankNTM[] tanks;
 	private static final int[] slots_arr = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
@@ -198,5 +207,16 @@ public class TileEntityStorageDrum extends TileEntityMachineBase implements ITic
 	@Override
 	public FluidTankNTM[] getAllTanks() {
 		return tanks;
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerStorageDrum(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIStorageDrum(player.inventory, this);
 	}
 }

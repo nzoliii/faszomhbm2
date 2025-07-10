@@ -1,18 +1,26 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.inventory.container.ContainerSafe;
+import com.hbm.inventory.gui.GUISafe;
 import com.hbm.items.ModItems;
 import com.hbm.items.tool.ItemKeyPin;
 import com.hbm.lib.HBMSoundHandler;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntitySafe extends TileEntityLockableBase {
+public class TileEntitySafe extends TileEntityLockableBase implements IGUIProvider {
 
 	public ItemStackHandler inventory;
 	
@@ -103,5 +111,16 @@ public class TileEntitySafe extends TileEntityLockableBase {
 			return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory);
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerSafe(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUISafe(player.inventory, this);
 	}
 }

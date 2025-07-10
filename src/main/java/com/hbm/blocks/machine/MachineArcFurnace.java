@@ -22,6 +22,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -105,10 +106,7 @@ public class MachineArcFurnace extends BlockContainer {
 		if(world.isRemote) {
 			return true;
 		} else if(!player.isSneaking()) {
-			TileEntityMachineArcFurnace entity = (TileEntityMachineArcFurnace) world.getTileEntity(pos);
-			if(entity != null) {
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_machine_arc, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

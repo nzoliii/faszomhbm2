@@ -1,17 +1,25 @@
 package com.hbm.tileentity.bomb;
 
+import com.hbm.inventory.container.ContainerNukeMan;
+import com.hbm.inventory.gui.GUINukeMan;
 import com.hbm.items.ModItems;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityNukeMan extends TileEntity {
+public class TileEntityNukeMan extends TileEntity implements IGUIProvider {
 
 	public ItemStackHandler inventory = new ItemStackHandler(6) {
 		protected void onContentsChanged(int slot) {
@@ -129,5 +137,16 @@ public class TileEntityNukeMan extends TileEntity {
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerNukeMan(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUINukeMan(player.inventory, this);
 	}
 }

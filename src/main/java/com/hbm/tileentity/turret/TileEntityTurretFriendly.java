@@ -1,11 +1,20 @@
 package com.hbm.tileentity.turret;
 
 import com.hbm.handler.BulletConfigSyncingUtil;
+import com.hbm.inventory.container.ContainerTurretBase;
+import com.hbm.inventory.gui.GUITurretFriendly;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityTurretFriendly extends TileEntityTurretChekhov {
+public class TileEntityTurretFriendly extends TileEntityTurretChekhov implements IGUIProvider {
 
 	static List<Integer> configs = new ArrayList<>();
 	
@@ -30,5 +39,16 @@ public class TileEntityTurretFriendly extends TileEntityTurretChekhov {
 	@Override
 	public int getDelay() {
 		return 5;
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerTurretBase(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUITurretFriendly(player.inventory, this);
 	}
 }

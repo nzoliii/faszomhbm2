@@ -6,14 +6,17 @@ import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.handler.CompatHandler;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.interfaces.IFluidAcceptor;
+import com.hbm.inventory.container.ContainerBarrel;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Corrosive;
+import com.hbm.inventory.gui.GUIBarrel;
 import com.hbm.items.machine.ItemForgeFluidIdentifier;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IFluidCopiable;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.IPersistentNBT;
 import com.hbm.tileentity.TileEntityMachineBase;
 import io.netty.buffer.ByteBuf;
@@ -22,7 +25,10 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -36,6 +42,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,7 +57,7 @@ import java.util.Set;
 public class TileEntityBarrel extends TileEntityMachineBase implements
         ITickable, IPersistentNBT, IFluidCopiable,
         IFluidStandardTransceiver, SimpleComponent,
-        CompatHandler.OCComponent, IFFtoNTMF {
+        CompatHandler.OCComponent, IFFtoNTMF, IGUIProvider {
 
     public static final short modes = 4;
     private static final int[] slots_top = new int[]{2};
@@ -515,6 +523,17 @@ public class TileEntityBarrel extends TileEntityMachineBase implements
                 return getInfo(context, args);
         }
         throw new NoSuchMethodException();
+    }
+
+    @Override
+    public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new ContainerBarrel(player.inventory, this);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+        return new GUIBarrel(player.inventory, this);
     }
 
 }

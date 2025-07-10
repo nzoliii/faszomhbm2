@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.container.ContainerElectricFurnace;
+import com.hbm.inventory.container.ContainerMachineElectricFurnace;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachineElectricFurnace;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ public class GUIMachineElectricFurnace extends GuiInfoContainer {
 	private TileEntityMachineElectricFurnace diFurnace;
 
 	public GUIMachineElectricFurnace(InventoryPlayer invPlayer, TileEntityMachineElectricFurnace tedf) {
-		super(new ContainerElectricFurnace(invPlayer, tedf));
+		super(new ContainerMachineElectricFurnace(invPlayer, tedf));
 		diFurnace = tedf;
 		
 		this.xSize = 176;

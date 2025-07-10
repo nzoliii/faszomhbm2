@@ -1,14 +1,19 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.inventory.container.ContainerMachineSiren;
 import com.hbm.inventory.control_panel.ControlEvent;
 import com.hbm.inventory.control_panel.ControlEventSystem;
 import com.hbm.inventory.control_panel.IControllable;
+import com.hbm.inventory.gui.GUIMachineSiren;
 import com.hbm.items.machine.ItemCassette;
 import com.hbm.items.machine.ItemCassette.SoundType;
 import com.hbm.items.machine.ItemCassette.TrackType;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TESirenPacket;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -16,13 +21,15 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class TileEntityMachineSiren extends TileEntity implements ITickable, IControllable {
+public class TileEntityMachineSiren extends TileEntity implements ITickable, IControllable, IGUIProvider {
 
 	public ItemStackHandler inventory;
 	
@@ -171,5 +178,16 @@ public class TileEntityMachineSiren extends TileEntity implements ITickable, ICo
 	public void validate(){
 		super.validate();
 		ControlEventSystem.get(world).addControllable(this);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineSiren(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineSiren(player.inventory, this);
 	}
 }

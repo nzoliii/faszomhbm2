@@ -23,6 +23,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import org.apache.logging.log4j.Level;
 
 public class LaunchPad extends BlockContainer implements IBomb {
@@ -48,14 +49,11 @@ public class LaunchPad extends BlockContainer implements IBomb {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (worldIn.isRemote) {
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (world.isRemote) {
 			return true;
-		} else if (!playerIn.isSneaking()) {
-			TileEntityLaunchPad entity = (TileEntityLaunchPad) worldIn.getTileEntity(pos);
-			if (entity != null) {
-				playerIn.openGui(MainRegistry.instance, ModBlocks.guiID_launch_pad, worldIn, pos.getX(), pos.getY(), pos.getZ());
-			}
+		} else if (!player.isSneaking()) {
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

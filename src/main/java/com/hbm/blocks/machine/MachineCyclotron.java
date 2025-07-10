@@ -16,6 +16,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class MachineCyclotron extends BlockDummyable {
 
@@ -57,7 +58,7 @@ public class MachineCyclotron extends BlockDummyable {
 				}
 			}
 
-			player.openGui(MainRegistry.instance, ModBlocks.guiID_machine_cyclotron, world, pos1[0], pos1[1], pos1[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos1[0], pos1[1], pos1[2]);
 			return true;
 		} else {
 			return false;

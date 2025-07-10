@@ -4,20 +4,27 @@ import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.config.BombConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityBalefire;
+import com.hbm.inventory.container.ContainerNukeBalefire;
+import com.hbm.inventory.gui.GUINukeBalefire;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityNukeBalefire extends TileEntityMachineBase implements ITickable {
+public class TileEntityNukeBalefire extends TileEntityMachineBase implements ITickable, IGUIProvider {
 
 	public boolean loaded;
 	public boolean started;
@@ -172,5 +179,16 @@ public class TileEntityNukeBalefire extends TileEntityMachineBase implements ITi
 	public double getMaxRenderDistanceSquared()
 	{
 		return 65536.0D;
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerNukeBalefire(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUINukeBalefire(player.inventory, this);
 	}
 }

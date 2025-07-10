@@ -2,21 +2,29 @@ package com.hbm.tileentity.machine.rbmk;
 
 import com.hbm.blocks.machine.rbmk.RBMKControl;
 import com.hbm.interfaces.IControlReceiver;
+import com.hbm.inventory.container.ContainerRBMKControl;
 import com.hbm.inventory.control_panel.ControlEvent;
 import com.hbm.inventory.control_panel.DataValue;
 import com.hbm.inventory.control_panel.DataValueFloat;
+import com.hbm.inventory.gui.GUIRBMKControl;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TileEntityRBMKControlManual extends TileEntityRBMKControl implements IControlReceiver {
+public class TileEntityRBMKControlManual extends TileEntityRBMKControl implements IControlReceiver, IGUIProvider {
 
 	public RBMKColor color;
 	public double startingLevel;
@@ -171,5 +179,16 @@ public class TileEntityRBMKControlManual extends TileEntityRBMKControl implement
 		events.add("rbmk_ctrl_set_level");
 		events.add("rbmk_ctrl_set_color");
 		return events;
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRBMKControl(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIRBMKControl(player.inventory, this);
 	}
 }

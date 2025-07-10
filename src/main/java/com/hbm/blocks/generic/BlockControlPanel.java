@@ -31,6 +31,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -62,8 +63,7 @@ public class BlockControlPanel extends BlockContainer implements ICustomSelectio
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if(!worldIn.isRemote){
-			if(playerIn.getHeldItem(hand).getItem() == ModItems.screwdriver || playerIn.getHeldItem(hand).getItem() == ModItems.screwdriver_desh)
-				playerIn.openGui(MainRegistry.instance, ModBlocks.guiID_control_panel, worldIn, pos.getX(), pos.getY(), pos.getZ());
+			FMLNetworkHandler.openGui(playerIn, MainRegistry.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		} else {
 			TileEntityControlPanel control = (TileEntityControlPanel)worldIn.getTileEntity(pos);
 			Control ctrl = control.panel.getSelectedControl(playerIn.getPositionEyes(1), playerIn.getLook(1));

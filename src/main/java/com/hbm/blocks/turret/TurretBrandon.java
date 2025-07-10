@@ -21,9 +21,4 @@ public class TurretBrandon extends TurretBaseNT {
 			return new TileEntityTurretBrandon();
 		return new TileEntityProxyCombo(true, true, false);
 	}
-	
-	@Override
-	public void openGUI(World world, EntityPlayer player, int x, int y, int z){
-		player.openGui(MainRegistry.instance, ModBlocks.guiID_brandon, world, x, y, z);
-	}
 }

@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -91,11 +92,7 @@ public class CompactLauncher extends BlockContainer implements IMultiBlock, IBom
 			return true;
 		} else if(!player.isSneaking())
 		{
-			TileEntityCompactLauncher entity = (TileEntityCompactLauncher) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_compact_launcher, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

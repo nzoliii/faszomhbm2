@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.container.ContainerPlasmaHeater;
+import com.hbm.inventory.container.ContainerMachinePlasmaHeater;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachinePlasmaHeater;
 import net.minecraft.client.Minecraft;
@@ -9,13 +9,13 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GUIPlasmaHeater extends GuiInfoContainer {
+public class GUIMachinePlasmaHeater extends GuiInfoContainer {
 
 	public static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/reactors/gui_fusion_heater.png");
 	private TileEntityMachinePlasmaHeater microwave;
 
-	public GUIPlasmaHeater(InventoryPlayer invPlayer, TileEntityMachinePlasmaHeater microwave) {
-		super(new ContainerPlasmaHeater(invPlayer, microwave));
+	public GUIMachinePlasmaHeater(InventoryPlayer invPlayer, TileEntityMachinePlasmaHeater microwave) {
+		super(new ContainerMachinePlasmaHeater(invPlayer, microwave));
 		this.microwave = microwave;
 
 		this.xSize = 176;

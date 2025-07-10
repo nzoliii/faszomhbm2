@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.container.ContainerMiningLaser;
+import com.hbm.inventory.container.ContainerMachineMiningLaser;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
@@ -15,13 +15,13 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 
-public class GUIMiningLaser extends GuiInfoContainer {
+public class GUIMachineMiningLaser extends GuiInfoContainer {
 
 	public static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/machine/gui_laser_miner.png");
 	private TileEntityMachineMiningLaser laser;
 
-	public GUIMiningLaser(InventoryPlayer invPlayer, TileEntityMachineMiningLaser laser) {
-		super(new ContainerMiningLaser(invPlayer, laser));
+	public GUIMachineMiningLaser(InventoryPlayer invPlayer, TileEntityMachineMiningLaser laser) {
+		super(new ContainerMachineMiningLaser(invPlayer, laser));
 		this.laser = laser;
 
 		this.xSize = 176;

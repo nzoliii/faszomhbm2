@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.container.ContainerNukeFstbmb;
+import com.hbm.inventory.container.ContainerNukeBalefire;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
 import com.hbm.packet.PacketDispatcher;
@@ -17,14 +17,14 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 
-public class GUINukeFstbmb extends GuiInfoContainer {
+public class GUINukeBalefire extends GuiInfoContainer {
 
 	public static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/weapon/fstbmbSchematic.png");
 	private TileEntityNukeBalefire bomb;
 	private GuiTextField timer;
 
-	public GUINukeFstbmb(InventoryPlayer invPlayer, TileEntityNukeBalefire bomb) {
-		super(new ContainerNukeFstbmb(invPlayer, bomb));
+	public GUINukeBalefire(InventoryPlayer invPlayer, TileEntityNukeBalefire bomb) {
+		super(new ContainerNukeBalefire(invPlayer, bomb));
 		this.bomb = bomb;
 
 		this.xSize = 176;

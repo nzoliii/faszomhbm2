@@ -2,21 +2,29 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.inventory.RecipesCommon;
 import com.hbm.inventory.WasteDrumRecipes;
+import com.hbm.inventory.container.ContainerWasteDrum;
+import com.hbm.inventory.gui.GUIWasteDrum;
 import com.hbm.items.machine.ItemRBMKRod;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityWasteDrum extends TileEntityMachineBase implements ITickable {
+public class TileEntityWasteDrum extends TileEntityMachineBase implements ITickable, IGUIProvider {
 
 	private static final int[] slots_arr = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 	
@@ -135,5 +143,16 @@ public class TileEntityWasteDrum extends TileEntityMachineBase implements ITicka
 				}
 			}
 		}
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerWasteDrum(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIWasteDrum(player.inventory, this);
 	}
 }

@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class MachineSatLinker extends BlockContainer {
 
@@ -37,11 +38,7 @@ public class MachineSatLinker extends BlockContainer {
 			return true;
 		} else if(!player.isSneaking())
 		{
-			TileEntityMachineSatLinker entity = (TileEntityMachineSatLinker) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_satlinker, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

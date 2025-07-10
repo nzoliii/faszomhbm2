@@ -8,11 +8,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ContainerSatDock extends Container {
+public class ContainerMachineSatDock extends Container {
 	
 	private TileEntityMachineSatDock diFurnace;
 	
-	public ContainerSatDock(InventoryPlayer invPlayer, TileEntityMachineSatDock tedf) {
+	public ContainerMachineSatDock(InventoryPlayer invPlayer, TileEntityMachineSatDock tedf) {
 		
 		diFurnace = tedf;
 

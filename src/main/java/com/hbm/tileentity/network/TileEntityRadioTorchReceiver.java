@@ -1,11 +1,20 @@
 package com.hbm.tileentity.network;
 
+import com.hbm.inventory.container.ContainerRadioTorchReceiver;
+import com.hbm.inventory.gui.GUIScreenRadioTorch;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.network.RTTYSystem.RTTYChannel;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileEntityRadioTorchReceiver extends TileEntityRadioTorchBase {
+public class TileEntityRadioTorchReceiver extends TileEntityRadioTorchBase implements IGUIProvider {
 
 	@Override
 	public void update() {
@@ -58,5 +67,16 @@ public class TileEntityRadioTorchReceiver extends TileEntityRadioTorchBase {
 		}
 		
 		super.update();
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRadioTorchReceiver(player, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIScreenRadioTorch(this);
 	}
 }

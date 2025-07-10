@@ -1,6 +1,8 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.handler.MissileStruct;
+import com.hbm.inventory.container.ContainerMachineMissileAssembly;
+import com.hbm.inventory.gui.GUIMachineMissileAssembly;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.items.weapon.ItemMissile;
 import com.hbm.items.weapon.ItemMissile.FuelType;
@@ -9,7 +11,10 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ItemStackHandlerWrapper;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TEMissileMultipartPacket;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +30,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityMachineMissileAssembly extends TileEntity implements ITickable {
+public class TileEntityMachineMissileAssembly extends TileEntity implements ITickable, IGUIProvider {
 
 	public ItemStackHandler inventory;
 	
@@ -279,5 +285,16 @@ public class TileEntityMachineMissileAssembly extends TileEntity implements ITic
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && inventory != null) || super.hasCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineMissileAssembly(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineMissileAssembly(player.inventory, this);
 	}
 }

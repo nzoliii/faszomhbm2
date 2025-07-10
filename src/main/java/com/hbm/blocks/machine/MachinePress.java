@@ -15,6 +15,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -84,11 +85,7 @@ public class MachinePress extends BlockContainer {
 		{
 			return true;
 		} else if(!player.isSneaking()) {
-			TileEntityMachinePress entity = (TileEntityMachinePress) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_machine_press, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

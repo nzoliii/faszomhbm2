@@ -22,6 +22,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -51,10 +52,7 @@ public class SoyuzLauncher extends BlockDummyable {
 			if(pos1 == null)
 				return false;
 
-			TileEntitySoyuzLauncher entity = (TileEntitySoyuzLauncher) world.getTileEntity(new BlockPos(pos1[0], pos1[1], pos1[2]));
-			if(entity != null) {
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_soyuz_launcher, world, pos1[0], pos1[1], pos1[2]);
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos1[0], pos1[1], pos1[2]);
 			return true;
 		} else {
 			return false;

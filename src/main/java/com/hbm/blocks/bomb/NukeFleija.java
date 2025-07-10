@@ -31,6 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.List;
 import java.util.Random;
@@ -80,11 +81,7 @@ public class NukeFleija extends BlockContainer implements IBomb {
 			return true;
 		} else if(!player.isSneaking())
 		{
-			TileEntityNukeFleija entity = (TileEntityNukeFleija) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_nuke_fleija, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

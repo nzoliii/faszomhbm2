@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class MachineFEL extends BlockDummyable {
 
@@ -53,8 +54,8 @@ public class MachineFEL extends BlockDummyable {
 			
 			if(pos == null)
 				return false;
-			
-			player.openGui(MainRegistry.instance, ModBlocks.guiID_fel, world, pos[0], pos[1], pos[2]);
+
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;

@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class MachineCrystallizer extends BlockDummyable {
@@ -48,7 +49,7 @@ public class MachineCrystallizer extends BlockDummyable {
 			TileEntityMachineCrystallizer entity = (TileEntityMachineCrystallizer) world.getTileEntity(new BlockPos(pos1[0], pos1[1], pos1[2]));
 			if(entity != null)
 			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_crystallizer, world, pos1[0], pos1[1], pos1[2]);
+				FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos1[0], pos1[1], pos1[2]);
 			}
 			return true;
 		} else {

@@ -18,6 +18,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class RadioTorchReceiver extends BlockContainer {
 
@@ -42,10 +43,7 @@ public class RadioTorchReceiver extends BlockContainer {
 		if(world.isRemote) {
 			return true;
 		} else if(!player.isSneaking())	{
-			TileEntityRadioTorchReceiver entity = (TileEntityRadioTorchReceiver) world.getTileEntity(pos);
-			if(entity != null){
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_radio_torch_receiver, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

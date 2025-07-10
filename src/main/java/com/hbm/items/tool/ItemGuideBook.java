@@ -1,23 +1,29 @@
 package com.hbm.items.tool;
 
+import com.hbm.inventory.gui.GUIScreenGuide;
 import com.hbm.items.ModItems;
 import com.hbm.lib.RefStrings;
 import com.hbm.main.MainRegistry;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.util.I18nUtil;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemGuideBook extends Item {
+public class ItemGuideBook extends Item implements IGUIProvider {
 
 	public ItemGuideBook(String s){
 		this.setTranslationKey(s);
@@ -29,11 +35,13 @@ public class ItemGuideBook extends Item {
 	}
 	
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn){
-		if(worldIn.isRemote)
-			playerIn.openGui(MainRegistry.instance, ModItems.guiID_item_guide, worldIn, 0, 0, 0);
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
+		if(world.isRemote) {
+			BlockPos pos = player.getPosition();
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+		}
 		
-		return ActionResult.newResult(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		return ActionResult.newResult(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 	}
 	
 	@Override
@@ -271,5 +279,16 @@ public class ItemGuideBook extends Item {
 		public GuidePage addImage(ResourceLocation image, int y, int sizeX, int sizeY) {
 			return addImage(image, -1, y, sizeX, sizeY);
 		}
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return null;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIScreenGuide(player);
 	}
 }

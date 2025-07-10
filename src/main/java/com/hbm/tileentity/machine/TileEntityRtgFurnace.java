@@ -1,18 +1,26 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.MachineRtgFurnace;
+import com.hbm.inventory.container.ContainerRtgFurnace;
+import com.hbm.inventory.gui.GUIRtgFurnace;
 import com.hbm.items.machine.ItemRTGPellet;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityRtgFurnace extends TileEntityMachineBase implements ITickable {
+public class TileEntityRtgFurnace extends TileEntityMachineBase implements ITickable, IGUIProvider {
 
 	public int dualCookTime;
 	public int heat;
@@ -212,6 +220,17 @@ public class TileEntityRtgFurnace extends TileEntityMachineBase implements ITick
 	@Override
 	public boolean canInsertItem(int slot, ItemStack itemStack, int amount) {
 		return this.isItemValidForSlot(slot, itemStack);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRtgFurnace(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIRtgFurnace(player.inventory, this);
 	}
 
 }

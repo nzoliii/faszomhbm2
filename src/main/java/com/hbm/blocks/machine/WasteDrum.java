@@ -19,6 +19,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -47,11 +48,7 @@ public class WasteDrum extends BlockContainer implements ITooltipProvider {
 			return true;
 		} else if(!player.isSneaking())
 		{
-			TileEntityWasteDrum entity = (TileEntityWasteDrum) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_waste_drum, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

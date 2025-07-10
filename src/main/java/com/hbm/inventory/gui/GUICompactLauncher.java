@@ -14,12 +14,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GUIMachineCompactLauncher extends GuiInfoContainer {
+public class GUICompactLauncher extends GuiInfoContainer {
 
 	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_table_small.png");
 	private final TileEntityCompactLauncher launcher;
 	
-	public GUIMachineCompactLauncher(InventoryPlayer invPlayer, TileEntityCompactLauncher tile) {
+	public GUICompactLauncher(InventoryPlayer invPlayer, TileEntityCompactLauncher tile) {
 		super(new ContainerCompactLauncher(invPlayer, tile));
 		launcher = tile;
 		

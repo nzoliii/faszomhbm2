@@ -1221,7 +1221,7 @@ public class ModItems {
 	public static final Item powder_fire = new ItemFuel("powder_fire", 6400).setCreativeTab(MainRegistry.partsTab);
 	public static final Item powder_meteorite = new ItemBase("powder_meteorite").setCreativeTab(MainRegistry.partsTab);
 	public static final Item powder_meteorite_tiny = new ItemBase("powder_meteorite_tiny").setCreativeTab(MainRegistry.partsTab);
-	public static final Item powder_flux = new ItemBase("powder_flux").setCreativeTab(MainRegistry.partsTab);
+	public static final Item powder_flux =  new ItemBakedBase("poweder_flux").setCreativeTab(MainRegistry.partsTab);
 
 	//Osmiridium
 	public static final Item powder_tektite = new ItemCustomLore("powder_tektite").setCreativeTab(MainRegistry.partsTab);
@@ -2079,7 +2079,6 @@ public class ModItems {
 	public static final Item journal_bj = new ItemTemplateFolder("journal_bj").setMaxStackSize(1).setCreativeTab(MainRegistry.templateTab);
 	public static final Item journal_silver = new ItemTemplateFolder("journal_silver").setMaxStackSize(1).setCreativeTab(MainRegistry.templateTab);
 
-
 	public static final Item bobmazon_materials = new ItemCatalog("bobmazon_materials").setMaxStackSize(1).setCreativeTab(MainRegistry.templateTab);
 	public static final Item bobmazon_machines = new ItemCatalog("bobmazon_machines").setMaxStackSize(1).setCreativeTab(MainRegistry.templateTab);
 	public static final Item bobmazon_weapons = new ItemCatalog("bobmazon_weapons").setMaxStackSize(1).setCreativeTab(MainRegistry.templateTab);
@@ -2215,7 +2214,7 @@ public class ModItems {
 	public static final Item coil_copper = new ItemBase("coil_copper").setCreativeTab(MainRegistry.partsTab);
 	public static final Item coil_copper_torus = new ItemBase("coil_copper_torus").setCreativeTab(MainRegistry.partsTab);
 	public static final Item coil_magnetized_tungsten = new ItemCustomLore("coil_magnetized_tungsten").setCreativeTab(MainRegistry.partsTab);
-	
+
 	//Gun ammo assemblies and ammo
 	public static final Item assembly_iron = new ItemBase("assembly_iron").setCreativeTab(MainRegistry.partsTab);
 	public static final Item assembly_steel = new ItemBase("assembly_steel").setCreativeTab(MainRegistry.partsTab);

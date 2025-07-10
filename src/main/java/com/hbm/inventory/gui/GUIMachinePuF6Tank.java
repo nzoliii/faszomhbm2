@@ -1,6 +1,6 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.inventory.container.ContainerPuF6Tank;
+import com.hbm.inventory.container.ContainerMachinePuF6Tank;
 import com.hbm.lib.RefStrings;
 import com.hbm.tileentity.machine.TileEntityMachinePuF6Tank;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ public class GUIMachinePuF6Tank extends GuiInfoContainer {
 	private final TileEntityMachinePuF6Tank puF6Tank;
 	
 	public GUIMachinePuF6Tank(InventoryPlayer invPlayer, TileEntityMachinePuF6Tank tedf) {
-		super(new ContainerPuF6Tank(invPlayer, tedf));
+		super(new ContainerMachinePuF6Tank(invPlayer, tedf));
 		puF6Tank = tedf;
 		
 		this.xSize = 176;

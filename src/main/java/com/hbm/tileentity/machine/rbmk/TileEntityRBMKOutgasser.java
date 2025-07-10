@@ -4,28 +4,37 @@ import com.hbm.api.fluid.IFluidStandardSender;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.inventory.container.ContainerRBMKOutgasser;
 import com.hbm.inventory.control_panel.DataValue;
 import com.hbm.inventory.control_panel.DataValueFloat;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUIRBMKOutgasser;
 import com.hbm.inventory.recipes.RBMKOutgasserRecipes;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.Tuple;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implements IRBMKFluxReceiver, IFluidStandardSender, IRBMKLoadable {
+public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implements IRBMKFluxReceiver, IFluidStandardSender, IRBMKLoadable, IGUIProvider {
 
 	public FluidTankNTM gas;
 	public double progress = 0;
@@ -284,5 +293,16 @@ public class TileEntityRBMKOutgasser extends TileEntityRBMKSlottedBase implement
 			);
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRBMKOutgasser(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIRBMKOutgasser(player.inventory, this);
 	}
 }

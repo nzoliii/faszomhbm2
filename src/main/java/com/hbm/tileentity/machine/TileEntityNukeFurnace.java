@@ -2,20 +2,28 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.MachineNukeFurnace;
 import com.hbm.inventory.RecipesCommon;
+import com.hbm.inventory.container.ContainerNukeFurnace;
+import com.hbm.inventory.gui.GUINukeFurnace;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.HashMap;
 
-public class TileEntityNukeFurnace extends TileEntity implements ITickable {
+public class TileEntityNukeFurnace extends TileEntity implements ITickable, IGUIProvider {
 
 	public ItemStackHandler inventory;
 	
@@ -23,10 +31,6 @@ public class TileEntityNukeFurnace extends TileEntity implements ITickable {
 	public int dualPower;
 	public static final int maxPower = 1000;
 	public static final int processingSpeed = 30;
-	
-	//private static final int[] slots_top = new int[] {1};
-	//private static final int[] slots_bottom = new int[] {2, 0};
-	//private static final int[] slots_side = new int[] {0};
 	
 	private String customName;
 	
@@ -248,5 +252,16 @@ public class TileEntityNukeFurnace extends TileEntity implements ITickable {
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerNukeFurnace(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUINukeFurnace(player.inventory, this);
 	}
 }

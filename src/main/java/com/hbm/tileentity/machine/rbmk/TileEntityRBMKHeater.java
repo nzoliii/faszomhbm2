@@ -4,25 +4,34 @@ import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.projectile.EntityRBMKDebris.DebrisType;
+import com.hbm.inventory.container.ContainerRBMKHeater;
 import com.hbm.inventory.control_panel.DataValue;
 import com.hbm.inventory.control_panel.DataValueFloat;
 import com.hbm.inventory.control_panel.DataValueString;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.fluid.trait.FT_Heatable;
+import com.hbm.inventory.gui.GUIRBMKHeater;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class TileEntityRBMKHeater extends TileEntityRBMKSlottedBase implements IFluidStandardTransceiver {
+public class TileEntityRBMKHeater extends TileEntityRBMKSlottedBase implements IFluidStandardTransceiver, IGUIProvider {
 
 	public FluidTankNTM feed;
 	public FluidTankNTM steam;
@@ -202,5 +211,16 @@ public class TileEntityRBMKHeater extends TileEntityRBMKSlottedBase implements I
 			);
 		}
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerRBMKHeater(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIRBMKHeater(player.inventory, this);
 	}
 }

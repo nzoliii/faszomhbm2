@@ -210,7 +210,7 @@ public class JEIConfig implements IModPlugin {
 		registry.addRecipeClickArea(GUIMachineCyclotron.class, 50, 24, 40, 40, CYCLOTRON);
 		registry.addRecipeClickArea(GUIMachinePress.class, 80, 35, 15, 15, PRESS);
 		registry.addRecipeClickArea(GUIMachineEPress.class, 80, 35, 15, 15, PRESS);
-		registry.addRecipeClickArea(GUITestDiFurnace.class, 102, 36, 21, 14, ALLOY);
+		registry.addRecipeClickArea(GUIDiFurnace.class, 102, 36, 21, 14, ALLOY);
 		registry.addRecipeClickArea(GUIDiFurnaceRTG.class, 102, 36, 21, 14, ALLOY);
 		registry.addRecipeClickArea(GUIMachineCentrifuge.class, 35, 9, 106, 40, CENTRIFUGE);
 		registry.addRecipeClickArea(GUIMachineGasCent.class, 70, 36, 36, 12, GAS_CENT);

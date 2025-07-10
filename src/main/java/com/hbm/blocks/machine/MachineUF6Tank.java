@@ -22,6 +22,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 import java.util.Random;
 
@@ -106,11 +107,7 @@ public class MachineUF6Tank extends BlockContainer implements IMultiBlock {
 			return true;
 		} else if(!player.isSneaking())
 		{
-			TileEntityMachineUF6Tank entity = (TileEntityMachineUF6Tank) world.getTileEntity(pos);
-			if(entity != null)
-			{
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_uf6_tank, world, pos.getX(), pos.getY(), pos.getZ());
-			}
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

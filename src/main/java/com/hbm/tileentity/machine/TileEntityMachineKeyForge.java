@@ -1,22 +1,26 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.inventory.container.ContainerMachineKeyForge;
+import com.hbm.inventory.gui.GUIMachineKeyForge;
 import com.hbm.items.tool.ItemKeyPin;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class TileEntityMachineKeyForge extends TileEntity implements ITickable {
+public class TileEntityMachineKeyForge extends TileEntity implements ITickable, IGUIProvider {
 
 	public ItemStackHandler inventory;
-	
-	//private static final int[] slots_top = new int[] {0};
-	//private static final int[] slots_bottom = new int[] {1};
-	//private static final int[] slots_side = new int[] {2};
 	
 	private String customName;
 	
@@ -77,36 +81,6 @@ public class TileEntityMachineKeyForge extends TileEntity implements ITickable {
 			if(inventory.getStackInSlot(2).getItem() instanceof ItemKeyPin && ((ItemKeyPin)inventory.getStackInSlot(2).getItem()).canTransfer()) {
 				ItemKeyPin.setPins(inventory.getStackInSlot(2), world.rand.nextInt(900) + 100);
 			}
-
-			//DEBUG, remove later
-			//Drillgon200: Later is now.
-			/*if(slots[2] != null && slots[2].getItem() == Items.wheat_seeds) {
-				slots[2] = new ItemStack(ModItems.nuke_starter_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.bone) {
-				slots[2] = new ItemStack(ModItems.nuke_advanced_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.feather) {
-				slots[2] = new ItemStack(ModItems.nuke_commercially_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.apple) {
-				slots[2] = new ItemStack(ModItems.nuke_electric_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.clay_ball) {
-				slots[2] = new ItemStack(ModItems.t45_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.stick) {
-				slots[2] = new ItemStack(ModItems.missile_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.string) {
-				slots[2] = new ItemStack(ModItems.grenade_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == Items.reeds) {
-				slots[2] = new ItemStack(ModItems.man_kit);
-			}
-			if(slots[2] != null && slots[2].getItem() == ModItems.battery_generic) {
-				slots[2] = new ItemStack(ModItems.memory);
-			}*/
 		}
 	}
 	
@@ -118,6 +92,17 @@ public class TileEntityMachineKeyForge extends TileEntity implements ITickable {
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
 		return capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.cast(inventory) : super.getCapability(capability, facing);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineKeyForge(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineKeyForge(player.inventory, this);
 	}
 	
 }

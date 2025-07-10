@@ -14,6 +14,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public class MachineTurbine extends BlockContainer {
 
@@ -36,13 +37,7 @@ public class MachineTurbine extends BlockContainer {
 		if (world.isRemote) {
 			return true;
 		} else if (!player.isSneaking()) {
-			TileEntity te = world.getTileEntity(pos);
-
-			TileEntityMachineTurbine entity = (TileEntityMachineTurbine) te;
-			if (entity != null) {
-				player.openGui(MainRegistry.instance, ModBlocks.guiID_machine_turbine, world, pos.getX(), pos.getY(), pos.getZ());
-			}
-
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 		} else {
 			return false;

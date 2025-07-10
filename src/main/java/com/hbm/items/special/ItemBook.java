@@ -1,18 +1,27 @@
 package com.hbm.items.special;
 
+import com.hbm.inventory.container.ContainerBook;
+import com.hbm.inventory.gui.GUIBook;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
+import com.hbm.tileentity.IGUIProvider;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ItemBook extends Item {
+public class ItemBook extends Item implements IGUIProvider {
 
 	public ItemBook(String s) {
 		this.setTranslationKey(s);
@@ -28,9 +37,22 @@ public class ItemBook extends Item {
 	
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-		if(!world.isRemote)
-			player.openGui(MainRegistry.instance, ModItems.guiID_item_book, world, 0, 0, 0);
+		if(!world.isRemote) {
+			BlockPos pos = player.getPosition();
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
+		}
 
 		return super.onItemRightClick(world, player, hand);
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerBook(player.inventory);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIBook(player.inventory);
 	}
 }

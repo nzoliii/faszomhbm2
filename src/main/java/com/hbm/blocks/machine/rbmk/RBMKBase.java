@@ -62,7 +62,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, IToo
         this.addStandardInfo(tooltip);
     }
 	
-	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, int gui, EnumHand hand) {
+	public boolean openInv(World world, int x, int y, int z, EntityPlayer player, EnumHand hand) {
 		
 		if(world.isRemote) {
 			return true;
@@ -87,7 +87,7 @@ public abstract class RBMKBase extends BlockDummyable implements IToolable, IToo
 		}
 		
 		if(!player.isSneaking()) {
-			FMLNetworkHandler.openGui(player, MainRegistry.instance, gui, world, pos[0], pos[1], pos[2]);
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return true;

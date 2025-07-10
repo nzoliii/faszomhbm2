@@ -1,6 +1,6 @@
 package com.hbm.inventory.container;
 
-import com.hbm.tileentity.bomb.TileEntityNukeBalefire;
+import com.hbm.tileentity.machine.TileEntityMachinePlasmaHeater;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -8,28 +8,27 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ContainerNukeFstbmb extends Container {
+public class ContainerMachinePlasmaHeater extends Container {
 
-	private TileEntityNukeBalefire balefireBomb;
+	private TileEntityMachinePlasmaHeater microwave;
 
-	public ContainerNukeFstbmb(InventoryPlayer invPlayer, TileEntityNukeBalefire tedf) {
+	public ContainerMachinePlasmaHeater(InventoryPlayer invPlayer, TileEntityMachinePlasmaHeater tedf) {
 
-		balefireBomb = tedf;
+		microwave = tedf;
 
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 17, 36));
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 1, 53, 36));
+		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 8, 53));
 
 		for(int i = 0; i < 3; i++)
 		{
 			for(int j = 0; j < 9; j++)
 			{
-				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + 56));
+				this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
 			}
 		}
 
 		for(int i = 0; i < 9; i++)
 		{
-			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142 + 56));
+			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 		}
 	}
 
@@ -44,13 +43,14 @@ public class ContainerNukeFstbmb extends Container {
 			ItemStack var5 = var4.getStack();
 			var3 = var5.copy();
 
-            if (par2 <= 2) {
-				if (!this.mergeItemStack(var5, 2, this.inventorySlots.size(), true))
+            if (par2 <= 4) {
+				if (!this.mergeItemStack(var5, 5, this.inventorySlots.size(), true))
 				{
 					return ItemStack.EMPTY;
 				}
 			} else {
-				return ItemStack.EMPTY;
+				if (!this.mergeItemStack(var5, 0, 1, true))
+					return ItemStack.EMPTY;
 			}
 
 			if (var5.isEmpty())
@@ -68,6 +68,6 @@ public class ContainerNukeFstbmb extends Container {
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return balefireBomb.isUseableByPlayer(player);
+		return microwave.isUseableByPlayer(player);
 	}
 }

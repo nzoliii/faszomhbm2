@@ -30,6 +30,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class BlockFluidBarrel extends BlockContainer {
 			return true;
 			
 		} else if(!player.isSneaking()) {
-			player.openGui(MainRegistry.instance, ModBlocks.guiID_barrel, world, pos.getX(), pos.getY(), pos.getZ());
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
 			return true;
 			
 		} else if(player.isSneaking()){

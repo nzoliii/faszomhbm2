@@ -7,8 +7,10 @@ import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.entity.missile.EntityMissileCustom;
 import com.hbm.handler.MissileStruct;
 import com.hbm.interfaces.IBomb;
+import com.hbm.inventory.container.ContainerCompactLauncher;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.inventory.gui.GUICompactLauncher;
 import com.hbm.items.ModItems;
 import com.hbm.items.weapon.ItemCustomMissile;
 import com.hbm.items.weapon.ItemMissile;
@@ -21,6 +23,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.TEMissileMultipartPacket;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
@@ -28,8 +31,10 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,6 +45,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -53,7 +59,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityCompactLauncher extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, SimpleComponent {
+public class TileEntityCompactLauncher extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, SimpleComponent, IGUIProvider {
 
 	public long power;
 	public static final long maxPower = 100000;
@@ -503,5 +509,16 @@ public class TileEntityCompactLauncher extends TileEntityMachineBase implements 
 			((IBomb)b).explode(world, pos);
 		}
 		return new Object[] {null};
+	}
+
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerCompactLauncher(player.inventory, this);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUICompactLauncher(player.inventory, this);
 	}
 }

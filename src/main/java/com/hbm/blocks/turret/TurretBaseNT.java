@@ -1,6 +1,7 @@
 package com.hbm.blocks.turret;
 
 import com.hbm.blocks.BlockDummyable;
+import com.hbm.main.MainRegistry;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,6 +11,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 
 public abstract class TurretBaseNT extends BlockDummyable {
 
@@ -41,14 +43,12 @@ public abstract class TurretBaseNT extends BlockDummyable {
 
 			if(pos == null)
 				return false;
-			
-			openGUI(world, player, pos[0], pos[1], pos[2]);
+
+			FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos[0], pos[1], pos[2]);
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	public abstract void openGUI(World world, EntityPlayer player, int x, int y, int z);
 	
 }

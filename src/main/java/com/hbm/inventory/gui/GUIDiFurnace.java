@@ -9,11 +9,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class GUITestDiFurnace extends GuiInfoContainer {
+public class GUIDiFurnace extends GuiInfoContainer {
 	public static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/GUIDiFurnace.png");
 	private TileEntityDiFurnace diFurnace;
 
-	public GUITestDiFurnace(InventoryPlayer invPlayer, TileEntityDiFurnace tedf) {
+	public GUIDiFurnace(InventoryPlayer invPlayer, TileEntityDiFurnace tedf) {
 		super(new ContainerDiFurnace(invPlayer, tedf));
 		diFurnace = tedf;
 		

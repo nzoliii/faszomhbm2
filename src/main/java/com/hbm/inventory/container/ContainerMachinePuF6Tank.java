@@ -9,11 +9,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class ContainerPuF6Tank extends Container {
+public class ContainerMachinePuF6Tank extends Container {
 
 	private TileEntityMachinePuF6Tank testNuke;
 	
-	public ContainerPuF6Tank(InventoryPlayer invPlayer, TileEntityMachinePuF6Tank tedf) {
+	public ContainerMachinePuF6Tank(InventoryPlayer invPlayer, TileEntityMachinePuF6Tank tedf) {
 		testNuke = tedf;
 		
 		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 44, 17));
