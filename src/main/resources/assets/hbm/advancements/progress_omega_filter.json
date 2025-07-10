@@ -1,29 +1,30 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:gas_mask_filter_radon"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_omega_filter"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_omega_filter.desc"
-		}
-	},
-	"parent": "hbm:progress_mask",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:gas_mask_filter_radon"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:gas_mask_filter_radon"
     },
-    "rewards": {
-        "experience": 470
+    "title": {
+      "translate": "hbm.achievement.progress_omega_filter"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_omega_filter.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_mask",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:gas_mask_filter_radon"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 470
+  }
 }

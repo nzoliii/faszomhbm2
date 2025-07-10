@@ -1,30 +1,31 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:ingot_desh"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_desh"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_desh.desc"
-		},
-		"frame": "goal"
-	},
-	"parent": "hbm:progress_chemplant",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:ingot_desh"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:ingot_desh"
     },
-    "rewards": {
-        "experience": 120
+    "title": {
+      "translate": "hbm.achievement.progress_desh"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_desh.desc"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_chemplant",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:ingot_desh"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 120
+  }
 }

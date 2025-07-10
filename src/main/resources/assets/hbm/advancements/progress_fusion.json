@@ -1,29 +1,30 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:struct_iter_core"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_fusion"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_fusion.desc"
-		}
-	},
-	"parent": "hbm:progress_bismuth",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:struct_iter_core"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:struct_iter_core"
     },
-    "rewards": {
-        "experience": 45
+    "title": {
+      "translate": "hbm.achievement.progress_fusion"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_fusion.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_bismuth",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:struct_iter_core"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 45
+  }
 }

@@ -1,30 +1,31 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:machine_fensu"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_fensu"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_fensu.desc"
-		},
-		"frame": "goal"
-	},
-	"parent": "hbm:progress_dineutronium",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:machine_fensu"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:machine_fensu"
     },
-    "rewards": {
-        "experience": 10000
+    "title": {
+      "translate": "hbm.achievement.progress_fensu"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_fensu.desc"
+    },
+    "frame": "goal",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_dineutronium",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:machine_fensu"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 10000
+  }
 }

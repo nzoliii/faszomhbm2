@@ -1,23 +1,24 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:coin_ufo"
-		},
-		"title": {
-			"translate": "hbm.achievement.bossUFO"
-		},
-		"description": {
-			"translate": "hbm.achievement.bossUFO.desc"
-		},
-		"frame": "challenge"
-	},
-	"parent": "hbm:bossworm",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 200
+  "display": {
+    "icon": {
+      "item": "hbm:coin_ufo"
+    },
+    "title": {
+      "translate": "hbm.achievement.bossUFO"
+    },
+    "description": {
+      "translate": "hbm.achievement.bossUFO.desc"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:bossworm",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 200
+  }
 }

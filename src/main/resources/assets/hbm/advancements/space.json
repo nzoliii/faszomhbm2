@@ -1,23 +1,24 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:missile_carrier"
-		},
-		"title": {
-			"translate": "hbm.achievement.space"
-		},
-		"description": {
-			"translate": "hbm.achievement.space.desc"
-		},
-		"frame": "challenge"
-	},
-	"parent": "hbm:progress_chemplant",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 300
+  "display": {
+    "icon": {
+      "item": "hbm:missile_carrier"
+    },
+    "title": {
+      "translate": "hbm.achievement.space"
+    },
+    "description": {
+      "translate": "hbm.achievement.space.desc"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_chemplant",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 300
+  }
 }

@@ -811,6 +811,7 @@ public class MainRegistry {
         MinecraftForge.EVENT_BUS.register(fhbm2CopperPigLobotomyCutscene.class);
         MinecraftForge.EVENT_BUS.register(fhbm2KabanPTSDCutscene.class);
         MinecraftForge.EVENT_BUS.register(fhbm2FleshCutscene.class);
+        MinecraftForge.EVENT_BUS.register(fhbm2AdvancementAnnouncer.class);
         MinecraftForge.EVENT_BUS.register(new fhbm2CutsceneItemTracker());
     }
 

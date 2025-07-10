@@ -1,22 +1,23 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:coin_maskman"
-		},
-		"title": {
-			"translate": "hbm.achievement.bossMaskman"
-		},
-		"description": {
-			"translate": "hbm.achievement.bossMaskman.desc"
-		}
-	},
-	"parent": "hbm:bosscreeper",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 80
+  "display": {
+    "icon": {
+      "item": "hbm:coin_maskman"
+    },
+    "title": {
+      "translate": "hbm.achievement.bossMaskman"
+    },
+    "description": {
+      "translate": "hbm.achievement.bossMaskman.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:bosscreeper",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 80
+  }
 }

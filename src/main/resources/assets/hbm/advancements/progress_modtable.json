@@ -1,29 +1,30 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:machine_armor_table"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_modtable"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_modtable.desc"
-		}
-	},
-	"parent": "hbm:root",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:machine_armor_table"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:machine_armor_table"
     },
-    "rewards": {
-        "experience": 12
+    "title": {
+      "translate": "hbm.achievement.progress_modtable"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_modtable.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:root",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:machine_armor_table"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 12
+  }
 }

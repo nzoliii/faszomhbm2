@@ -1,30 +1,31 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:battery_sc_electronium"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_creative"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_creative.desc"
-		},
-		"frame": "challenge"
-	},
-	"parent": "hbm:progress_dfc",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:battery_sc_electronium"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:battery_sc_electronium"
     },
-    "rewards": {
-        "experience": 100000
+    "title": {
+      "translate": "hbm.achievement.progress_creative"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_creative.desc"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_dfc",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:battery_sc_electronium"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 100000
+  }
 }

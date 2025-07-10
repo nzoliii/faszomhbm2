@@ -1,24 +1,24 @@
 {
   "display": {
     "icon": {
-      "item": "hbm:iter"
+      "item": "skull"
     },
     "title": {
-      "translate": "hbm.achievement.meltdown"
+      "translate": "hbm.achievement.fhbm2_copper_pig_bewitch_death"
     },
     "description": {
-      "translate": "hbm.achievement.meltdown.desc"
+      "translate": "hbm.achievement.fhbm2_copper_pig_bewitch_death.desc"
     },
     "frame": "challenge",
     "announce_to_chat": false
   },
-  "parent": "hbm:progress_fusion",
+  "parent": "hbm:fhbm2_copper_pig_bewitch",
   "criteria": {
     "impossible": {
       "trigger": "minecraft:impossible"
     }
   },
   "rewards": {
-    "experience": 27
+    "experience": 69
   }
 }

@@ -1,30 +1,31 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:block_graphite_fuel"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_pile"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_pile.desc"
-		},
-		"frame": "challenge"
-	},
-	"parent": "hbm:progress_radium",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:pile_rod_plutonium"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:block_graphite_fuel"
     },
-    "rewards": {
-        "experience": 40
+    "title": {
+      "translate": "hbm.achievement.progress_pile"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_pile.desc"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_radium",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:pile_rod_plutonium"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 40
+  }
 }

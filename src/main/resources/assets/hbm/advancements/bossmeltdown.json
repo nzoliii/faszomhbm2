@@ -1,22 +1,23 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:coin_radiation"
-		},
-		"title": {
-			"translate": "hbm.achievement.bossMeltdown"
-		},
-		"description": {
-			"translate": "hbm.achievement.bossMeltdown.desc"
-		}
-	},
-	"parent": "hbm:bosscreeper",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 40
+  "display": {
+    "icon": {
+      "item": "hbm:coin_radiation"
+    },
+    "title": {
+      "translate": "hbm.achievement.bossMeltdown"
+    },
+    "description": {
+      "translate": "hbm.achievement.bossMeltdown.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:bosscreeper",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 40
+  }
 }

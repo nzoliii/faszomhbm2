@@ -1,22 +1,23 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:dfc_core"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_dfc"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_dfc.desc"
-		}
-	},
-	"parent": "hbm:progress_dineutronium",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 200
+  "display": {
+    "icon": {
+      "item": "hbm:dfc_core"
+    },
+    "title": {
+      "translate": "hbm.achievement.progress_dfc"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_dfc.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_dineutronium",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 200
+  }
 }

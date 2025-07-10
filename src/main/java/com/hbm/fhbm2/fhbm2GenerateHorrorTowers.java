@@ -14,6 +14,11 @@ import java.util.Random;
 
 public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
 
+    // back in the day when there were 2 versions of the horror towers
+    // now it is just one tower, and im lazy to rename fhbm2GenerateHorrorTowers.java
+    // also this is a clusterfuck because it ignores HBM's laws and configs
+    // same with every fhbm2 worldgen code, all of them are clusterfucks.
+
     private static final int STRUCTURE_SIZE = 18;
     private static final String DIGAMMA_TOWER = "digamma_tower";
     private static final int BASE_SPAWN_CHANCE = 1;

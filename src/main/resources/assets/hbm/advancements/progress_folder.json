@@ -1,29 +1,30 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:template_folder"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_folder"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_folder.desc"
-		}
-	},
-	"parent": "hbm:progress_assembler",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:template_folder"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:template_folder"
     },
-    "rewards": {
-        "experience": 17
+    "title": {
+      "translate": "hbm.achievement.progress_folder"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_folder.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_assembler",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:template_folder"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 17
+  }
 }

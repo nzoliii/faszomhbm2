@@ -47,8 +47,7 @@ public class AdvancementManager {
 	public static Advancement achSomeWounds;
 	public static Advancement progress_dfc;
 	public static Advancement progress_rbmk_boom;
-	
-	
+
 	public static Advancement bossCreeper;
 	public static Advancement bossMeltdown;
 	public static Advancement bossMaskman;

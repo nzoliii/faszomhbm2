@@ -1,23 +1,24 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:coin_worm"
-		},
-		"title": {
-			"translate": "hbm.achievement.bossWorm"
-		},
-		"description": {
-			"translate": "hbm.achievement.bossWorm.desc"
-		},
-		"frame": "challenge"
-	},
-	"parent": "hbm:bossmaskman",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 120
+  "display": {
+    "icon": {
+      "item": "hbm:coin_worm"
+    },
+    "title": {
+      "translate": "hbm.achievement.bossWorm"
+    },
+    "description": {
+      "translate": "hbm.achievement.bossWorm.desc"
+    },
+    "frame": "challenge",
+    "announce_to_chat": false
+  },
+  "parent": "hbm:bossmaskman",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 120
+  }
 }

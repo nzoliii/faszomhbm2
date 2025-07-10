@@ -1,22 +1,23 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:fhbm2_key_kaban"
-		},
-		"title": {
-			"translate": "hbm.achievement.fhbm2_copper_pig_key"
-		},
-		"description": {
-			"translate": "hbm.achievement.fhbm2_copper_pig_key.desc"
-		}
-	},
-	"parent": "hbm:fhbm2_one_with_copper_pig",
-	"criteria": {
-		"impossible": {
-			"trigger": "minecraft:impossible"
-		}
-	},
-    "rewards": {
-        "experience": 69
+  "display": {
+    "icon": {
+      "item": "hbm:fhbm2_key_kaban"
+    },
+    "title": {
+      "translate": "hbm.achievement.fhbm2_copper_pig_key"
+    },
+    "description": {
+      "translate": "hbm.achievement.fhbm2_copper_pig_key.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:fhbm2_one_with_copper_pig",
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
     }
+  },
+  "rewards": {
+    "experience": 69
+  }
 }

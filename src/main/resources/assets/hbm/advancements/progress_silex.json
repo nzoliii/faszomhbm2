@@ -1,29 +1,30 @@
 {
-	"display": {
-		"icon": {
-			"item": "hbm:machine_silex"
-		},
-		"title": {
-			"translate": "hbm.achievement.progress_silex"
-		},
-		"description": {
-			"translate": "hbm.achievement.progress_silex.desc"
-		}
-	},
-	"parent": "hbm:progress_crystalizer",
-	"criteria": {
-        "crafting_table": {
-            "trigger": "minecraft:inventory_changed",
-            "conditions": {
-                "items": [
-                    {
-                        "item": "hbm:machine_silex"
-                    }
-                ]
-            }
-        }
+  "display": {
+    "icon": {
+      "item": "hbm:machine_silex"
     },
-    "rewards": {
-        "experience": 57
+    "title": {
+      "translate": "hbm.achievement.progress_silex"
+    },
+    "description": {
+      "translate": "hbm.achievement.progress_silex.desc"
+    },
+    "announce_to_chat": false
+  },
+  "parent": "hbm:progress_crystalizer",
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "hbm:machine_silex"
+          }
+        ]
+      }
     }
+  },
+  "rewards": {
+    "experience": 57
+  }
 }
