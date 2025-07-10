@@ -78,7 +78,7 @@ public class ItemChemistryTemplate extends Item implements IHasCustomModel {
 		if(!(stack.getItem() instanceof ItemChemistryTemplate)) return;
 		ChemplantRecipes.ChemRecipe recipe = ChemplantRecipes.indexMapping.get(stack.getItemDamage());
 		if(recipe == null) return;
-		list.add("§6" + I18nUtil.resolveKey("info.templatefolder"));
+		list.add("§6" + I18nUtil.resolveKey("info.templatefolder",  I18nUtil.resolveKey("item.template_folder.name")));
 		list.add("");
 		Map<ComparableStack, Integer> availableCounts = null;
 		GuiScreen screen = Minecraft.getMinecraft().currentScreen;
@@ -108,7 +108,6 @@ public class ItemChemistryTemplate extends Item implements IHasCustomModel {
 				}
 			}
 		}
-		list.add("§6" + I18nUtil.resolveKey("info.templatefolder"));
 		list.add("");
 		try {
 			list.add(ChatFormatting.BOLD + I18nUtil.resolveKey("info.template_out_p"));

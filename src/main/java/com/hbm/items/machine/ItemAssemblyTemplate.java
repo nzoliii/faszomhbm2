@@ -109,8 +109,8 @@ public class ItemAssemblyTemplate extends Item implements IHasCustomModel {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World worldIn, @NotNull List<String> list, @NotNull ITooltipFlag flagIn) {
         if (!(stack.getItem() instanceof ItemAssemblyTemplate)) return;
-
-        list.add("§6" + I18nUtil.resolveKey("info.templatefolder"));
+        // TODO: Update the arg when we have special folders like journal.pip ported
+        list.add("§6" + I18nUtil.resolveKey("info.templatefolder",  I18nUtil.resolveKey("item.template_folder.name")));
         list.add("");
 
         Map<ComparableStack, Integer> availableCounts = null;

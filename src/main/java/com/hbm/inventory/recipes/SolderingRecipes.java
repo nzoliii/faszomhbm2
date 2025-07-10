@@ -37,10 +37,10 @@ public class SolderingRecipes extends SerializableRecipe {
             100,
             100,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 3, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 2, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 3, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 2, EnumCircuitType.CAPACITOR)
             },
-            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.PCB.ordinal())},
+            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.PCB)},
             new AStack[] {new OreDictStack(PB.wireFine(), 4)}));
 
     recipes.add(
@@ -48,8 +48,8 @@ public class SolderingRecipes extends SerializableRecipe {
             new ItemStack(ModItems.circuit, 1, EnumCircuitType.BASIC.ordinal()),
             200,
             250,
-            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP.ordinal())},
-            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.PCB.ordinal())},
+            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP)},
+            new AStack[] {new ComparableStack(ModItems.circuit, 4, EnumCircuitType.PCB)},
             new AStack[] {new OreDictStack(PB.wireFine(), 4)}));
 
     recipes.add(
@@ -59,24 +59,25 @@ public class SolderingRecipes extends SerializableRecipe {
             1_000,
             new FluidStack(Fluids.SULFURIC_ACID, 1_000),
             new AStack[] {
-              new ComparableStack(ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP.ordinal()),
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP),
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 8, EnumCircuitType.PCB.ordinal()),
+              new ComparableStack(ModItems.circuit, 8, EnumCircuitType.PCB),
               new OreDictStack(RUBBER.ingot(), 2)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 8)}));
 
     recipes.add(
-        new SolderingRecipe(
-            new ItemStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR_BOARD.ordinal()),
-            200,
-            300,
+            new SolderingRecipe(new ItemStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR_BOARD.ordinal()), 200, 300,
             new FluidStack(Fluids.PEROXIDE, 250),
-            new AStack[] {new ComparableStack(ModItems.circuit_tantalium, 3)},
-            new AStack[] {new ComparableStack(ModItems.circuit, 1, EnumCircuitType.PCB.ordinal())},
-            new AStack[] {new OreDictStack(PB.wireFine(), 3)}));
+            new AStack[] {
+                    new ComparableStack(ModItems.circuit, 3, EnumCircuitType.CAPACITOR_TANTALIUM)},
+            new AStack[] {
+                    new ComparableStack(ModItems.circuit, 1, EnumCircuitType.PCB)},
+            new AStack[] {
+                    new OreDictStack(PB.wireFine(), 3)}
+    ));
 
     recipes.add(
         new SolderingRecipe(
@@ -85,13 +86,13 @@ public class SolderingRecipes extends SerializableRecipe {
             10_000,
             new FluidStack(Fluids.SOLVENT, 1_000),
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_BISMOID.ordinal()),
-              new ComparableStack(ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP.ordinal()),
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_BISMOID),
+              new ComparableStack(ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 8 : 24, EnumCircuitType.CAPACITOR.ordinal())
+                  ModItems.circuit, lbsm ? 8 : 24, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 12, EnumCircuitType.PCB.ordinal()),
+              new ComparableStack(ModItems.circuit, 12, EnumCircuitType.PCB),
               new OreDictStack(ANY_HARDPLASTIC.ingot(), 2)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 12)}));
@@ -103,14 +104,14 @@ public class SolderingRecipes extends SerializableRecipe {
             100_000,
             new FluidStack(Fluids.HELIUM4, 1_000),
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_QUANTUM.ordinal()),
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP_QUANTUM),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP_BISMOID.ordinal()),
+                  ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CHIP_BISMOID),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 1 : 4, EnumCircuitType.ATOMIC_CLOCK.ordinal())
+                  ModItems.circuit, lbsm ? 1 : 4, EnumCircuitType.ATOMIC_CLOCK)
             },
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 16, EnumCircuitType.PCB.ordinal()),
+              new ComparableStack(ModItems.circuit, 16, EnumCircuitType.PCB),
               new OreDictStack(ANY_HARDPLASTIC.ingot(), 4)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 16)}));
@@ -128,15 +129,15 @@ public class SolderingRecipes extends SerializableRecipe {
             15_000,
             new FluidStack(Fluids.PERFLUOROMETHYL, 1_000),
             new AStack[] {
-              new ComparableStack(ModItems.circuit, lbsm ? 8 : 32, EnumCircuitType.CHIP.ordinal()),
+              new ComparableStack(ModItems.circuit, lbsm ? 8 : 32, EnumCircuitType.CHIP),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 8 : 32, EnumCircuitType.CAPACITOR.ordinal()),
+                  ModItems.circuit, lbsm ? 8 : 32, EnumCircuitType.CAPACITOR),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CAPACITOR_TANTALIUM.ordinal())
+                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CAPACITOR_TANTALIUM)
             },
             new AStack[] {
               new ComparableStack(
-                  ModItems.circuit, 1, EnumCircuitType.CONTROLLER_CHASSIS.ordinal()),
+                  ModItems.circuit, 1, EnumCircuitType.CONTROLLER_CHASSIS),
               new ComparableStack(ModItems.upgrade_speed_1)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 16)}));
@@ -148,14 +149,14 @@ public class SolderingRecipes extends SerializableRecipe {
             new FluidStack(Fluids.PERFLUOROMETHYL, 4_000),
             new AStack[] {
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CHIP_BISMOID.ordinal()),
+                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CHIP_BISMOID),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 16 : 48, EnumCircuitType.CAPACITOR_TANTALIUM.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ATOMIC_CLOCK.ordinal())
+                  ModItems.circuit, lbsm ? 16 : 48, EnumCircuitType.CAPACITOR_TANTALIUM),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.ATOMIC_CLOCK)
             },
             new AStack[] {
               new ComparableStack(
-                  ModItems.circuit, 1, EnumCircuitType.CONTROLLER_CHASSIS.ordinal()),
+                  ModItems.circuit, 1, EnumCircuitType.CONTROLLER_CHASSIS),
               new ComparableStack(ModItems.upgrade_speed_3)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 24)}));
@@ -167,15 +168,15 @@ public class SolderingRecipes extends SerializableRecipe {
             new FluidStack(Fluids.PERFLUOROMETHYL_COLD, 6_000),
             new AStack[] {
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CHIP_QUANTUM.ordinal()),
+                  ModItems.circuit, lbsm ? 8 : 16, EnumCircuitType.CHIP_QUANTUM),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 16 : 48, EnumCircuitType.CHIP_BISMOID.ordinal()),
+                  ModItems.circuit, lbsm ? 16 : 48, EnumCircuitType.CHIP_BISMOID),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 1 : 8, EnumCircuitType.ATOMIC_CLOCK.ordinal())
+                  ModItems.circuit, lbsm ? 1 : 8, EnumCircuitType.ATOMIC_CLOCK)
             },
             new AStack[] {
               new ComparableStack(
-                  ModItems.circuit, 2, EnumCircuitType.CONTROLLER_ADVANCED.ordinal()),
+                  ModItems.circuit, 2, EnumCircuitType.CONTROLLER_ADVANCED),
               new ComparableStack(ModItems.upgrade_overdrive_1)
             },
             new AStack[] {new OreDictStack(PB.wireFine(), 32)}));
@@ -190,8 +191,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(MINGRADE.dust(), 4)
@@ -203,8 +204,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(EMERALD.dust(), 4)
@@ -216,8 +217,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(GOLD.dust(), 4)
@@ -229,8 +230,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(NB.dust(), 4)
@@ -242,8 +243,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE.ordinal()),
-              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.VACUUM_TUBE),
+              new ComparableStack(ModItems.circuit, 1, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(W.dust(), 4)
@@ -255,8 +256,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP.ordinal()),
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP),
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack("dustGlowstone", 4)
@@ -268,8 +269,8 @@ public class SolderingRecipes extends SerializableRecipe {
             200,
             1_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP.ordinal()),
-              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR.ordinal())
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CHIP),
+              new ComparableStack(ModItems.circuit, 4, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {
               new ComparableStack(ModItems.upgrade_template), new OreDictStack(LI.dust(), 4)
@@ -296,9 +297,9 @@ public class SolderingRecipes extends SerializableRecipe {
             300,
             10_000,
             new AStack[] {
-              new ComparableStack(ModItems.circuit, lbsm ? 4 : 8, EnumCircuitType.CHIP.ordinal()),
+              new ComparableStack(ModItems.circuit, lbsm ? 4 : 8, EnumCircuitType.CHIP),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 2 : 4, EnumCircuitType.CAPACITOR.ordinal())
+                  ModItems.circuit, lbsm ? 2 : 4, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {new ComparableStack(lower), new OreDictStack(ANY_PLASTIC.ingot(), 4)},
             new AStack[] {}));
@@ -313,9 +314,9 @@ public class SolderingRecipes extends SerializableRecipe {
             25_000,
             new FluidStack(Fluids.SOLVENT, 500),
             new AStack[] {
-              new ComparableStack(ModItems.circuit, lbsm ? 6 : 16, EnumCircuitType.CHIP.ordinal()),
+              new ComparableStack(ModItems.circuit, lbsm ? 6 : 16, EnumCircuitType.CHIP),
               new ComparableStack(
-                  ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CAPACITOR.ordinal())
+                  ModItems.circuit, lbsm ? 4 : 16, EnumCircuitType.CAPACITOR)
             },
             new AStack[] {new ComparableStack(lower), new OreDictStack(RUBBER.ingot(), 4)},
             new AStack[] {}));

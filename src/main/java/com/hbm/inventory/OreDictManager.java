@@ -339,7 +339,7 @@ public class OreDictManager {
     /**
      * STRONTIUM
      */
-    public static final DictFrame ST = new DictFrame("Strontium");
+    public static final DictFrame SR = new DictFrame("Strontium");
     /**
      * BROMINE
      */
@@ -571,7 +571,7 @@ public class OreDictManager {
         I.dust(powder_iodine);
         AT.dust(powder_astatine);
         CS.dust(powder_caesium);
-        ST.dust(powder_strontium);
+        SR.dust(powder_strontium);
         BR.dust(powder_bromine);
         TS.dust(powder_tennessine);
 

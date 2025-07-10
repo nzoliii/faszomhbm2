@@ -116,7 +116,7 @@ public class Mats {
 	public static final NTMMaterial MAT_ZIRCONIUM		= makeSmeltable(4000,		ZR,				0xE3DCBE, 0x3E3719, 0xADA688).setAutogen(FRAGMENT, NUGGET, WIRE, DUSTTINY, BILLET, DUST, CASTPLATE, WELDEDPLATE, BLOCK).m();
 	public static final NTMMaterial MAT_SODIUM			= makeSmeltable(1100,		NA,				0xD3BF9E, 0x3A5A6B, 0x7E9493).setAutogen(FRAGMENT, INGOT, DUST).m();
 	public static final NTMMaterial MAT_SODALITE		= makeNonSmeltable(1101,	SODALITE,		0xDCE5F6, 0x4927B4, 0x96A7E6).setAutogen(FRAGMENT, GEM).n();
-	public static final NTMMaterial MAT_STRONTIUM		= makeSmeltable(3800,		ST,				0xF1E8BA, 0x271E00, 0xCAC193).setAutogen(FRAGMENT, INGOT, DUST).m();
+	public static final NTMMaterial MAT_STRONTIUM		= makeSmeltable(3800,		SR,				0xF1E8BA, 0x271E00, 0xCAC193).setAutogen(FRAGMENT, INGOT, DUST).m();
 	public static final NTMMaterial MAT_CALCIUM			= makeSmeltable(2000,		CA,				0xCFCFA6, 0x747F6E, 0xB7B784).setAutogen(DUST).m();
 	public static final NTMMaterial MAT_LITHIUM			= makeSmeltable(300,		LI,				0xFFFFFF, 0x818181, 0xD6D6D6).setAutogen(FRAGMENT, DUST, BLOCK).m();
 	public static final NTMMaterial MAT_SULFUR			= makeNonSmeltable(1600,	S,				0xFCEE80, 0xBDA022, 0xF1DF68).setAutogen(FRAGMENT, DUST, BLOCK).n();

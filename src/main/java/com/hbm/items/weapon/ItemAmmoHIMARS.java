@@ -44,14 +44,14 @@ import java.util.List;
 
 public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
   public enum RocketType {
-    STANDARD,
-    STANDARD_HE,
-    STANDARD_WP,
-    STANDARD_TB,
-    STANDARD_LAVA,
-    STANDARD_MINI_NUKE,
-    SINGLE,
-    SINGLE_TB
+    SMALL,
+    SMALL_HE,
+    SMALL_WP,
+    SMALL_TB,
+    SMALL_LAVA,
+    SMALL_MINI_NUKE,
+    LARGE,
+    LARGE_TB
   }
 
   public static HIMARSRocket[] itemTypes = new HIMARSRocket[RocketType.values().length];
@@ -89,43 +89,43 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
 
     RocketType type = RocketType.values()[stack.getItemDamage()];
     switch (type) {
-      case STANDARD:
+      case SMALL:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.YELLOW + "Damage modifier: 3x");
         list.add(TextFormatting.BLUE + "Does not destroy blocks");
         break;
-      case STANDARD_HE:
+      case SMALL_HE:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.YELLOW + "Damage modifier: 3x");
         list.add(TextFormatting.RED + "Destroys blocks");
         break;
-      case STANDARD_WP:
+      case SMALL_WP:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.YELLOW + "Damage modifier: 3x");
         list.add(TextFormatting.RED + "Phosphorus splash");
         list.add(TextFormatting.BLUE + "Does not destroy blocks");
         break;
-      case STANDARD_TB:
+      case SMALL_TB:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.YELLOW + "Damage modifier: 10x");
         list.add(TextFormatting.RED + "Destroys blocks");
         break;
-      case STANDARD_MINI_NUKE:
+      case SMALL_MINI_NUKE:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.RED + "Deals nuclear damage");
         list.add(TextFormatting.RED + "Destroys blocks");
         break;
-      case STANDARD_LAVA:
+      case SMALL_LAVA:
         list.add(TextFormatting.YELLOW + "Strength: 20");
         list.add(TextFormatting.RED + "Creates volcanic lava");
         list.add(TextFormatting.RED + "Destroys blocks");
         break;
-      case SINGLE:
+      case LARGE:
         list.add(TextFormatting.YELLOW + "Strength: 50");
         list.add(TextFormatting.YELLOW + "Damage modifier: 5x");
         list.add(TextFormatting.RED + "Destroys blocks");
         break;
-      case SINGLE_TB:
+      case LARGE_TB:
         list.add(TextFormatting.YELLOW + "Strength: 50");
         list.add(TextFormatting.YELLOW + "Damage modifier: 12x");
         list.add(TextFormatting.RED + "Destroys blocks");
@@ -216,7 +216,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
   }
 
   private void init() {
-    itemTypes[RocketType.STANDARD.ordinal()] =
+    itemTypes[RocketType.SMALL.ordinal()] =
         new HIMARSRocket("standard", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             final Vec3d hitPos = mop.hitVec;
@@ -241,7 +241,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
           }
         };
 
-    itemTypes[RocketType.STANDARD_HE.ordinal()] =
+    itemTypes[RocketType.SMALL_HE.ordinal()] =
         new HIMARSRocket("standard_he", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             final Vec3d hitPos = mop.hitVec;
@@ -251,13 +251,13 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
                 rocket.world, hitPos.x + 0.5, hitPos.y + 0.5, hitPos.z + 0.5);
           }
         };
-    itemTypes[RocketType.STANDARD_LAVA.ordinal()] =
+    itemTypes[RocketType.SMALL_LAVA.ordinal()] =
         new HIMARSRocket("standard_lava", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             standardExplosion(rocket, mop, 20F, 3F, true, ModBlocks.volcanic_lava_block, 0);
           }
         };
-    itemTypes[RocketType.SINGLE.ordinal()] =
+    itemTypes[RocketType.LARGE.ordinal()] =
         new HIMARSRocket("single", HIMARSRocket.Type.Single) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             final Vec3d hitPos = mop.hitVec;
@@ -268,7 +268,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
           }
         };
 
-    itemTypes[RocketType.STANDARD_MINI_NUKE.ordinal()] =
+    itemTypes[RocketType.SMALL_MINI_NUKE.ordinal()] =
         new HIMARSRocket("standard_mini_nuke", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             rocket.killAndClear();
@@ -280,7 +280,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
           }
         };
 
-    itemTypes[RocketType.STANDARD_WP.ordinal()] =
+    itemTypes[RocketType.SMALL_WP.ordinal()] =
         new HIMARSRocket("standard_wp", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             rocket.world.playSound(
@@ -335,7 +335,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
           }
         };
 
-    itemTypes[RocketType.STANDARD_TB.ordinal()] =
+    itemTypes[RocketType.SMALL_TB.ordinal()] =
         new HIMARSRocket("standard_tb", HIMARSRocket.Type.Standard) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             rocket.world.playSound(
@@ -354,7 +354,7 @@ public class ItemAmmoHIMARS extends Item implements IMetaItemTesr {
           }
         };
 
-    itemTypes[RocketType.SINGLE_TB.ordinal()] =
+    itemTypes[RocketType.LARGE_TB.ordinal()] =
         new HIMARSRocket("single_tb", HIMARSRocket.Type.Single) {
           public void onImpact(EntityArtilleryRocket rocket, RayTraceResult mop) {
             rocket.world.playSound(

@@ -4,6 +4,7 @@ import com.hbm.config.GeneralConfig;
 import com.hbm.handler.ArmorUtil;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.material.Mats;
+import com.hbm.items.ItemEnums;
 import com.hbm.items.ModItems;
 import com.hbm.main.MainRegistry;
 import com.hbm.util.I18nUtil;
@@ -472,7 +473,7 @@ public class ItemCustomLore extends Item {
 			this == ModItems.plate_schrabidium || 
 			this == ModItems.plate_saturnite || 
 			
-			this == ModItems.circuit_schrabidium || 
+			this == new ItemStack(ModItems.circuit, 1, ItemEnums.EnumCircuitType.BISMOID.ordinal()).getItem() ||
 			this == ModItems.gun_revolver_schrabidium_ammo || 
 			this == ModItems.powder_unobtainium || 
 			this == ModItems.nugget_unobtainium || 
