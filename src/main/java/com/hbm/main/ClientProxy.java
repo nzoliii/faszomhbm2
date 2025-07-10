@@ -1,6 +1,5 @@
 package com.hbm.main;
 
-import ca.weblite.objc.Client;
 import com.hbm.animloader.AnimationWrapper.EndResult;
 import com.hbm.animloader.AnimationWrapper.EndType;
 import com.hbm.blocks.BlockDummyable;
@@ -1182,7 +1181,8 @@ public class ClientProxy extends ServerProxy {
                     if ("smoke".equals(data.getString("mode"))) {
                         Particle fx = new ParticleSmokeNormal.Factory().createParticle(-1, world, ix, iy, iz, (vec.x + rand.nextGaussian() * 0.1) * 0.05, (vec.y + rand.nextGaussian() * 0.1) * 0.05, (vec.z + rand.nextGaussian() * 0.1) * 0.05);
                         fx.setMaxAge( 10 + rand.nextInt(10));
-                        HbmParticleUtility.resetSmokeScaleWithMult((ParticleSmokeNormal) fx, 0.2F);
+                        fx.particleScale *= 0.2F;
+                        ((ParticleSmokeNormal) fx).smokeParticleScale = fx.particleScale;
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
                 }
@@ -1225,7 +1225,9 @@ public class ClientProxy extends ServerProxy {
                         0, 0, 0);
 
                 flash.setRBGColorF(0F, 0.75F, 1F);
-                HbmParticleUtility.setMotion(flash, rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
+                flash.motionX = rand.nextGaussian();
+                flash.motionY = rand.nextGaussian();
+                flash.motionZ = rand.nextGaussian();
                 Minecraft.getMinecraft().effectRenderer.addEffect(flash);
             }
             return;
@@ -1291,11 +1293,12 @@ public class ClientProxy extends ServerProxy {
 
             if ("volcano".equals(data.getString("mode"))) {
                 fx = new ParticleSmokeNormal.Factory().createParticle(-1, world, x, y, z, mX, mY, mZ);
-                float scale = 100;
-                HbmParticleUtility.setSmokeScale((ParticleSmokeNormal) fx, scale);
+                ((ParticleSmokeNormal)fx).smokeParticleScale = 100f;
                 fx.setMaxAge(200 + rand.nextInt(50));
-                HbmParticleUtility.setNoClip(fx);
-                HbmParticleUtility.setMotion(fx, rand.nextGaussian() * 0.2, 2.5 + rand.nextDouble(), rand.nextGaussian() * 0.2);
+                fx.canCollide = false;
+                fx.motionX = rand.nextGaussian() * 0.2;
+                fx.motionY = 2.5 + rand.nextDouble();
+                fx.motionZ = rand.nextGaussian() * 0.2;
             }
 
             if ("cloud".equals(data.getString("mode"))) {
@@ -1334,7 +1337,9 @@ public class ClientProxy extends ServerProxy {
                 fx = new ParticleSuspendedTown.Factory().createParticle(-1, world, x, y, z, 0, 0, 0);
                 float color = 0.5F + rand.nextFloat() * 0.5F;
                 fx.setRBGColorF(0.8F * color, 0.9F * color, 1.0F * color);
-                HbmParticleUtility.setMotion(fx, mX, mY, mZ);
+                fx.motionX = mX;
+                fx.motionY = mY;
+                fx.motionZ = mZ;
             }
 
             if ("blockdust".equals(data.getString("mode"))) {

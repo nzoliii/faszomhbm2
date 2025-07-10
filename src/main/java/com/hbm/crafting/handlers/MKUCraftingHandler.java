@@ -5,6 +5,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +43,10 @@ public class MKUCraftingHandler extends net.minecraftforge.registries.IForgeRegi
     }
 
     @Override
-    public boolean matches(InventoryCrafting inventory, World world) {
+    public boolean matches(@NotNull InventoryCrafting inventory, @NotNull World world) {
+
+        if(world.provider.world == null || lastSeed == world.getSeed() && MKURecipe != null)
+            return false;
 
         if (MKURecipe == null || world.getSeed() != lastSeed)
             generateRecipe(world);

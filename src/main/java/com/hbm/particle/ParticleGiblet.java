@@ -3,7 +3,6 @@ package com.hbm.particle;
 import com.hbm.lib.RefStrings;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.HbmParticleUtility;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleBlockDust;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -53,7 +52,8 @@ public class ParticleGiblet extends Particle {
 			//this.rotationYaw += this.momentumYaw;
 			
 			Particle fx = new ParticleBlockDust.Factory().createParticle(-1, world, posX, posY, posZ, 0, 0, 0, Block.getStateId(Blocks.REDSTONE_BLOCK.getDefaultState()));
-			fx.setMaxAge(fx, 20 + rand.nextInt(20));
+			if (fx == null) return;
+			fx.particleMaxAge = 20 + rand.nextInt(20);
 			Minecraft.getMinecraft().effectRenderer.addEffect(fx);
 		}
 	}

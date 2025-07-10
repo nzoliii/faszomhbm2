@@ -21,9 +21,6 @@ public class WingsMurk extends JetpackBase {
 
 	public WingsMurk( String s) {
 		super(s);
-		this.setTranslationKey(s);
-
-		ModItems.ALL_ITEMS.add(this);
 	}
 
 	@SideOnly(Side.CLIENT)
