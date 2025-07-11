@@ -8,6 +8,7 @@ import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.gas.BlockGasBase;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.CentrifugeRecipes;
 import com.hbm.inventory.ShredderRecipes;
@@ -23,10 +24,12 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
 import com.hbm.packet.LoopedSoundPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.InventoryUtil;
+import io.netty.buffer.ByteBuf;
+import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
@@ -58,9 +61,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 public class TileEntityMachineMiningLaser extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardSender, IMiningDrill, IFFtoNTMF, IGUIProvider {
 
 	public long power;
@@ -81,6 +81,7 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 	double breakProgress;
 	private UpgradeManager manager;
 	private static boolean converted = false;
+	double clientBreakProgress = 0;
 
 	public TileEntityMachineMiningLaser() {
 		super(0);
@@ -138,8 +139,6 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 			lastTargetX = targetX;
 			lastTargetY = targetY;
 			lastTargetZ = targetZ;
-
-			double clientBreakProgress = 0;
 			
 			if(isOn) {
 
@@ -205,37 +204,38 @@ public class TileEntityMachineMiningLaser extends TileEntityMachineBase implemen
 			this.tryFillContainer(pos.getX(), pos.getY(), pos.getZ() + 2);
 			this.tryFillContainer(pos.getX(), pos.getY(), pos.getZ() - 2);
 
-			PacketDispatcher.wrapper.sendToAll(new LoopedSoundPacket(pos.getX(), pos.getY(), pos.getZ()));
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("lastX", lastTargetX);
-			data.setInteger("lastY", lastTargetY);
-			data.setInteger("lastZ", lastTargetZ);
-			data.setInteger("x", targetX);
-			data.setInteger("y", targetY);
-			data.setInteger("z", targetZ);
-			data.setBoolean("beam", beam);
-			data.setBoolean("isOn", isOn);
-			data.setDouble("progress", clientBreakProgress);
-
-			this.networkPack(data, 250);
+			PacketThreading.createSendToAllThreadedPacket(new LoopedSoundPacket(pos.getX(), pos.getY(), pos.getZ()));
+			networkPackNT(250);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		super.networkUnpack(data);
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		buf.writeInt(lastTargetX);
+		buf.writeInt(lastTargetY);
+		buf.writeInt(lastTargetZ);
+		buf.writeInt(targetX);
+		buf.writeInt(targetY);
+		buf.writeInt(targetZ);
+		buf.writeBoolean(beam);
+		buf.writeBoolean(isOn);
+		buf.writeDouble(clientBreakProgress);
+	}
 
-		this.power = data.getLong("power");
-		this.lastTargetX = data.getInteger("lastX");
-		this.lastTargetY = data.getInteger("lastY");
-		this.lastTargetZ = data.getInteger("lastZ");
-		this.targetX = data.getInteger("x");
-		this.targetY = data.getInteger("y");
-		this.targetZ = data.getInteger("z");
-		this.beam = data.getBoolean("beam");
-		this.isOn = data.getBoolean("isOn");
-		this.breakProgress = data.getDouble("progress");
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		this.lastTargetX = buf.readInt();
+		this.lastTargetY = buf.readInt();
+		this.lastTargetZ = buf.readInt();
+		this.targetX = buf.readInt();
+		this.targetY = buf.readInt();
+		this.targetZ = buf.readInt();
+		this.beam = buf.readBoolean();
+		this.isOn = buf.readBoolean();
+		this.breakProgress = buf.readDouble();
 	}
 	
 	private void buildDam() {

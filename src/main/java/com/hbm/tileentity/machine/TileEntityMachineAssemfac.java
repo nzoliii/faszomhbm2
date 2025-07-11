@@ -15,11 +15,13 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import io.netty.buffer.ByteBuf;
+import java.util.Random;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -31,10 +33,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.ItemStackHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Random;
 
 public class TileEntityMachineAssemfac extends TileEntityMachineAssemblerBase implements IFluidStandardTransceiver, IGUIProvider, IFluidCopiable {
 
@@ -149,19 +147,6 @@ public class TileEntityMachineAssemfac extends TileEntityMachineAssemblerBase im
         isProgressing = buf.readBoolean();
         water.deserialize(buf);
         steam.deserialize(buf);
-    }
-
-    @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
-
-        this.power = nbt.getLong("power");
-        this.progress = nbt.getIntArray("progress");
-        this.maxProgress = nbt.getIntArray("maxProgress");
-        this.isProgressing = nbt.getBoolean("isProgressing");
-
-        water.readFromNBT(nbt, "w");
-        steam.readFromNBT(nbt, "s");
     }
 
     private int getWaterRequired() {

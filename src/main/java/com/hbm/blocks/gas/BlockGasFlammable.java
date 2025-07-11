@@ -1,6 +1,5 @@
 package com.hbm.blocks.gas;
 
-import com.hbm.interfaces.Untested;
 import com.hbm.lib.ForgeDirection;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -53,12 +52,10 @@ public class BlockGasFlammable extends BlockGasBase {
 
             if (rand.nextInt(20) == 0 && world.isAirBlock(pos.down())) {
                 world.setBlockToAir(pos);
-                return;
             }
         }
     }
 
-    @Untested
     @Override
     public void neighborChanged(IBlockState state, World world, BlockPos pos, Block blockIn, BlockPos fromPos) {
         MutableBlockPos posN = new BlockPos.MutableBlockPos();

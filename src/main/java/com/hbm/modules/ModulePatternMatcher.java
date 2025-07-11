@@ -1,11 +1,12 @@
 package com.hbm.modules;
 
+import com.hbm.util.BufferUtil;
 import com.hbm.util.ItemStackUtil;
+import io.netty.buffer.ByteBuf;
+import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 public class ModulePatternMatcher {
     public static final String MODE_EXACT = "exact";
@@ -134,8 +135,21 @@ public class ModulePatternMatcher {
         }
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
+    public void deserialize(ByteBuf buf) {
+        for(int i = 0; i < modes.length; i++) {
+            modes[i] = BufferUtil.readString(buf);
+        }
+    }
 
+    public void serialize(ByteBuf buf) {
+        for (String mode : modes) {
+            if (mode != null) {
+                BufferUtil.writeString(buf, mode);
+            }
+        }
+    }
+
+    public void readFromNBT(NBTTagCompound nbt) {
         for(int i = 0; i < modes.length; i++) {
             if(nbt.hasKey("mode" + i)) {
                 modes[i] = nbt.getString("mode" + i);
@@ -146,7 +160,6 @@ public class ModulePatternMatcher {
     }
 
     public void writeToNBT(NBTTagCompound nbt) {
-
         for(int i = 0; i < modes.length; i++) {
             if(modes[i] != null) {
                 nbt.setString("mode" + i, modes[i]);

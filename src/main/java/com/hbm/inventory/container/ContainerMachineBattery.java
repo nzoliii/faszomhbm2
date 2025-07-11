@@ -2,27 +2,26 @@ package com.hbm.inventory.container;
 
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.tileentity.machine.TileEntityMachineBattery;
-import com.hbm.tileentity.machine.TileEntityMachineFENSU;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerMachineBattery extends Container {
 
 	public TileEntityMachineBattery diFurnace;
 	
-	public ContainerMachineBattery(InventoryPlayer invPlayer, TileEntityMachineBattery tedf) {
+	public ContainerMachineBattery(InventoryPlayer invPlayer, TileEntityMachineBattery tile) {
 		
-		diFurnace = tedf;
+		diFurnace = tile;
 		
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 53 - 18, 17));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 1, 53 - 18, 53));
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 2, 125, 17));
-		this.addSlotToContainer(new SlotMachineOutput(tedf.inventory, 3, 125, 53));
+		this.addSlotToContainer(new SlotItemHandler(tile.inventory, 0, 53 - 18, 17));
+		this.addSlotToContainer(new SlotMachineOutput(tile.inventory, 1, 53 - 18, 53));
+		this.addSlotToContainer(new SlotItemHandler(tile.inventory, 2, 125, 17));
+		this.addSlotToContainer(new SlotMachineOutput(tile.inventory, 3, 125, 53));
 		
 		for(int i = 0; i < 3; i++)
 		{
@@ -37,12 +36,11 @@ public class ContainerMachineBattery extends Container {
 			this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142));
 		}
 	}
-	
-	//Drillgon200: I have no idea how this method works.
+
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer playerIn, int par2) {
+	public @NotNull ItemStack transferStackInSlot(@NotNull EntityPlayer playerIn, int par2) {
 		ItemStack var3 = ItemStack.EMPTY;
-		Slot var4 = (Slot) this.inventorySlots.get(par2);
+		Slot var4 = this.inventorySlots.get(par2);
 		
 		if (var4 != null && var4.getHasStack())
 		{
@@ -71,20 +69,10 @@ public class ContainerMachineBattery extends Container {
 		
 		return var3;
 	}
-	
+
 	@Override
 	public void detectAndSendChanges() {
-		NBTTagCompound nbt = new NBTTagCompound();
-
-		nbt.setLong("power", diFurnace.power);
-		nbt.setLong("powerDelta", diFurnace.delta);
-		nbt.setShort("redLow", diFurnace.redLow);
-		nbt.setShort("redHigh", diFurnace.redHigh);
-		nbt.setByte("priority", (byte)diFurnace.priority.ordinal());
-		if(diFurnace instanceof TileEntityMachineFENSU)
-			nbt.setByte("color", (byte) ((TileEntityMachineFENSU)diFurnace).color.getMetadata());
-		
-		diFurnace.networkPack(nbt, 10);
+		diFurnace.networkPackNT(10);
 		super.detectAndSendChanges();
 	}
 	

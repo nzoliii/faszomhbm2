@@ -12,9 +12,8 @@ import com.hbm.inventory.fluid.Fluids;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ItemStackHandlerWrapper;
 import com.hbm.packet.BufPacket;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,10 +28,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 @Spaghetti("Not spaghetti in itself, but for the love of god please use this base class for all machines")
-public abstract class TileEntityMachineBase extends TileEntityLoadedBase implements INBTPacketReceiver, IBufPacketReceiver {
+public abstract class TileEntityMachineBase extends TileEntityLoadedBase implements IBufPacketReceiver {
 
     public ItemStackHandler inventory;
 
@@ -101,16 +98,6 @@ public abstract class TileEntityMachineBase extends TileEntityLoadedBase impleme
 
     public int getGaugeScaled(int i, FluidTank tank) {
         return tank.getFluidAmount() * i / tank.getCapacity();
-    }
-
-    public void networkPack(NBTTagCompound nbt, int range) {
-        nbt.setBoolean("muffled", muffled);
-        if (!world.isRemote)
-            PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
-    }
-
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.muffled = nbt.getBoolean("muffled");
     }
 
     /**

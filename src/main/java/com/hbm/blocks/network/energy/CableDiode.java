@@ -10,12 +10,15 @@ import com.hbm.blocks.ILookOverlay;
 import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.packet.BufPacket;
+import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.Compat;
 import com.hbm.util.I18nUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
@@ -37,6 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -103,7 +107,7 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 			if(te.level < 17)
 				te.level++;
 			te.markDirty();
-			INBTPacketReceiver.networkPack(te, te.packValues(), 20);
+			te.networkPackNT(20);
 			return true;
 		}
 
@@ -111,7 +115,7 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 			if(te.level > 1)
 				te.level--;
 			te.markDirty();
-			INBTPacketReceiver.networkPack(te, te.packValues(), 20);
+			te.networkPackNT(20);
 			return true;
 		}
 
@@ -120,7 +124,7 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 			if(p >= ConnectionPriority.values().length) p = 0;
 			te.priority = ConnectionPriority.values()[p];
 			te.markDirty();
-			INBTPacketReceiver.networkPack(te, te.packValues(), 20);
+			te.networkPackNT(20);
 			return true;
 		}
 
@@ -158,19 +162,23 @@ public class CableDiode extends BlockContainer implements IEnergyConnectorBlock,
 		return EnumBlockRenderType.MODEL;
 	}
 
-	public static class TileEntityDiode extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, INBTPacketReceiver {
+	public static class TileEntityDiode extends TileEntityLoadedBase implements IBufPacketReceiver, ITickable, IEnergyReceiverMK2 {
 
 		@Override
-		public void networkUnpack(NBTTagCompound nbt){
-			level = nbt.getInteger("level");
-			priority = ConnectionPriority.values()[nbt.getByte("p")];
+		public void serialize(ByteBuf buf) {
+			buf.writeInt(level);
+			buf.writeByte(this.priority.ordinal());
 		}
 
-		public NBTTagCompound packValues(){
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setInteger("level", level);
-			nbt.setByte("p", (byte) this.priority.ordinal());
-			return nbt;
+		@Override
+		public void deserialize(ByteBuf buf){
+			level = buf.readInt();
+			priority = ConnectionPriority.values()[buf.readByte()];
+		}
+
+		public void networkPackNT(int range) {
+			if (!world.isRemote)
+				PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 		}
 
 		@Override

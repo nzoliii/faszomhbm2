@@ -10,6 +10,7 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -59,11 +60,7 @@ public class TileEntityNukeBalefire extends TileEntityMachineBase implements ITi
 				explode();
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setInteger("timer", timer);
-			data.setBoolean("loaded", this.isLoaded());
-			data.setBoolean("started", started);
-			networkPack(data, 250);
+			networkPackNT(250);
 		}
 	}
 	
@@ -77,12 +74,19 @@ public class TileEntityNukeBalefire extends TileEntityMachineBase implements ITi
 		if(meta == 1)
 			timer = value * 20;
 	}
-	
+
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		timer = data.getInteger("timer");
-		started = data.getBoolean("started");
-		loaded = data.getBoolean("loaded");
+	public void serialize(ByteBuf buf) {
+		buf.writeInt(timer);
+		buf.writeBoolean(this.isLoaded());
+		buf.writeBoolean(started);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		timer = buf.readInt();
+		started = buf.readBoolean();
+		loaded = buf.readBoolean();
 	}
 	
 	public boolean isLoaded() {

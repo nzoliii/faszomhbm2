@@ -16,7 +16,6 @@ import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
@@ -40,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class TileEntityMachineMixer extends TileEntityMachineBase implements ITickable, IGUIProvider, IFluidStandardTransceiver, IEnergyReceiverMK2, INBTPacketReceiver, IFFtoNTMF {
+public class TileEntityMachineMixer extends TileEntityMachineBase implements ITickable, IGUIProvider, IFluidStandardTransceiver, IEnergyReceiverMK2, IFFtoNTMF {
 
     public static final long maxPower = 10_000;
     private static boolean converted = false;
@@ -139,16 +138,7 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ITi
                     this.sendFluid(tanksNew[2], world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", power);
-            data.setInteger("processTime", processTime);
-            data.setInteger("progress", progress);
-            data.setInteger("recipe", recipeIndex);
-            data.setBoolean("wasOn", wasOn);
-            for (int i = 0; i < 3; i++) {
-                tanksNew[i].writeToNBT(data, i + "");
-            }
-            this.networkPackNT(50);
+            networkPackNT(50);
 
         } else {
 
@@ -174,7 +164,8 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ITi
         buf.writeInt(recipeIndex);
         buf.writeBoolean(wasOn);
 
-        for (int i = 0; i < tanksNew.length; i++) tanksNew[i].serialize(buf);
+        for (FluidTankNTM fluidTankNTM : tanksNew)
+            fluidTankNTM.serialize(buf);
     }
 
     @Override
@@ -186,33 +177,8 @@ public class TileEntityMachineMixer extends TileEntityMachineBase implements ITi
         recipeIndex = buf.readInt();
         wasOn = buf.readBoolean();
 
-        for (int i = 0; i < tanksNew.length; i++) tanksNew[i].deserialize(buf);
-    }
-
-    @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
-
-        this.power = nbt.getLong("power");
-        this.processTime = nbt.getInteger("processTime");
-        this.progress = nbt.getInteger("progress");
-        this.recipeIndex = nbt.getInteger("recipe");
-        this.wasOn = nbt.getBoolean("wasOn");
-        if (!converted) {
-            if (nbt.hasKey("f")) {
-                if (nbt.getString("f").equals("None"))
-                    this.outputFluid = null;
-                else
-                    this.outputFluid = FluidRegistry.getFluid(nbt.getString("f"));
-            }
-            if (nbt.hasKey("tanks")) {
-                FFUtils.deserializeTankArray(nbt.getTagList("tanks", 10), tanks);
-            }
-        } else {
-            for (int i = 0; i < 3; i++) {
-                tanksNew[i].readFromNBT(nbt, i + "");
-            }
-        }
+        for (FluidTankNTM fluidTankNTM : tanksNew)
+            fluidTankNTM.deserialize(buf);
     }
 
     public boolean canProcess() {

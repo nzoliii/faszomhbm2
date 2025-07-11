@@ -7,6 +7,7 @@ import com.hbm.inventory.container.ContainerCraneBoxer;
 import com.hbm.inventory.gui.GUICraneBoxer;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -164,9 +165,7 @@ public class TileEntityCraneBoxer extends TileEntityCraneBase implements IGUIPro
                 }
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setByte("mode", mode);
-            this.networkPack(data, 15);
+            networkPackNT(15);
         }
     }
 
@@ -279,7 +278,12 @@ public class TileEntityCraneBoxer extends TileEntityCraneBase implements IGUIPro
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) { 
-        this.mode = nbt.getByte("mode");
+    public void serialize(ByteBuf buf) {
+        buf.writeByte(mode);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.mode = buf.readByte();
     }
 }

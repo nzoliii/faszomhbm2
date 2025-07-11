@@ -1,5 +1,6 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.ILaserable;
 import com.hbm.inventory.DFCRecipes;
 import com.hbm.inventory.container.ContainerCrateTungsten;
@@ -9,9 +10,11 @@ import com.hbm.items.tool.ItemKeyPin;
 import com.hbm.items.weapon.ItemCrucible;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.packet.AuxParticlePacket;
+import com.hbm.packet.BufPacket;
 import com.hbm.packet.PacketDispatcher;
+import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.IGUIProvider;
-import com.hbm.tileentity.INBTPacketReceiver;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -24,6 +27,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,7 +36,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Random;
 
-public class TileEntityCrateTungsten extends TileEntityLockableBase implements ITickable, ILaserable, INBTPacketReceiver, IGUIProvider {
+public class TileEntityCrateTungsten extends TileEntityLockableBase implements IBufPacketReceiver, ITickable, ILaserable, IGUIProvider {
 
 	public ItemStackHandler inventory;
 
@@ -92,23 +96,27 @@ public class TileEntityCrateTungsten extends TileEntityLockableBase implements I
 			}
 			age++;
 			if(age > 20){
-				networkPack();
+				networkPackNT(150);
 				age = 0;
 			}
 		}
 	}
 
-	public void networkPack() {
-		NBTTagCompound data = new NBTTagCompound();
-		data.setInteger("timer", this.heatTimer);
-		data.setLong("spk", this.joules);
-		INBTPacketReceiver.networkPack(this, data, 150);
+	@Override
+	public void serialize(ByteBuf buf) {
+		buf.writeInt(this.heatTimer);
+		buf.writeLong(this.joules);
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.heatTimer = data.getInteger("timer");
-		this.joules = data.getLong("spk");
+	public void deserialize(ByteBuf buf) {
+		this.heatTimer = buf.readInt();
+		this.joules = buf.readLong();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 
 	@Override

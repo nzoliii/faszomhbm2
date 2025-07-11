@@ -1,26 +1,30 @@
 package com.hbm.tileentity.machine;
 
-import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.dim.CelestialBody;
 import com.hbm.dim.orbit.WorldProviderOrbit;
 import com.hbm.dim.trait.CBT_Water;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IFluidCopiable;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.HashSet;
+import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
@@ -28,14 +32,11 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.HashSet;
-
-public abstract class TileEntityMachinePumpBase extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, INBTPacketReceiver, IConfigurableMachine, IFluidCopiable {
+public abstract class TileEntityMachinePumpBase extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, IConfigurableMachine, IFluidCopiable {
 
     public static final HashSet<Block> validBlocks = new HashSet();
 
@@ -114,9 +115,8 @@ public abstract class TileEntityMachinePumpBase extends TileEntityLoadedBase imp
                 this.isOn = true;
                 this.operate();
             }
-
-            NBTTagCompound data = this.getSync();
-            INBTPacketReceiver.networkPack(this, data, 150);
+            
+            networkPackNT(150);
 
         } else {
 
@@ -163,20 +163,24 @@ public abstract class TileEntityMachinePumpBase extends TileEntityLoadedBase imp
 
         return validBlocks >= invalidBlocks; // valid block count has to be at least 50%
     }
-
-    protected NBTTagCompound getSync() {
-        NBTTagCompound data = new NBTTagCompound();
-        data.setBoolean("isOn", isOn);
-        data.setBoolean("onGround", onGround);
-        water.writeToNBT(data, "w");
-        return data;
+    
+    @Override
+    public void serialize(ByteBuf buf) {
+        buf.writeBoolean(isOn);
+        buf.writeBoolean(onGround);
+        water.serialize(buf);
+    }
+    
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.isOn = buf.readBoolean();
+        this.onGround = buf.readBoolean();
+        water.deserialize(buf);
     }
 
-    @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.isOn = nbt.getBoolean("isOn");
-        this.onGround = nbt.getBoolean("onGround");
-        water.readFromNBT(nbt, "w");
+    public void networkPackNT(int range) {
+        if (!world.isRemote)
+            PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
     }
 
     protected abstract boolean canOperate();

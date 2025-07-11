@@ -26,6 +26,7 @@ import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -186,24 +187,7 @@ public class TileEntityITER extends TileEntityMachineBase implements ITickable, 
 				}
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setBoolean("isOn", isOn);
-			data.setLong("power", power);
-			data.setInteger("progress", progress);
-
-			if(inventory.getStackInSlot(3).isEmpty()) {
-				data.setInteger("blanket", 0);
-			} else if(inventory.getStackInSlot(3).getItem() == ModItems.fusion_shield_tungsten) {
-				data.setInteger("blanket", 1);
-			} else if(inventory.getStackInSlot(3).getItem() == ModItems.fusion_shield_desh) {
-				data.setInteger("blanket", 2);
-			} else if(inventory.getStackInSlot(3).getItem() == ModItems.fusion_shield_chlorophyte) {
-				data.setInteger("blanket", 3);
-			} else if(inventory.getStackInSlot(3).getItem() == ModItems.fusion_shield_vaporwave) {
-				data.setInteger("blanket", 4);
-			}
-
-			this.networkPack(data, 250);
+			networkPackNT(250);
 		} else {
 
 			this.lastRotor = this.rotor;
@@ -329,11 +313,33 @@ public class TileEntityITER extends TileEntityMachineBase implements ITickable, 
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.isOn = data.getBoolean("isOn");
-		this.power = data.getLong("power");
-		this.blanket = data.getInteger("blanket");
-		this.progress = data.getInteger("progress");
+	public void serialize(ByteBuf buf) {
+		buf.writeBoolean(isOn);
+		buf.writeLong(power);
+
+		ItemStack itemStack = inventory.getStackInSlot(3);
+
+		if(itemStack.isEmpty()) {
+			buf.writeInt(0);
+		} else if(itemStack.getItem() == ModItems.fusion_shield_tungsten) {
+			buf.writeInt(1);
+		} else if(itemStack.getItem() == ModItems.fusion_shield_desh) {
+			buf.writeInt(2);
+		} else if(itemStack.getItem() == ModItems.fusion_shield_chlorophyte) {
+			buf.writeInt(3);
+		} else if(itemStack.getItem() == ModItems.fusion_shield_vaporwave) {
+			buf.writeInt(4);
+		}
+
+		buf.writeInt(progress);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.isOn = buf.readBoolean();
+		this.power = buf.readLong();
+		this.blanket = buf.readInt();
+		this.progress = buf.readInt();
 	}
 
 	@Override

@@ -13,8 +13,8 @@ import org.lwjgl.opengl.GL11;
 
 public class GUICrateTemplate extends GuiContainer {
 
-    private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/storage/gui_crate_template.png");
-    private TileEntityCrateTemplate diFurnace;
+    private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/storage/gui_crate_template.png");
+    private final TileEntityCrateTemplate diFurnace;
 
     public GUICrateTemplate(InventoryPlayer invPlayer, TileEntityCrateTemplate tedf) {
         super(new ContainerCrateTemplate(invPlayer, tedf));

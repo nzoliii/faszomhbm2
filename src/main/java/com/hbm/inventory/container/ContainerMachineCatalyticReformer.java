@@ -1,9 +1,9 @@
 package com.hbm.inventory.container;
 
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.oil.TileEntityMachineCatalyticReformer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -69,7 +69,7 @@ public class ContainerMachineCatalyticReformer extends Container {
                 }
             } else {
 
-                if(NTMBatteryCapabilityHandler.isBattery(var3)) {
+                if(Library.isItemBattery(var3)) {
                     if(!this.mergeItemStack(var5, 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }

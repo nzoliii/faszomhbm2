@@ -608,6 +608,10 @@ public class MainRegistry {
         GameRegistry.registerTileEntity(TileEntityCraneRouter.class, new ResourceLocation(RefStrings.MODID, "tileentity_cranerouter"));
         GameRegistry.registerTileEntity(TileEntityCraneGrabber.class, new ResourceLocation(RefStrings.MODID, "tileentity_cranegrabber"));
         GameRegistry.registerTileEntity(TileEntityPWRController.class, new ResourceLocation(RefStrings.MODID, "tileentity_pwr_controller"));
+        GameRegistry.registerTileEntity(TileEntityMachineHTR3.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_htr3"));
+        GameRegistry.registerTileEntity(TileEntityMachineHTRF4.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_htrf4"));
+        GameRegistry.registerTileEntity(TileEntityMachineLPW2.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_lpw2"));
+        GameRegistry.registerTileEntity(TileEntityXenonThruster.class, new ResourceLocation(RefStrings.MODID, "tileentity_xenonthruster"));
         GameRegistry.registerTileEntity(BlockPWR.TileEntityBlockPWR.class, new ResourceLocation(RefStrings.MODID, "tileentity_block_pwr"));
 
         int i = 0;

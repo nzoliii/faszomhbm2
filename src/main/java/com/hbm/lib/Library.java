@@ -1,5 +1,6 @@
 package com.hbm.lib;
 
+import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.api.energymk2.IEnergyConnectorBlock;
 import com.hbm.api.energymk2.IEnergyConnectorMK2;
 import com.hbm.api.fluid.IFluidConnector;
@@ -9,7 +10,7 @@ import com.google.common.collect.Sets;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.HbmLivingCapability.EntityHbmPropsProvider;
 import com.hbm.capability.HbmLivingCapability.IEntityHbmProps;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.config.GeneralConfig;
 import com.hbm.entity.mob.EntityHunterChopper;
 import com.hbm.entity.projectile.EntityChopperMine;
 import com.hbm.handler.WeightedRandomChestContentFrom1710;
@@ -48,12 +49,15 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
@@ -274,7 +278,7 @@ public class Library {
 		}
 		long powerNeeded = maxPower - power;
 		if (powerNeeded <= 0) return power;
-		long heExtracted = NTMBatteryCapabilityHandler.extractChargeIfValid(stack, powerNeeded, false);
+		long heExtracted = disChargeBatteryIfValid(stack, powerNeeded, false);
 		return power + heExtracted;
 	}
 
@@ -285,7 +289,7 @@ public class Library {
 		if (stackToCharge.isEmpty() || power <= 0) {
 			return power;
 		}
-		long heCharged = NTMBatteryCapabilityHandler.addChargeIfValid(stackToCharge, power, false);
+		long heCharged = chargeBatteryIfValid(stackToCharge, power, false);
 		return power - heCharged;
 	}
 
@@ -1105,5 +1109,105 @@ public static boolean canConnect(IBlockAccess world, BlockPos pos, ForgeDirectio
 	
 	public static Explosion explosionDummy(World w, double x, double y, double z){
 		return new Explosion(w, null, x, y, z, 1000, false, false);
+	}
+
+	/** @return true if is instance of IBatteryItem or has FE capability */
+	public static boolean isItemBattery(@NotNull ItemStack stack){
+		if(stack.isEmpty()) return false;
+		return stack.getItem() instanceof IBatteryItem || stack.hasCapability(CapabilityEnergy.ENERGY, null);
+	}
+
+	public static boolean isItemDischargeableBattery(@NotNull ItemStack stack){
+		if(stack.isEmpty()) return false;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			return battery.getCharge(stack) > 0 && battery.getDischargeRate() > 0;
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap != null) return cap.getEnergyStored() > 0 && cap.canExtract();
+		}
+		return false;
+	}
+
+	public static boolean isItemChargeableBattery(@NotNull ItemStack stack) {
+		if (stack.isEmpty()) return false;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			return battery.getMaxCharge() > battery.getCharge(stack) && battery.getChargeRate() > 0;
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap != null) return cap.getMaxEnergyStored() > cap.getEnergyStored() && cap.canReceive();
+		}
+		return false;
+	}
+
+	public static boolean isItemEmptyBattery(@NotNull ItemStack stack){
+		if(stack.isEmpty()) return true;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			return battery.getCharge(stack) == 0;
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap!= null) return cap.getEnergyStored() == 0;
+		}
+		return false;
+	}
+
+	public static boolean isItemFullBattery(@NotNull ItemStack stack){
+		if(stack.isEmpty()) return false;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			return battery.getCharge(stack) == battery.getMaxCharge();
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap!= null) return cap.getEnergyStored() == cap.getMaxEnergyStored();
+		}
+		return false;
+	}
+
+	/**
+	 * @return amount of energy charged in HE
+	 */
+	public static long chargeBatteryIfValid(@NotNull ItemStack stack, long heCharge, boolean instant) {
+		if (stack.isEmpty()) return 0;
+		long added = 0;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			long maxcharge = battery.getMaxCharge();
+			long charge = battery.getCharge(stack);
+			added = instant ? heCharge : Math.min(heCharge, battery.getChargeRate());
+			added = charge + added > maxcharge ? maxcharge - charge : added;
+			battery.setCharge(stack, charge + added);
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			if (GeneralConfig.conversionRateHeToRF <= 0) return 0;
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap != null) {
+				int feReceived = cap.receiveEnergy((int) (heCharge * GeneralConfig.conversionRateHeToRF), false);
+				added = (long) (feReceived / GeneralConfig.conversionRateHeToRF);
+			}
+		}
+		return added;
+	}
+
+	/**
+	 * @return The amount of energy that was actually extracted, in HE.
+	 */
+	public static long disChargeBatteryIfValid(@NotNull ItemStack stack, long ntmCharge, boolean instant) {
+		if (stack.isEmpty()) return 0;
+		if (stack.getItem() instanceof IBatteryItem battery) {
+			long currentCharge = battery.getCharge(stack);
+			long extractLimit = instant ? ntmCharge : Math.min(ntmCharge, battery.getDischargeRate());
+			long actualExtracted = Math.min(extractLimit, currentCharge);
+			if (actualExtracted > 0) {
+				battery.setCharge(stack, currentCharge - actualExtracted);
+			}
+			return actualExtracted;
+		} else if (stack.hasCapability(CapabilityEnergy.ENERGY, null)) {
+			if (GeneralConfig.conversionRateHeToRF <= 0) {
+				return 0;
+			}
+			IEnergyStorage cap = stack.getCapability(CapabilityEnergy.ENERGY, null);
+			if (cap != null) {
+				int feToExtract = (int) (ntmCharge * GeneralConfig.conversionRateHeToRF);
+				int feExtracted = cap.extractEnergy(feToExtract, false);
+				return (long) (feExtracted / GeneralConfig.conversionRateHeToRF);
+			}
+		}
+		return 0;
 	}
 }

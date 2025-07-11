@@ -8,6 +8,7 @@ import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.util.EntityDamageUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -176,20 +177,22 @@ public class TileEntityTurretMaxwell extends TileEntityTurretBaseNT implements I
 			}
 			
 			this.power -= demand;
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setBoolean("shot", true);
-			this.networkPack(data, 250);
+
+			networkPackNT(250);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		
-		if(nbt.hasKey("shot"))
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeBoolean(true);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		if(buf.readBoolean())
 			beam = 5;
-		else
-			super.networkUnpack(nbt);
 	}
 
 	@Override

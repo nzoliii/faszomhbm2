@@ -1,12 +1,10 @@
 package com.hbm.inventory.container;
 
-import com.hbm.blocks.machine.ItemSelfcharger;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.inventory.SlotUpgrade;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemAssemblyTemplate;
-import com.hbm.items.machine.ItemBattery;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityMachineAssembler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -28,7 +26,7 @@ public class ContainerMachineAssembler extends Container {
 		this.addSlotToContainer(new SlotItemHandler(te.inventory, 0, 80, 18){
 			@Override
 			public boolean isItemValid(@NotNull ItemStack stack) {
-				return NTMBatteryCapabilityHandler.isBattery(stack) || stack.getItem() == ModItems.meteorite_sword_alloyed;
+				return Library.isItemBattery(stack) || stack.getItem() == ModItems.meteorite_sword_alloyed;
 			}
 		});
 		//Upgrades

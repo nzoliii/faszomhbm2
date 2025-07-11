@@ -1,13 +1,11 @@
 package com.hbm.tileentity.machine.rbmk;
 
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +15,7 @@ public abstract class TileEntityRBMKSlottedBase extends TileEntityRBMKActiveBase
 	public ItemStackHandler inventory;
 
 	public TileEntityRBMKSlottedBase(int scount) {
-		inventory = new ItemStackHandler(scount){
+        inventory = new ItemStackHandler(scount){
 			@Override
 			protected void onContentsChanged(int slot) {
 				markDirty();
@@ -49,16 +47,12 @@ public abstract class TileEntityRBMKSlottedBase extends TileEntityRBMKActiveBase
 		return tank.getFluidAmount() * i / tank.getCapacity();
 	}
 
-	public void networkPack(NBTTagCompound nbt, int range) {
-		if(!world.isRemote)
-			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
-	}
-
-	public void networkUnpack(NBTTagCompound nbt) {
-		super.networkUnpack(nbt);
-	}
-
 	public void handleButtonPacket(int value, int meta) {
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
 	}
 
 	@Override

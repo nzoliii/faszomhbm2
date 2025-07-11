@@ -16,8 +16,8 @@ import com.hbm.inventory.gui.GUIHeaterHeatex;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.IGUIProvider;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHeatSource, IControlReceiver, IGUIProvider, IFluidStandardTransceiver, INBTPacketReceiver, ITickable, IFFtoNTMF {
+public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHeatSource, IControlReceiver, IGUIProvider, IFluidStandardTransceiver, ITickable, IFFtoNTMF {
 
     public FluidTankNTM[] tanksNew;
     public FluidTank[] tanks;
@@ -89,14 +89,9 @@ public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHe
 
             this.heatEnergy *= 0.999;
 
-            NBTTagCompound data = new NBTTagCompound();
-            tanksNew[0].writeToNBT(data, "0");
             this.tryConvert();
-            tanksNew[1].writeToNBT(data, "1");
-            data.setInteger("heat", heatEnergy);
-            data.setInteger("toCool", amountToCool);
-            data.setInteger("delay", tickDelay);
-            INBTPacketReceiver.networkPack(this, data, 25);
+
+            networkPackNT(25);
 
             for(DirPos pos : getConPos()) {
                 if(this.tanksNew[1].getFill() > 0) this.sendFluid(tanksNew[1], world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
@@ -105,12 +100,21 @@ public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHe
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        tanksNew[0].readFromNBT(nbt, "0");
-        tanksNew[1].readFromNBT(nbt, "1");
-        this.heatEnergy = nbt.getInteger("heat");
-        this.amountToCool = nbt.getInteger("toCool");
-        this.tickDelay = nbt.getInteger("delay");
+    public void serialize(ByteBuf buf) {
+        tanksNew[0].serialize(buf);
+        tanksNew[1].serialize(buf);
+        buf.writeInt(heatEnergy);
+        buf.writeInt(amountToCool);
+        buf.writeInt(tickDelay);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        tanksNew[0].deserialize(buf);
+        tanksNew[1].deserialize(buf);
+        this.heatEnergy = buf.readInt();
+        this.amountToCool = buf.readInt();
+        this.tickDelay = buf.readInt();
     }
 
     protected void setupTanks() {
@@ -149,7 +153,7 @@ public class TileEntityHeaterHeatex extends TileEntityMachineBase implements IHe
         int ops = Math.min(inputOps, Math.min(outputOps, opCap));
         tanksNew[0].setFill(tanksNew[0].getFill() - trait.amountReq * ops);
         tanksNew[1].setFill(tanksNew[1].getFill() + trait.amountProduced * ops);
-        this.heatEnergy += trait.heatEnergy * ops * trait.getEfficiency(FT_Coolable.CoolingType.HEATEXCHANGER);
+        this.heatEnergy += (int) (trait.heatEnergy * ops * trait.getEfficiency(FT_Coolable.CoolingType.HEATEXCHANGER));
         this.markDirty();
     }
 

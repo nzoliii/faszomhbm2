@@ -58,11 +58,11 @@ public class TileEntityCrateTemplate extends TileEntityLockableBase implements I
     }
 
     public String getInventoryName() {
-        return this.hasCustomInventoryName() ? this.customName : "container.crateSteel";
+        return this.hasCustomInventoryName() ? this.customName : "container.crateTemplate";
     }
 
     public boolean hasCustomInventoryName() {
-        return this.customName != null && this.customName.length() > 0;
+        return this.customName != null && !this.customName.isEmpty();
     }
 
     public void setCustomName(String name) {

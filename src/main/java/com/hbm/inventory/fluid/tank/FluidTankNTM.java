@@ -91,7 +91,7 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
     }
 
     public Fluid getTankTypeFF() {
-        return NTMFluidCapabilityHandler.getForgeFluid(this.type);
+        return this.type.getFF();
     }
 
     public int getFill() {
@@ -383,7 +383,7 @@ public class FluidTankNTM implements IFluidHandler, IFluidTank {
             return 0;
         }
         if (this.type == Fluids.NONE) {
-            FluidType incomingType = NTMFluidCapabilityHandler.getHbmFluidType(resource.getFluid());
+            FluidType incomingType = NTMFluidCapabilityHandler.getFluidType(resource.getFluid());
             if (incomingType == null || incomingType == Fluids.NONE) return 0;
             int toTransfer = Math.min(getMaxFill(), resource.amount);
             if (doFill) {

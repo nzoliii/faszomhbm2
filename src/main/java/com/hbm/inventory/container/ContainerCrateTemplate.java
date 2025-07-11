@@ -7,36 +7,35 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerCrateTemplate extends Container {
 
-    private TileEntityCrateTemplate diFurnace;
+    private final TileEntityCrateTemplate diFurnace;
 
     public ContainerCrateTemplate(InventoryPlayer invPlayer, TileEntityCrateTemplate tedf) {
         diFurnace = tedf;
 
-        for(int i = 0; i < 6; i++)
-        {
+        for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 9; j++)
             {
                 this.addSlotToContainer(new SlotItemHandler(tedf.inventory, j + i * 9, 8 + j * 18, 18 + i * 18));
             }
         }
 
-        for(int i = 0; i < 3; i++)
-        {
+        for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 9; j++)
             {
                 this.addSlotToContainer(new Slot(invPlayer, j + i * 9 + 9, 8 + j * 18, 84 + i * 18 + (18 * 3) + 2));
             }
         }
 
-        for(int i = 0; i < 9; i++)
-        {
+        for(int i = 0; i < 9; i++) {
             this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 142 + (18 * 3) + 2));
         }
     }
 
+    @NotNull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2)
     {

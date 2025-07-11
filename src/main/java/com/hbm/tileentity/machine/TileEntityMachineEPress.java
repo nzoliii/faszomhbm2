@@ -1,233 +1,217 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
+import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.PressRecipes;
+import com.hbm.inventory.UpgradeManagerNT;
 import com.hbm.inventory.container.ContainerMachineEPress;
 import com.hbm.inventory.gui.GUIMachineEPress;
+import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.items.machine.ItemMachineUpgrade.UpgradeType;
 import com.hbm.items.machine.ItemStamp;
-import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
-import com.hbm.packet.AuxElectricityPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.packet.TEPressPacket;
 import com.hbm.tileentity.IGUIProvider;
+import com.hbm.tileentity.IUpgradeInfoProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import com.hbm.util.I18nUtil;
+import io.netty.buffer.ByteBuf; // Required import
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityMachineEPress extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IGUIProvider {
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
 
-	public int progress = 0;
+public class TileEntityMachineEPress extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IGUIProvider, IUpgradeInfoProvider {
+
 	public long power = 0;
-	public final static int maxProgress = 200;
 	public final static long maxPower = 50000;
-	public int item;
-	public int meta;
-	boolean isRetracting = false;
+
+	public int progress;
+	public final static int maxProgress = 200;
+	@SideOnly(Side.CLIENT)
+	public ItemStack syncStack = ItemStack.EMPTY;
+	private boolean isRetracting = false;
+	private int delay;
+
+	public UpgradeManagerNT upgradeManager = new UpgradeManagerNT(this);
 
 	public TileEntityMachineEPress() {
-		super(4);
+		super(5);
 	}
 
 	@Override
-	public String getName(){
+	public String getName() {
 		return "container.epress";
 	}
 
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		if (world.getTileEntity(pos) != this) {
-			return false;
-		} else {
-			return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64;
-		}
-	}
-	
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack stack){
-		if(stack.getItem() instanceof ItemStamp && i == 1)
-			return true;
-		
-		if(i == 0 && NTMBatteryCapabilityHandler.isBattery(stack))
-			return true;
-		
-		if(!(stack.getItem() instanceof ItemStamp) && i == 2)
-			return true;
-		return false;
-	}
-	
-	@Override
-	public int[] getAccessibleSlotsFromSide(EnumFacing e){
-		return e.ordinal() == 0 ? new int[] { 3 } : new int[]{ 0, 1, 2 };
-	}
-	
-	@Override
-	public boolean canInsertItem(int slot, ItemStack itemStack, int amount){
-		return this.isItemValidForSlot(slot, itemStack);
-	}
-	
-	@Override
-	public boolean canExtractItem(int slot, ItemStack itemStack, int amount){
-		return slot == 3;
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeLong(power);
+		buf.writeInt(progress);
+		ByteBufUtils.writeItemStack(buf, inventory.getStackInSlot(2));
 	}
 
 	@Override
-	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setInteger("progress", progress);
-		compound.setLong("power", power);
-		compound.setBoolean("ret", isRetracting);
-		compound.setTag("inventory", inventory.serializeNBT());
-		return super.writeToNBT(compound);
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		this.progress = buf.readInt();
+		this.syncStack = ByteBufUtils.readItemStack(buf);
 	}
-	
-	@Override
-	public void readFromNBT(NBTTagCompound compound) {
-		progress = compound.getInteger("progress");
-		power = compound.getInteger("power");
-		isRetracting = compound.getBoolean("ret");
-		if(compound.hasKey("inventory"))
-			inventory.deserializeNBT(compound.getCompoundTag("inventory"));
-		super.readFromNBT(compound);
-	}
-	
+
 	@Override
 	public void update() {
-		if(!world.isRemote)
-		{
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
-				this.trySubscribe(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
+		if (!world.isRemote) {
 			power = Library.chargeTEFromItems(inventory, 0, power, maxPower);
-			
-			if(power >= 100 && !(world.getStrongPower(pos) > 0)) {
 
-				int speed = 25;
-				
-				if(!inventory.getStackInSlot(1).isEmpty() && !inventory.getStackInSlot(2).isEmpty()) {
-					ItemStack stack = PressRecipes.getPressResult(inventory.getStackInSlot(2).copy(), inventory.getStackInSlot(1).copy());
-					if(stack != null &&
-							(inventory.getStackInSlot(3).isEmpty() ||
-							(inventory.getStackInSlot(3).getItem() == stack.getItem() &&
-									inventory.getStackInSlot(3).getCount() + stack.getCount() <= inventory.getStackInSlot(3).getMaxStackSize()))) {
-						
-						power -= 100;
-						
-						if(progress >= maxProgress) {
-							
-							isRetracting = true;
-							
-							if(inventory.getStackInSlot(3).isEmpty())
-								inventory.setStackInSlot(3, stack.copy());
-							else
-								inventory.getStackInSlot(3).grow(stack.getCount());
-							
-							inventory.getStackInSlot(2).shrink(1);;
-							if(inventory.getStackInSlot(2).isEmpty())
-								inventory.setStackInSlot(2, ItemStack.EMPTY);
+			boolean canProcess = this.canProcess();
+			boolean hasPower = power >= 100;
 
-							if(inventory.getStackInSlot(1).getMaxDamage() > 0){
-								inventory.getStackInSlot(1).setItemDamage(inventory.getStackInSlot(1).getItemDamage() + 1);
-								if(inventory.getStackInSlot(1).getItemDamage() >= inventory.getStackInSlot(1).getMaxDamage())
-									inventory.setStackInSlot(1, ItemStack.EMPTY);
-							}
+			if ((canProcess || this.isRetracting || this.delay > 0) && hasPower) {
+				power -= 100;
 
-					        this.world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.pressOperate, SoundCategory.BLOCKS, 1.5F, 1.0F);
+				if (delay <= 0) {
+					ItemStack[] allSlots = new ItemStack[inventory.getSlots()];
+					for(int i = 0; i < inventory.getSlots(); i++) {
+						allSlots[i] = inventory.getStackInSlot(i);
+					}
+					upgradeManager.checkSlots(allSlots, 4, 4);
+					int speed = 1 + upgradeManager.getLevel(UpgradeType.SPEED);
+					double processSpeed = this.isRetracting ? 20 : 45;
+					processSpeed *= (1.0D + (double) speed / 4.0D);
+
+					if (this.isRetracting) {
+						this.progress -= (int)Math.round(processSpeed);
+
+						if (this.progress <= 0) {
+							this.progress = 0;
+							this.isRetracting = false;
+							this.delay = 5 - speed + 1;
 						}
-						
-						if(!isRetracting)
-							progress += speed;
-						
-					} else {
-						isRetracting = true;
+					} else if (canProcess) {
+						this.progress += (int)Math.round(processSpeed);
+
+						if (this.progress >= maxProgress) {
+							this.progress = maxProgress;
+							this.world.playSound(null, this.pos, HBMSoundHandler.pressOperate, SoundCategory.BLOCKS, 1.5F, 1.0F);
+							craftItem();
+							this.isRetracting = true;
+							this.delay = 5 - speed + 1;
+							this.markDirty();
+						}
 					}
 				} else {
-					isRetracting = true;
+					delay--;
 				}
-
-				if(isRetracting)
-					progress -= speed;
-			} else {
-				isRetracting = true;
+			} else if (this.progress > 0) {
+				this.isRetracting = true;
 			}
-			
-			if(progress <= 0) {
-				isRetracting = false;
-				progress = 0;
+			this.networkPackNT(50);
+		}
+	}
+
+	private boolean canProcess() {
+		if (inventory.getStackInSlot(1).isEmpty() || inventory.getStackInSlot(2).isEmpty()) {
+			return false;
+		}
+
+		ItemStack output = PressRecipes.getPressResult(inventory.getStackInSlot(2), inventory.getStackInSlot(1));
+		if (output.isEmpty()) {
+			return false;
+		}
+
+		ItemStack outputSlot = inventory.getStackInSlot(3);
+		if (outputSlot.isEmpty()) {
+			return true;
+		}
+		if (!outputSlot.isItemEqual(output)) {
+			return false;
+		}
+		return outputSlot.getCount() + output.getCount() <= outputSlot.getMaxStackSize();
+	}
+
+	private void craftItem() {
+		ItemStack input = inventory.getStackInSlot(2);
+		ItemStack stamp = inventory.getStackInSlot(1);
+		ItemStack output = PressRecipes.getPressResult(input, stamp);
+
+		if (output.isEmpty()) return;
+		inventory.insertItem(3, output.copy(), false);
+		input.shrink(1);
+		if (stamp.isItemStackDamageable()) {
+			stamp.damageItem(1, null);
+			if (stamp.getItemDamage() >= stamp.getMaxDamage()) {
+				inventory.setStackInSlot(1, ItemStack.EMPTY);
 			}
-
-			detectAndSendChanges();
 		}
-	}
-	
-	private int detectProgress;
-	private long detectPower;
-	private boolean detectIsRetracting;
-	private String detectCustomName;
-	private ItemStack detectItem;
-	
-	protected void detectAndSendChanges(){
-		boolean mark = false;
-		if(detectProgress != progress){
-			mark = true;
-			detectProgress = progress;
-		}
-		if(detectPower != power){
-			mark = true;
-			detectPower = power;
-		}
-		if(detectIsRetracting != isRetracting){
-			mark = true;
-			detectIsRetracting = isRetracting;
-		}
-		if(!Library.areItemsEqual(inventory.getStackInSlot(2), detectItem)){
-			detectItem = inventory.getStackInSlot(2).copy();
-		}
-		PacketDispatcher.wrapper.sendToAllAround(new AuxElectricityPacket(pos.getX(), pos.getY(), pos.getZ(), power), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 10));
-		PacketDispatcher.wrapper.sendToAllAround(new TEPressPacket(pos.getX(), pos.getY(), pos.getZ(), inventory.getStackInSlot(2), progress), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 100));
-		if(mark)
-			markDirty();
-		
-	}
-	
-	public long getPowerScaled(int i) {
-		return (power * i) / maxPower;
 	}
 
-	public int getProgressScaled(int i) {
-		return (progress * i) / maxProgress;
-	}
-	
 	@Override
-	public AxisAlignedBB getRenderBoundingBox() {
-		return new AxisAlignedBB(pos, pos.add(1, 3, 1));
+	public boolean isItemValidForSlot(int i, @NotNull ItemStack stack) {
+		return switch (i) {
+			case 0 -> Library.isItemBattery(stack);
+			case 1 -> stack.getItem() instanceof ItemStamp;
+			case 2 ->
+					!(stack.getItem() instanceof ItemStamp) && !Library.isItemBattery(stack) && !(stack.getItem() instanceof ItemMachineUpgrade);
+			case 4 -> stack.getItem() instanceof ItemMachineUpgrade;
+			default -> false;
+		};
 	}
-	
+
+	public int[] getAccessibleSlotsFromSide(@NotNull EnumFacing side) {
+		if (side == EnumFacing.DOWN) return new int[]{3};
+		if (side == EnumFacing.UP) return new int[]{2};
+		return new int[]{0, 1, 2};
+	}
+
 	@Override
-	@SideOnly(Side.CLIENT)
-	public double getMaxRenderDistanceSquared()
-	{
-		return 65536.0D;
+	public boolean canExtractItem(int slot, ItemStack itemStack, int amount) {
+		return slot == 3;
 	}
-	
+	@NotNull
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+		nbt.setInteger("progress", progress);
+		nbt.setLong("power", power);
+		nbt.setBoolean("isRetracting", isRetracting);
+		nbt.setInteger("delay", delay);
+		return nbt;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		progress = nbt.getInteger("progress");
+		power = nbt.getLong("power");
+		isRetracting = nbt.getBoolean("isRetracting");
+		delay = nbt.getInteger("delay");
+	}
+
 	@Override
 	public void setPower(long i) {
 		power = i;
-		
 	}
 
 	@Override
@@ -240,16 +224,49 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IT
 		return maxPower;
 	}
 
+	@NotNull
 	@Override
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+	public AxisAlignedBB getRenderBoundingBox() {
+		return new AxisAlignedBB(pos, pos.add(1, 3, 1));
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public double getMaxRenderDistanceSquared() {
+		return 65536.0D;
+	}
+
+	@Override
+	public boolean canProvideInfo(UpgradeType type, int level, boolean extendedInfo) {
+		return type == UpgradeType.SPEED;
+	}
+
+	@Override
+	public void provideInfo(UpgradeType type, int level, List<String> info, boolean extendedInfo) {
+		info.add(IUpgradeInfoProvider.getStandardLabel(ModBlocks.machine_epress));
+		if (type == UpgradeType.SPEED) {
+			info.add(TextFormatting.GREEN + I18nUtil.resolveKey(IUpgradeInfoProvider.KEY_DELAY, "-" + (50 * level / 3) + "%"));
+		}
+	}
+
+	@Override
+	public HashMap<UpgradeType, Integer> getValidUpgrades() {
+		HashMap<UpgradeType, Integer> upgrades = new HashMap<>();
+		upgrades.put(UpgradeType.SPEED, 3);
+		return upgrades;
+	}
+
+	@Override
+	public boolean hasCapability(@NotNull Capability<?> capability, @Nullable EnumFacing facing) {
 		if (capability == CapabilityEnergy.ENERGY) {
 			return true;
 		}
 		return super.hasCapability(capability, facing);
 	}
 
+	@Nullable
 	@Override
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+	public <T> T getCapability(@NotNull Capability<T> capability, @Nullable EnumFacing facing) {
 		if (capability == CapabilityEnergy.ENERGY) {
 			return CapabilityEnergy.ENERGY.cast(
 					new NTMEnergyCapabilityWrapper(this)
@@ -258,14 +275,22 @@ public class TileEntityMachineEPress extends TileEntityMachineBase implements IT
 		return super.getCapability(capability, facing);
 	}
 
-    @Override
-    public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return new ContainerMachineEPress(player.inventory, this);
-    }
+	@Override
+	public Container provideContainer(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new ContainerMachineEPress(player.inventory, this);
+	}
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        return new GUIMachineEPress(player.inventory, this);
-    }
+	@Override
+	@SideOnly(Side.CLIENT)
+	public GuiScreen provideGUI(int ID, EntityPlayer player, World world, int x, int y, int z) {
+		return new GUIMachineEPress(player.inventory, this);
+	}
+
+	public long getPowerScaled(int i) {
+		return (power * i) / maxPower;
+	}
+
+	public int getProgressScaled(int i) {
+		return (progress * i) / maxProgress;
+	}
 }

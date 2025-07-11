@@ -19,6 +19,7 @@ import com.hbm.lib.DirPos;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -91,12 +92,7 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
 
             this.sendFluid();
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", this.power);
-            data.setInteger("progress", this.progress);
-            data.setInteger("usage", this.usage);
-            data.setInteger("processTime", this.processTime);
-            this.networkPack(data, 50);
+            networkPackNT(50);
         }
     }
 
@@ -170,13 +166,20 @@ public class TileEntityMachineLiquefactor extends TileEntityMachineBase implemen
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
+    public void serialize(ByteBuf buf) {
+        buf.writeLong(this.power);
+        buf.writeInt(this.progress);
+        buf.writeInt(this.usage);
+        buf.writeInt(this.processTime);
+    }
 
-        this.power = nbt.getLong("power");
-        this.progress = nbt.getInteger("progress");
-        this.usage = nbt.getInteger("usage");
-        this.processTime = nbt.getInteger("processTime");
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.power = buf.readLong();
+        this.progress = buf.readInt();
+        this.usage = buf.readInt();
+        this.processTime = buf.readInt();
     }
 
     @Override

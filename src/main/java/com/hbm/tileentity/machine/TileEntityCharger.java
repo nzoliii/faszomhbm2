@@ -3,28 +3,30 @@ package com.hbm.tileentity.machine;
 import com.hbm.api.energymk2.IBatteryItem;
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.machine.MachineCharger;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.config.GeneralConfig;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.lib.Library;
+import com.hbm.packet.BufPacket;
+import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class TileEntityCharger extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, INBTPacketReceiver {
+public class TileEntityCharger extends TileEntityLoadedBase implements IBufPacketReceiver, ITickable, IEnergyReceiverMK2 {
 
 	public static final int range = 3;
 
@@ -62,7 +64,7 @@ public class TileEntityCharger extends TileEntityLoadedBase implements ITickable
 
 					ItemStack stack = inv.getStackInSlot(i);
 
-					if(NTMBatteryCapabilityHandler.isBattery(stack)) {
+					if(Library.isItemBattery(stack)) {
 						if (stack.getItem() instanceof IBatteryItem battery) {
 							totalCapacity += battery.getMaxCharge();
 							totalEnergy += battery.getCharge(stack);
@@ -87,26 +89,34 @@ public class TileEntityCharger extends TileEntityLoadedBase implements ITickable
 				lastOp--;
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setBoolean("o", isOn);
-			data.setBoolean("u", pointingUp);
-			data.setLong("m", totalCapacity);
-			data.setLong("v", totalEnergy);
-			data.setLong("c", charge);
-			data.setLong("a", actualCharge);
-			INBTPacketReceiver.networkPack(this, data, 50);
+			networkPackNT(50);
 			actualCharge = 0;
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.isOn = nbt.getBoolean("o");
-		this.pointingUp = nbt.getBoolean("u");
-		this.totalCapacity = nbt.getLong("m");
-		this.totalEnergy = nbt.getLong("v");
-		this.charge = nbt.getLong("c");
-		this.actualCharge = nbt.getLong("a");
+	public void serialize(ByteBuf buf) {
+		buf.writeBoolean( isOn);
+		buf.writeBoolean(pointingUp);
+		buf.writeLong(totalCapacity);
+		buf.writeLong(totalEnergy);
+		buf.writeLong(charge);
+		buf.writeLong(actualCharge);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.isOn = buf.readBoolean();
+		this.pointingUp = buf.readBoolean();
+		this.totalCapacity = buf.readLong();
+		this.totalEnergy = buf.readLong();
+		this.charge = buf.readLong();
+		this.actualCharge = buf.readLong();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 
 	@Override
@@ -135,10 +145,10 @@ public class TileEntityCharger extends TileEntityLoadedBase implements ITickable
 			for(int i = 0; i < inv.getSizeInventory(); i ++){
 				if(chargeBudget <= 0 || powerBudget <= 0) break;
 				ItemStack stack = inv.getStackInSlot(i);
-				if(NTMBatteryCapabilityHandler.isChargeableBattery(stack)) {
+				if(Library.isItemChargeableBattery(stack)) {
 					long powerToOffer = Math.min(powerBudget, chargeBudget);
                     if (!simulate) {
-                        long chargedAmount = NTMBatteryCapabilityHandler.addChargeIfValid(stack, powerToOffer, false);
+                        long chargedAmount = Library.chargeBatteryIfValid(stack, powerToOffer, false);
 
                         if (chargedAmount > 0) {
                             actualCharge += chargedAmount;

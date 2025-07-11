@@ -10,10 +10,12 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.ItemStackUtil;
 import com.mojang.realmsclient.gui.ChatFormatting;
+import io.netty.buffer.ByteBuf;
+import java.util.HashMap;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -23,20 +25,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.List;
 
 public class TileEntitySawmill extends TileEntityMachineBase implements ITickable {
 
@@ -76,7 +74,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
                     if(result != null) {
                         progress += heat / 10;
 
-                        if(progress >= this.processingTime) {
+                        if(progress >= processingTime) {
                             progress = 0;
                             inventory.setStackInSlot(0, ItemStack.EMPTY);
                             inventory.setStackInSlot(1, result);
@@ -97,8 +95,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
 
                     AxisAlignedBB aabb = new AxisAlignedBB(-1D, 0.375D, -1D, -0.875, 2.375D, 1D);
                     aabb = BlockDummyable.getAABBRotationOffset(aabb, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, ForgeDirection.getOrientation(this.getBlockMetadata() - BlockDummyable.offset).getRotation(ForgeDirection.UP));
-                    for(Object o : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb)) {
-                        EntityLivingBase e = (EntityLivingBase) o;
+                    for(EntityLivingBase e : world.getEntitiesWithinAABB(EntityLivingBase.class, aabb)) {
                         if(e.isEntityAlive() && e.attackEntityFrom(ModDamageSource.turbofan, 100)) {
                             world.playSound(null, e.posX, e.posY, e.posZ, SoundEvents.ENTITY_ZOMBIE_BREAK_DOOR_WOOD, SoundCategory.BLOCKS, 2.0F, 0.95F + world.rand.nextFloat() * 0.2F);
                             int count = Math.min((int)Math.ceil(e.getMaxHealth() / 4), 250);
@@ -150,23 +147,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
                 this.warnCooldown = 0;
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setInteger("heat", heat);
-            data.setInteger("progress", progress);
-            data.setBoolean("hasBlade", hasBlade);
-
-            NBTTagList list = new NBTTagList();
-            for(int i = 0; i < inventory.getSlots(); i++) {
-                if(!inventory.getStackInSlot(i).isEmpty()) {
-                    NBTTagCompound nbt1 = new NBTTagCompound();
-                    nbt1.setByte("slot", (byte) i);
-                    inventory.getStackInSlot(i).writeToNBT(nbt1);
-                    list.appendTag(nbt1);
-                }
-            }
-            data.setTag("items", list);
-
-            INBTPacketReceiver.networkPack(this, data, 150);
+            networkPackNT(150);
 
             this.heat = 0;
 
@@ -185,21 +166,25 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.heat = nbt.getInteger("heat");
-        this.progress = nbt.getInteger("progress");
-        this.hasBlade = nbt.getBoolean("hasBlade");
+    public void serialize(ByteBuf buf) {
+        buf.writeInt(heat);
+        buf.writeInt(progress);
+        buf.writeBoolean(hasBlade);
 
-        NBTTagList list = nbt.getTagList("items", 10);
+        for (int i = 0; i < inventory.getSlots(); i++) {
+            ItemStack slot = inventory.getStackInSlot(i);
+            ByteBufUtils.writeItemStack(buf, slot);
+        }
+    }
 
-        inventory = new ItemStackHandler(3);
-        for(int i = 0; i < list.tagCount(); i++) {
-            NBTTagCompound nbt1 = list.getCompoundTagAt(i);
-            byte b0 = nbt1.getByte("slot");
-            if (b0 >= 0 && b0 < inventory.getSlots()) {
-                ItemStack stack = new ItemStack(nbt1);
-                inventory.setStackInSlot(b0, stack);
-            }
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.heat = buf.readInt();
+        this.progress = buf.readInt();
+        this.hasBlade = buf.readBoolean();
+
+        for(int i = 0; i < inventory.getSlots(); i++) {
+            inventory.setStackInSlot(i, ByteBufUtils.readItemStack(buf));
         }
     }
 
@@ -220,8 +205,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
     protected void tryPullHeat() {
         TileEntity con = world.getTileEntity(pos.add(0, -1, 0));
 
-        if(con instanceof IHeatSource) {
-            IHeatSource source = (IHeatSource) con;
+        if(con instanceof IHeatSource source) {
             int heatSrc = (int) (source.getHeatStored() * diffusion);
 
             if(heatSrc > 0) {
@@ -288,9 +272,9 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
         return null;
     }
 
-    public static HashMap getRecipes() {
+    public static HashMap<Object, Object[]> getRecipes() {
 
-        HashMap<Object, Object[]> recipes = new HashMap<Object, Object[]>();
+        HashMap<Object, Object[]> recipes = new HashMap<>();
 
         recipes.put(new RecipesCommon.OreDictStack("logWood"), new ItemStack[] { new ItemStack(Blocks.PLANKS, 6), ItemStackUtil.addTooltipToStack(new ItemStack(ModItems.powder_sawdust), ChatFormatting.RED + "50%") });
         recipes.put(new RecipesCommon.OreDictStack("plankWood"), new ItemStack[] { new ItemStack(Items.STICK, 6), ItemStackUtil.addTooltipToStack(new ItemStack(ModItems.powder_sawdust), ChatFormatting.RED + "10%") });
@@ -303,7 +287,7 @@ public class TileEntitySawmill extends TileEntityMachineBase implements ITickabl
     AxisAlignedBB bb = null;
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public @NotNull AxisAlignedBB getRenderBoundingBox() {
 
         if(bb == null) {
             bb = new AxisAlignedBB(

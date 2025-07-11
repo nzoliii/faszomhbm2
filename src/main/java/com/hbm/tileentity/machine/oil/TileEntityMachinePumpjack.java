@@ -11,21 +11,20 @@ import com.hbm.inventory.gui.GUIMachineOilWell;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.IConfigurableMachine;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
-
-import java.io.IOException;
 
 public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 
@@ -116,17 +115,15 @@ public class TileEntityMachinePumpjack extends TileEntityOilDrillBase {
 	}
 
 	@Override
-	public void networkPack(NBTTagCompound nbt, int range) {
-		nbt.setFloat("speed", this.indicator == 0 ? (5F + (2F * this.speedLevel)) + (this.overLevel - 1F) * 10: 0F);
-
-		super.networkPack(nbt, range);
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeFloat(this.indicator == 0 ? (5F + (2F * this.speedLevel)) + (this.overLevel - 1F) * 10: 0F);
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		super.networkUnpack(nbt);
-
-		this.speed = nbt.getFloat("speed");
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.speed = buf.readFloat();
 	}
 
 	@Override

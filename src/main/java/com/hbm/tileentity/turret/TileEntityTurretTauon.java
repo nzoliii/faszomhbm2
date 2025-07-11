@@ -10,6 +10,7 @@ import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -132,10 +133,8 @@ public class TileEntityTurretTauon extends TileEntityTurretBaseNT implements IGU
 				this.target.attackEntityFrom(ModDamageSource.electricity, 30F + world.rand.nextInt(11));
 				this.consumeAmmo(conf.ammo);
 				this.world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), HBMSoundHandler.tauShoot, SoundCategory.BLOCKS, 4.0F, 0.9F + world.rand.nextFloat() * 0.3F);
-				
-				NBTTagCompound data = new NBTTagCompound();
-				data.setBoolean("shot", true);
-				this.networkPack(data, 250);
+
+				networkPackNT(250);
 				
 				Vec3 pos = new Vec3(this.getTurretPos());
 				Vec3 vec = Vec3.createVectorHelper(this.getBarrelLength(), 0, 0);
@@ -151,11 +150,16 @@ public class TileEntityTurretTauon extends TileEntityTurretBaseNT implements IGU
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt){
-		if(nbt.hasKey("shot"))
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeBoolean(true);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		if(buf.readBoolean())
 			beam = 3;
-		else
-			super.networkUnpack(nbt);
 	}
 
 	@Override

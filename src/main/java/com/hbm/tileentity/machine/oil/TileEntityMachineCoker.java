@@ -16,6 +16,7 @@ import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.Tuple;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -112,13 +113,7 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements IFl
                 if(this.tanks[1].getFill() > 0) this.sendFluid(tanks[1], world, pos.getPos().getX(), pos.getPos().getY(), pos.getPos().getZ(), pos.getDir());
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setBoolean("wasOn", this.wasOn);
-            data.setInteger("heat", this.heat);
-            data.setInteger("progress", this.progress);
-            tanks[0].writeToNBT(data, "t0");
-            tanks[1].writeToNBT(data, "t1");
-            this.networkPack(data, 25);
+            networkPackNT(25);
         } else {
 
             if(this.wasOn) {
@@ -178,14 +173,22 @@ public class TileEntityMachineCoker extends TileEntityMachineBase implements IFl
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
+    public void serialize(ByteBuf buf) {
+        buf.writeBoolean(this.wasOn);
+        buf.writeInt(this.heat);
+        buf.writeInt(this.progress);
+        tanks[0].serialize(buf);
+        tanks[1].serialize(buf);
+    }
 
-        this.wasOn = nbt.getBoolean("wasOn");
-        this.heat = nbt.getInteger("heat");
-        this.progress = nbt.getInteger("progress");
-        tanks[0].readFromNBT(nbt, "t0");
-        tanks[1].readFromNBT(nbt, "t1");
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.wasOn = buf.readBoolean();
+        this.heat = buf.readInt();
+        this.progress = buf.readInt();
+        tanks[0].deserialize(buf);
+        tanks[1].deserialize(buf);
     }
 
     protected void tryPullHeat() {

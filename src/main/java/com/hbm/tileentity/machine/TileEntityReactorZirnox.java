@@ -30,6 +30,7 @@ import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.EnumUtil;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -62,20 +63,10 @@ import static com.hbm.items.machine.ItemZirnoxRodDepleted.EnumZirnoxTypeDepleted
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityReactorZirnox extends TileEntityMachineBase implements ITickable, IControlReceiver, IFluidStandardTransceiver, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
 
-    public int heat;
     public static final int maxHeat = 100000;
-    public int pressure;
     public static final int maxPressure = 100000;
-    public boolean isOn = false;
-
-    public FluidTankNTM steam;
-    public FluidTankNTM carbonDioxide;
-    public FluidTankNTM water;
-    protected int output;
-
-    private static final int[] slots_io = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
-
     public static final HashMap<RecipesCommon.ComparableStack, ItemStack> fuelMap = new HashMap<RecipesCommon.ComparableStack, ItemStack>();
+    private static final int[] slots_io = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
 
     static {
         fuelMap.put(new RecipesCommon.ComparableStack(ModItems.rod_zirnox, 1, EnumZirnoxType.NATURAL_URANIUM_FUEL.ordinal()), new ItemStack(ModItems.rod_zirnox_depleted, 1, EnumZirnoxTypeDepleted.NATURAL_URANIUM_FUEL.ordinal()));
@@ -90,6 +81,14 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
         fuelMap.put(new RecipesCommon.ComparableStack(ModItems.rod_zirnox, 1, EnumZirnoxType.LITHIUM_FUEL.ordinal()), new ItemStack(ModItems.rod_zirnox_tritium));
         fuelMap.put(new RecipesCommon.ComparableStack(ModItems.rod_zirnox, 1, EnumZirnoxType.ZFB_MOX_FUEL.ordinal()), new ItemStack(ModItems.rod_zirnox_depleted, 1, EnumZirnoxTypeDepleted.ZFB_MOX_FUEL.ordinal()));
     }
+
+    public int heat;
+    public int pressure;
+    public boolean isOn = false;
+    public FluidTankNTM steam;
+    public FluidTankNTM carbonDioxide;
+    public FluidTankNTM water;
+    protected int output;
 
     public TileEntityReactorZirnox() {
         super(28);
@@ -130,6 +129,28 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
     }
 
     @Override
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+        buf.writeInt(this.heat);
+        buf.writeInt(this.pressure);
+        buf.writeBoolean(this.isOn);
+        steam.serialize(buf);
+        carbonDioxide.serialize(buf);
+        water.serialize(buf);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.heat = buf.readInt();
+        this.pressure = buf.readInt();
+        this.isOn = buf.readBoolean();
+        steam.deserialize(buf);
+        carbonDioxide.deserialize(buf);
+        water.deserialize(buf);
+    }
+
+    @Override
     public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt.setInteger("heat", heat);
         nbt.setInteger("pressure", pressure);
@@ -138,17 +159,6 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
         carbonDioxide.writeToNBT(nbt, "carbondioxide");
         water.writeToNBT(nbt, "water");
         return super.writeToNBT(nbt);
-    }
-
-    public void networkUnpack(NBTTagCompound data) {
-        super.networkUnpack(data);
-
-        this.heat = data.getInteger("heat");
-        this.pressure = data.getInteger("pressure");
-        this.isOn = data.getBoolean("isOn");
-        steam.readFromNBT(data, "t0");
-        carbonDioxide.readFromNBT(data, "t1");
-        water.readFromNBT(data, "t2");
     }
 
     public int getGaugeScaled(int i, int type) {
@@ -270,14 +280,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
 
             checkIfMeltdown();
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setInteger("heat", heat);
-            data.setInteger("pressure", pressure);
-            data.setBoolean("isOn", isOn);
-            steam.writeToNBT(data, "t0");
-            carbonDioxide.writeToNBT(data, "t1");
-            water.writeToNBT(data, "t2");
-            this.networkPack(data, 150);
+            this.networkPackNT(150);
         }
     }
 
@@ -402,21 +405,21 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
         NBTTagCompound data = new NBTTagCompound();
         data.setString("type", "rbmkmush");
         data.setFloat("scale", 4);
-        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data,pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX()+0.5,pos.getY()+0.5,pos.getZ()+0.5, 250));
+        PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5), new NetworkRegistry.TargetPoint(world.provider.getDimension(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 250));
         MainRegistry.proxy.effectNT(data);
 
         int meta = this.getBlockMetadata();
         for (int ox = -2; ox <= 2; ox++) {
             for (int oz = -2; oz <= 2; oz++) {
                 for (int oy = 2; ox <= 5; ox++) {
-                    world.setBlockToAir(pos.add(ox,oy,oz));
+                    world.setBlockToAir(pos.add(ox, oy, oz));
                 }
             }
         }
         int[] dimensions = {1, 0, 2, 2, 2, 2};
 
-        world.setBlockState(pos,ModBlocks.zirnox_destroyed.getStateFromMeta(meta),3);
-        MultiblockHandlerXR.fillSpace(world, pos.getX(),pos.getY(),pos.getZ(), dimensions, ModBlocks.zirnox_destroyed, ForgeDirection.getOrientation(meta - BlockDummyable.offset));
+        world.setBlockState(pos, ModBlocks.zirnox_destroyed.getStateFromMeta(meta), 3);
+        MultiblockHandlerXR.fillSpace(world, pos.getX(), pos.getY(), pos.getZ(), dimensions, ModBlocks.zirnox_destroyed, ForgeDirection.getOrientation(meta - BlockDummyable.offset));
 
         world.playSound(null, pos.getX(), pos.getY() + 2, pos.getZ(), HBMSoundHandler.rbmk_explosion, SoundCategory.BLOCKS, 10.0F, 1.0F);
         world.createExplosion(null, pos.getX(), pos.getY() + 3, pos.getZ(), 6.0F, true);

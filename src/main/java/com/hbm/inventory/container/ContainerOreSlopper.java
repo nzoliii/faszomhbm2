@@ -1,9 +1,9 @@
 package com.hbm.inventory.container;
 
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityMachineOreSlopper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -74,7 +74,7 @@ public class ContainerOreSlopper extends Container {
                     if(!this.mergeItemStack(var5, 1, 2, false)) {
                         return null;
                     }
-                } else if(NTMBatteryCapabilityHandler.isBattery(var3)) {
+                } else if(Library.isItemBattery(var3)) {
                     if(!this.mergeItemStack(var5, 0, 1, false)) {
                         return null;
                     }

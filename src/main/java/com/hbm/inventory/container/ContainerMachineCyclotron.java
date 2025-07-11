@@ -1,10 +1,10 @@
 package com.hbm.inventory.container;
 
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.inventory.SlotUpgrade;
 import com.hbm.items.ModItems;
 import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityMachineCyclotron;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -77,7 +77,7 @@ public class ContainerMachineCyclotron extends Container {
 				
 			} else {
 				
-				if(NTMBatteryCapabilityHandler.isBattery(stack)) {
+				if(Library.isItemBattery(stack)) {
 					if(!this.mergeItemStack(stack, 13, 14, true))
 						return ItemStack.EMPTY;
 					

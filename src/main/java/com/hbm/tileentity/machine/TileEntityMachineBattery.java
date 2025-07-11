@@ -5,7 +5,6 @@ import com.hbm.api.energymk2.IEnergyProviderMK2;
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.api.energymk2.Nodespace;
 import com.hbm.blocks.machine.MachineBattery;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.container.ContainerMachineBattery;
 import com.hbm.inventory.gui.GUIMachineBattery;
@@ -13,6 +12,7 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -150,8 +150,8 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 	
 	@Override
 	public boolean isItemValidForSlot(int i, ItemStack stack) {
-		if(i == 0) return NTMBatteryCapabilityHandler.isDischargeableBattery(stack);
-		if(i == 2) return NTMBatteryCapabilityHandler.isChargeableBattery(stack);
+		if(i == 0) return Library.isItemDischargeableBattery(stack);
+		if(i == 2) return Library.isItemChargeableBattery(stack);
 		return false;
 	}
 	
@@ -167,14 +167,14 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 
 	public void tryMoveItems() {
 		ItemStack itemStackDrain = inventory.getStackInSlot(0);
-		if(NTMBatteryCapabilityHandler.isEmptyBattery(itemStackDrain)) {
+		if(Library.isItemEmptyBattery(itemStackDrain)) {
 			if(inventory.getStackInSlot(1).isEmpty()){
 				inventory.setStackInSlot(1, itemStackDrain);
 				inventory.setStackInSlot(0, ItemStack.EMPTY);
 			}
 		}
 		ItemStack itemStackFill = inventory.getStackInSlot(2);
-		if(NTMBatteryCapabilityHandler.isFullBattery(itemStackFill)) {
+		if(Library.isItemFullBattery(itemStackFill)) {
 			if(inventory.getStackInSlot(3).isEmpty()){
 				inventory.setStackInSlot(3, itemStackFill);
 				inventory.setStackInSlot(2, ItemStack.EMPTY);
@@ -236,22 +236,8 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 
 			prevPowerState = power;
 
-			this.networkPack(packNBT(), 20);
+			networkPackNT(20);
 		}
-	}
-
-	public NBTTagCompound packNBT(){
-		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setLong("power", power);
-		nbt.setLong("delta", delta);
-		nbt.setShort("redLow", redLow);
-		nbt.setShort("redHigh", redHigh);
-		nbt.setByte("priority", (byte) this.priority.ordinal());
-		return nbt;
-	}
-
-	public void onNodeDestroyedCallback() {
-		this.node = null;
 	}
 
 	@Override
@@ -276,14 +262,22 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		super.networkUnpack(nbt);
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		buf.writeLong(delta);
+		buf.writeShort(redLow);
+		buf.writeShort(redHigh);
+		buf.writeByte(this.priority.ordinal());
+	}
 
-		this.power = nbt.getLong("power");
-		this.delta = nbt.getLong("delta");
-		this.redLow = nbt.getShort("redLow");
-		this.redHigh = nbt.getShort("redHigh");
-		this.priority = ConnectionPriority.values()[nbt.getByte("priority")];
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		this.delta = buf.readLong();
+		this.redLow = buf.readShort();
+		this.redHigh = buf.readShort();
+		this.priority = ConnectionPriority.values()[buf.readByte()];
 	}
 
 	@Override

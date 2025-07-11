@@ -381,7 +381,7 @@ public abstract class SerializableRecipe {
     Collections.addAll(recipeList, recipe);
 
     for (ItemStack inputStack : inputs) {
-      if (inputStack != null) {
+      if (inputStack != ItemStack.EMPTY) {
         boolean hasMatch = false;
 
         for (RecipesCommon.AStack recipeStack : recipeList) {

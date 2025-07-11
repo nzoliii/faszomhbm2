@@ -32,6 +32,7 @@ public class RenderPress extends TileEntitySpecialRenderer<TileEntityMachinePres
 		super();
 	}
 
+	// mlbv: What happened to this?
 	@Override
 	public void render(TileEntityMachinePress te, double x, double y, double z, float partialTicks, int destroyStage, float alpha) {
 		pos = new Vec3d(x, y, z);
@@ -173,7 +174,7 @@ public class RenderPress extends TileEntitySpecialRenderer<TileEntityMachinePres
 		GL11.glRotatef(-90, 1F, 0F, 0F);
 		
 		TileEntityMachinePress press = (TileEntityMachinePress) tileEntity;
-		ItemStack stack = new ItemStack(Item.getItemById(press.item), 1, press.meta);
+		ItemStack stack = press.syncStack.copy();
 
 		if(!(stack.getItem() instanceof ItemBlock) && !stack.isEmpty()) {
 			IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(stack, tileEntity.getWorld(), null);

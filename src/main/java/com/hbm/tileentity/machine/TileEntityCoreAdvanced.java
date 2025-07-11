@@ -9,8 +9,8 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -30,7 +30,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, INBTPacketReceiver, IGUIProvider {
+public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IGUIProvider {
 
 	public int progress = 0;
 	public int progressStep = 1;
@@ -160,12 +160,8 @@ public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITi
 							inventory.setStackInSlot(slot, ItemStack.EMPTY);
 							return;
 						} else {
-							
-							if(k < 0) {
-								inventory.getStackInSlot(j).grow(k);
-								inventory.getStackInSlot(26).shrink(k);
-								continue;
-							}
+							inventory.getStackInSlot(j).grow(k);
+							inventory.getStackInSlot(26).shrink(k);
 						}
 					}
 				}
@@ -219,19 +215,22 @@ public class TileEntityCoreAdvanced extends TileEntityMachineBase implements ITi
 			moveToOuput(25);
 			moveToOuput(26);
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setInteger("cookTime", progress);
-			data.setInteger("speed", progressStep);
-			data.setLong("power", power);
-			this.networkPack(data, 250);
+			this.networkPackNT(250);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.progress = nbt.getInteger("cookTime");
-		this.progressStep = nbt.getInteger("speed");
-		this.power = nbt.getLong("power");
+	public void serialize(ByteBuf buf) {
+		buf.writeInt(progress);
+		buf.writeInt(progressStep);
+		buf.writeLong(power);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.progress = buf.readInt();
+		this.progressStep = buf.readInt();
+		this.power = buf.readLong();
 	}
 
 	public boolean isStructureValid(World world) {

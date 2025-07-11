@@ -432,7 +432,7 @@ public class ArcWelderRecipes extends SerializableRecipe {
 
       for (ItemStack inputStack : inputs) {
 
-        if (inputStack != null) {
+        if (inputStack != ItemStack.EMPTY) {
 
           boolean hasMatch = false;
 

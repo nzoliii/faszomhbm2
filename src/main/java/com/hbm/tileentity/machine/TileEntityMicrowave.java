@@ -8,6 +8,7 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -71,19 +72,22 @@ public class TileEntityMicrowave extends TileEntityMachineBase implements ITicka
 				}
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("time", time);
-			data.setInteger("speed", speed);
-			networkPack(data, 50);
+			networkPackNT(50);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		power = data.getLong("power");
-		time = data.getInteger("time");
-		speed = data.getInteger("speed");
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		buf.writeInt(time);
+		buf.writeInt(speed);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		power = buf.readLong();
+		time = buf.readInt();
+		speed = buf.readInt();
 	}
 	
 	@Override

@@ -5,7 +5,7 @@ import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.lib.DirPos;
-import net.minecraft.nbt.NBTTagCompound;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -29,17 +29,17 @@ public class TileEntityMachinePumpElectric extends TileEntityMachinePumpBase imp
         }
         super.update();
     }
-
-    public NBTTagCompound getSync() {
-        NBTTagCompound data = super.getSync();
-        data.setLong("power", power);
-        return data;
+    
+    @Override
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+        buf.writeLong(power);
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
-        this.power = nbt.getLong("power");
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.power = buf.readLong();
     }
 
     @Override

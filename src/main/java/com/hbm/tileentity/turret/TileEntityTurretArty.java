@@ -13,6 +13,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -323,8 +324,7 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
 
             this.power = Library.chargeTEFromItems(inventory, 10, this.power, this.getMaxPower());
 
-            NBTTagCompound data = this.writePacket();
-            this.networkPack(data, 250);
+            networkPackNT(250);
 
             this.didJustShoot = false;
 
@@ -379,7 +379,7 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
                 PacketThreading.createAllAroundThreadedPacket(new AuxParticlePacketNT(data, pos.xCoord + vec.xCoord, pos.yCoord + vec.yCoord, pos.zCoord + vec.zCoord), new TargetPoint(world.provider.getDimension(), pos.xCoord, pos.yCoord, pos.zCoord, 150));
             }
 
-            if(this.mode == this.MODE_MANUAL && !this.targetQueue.isEmpty()) {
+            if(this.mode == MODE_MANUAL && !this.targetQueue.isEmpty()) {
                 this.targetQueue.remove(0);
                 this.tPos = null;
             }
@@ -414,19 +414,18 @@ public class TileEntityTurretArty extends TileEntityTurretBaseArtillery implemen
     }
 
     @Override
-    public NBTTagCompound writePacket() {
-        NBTTagCompound data = super.writePacket();
-        data.setShort("mode", mode);
+    public void serialize(ByteBuf buf) {
+        super.serialize(buf);
+        buf.writeShort(mode);
         if(didJustShoot)
-            data.setBoolean("didJustShoot", didJustShoot);
-        return data;
+            buf.writeBoolean(didJustShoot);
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
-        this.mode = nbt.getShort("mode");
-        if(nbt.getBoolean("didJustShoot"))
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.mode = buf.readShort();
+        if(buf.readBoolean())
             this.retracting = true;
     }
 

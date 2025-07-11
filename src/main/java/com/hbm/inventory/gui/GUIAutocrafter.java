@@ -17,8 +17,8 @@ import java.util.Arrays;
 
 public class GUIAutocrafter extends GuiInfoContainer {
 
-    private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_autocrafter.png");
-    private TileEntityMachineAutocrafter diFurnace;
+    private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/processing/gui_autocrafter.png");
+    private final TileEntityMachineAutocrafter diFurnace;
 
     public GUIAutocrafter(InventoryPlayer invPlayer, TileEntityMachineAutocrafter tedf) {
         super(new ContainerAutocrafter(invPlayer, tedf));
@@ -79,16 +79,5 @@ public class GUIAutocrafter extends GuiInfoContainer {
         int i = (int)(diFurnace.getPower() * 52 / diFurnace.getMaxPower());
         drawTexturedModalRect(guiLeft + 17, guiTop + 97 - i, 176, 52 - i, 16, i);
 
-    }
-
-    /**
-     * I love the "private" key word so fucking much I'll spend the next 3 weeks ramming my cock into it
-     * @param slot
-     * @param x
-     * @param y
-     * @return
-     */
-    public boolean isMouseOverSlot(Slot slot, int x, int y) {
-        return this.isPointInRegion(slot.xPos, slot.yPos, 16, 16, x, y);
     }
 }

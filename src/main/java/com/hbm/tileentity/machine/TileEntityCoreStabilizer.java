@@ -10,6 +10,7 @@ import com.hbm.items.machine.ItemLens;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -110,10 +111,10 @@ public class TileEntityCoreStabilizer extends TileEntityMachineBase implements I
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound data) {
-        power = data.getLong("power");
-        watts = data.getInteger("watts");
-        isOn = data.getBoolean("isOn");
+    public void deserialize(ByteBuf buf) {
+        power = buf.readLong();
+        watts = buf.readInt();
+        isOn = buf.readBoolean();
     }
 
     @Override

@@ -2,11 +2,12 @@ package com.hbm.tileentity.machine.rbmk;
 
 import com.hbm.interfaces.IControlReceiver;
 import com.hbm.lib.Library;
-import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKControlManual.RBMKColor;
 import com.hbm.util.BobMathUtil;
+import com.hbm.util.BufferUtil;
 import com.hbm.util.I18nUtil;
+import io.netty.buffer.ByteBuf;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -19,9 +20,11 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +70,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 				prepareScreenInfo();
 				prepareGraphInfo();
 			}
-			prepareNetworkPack();
+			sendNetworkPackNT();
 		}
 	}
 	
@@ -102,7 +105,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		setupScreensAndGraph();
 		prepareScreenInfo();
 		prepareGraphInfo();
-		prepareNetworkPack();
+		sendNetworkPackNT();
 	}
 
 	public void setupScreensAndGraph(){
@@ -263,74 +266,75 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			screen.display = text;
 		}
 	}
-	
-	private void prepareNetworkPack() {
-		
-		NBTTagCompound data = new NBTTagCompound();
 
-		
+	private void sendNetworkPackNT() {
+		networkPackNT(50);
+	}
+
+	@Override
+	public void serialize(ByteBuf buf) {
 		if(this.world.getTotalWorldTime() % 10 == 0) {
-			
-			data.setBoolean("full", true);
-			
-			for(int i = 0; i < columns.length; i++) {
-				
-				if(this.columns[i] != null) {
-					data.setTag("column_" + i, this.columns[i].data);
-					data.setShort("type_" + i, (short)this.columns[i].type.ordinal());
-				}
-			}
-			
-			data.setIntArray("buffer", this.graph.dataBuffer);
 
-			for(int i = 0; i < this.screens.length; i++) {
-				RBMKScreen screen = screens[i];
-				if(screen.display != null) {
-					data.setString("t" + i, screen.display);
-				}
-			}
+			buf.writeBoolean(true);
+
+            for (RBMKColumn column : columns) {
+				buf.writeBoolean(column != null);
+                if (column != null) {
+					buf.writeShort(column.type.ordinal());
+                    ByteBufUtils.writeTag(buf, column.data);
+                }
+            }
+
+			BufferUtil.writeIntArray(buf, this.graph.dataBuffer);
+
+            for (RBMKScreen screen : this.screens) {
+				buf.writeBoolean(screen.display != null);
+                if (screen.display != null) {
+                    BufferUtil.writeString(buf, screen.display);
+                }
+            }
 		}
-		
-		for(int i = 0; i < this.screens.length; i++) {
-			RBMKScreen screen = screens[i];
-			data.setByte("s" + i, (byte) screen.type.ordinal());
-		}
-		data.setByte("g", (byte) graph.type.ordinal());
-		
-		this.networkPack(data, 50);
+
+        for (RBMKScreen screen : this.screens) {
+            buf.writeByte((byte) screen.type.ordinal());
+        }
+
+		buf.writeByte(graph.type.ordinal());
 	}
 	
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
+	public void deserialize(ByteBuf buf) {
 		
-		if(data.getBoolean("full")) {
+		if(buf.readBoolean()) {
 			this.columns = new RBMKColumn[15 * 15];
 			
 			for(int i = 0; i < columns.length; i++) {
-				
-				if(data.hasKey("type_" + i)) {
-					this.columns[i] = new RBMKColumn(ColumnType.values()[data.getShort("type_" + i)], (NBTTagCompound)data.getTag("column_" + i));
+				if (buf.readBoolean()) {
+					this.columns[i] = new RBMKColumn(ColumnType.values()[buf.readShort()], ByteBufUtils.readTag(buf));
 				}
 			}
-			
-			this.graph.dataBuffer = data.getIntArray("buffer");
-			
-			for(int i = 0; i < this.screens.length; i++) {
-				RBMKScreen screen = screens[i];
-				screen.display = data.getString("t" + i);
-			}
+
+			this.graph.dataBuffer = BufferUtil.readIntArray(buf);
+
+            for (RBMKScreen screen : this.screens) {
+				if (buf.readBoolean()) {
+					screen.display = BufferUtil.readString(buf);
+				} else {
+					screen.display = null;
+				}
+            }
 		}
-		
-		for(int i = 0; i < this.screens.length; i++) {
-			RBMKScreen screen = screens[i];
-			screen.type = ScreenType.values()[data.getByte("s" + i)];
-		}
-		graph.type = ScreenType.values()[data.getByte("g")];
+
+        for (RBMKScreen screen : this.screens) {
+            screen.type = ScreenType.values()[buf.readByte()];
+        }
+
+		graph.type = ScreenType.values()[buf.readByte()];
 	}
 
 	@Override
 	public boolean hasPermission(EntityPlayer player) {
-		return Vec3.createVectorHelper(pos.getX() - player.posX, pos.getY() - player.posY, pos.getZ() - player.posZ).length() < 20;
+		return new Vec3d(pos.getX() - player.posX, pos.getY() - player.posY, pos.getZ() - player.posZ).length() < 20;
 	}
 
 	@Override

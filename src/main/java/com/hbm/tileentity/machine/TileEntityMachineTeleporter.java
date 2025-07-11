@@ -2,12 +2,14 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.ModDamageSource;
 import com.hbm.packet.AuxElectricityPacket;
+import com.hbm.packet.BufPacket;
 import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -20,12 +22,13 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class TileEntityMachineTeleporter extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2, INBTPacketReceiver {
+public class TileEntityMachineTeleporter extends TileEntityLoadedBase implements ITickable, IEnergyReceiverMK2 {
 
 	public long power = 0;
 	public BlockPos target = null;
@@ -90,26 +93,31 @@ public class TileEntityMachineTeleporter extends TileEntityLoadedBase implements
 
 	public void networkPack() {
 		if(linked != prevLinked || packageTimer == 0){
-			NBTTagCompound data = new NBTTagCompound();
-			if(this.target != null){
-				data.setInteger("targetX", this.target.getX());
-				data.setInteger("targetY", this.target.getY());
-				data.setInteger("targetZ", this.target.getZ());
-			}
-			data.setBoolean("linked", this.linked);
-			INBTPacketReceiver.networkPack(this, data, 150);
+			networkPackNT(150);
 			packageTimer = 40;
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		if(data.hasKey("targetX")){
-			this.target = new BlockPos(data.getInteger("targetX"), data.getInteger("targetY"), data.getInteger("targetZ"));
+	public void serialize(ByteBuf buf) {
+		if(this.target != null){
+			buf.writeInt(this.target.getX());
+			buf.writeInt(this.target.getY());
+			buf.writeInt(this.target.getZ());
 		}
-		if(data.hasKey("linked")){
-			this.linked = data.getBoolean("linked");
-		}
+
+		buf.writeBoolean(this.linked);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.target = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+		this.linked = buf.readBoolean();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	public void teleport(Entity entity) {

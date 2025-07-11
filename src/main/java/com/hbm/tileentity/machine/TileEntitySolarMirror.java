@@ -1,6 +1,9 @@
 package com.hbm.tileentity.machine;
 
+import com.hbm.handler.threading.PacketThreading;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.TileEntityTickingBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -8,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +35,7 @@ public class TileEntitySolarMirror extends TileEntityTickingBase {
 		if(!world.isRemote) {
 
 			if(world.getTotalWorldTime() % 20 == 0)
-				sendUpdate();
+				networkPackNT(200);
 
 			if(tY < pos.getY()){
 				isOn = false;
@@ -67,22 +71,26 @@ public class TileEntitySolarMirror extends TileEntityTickingBase {
 		lightValue = MathHelper.clamp(Math.round(lightValue * MathHelper.cos(starAngle)), 0, 15);
 		return lightValue / 15F;
 	}
-	
-	public void sendUpdate(){
-		NBTTagCompound data = new NBTTagCompound();
-		data.setInteger("posX", tX);
-		data.setInteger("posY", tY);
-		data.setInteger("posZ", tZ);
-		data.setBoolean("isOn", isOn);
-		this.networkPack(data, 200);
-	}
-	
+
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		tX = nbt.getInteger("posX");
-		tY = nbt.getInteger("posY");
-		tZ = nbt.getInteger("posZ");
-		isOn = nbt.getBoolean("isOn");
+	public void serialize(ByteBuf buf) {
+		buf.writeInt(tX);
+		buf.writeInt(tY);
+		buf.writeInt(tZ);
+		buf.writeBoolean(isOn);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		tX = buf.readInt();
+		tY = buf.readInt();
+		tZ = buf.readInt();
+		isOn = buf.readBoolean();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	public void setTarget(int x, int y, int z) {
@@ -90,7 +98,7 @@ public class TileEntitySolarMirror extends TileEntityTickingBase {
 		tY = y;
 		tZ = z;
 		this.markDirty();
-		this.sendUpdate();
+		networkPackNT(200);
 	}
 	
 	@Override

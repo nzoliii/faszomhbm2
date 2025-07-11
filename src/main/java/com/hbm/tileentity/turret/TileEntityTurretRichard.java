@@ -9,6 +9,7 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -105,10 +106,8 @@ public class TileEntityTurretRichard extends TileEntityTurretBaseNT implements I
 			if(this.getFirstConfigLoaded() == null) {
 				this.loaded = 0;
 			}
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setInteger("loaded", this.loaded);
-			this.networkPack(data, 250);
+
+			networkPackNT(250);
 		}
 	}
 
@@ -139,11 +138,15 @@ public class TileEntityTurretRichard extends TileEntityTurretBaseNT implements I
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt){
-		if(nbt.hasKey("loaded"))
-			this.loaded = nbt.getInteger("loaded");
-		else
-			super.networkUnpack(nbt);
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeInt(this.loaded);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.loaded = buf.readInt();
 	}
 
 	@Override

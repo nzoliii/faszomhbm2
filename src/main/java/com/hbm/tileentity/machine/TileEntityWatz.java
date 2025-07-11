@@ -27,6 +27,7 @@ import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.Compat;
 import com.hbm.util.EnumUtil;
 import com.hbm.util.Function;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,6 +56,7 @@ import java.util.Random;
 public class TileEntityWatz extends TileEntityMachineBase implements ITickable, IFluidStandardTransceiver, IControlReceiver, IGUIProvider, IFluidCopiable {
 	
 	public FluidTankNTM[] tanks;
+	public FluidTankNTM[] sharedTanks;
 	public int heat;
 	public double fluxLastBase;		//flux created by the previous passive emission, only used for display
 	public double fluxLastReaction;	//flux created by the previous reaction, used for the next reaction
@@ -101,7 +103,7 @@ public class TileEntityWatz extends TileEntityMachineBase implements ITickable, 
 			}
 			
 			/* set up shared tanks */
-			FluidTankNTM[] sharedTanks = new FluidTankNTM[3];
+			sharedTanks = new FluidTankNTM[3];
 			for(int i = 0; i < 3; i++) sharedTanks[i] = new FluidTankNTM(tanks[i].getTankType(), 0);
 			
 			for(TileEntityWatz segment : segments) {
@@ -129,7 +131,7 @@ public class TileEntityWatz extends TileEntityMachineBase implements ITickable, 
 			/* send sync packets (order doesn't matter) */
 			for(TileEntityWatz segment : segments) {
 				segment.isOn = turnedOn;
-				segment.sendPacket(sharedTanks);
+				segment.networkPackNT(25);
 				segment.heat *= 0.99; //cool 1% per tick
 			}
 			
@@ -285,31 +287,31 @@ public class TileEntityWatz extends TileEntityMachineBase implements ITickable, 
 			}
 		}
 	}
-	
-	public void sendPacket(FluidTankNTM[] tanks) {
-		
-		NBTTagCompound data = new NBTTagCompound();
-		data.setInteger("heat", this.heat);
-		data.setBoolean("isOn", isOn);
-		data.setBoolean("lock", isLocked);
-		data.setDouble("flux", this.fluxLastReaction + this.fluxLastBase);
-		for(int i = 0; i < tanks.length; i++) {
-			tanks[i].writeToNBT(data, "t" + i);
+
+	@Override
+	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
+		buf.writeInt(this.heat);
+		buf.writeBoolean(isOn);
+		buf.writeBoolean(isLocked);
+		buf.writeDouble(this.fluxLastReaction + this.fluxLastBase);
+
+		for (FluidTankNTM tank : sharedTanks) {
+			tank.serialize(buf);
 		}
-		this.networkPack(data, 25);
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		super.networkUnpack(nbt);
-		
-		this.heat = nbt.getInteger("heat");
-		this.isOn = nbt.getBoolean("isOn");
-		this.isLocked = nbt.getBoolean("lock");
-		this.fluxDisplay = nbt.getDouble("flux");
-		for(int i = 0; i < tanks.length; i++) {
-			tanks[i].readFromNBT(nbt, "t" + i);
-		}
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.heat = buf.readInt();
+		this.isOn = buf.readBoolean();
+		this.isLocked = buf.readBoolean();
+		this.fluxDisplay = buf.readDouble();
+
+        for (FluidTankNTM tank : sharedTanks) {
+            tank.deserialize(buf);
+        }
 	}
 	
 	/** Prevent manual updates when another segment is above this one */

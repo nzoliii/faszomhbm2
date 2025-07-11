@@ -19,6 +19,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -261,13 +262,7 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
                 }
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", power);
-            data.setInteger("progress", progress);
-            data.setInteger("maxProgress", maxProgress);
-            data.setBoolean("isProgressing", isProgressing);
-            data.setInteger("recipe", !inventory.getStackInSlot(4).isEmpty() ? ItemAssemblyTemplate.getRecipeIndex(inventory.getStackInSlot(4)) : -1);
-            this.networkPack(data, 150);
+            networkPackNT(150);
         } else {
 
             float volume = this.getVolume(2);
@@ -337,12 +332,21 @@ public class TileEntityMachineAssembler extends TileEntityMachineBase implements
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.power = nbt.getLong("power");
-        this.progress = nbt.getInteger("progress");
-        this.maxProgress = nbt.getInteger("maxProgress");
-        this.isProgressing = nbt.getBoolean("isProgressing");
-        this.recipe = nbt.getInteger("recipe");
+    public void serialize(ByteBuf buf) {
+        buf.writeLong(power);
+        buf.writeInt(progress);
+        buf.writeInt(maxProgress);
+        buf.writeBoolean(isProgressing);
+        buf.writeInt(!inventory.getStackInSlot(4).isEmpty() ? ItemAssemblyTemplate.getRecipeIndex(inventory.getStackInSlot(4)) : -1);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.power = buf.readLong();
+        this.progress = buf.readInt();
+        this.maxProgress = buf.readInt();
+        this.isProgressing = buf.readBoolean();
+        this.recipe = buf.readInt();
     }
 
     public void tryExchangeTemplates(TileEntity teOut, TileEntity teIn) {

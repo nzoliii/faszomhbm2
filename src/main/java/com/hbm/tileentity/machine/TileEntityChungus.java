@@ -1,13 +1,14 @@
 package com.hbm.tileentity.machine;
 
-import com.hbm.api.energymk2.IEnergyProviderMK2;
-import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
+import com.hbm.api.energymk2.IEnergyProviderMK2;
+import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.handler.CompatHandler;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.fluid.FluidType;
 import com.hbm.inventory.fluid.Fluids;
@@ -17,13 +18,15 @@ import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.MainRegistry;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
+import com.hbm.packet.BufPacket;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IFluidCopiable;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
+import java.util.Random;
+import javax.annotation.Nullable;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -47,12 +50,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.util.Random;
-
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityChungus extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, SimpleComponent, IEnergyProviderMK2, INBTPacketReceiver, CompatHandler.OCComponent, IFluidCopiable, IConfigurableMachine, IFFtoNTMF {
+public class TileEntityChungus extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, SimpleComponent, IEnergyProviderMK2, CompatHandler.OCComponent, IFluidCopiable, IConfigurableMachine, IFFtoNTMF {
 
 	public long power;
 	private int turnTimer;
@@ -159,12 +158,8 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 			turnTimer--;
 
 			if(operational) turnTimer = 25;
-
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("type", tanks[0].getTankType().getID());
-			data.setInteger("operational", turnTimer);
-			this.networkPack(data, 150);
+			
+			networkPackNT(150);
 
 		} else {
 
@@ -234,15 +229,23 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 		};
 	}
 
-	public void networkPack(NBTTagCompound nbt, int range) {
-		PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
+	}
+	
+	@Override
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		buf.writeInt(tanks[0].getTankType().getID());
+		buf.writeInt(turnTimer);
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.power = data.getLong("power");
-		this.turnTimer = data.getInteger("operational");
-		this.tanks[0].setTankType(Fluids.fromID(data.getInteger("type")));
+	public void deserialize(ByteBuf buf) {
+		this.power = buf.readLong();
+		this.turnTimer = buf.readInt();
+		this.tanks[0].setTankType(Fluids.fromID(buf.readInt()));
 	}
 	
 	@Override

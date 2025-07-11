@@ -12,6 +12,8 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import com.hbm.util.BufferUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.GuiScreen;
@@ -144,26 +146,28 @@ public class TileEntityReactorResearch extends TileEntityMachineBase implements 
                 RadiationSavedData.incrementRad(world, pos, rad, 25000);
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setInteger("heat", heat);
-            data.setByte("water", water);
-            data.setDouble("level", level);
-            data.setDouble("targetLevel", targetLevel);
-            data.setIntArray("slotFlux", slotFlux);
-            data.setInteger("totalFlux", totalFlux);
-            this.networkPack(data, 150);
+            networkPackNT(150);
         }
     }
 
-    public void networkUnpack(NBTTagCompound data) {
-        super.networkUnpack(data);
+    @Override
+    public void serialize(ByteBuf buf) {
+        buf.writeInt(heat);
+        buf.writeByte(water);
+        buf.writeDouble(level);
+        buf.writeDouble(targetLevel);
+        BufferUtil.writeIntArray(buf, slotFlux);
+        buf.writeInt(totalFlux);
+    }
 
-        this.heat = data.getInteger("heat");
-        this.water = data.getByte("water");
-        this.level = data.getDouble("level");
-        this.targetLevel = data.getDouble("targetLevel");
-        this.slotFlux = data.getIntArray("slotFlux");
-        this.totalFlux = data.getInteger("totalFlux");
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.heat = buf.readInt();
+        this.water = buf.readByte();
+        this.level = buf.readDouble();
+        this.targetLevel = buf.readDouble();
+        this.slotFlux = BufferUtil.readIntArray(buf);
+        this.totalFlux = buf.readInt();
     }
 
     public byte getWater() {

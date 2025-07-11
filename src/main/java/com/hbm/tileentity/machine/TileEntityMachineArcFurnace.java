@@ -2,7 +2,6 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.blocks.machine.MachineArcFurnace;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.container.ContainerMachineArcFurnace;
 import com.hbm.inventory.gui.GUIMachineArcFurnace;
@@ -269,7 +268,7 @@ public class TileEntityMachineArcFurnace extends TileEntityMachineBase implement
 			return itemStack.getItem() == ModItems.arc_electrode_burnt;
 
 		if(slot == 5)
-			return NTMBatteryCapabilityHandler.isEmptyBattery(itemStack);
+			return Library.isItemEmptyBattery(itemStack);
 		
 		return false;
 	}
@@ -279,9 +278,9 @@ public class TileEntityMachineArcFurnace extends TileEntityMachineBase implement
 		if(slot == 2 || slot == 3 || slot == 4)
 			return stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh;
 		if(slot == 5)
-			return NTMBatteryCapabilityHandler.isBattery(stack);
+			return Library.isItemBattery(stack);
 		if(slot == 0)
-			return (!NTMBatteryCapabilityHandler.isBattery(stack) && !(stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh));
+			return (!Library.isItemBattery(stack) && !(stack.getItem() == ModItems.arc_electrode || stack.getItem() == ModItems.arc_electrode_desh));
 		return false;
 	}
 

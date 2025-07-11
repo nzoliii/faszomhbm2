@@ -157,7 +157,7 @@ public class FluidContainerRegistry {
 
     @Nullable
     public static FluidContainer getFillRecipe(@NotNull ItemStack emptyStack, @NotNull FluidStack fluid) {
-        return getFillRecipe(emptyStack, NTMFluidCapabilityHandler.getHbmFluidType(fluid.getFluid()));
+        return getFillRecipe(emptyStack, NTMFluidCapabilityHandler.getFluidType(fluid.getFluid()));
     }
 
     /**

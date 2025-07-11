@@ -11,6 +11,7 @@ import com.hbm.items.ModItems;
 import com.hbm.lib.Library;
 import com.hbm.modules.ModulePatternMatcher;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -194,10 +195,7 @@ public class TileEntityCraneExtractor extends TileEntityCraneBase implements IGU
                 }
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setBoolean("isWhitelist", isWhitelist);
-            this.matcher.writeToNBT(data);
-            this.networkPack(data, 15);
+            networkPackNT(15);
         }
     }
 
@@ -238,10 +236,17 @@ public class TileEntityCraneExtractor extends TileEntityCraneBase implements IGU
         return sided.getSlotsForFace(side);
     }
 
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.isWhitelist = nbt.getBoolean("isWhitelist");
+    @Override
+    public void serialize(ByteBuf buf) {
+        buf.writeBoolean(isWhitelist);
+        this.matcher.serialize(buf);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.isWhitelist = buf.readBoolean();
         this.matcher.modes = new String[this.matcher.modes.length];
-        this.matcher.readFromNBT(nbt);
+        this.matcher.deserialize(buf);
     }
 
     public boolean matchesFilter(ItemStack stack) {

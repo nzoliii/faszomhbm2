@@ -6,14 +6,16 @@ import com.google.gson.stream.JsonWriter;
 import com.hbm.capability.NTMFluidHandlerWrapper;
 import com.hbm.dim.CelestialBody;
 import com.hbm.dim.trait.CBT_Atmosphere;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IFFtoNTMF;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
+import com.hbm.packet.BufPacket;
 import com.hbm.saveddata.TomSaveData;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IFluidCopiable;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -23,12 +25,13 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 
-public class TileEntityCondenser extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, INBTPacketReceiver, IConfigurableMachine, IFluidCopiable, IFFtoNTMF {
+public class TileEntityCondenser extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, IConfigurableMachine, IFluidCopiable, IFFtoNTMF {
 
 	public int age = 0;
 	public FluidTank[] tanksOld;
@@ -86,9 +89,6 @@ public class TileEntityCondenser extends TileEntityLoadedBase implements ITickab
 				age = 0;
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			this.tanks[0].writeToNBT(data, "0");
-
 			if(this.waterTimer > 0)
 				this.waterTimer--;
 
@@ -114,30 +114,34 @@ public class TileEntityCondenser extends TileEntityLoadedBase implements ITickab
 				} else {
 					tanks[1].setFill(tanks[1].getFill() + convert);
 				}
-
-				postConvert(convert);
 			}
-
-			this.tanks[1].writeToNBT(data, "1");
 
 			this.subscribeToAllAround(tanks[0].getTankType(), this);
 			this.sendFluidToAll(tanks[1], this);
 
-			data.setByte("timer", (byte) this.waterTimer);
-			packExtra(data);
-			INBTPacketReceiver.networkPack(this, data, 150);
+			networkPackNT(150);
 		}
 	}
 
-	public void packExtra(NBTTagCompound data) { }
 	public boolean extraCondition(int convert) { return true; }
-	public void postConvert(int convert) { }
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.tanks[0].readFromNBT(nbt, "0");
-		this.tanks[1].readFromNBT(nbt, "1");
-		this.waterTimer = nbt.getByte("timer");
+	public void serialize(ByteBuf buf) {
+		this.tanks[0].serialize(buf);
+		this.tanks[1].serialize(buf);
+		buf.writeByte(this.waterTimer);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.tanks[0].deserialize(buf);
+		this.tanks[1].deserialize(buf);
+		this.waterTimer = buf.readByte();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 
 	@Override

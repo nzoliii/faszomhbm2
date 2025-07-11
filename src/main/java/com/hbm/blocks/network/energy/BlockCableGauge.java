@@ -6,9 +6,11 @@ import com.hbm.blocks.ITooltipProvider;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.network.energy.TileEntityCableBaseNT;
 import com.hbm.util.I18nUtil;
+import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
+import java.util.List;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -23,7 +25,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -32,9 +33,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.Pre;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BlockCableGauge extends BlockContainer implements ILookOverlay, ITooltipProvider {
 	
@@ -121,7 +119,7 @@ public class BlockCableGauge extends BlockContainer implements ILookOverlay, ITo
 	}
 
 	@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-	public static class TileEntityCableGauge extends TileEntityCableBaseNT implements INBTPacketReceiver, SimpleComponent {
+	public static class TileEntityCableGauge extends TileEntityCableBaseNT implements SimpleComponent {
 
 		private long deltaTick = 10;
 		private long deltaSecond = 0;
@@ -145,17 +143,20 @@ public class BlockCableGauge extends BlockContainer implements ILookOverlay, ITo
 					this.deltaSecond += deltaTick;
 				}
 
-				NBTTagCompound data = new NBTTagCompound();
-				data.setLong("deltaT", deltaTick);
-				data.setLong("deltaS", deltaLastSecond);
-				INBTPacketReceiver.networkPack(this, data, 25);
+				networkPackNT(25);
 			}
 		}
 
 		@Override
-		public void networkUnpack(NBTTagCompound nbt) {
-			this.deltaTick = Math.max(nbt.getLong("deltaT"), 0);
-			this.deltaLastSecond = Math.max(nbt.getLong("deltaS"), 0);
+		public void serialize(ByteBuf buf) {
+			buf.writeLong(deltaTick);
+			buf.writeLong(deltaLastSecond);
+		}
+
+		@Override
+		public void deserialize(ByteBuf buf) {
+			this.deltaTick = Math.max(buf.readLong(), 0);
+			this.deltaLastSecond = Math.max(buf.readLong(), 0);
 		}
 	
 		@Override

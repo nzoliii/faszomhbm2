@@ -17,6 +17,7 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -154,16 +155,19 @@ public class TileEntityMachinePlasmaHeater extends TileEntityMachineBase impleme
 			for(int i = 0; i < tanksNew.length; i++)
 				tanksNew[i].updateTank(pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimension());
 			plasmaNew.updateTank(pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimension());
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			this.networkPack(data, 50);
+			this.networkPackNT(50);
 			/// END Notif packets ///
 		}
 	}
-	
+
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.power = nbt.getLong("power");
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.power = buf.readLong();
 	}
 
 	private void updateConnections()  {

@@ -3,7 +3,6 @@ package com.hbm.tileentity.machine;
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonWriter;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.CentrifugeRecipes;
 import com.hbm.inventory.container.ContainerCentrifuge;
@@ -94,10 +93,10 @@ public class TileEntityMachineCentrifuge extends TileEntityMachineBase implement
 		}
 		
 		if(i == 1) {
-			return NTMBatteryCapabilityHandler.isBattery(stack);
+			return Library.isItemBattery(stack);
 		}
 		
-		return !(NTMBatteryCapabilityHandler.isBattery(stack));
+		return !(Library.isItemBattery(stack));
 	}
 	
 	@Override

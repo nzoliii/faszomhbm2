@@ -1,13 +1,16 @@
 package com.hbm.tileentity.machine.storage;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.container.ContainerMassStorage;
 import com.hbm.inventory.gui.GUIMassStorage;
 import com.hbm.items.ModItems;
 import com.hbm.lib.HBMSoundHandler;
+import com.hbm.packet.BufPacket;
 import com.hbm.render.amlfrom1710.Vec3;
+import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.IControlReceiverFilter;
 import com.hbm.tileentity.IGUIProvider;
-import com.hbm.tileentity.INBTPacketReceiver;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -17,11 +20,13 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 // заметка №2 - тебе не надо втыкать IGuiProvider в класс, потому что TileEntityCrateBase и так его сжирает
-public class TileEntityMassStorage extends TileEntityCrateBase implements ITickable, INBTPacketReceiver, IControlReceiverFilter, IGUIProvider {
+public class TileEntityMassStorage extends TileEntityCrateBase implements IBufPacketReceiver, ITickable, IControlReceiverFilter, IGUIProvider {
 	
 	private int stack = 0;
 	public boolean output = false;
@@ -92,20 +97,31 @@ public class TileEntityMassStorage extends TileEntityCrateBase implements ITicka
 					}
 				}
 			}
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setInteger("stack", getStockpile());
-			data.setBoolean("output", output);
-			if(!inventory.getStackInSlot(1).isEmpty()) inventory.getStackInSlot(1).writeToNBT(data);
-			INBTPacketReceiver.networkPack(this, data, 15);
+
+			networkPackNT(15);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.stack = nbt.getInteger("stack");
-		this.output = nbt.getBoolean("output");
-		this.type = new ItemStack(nbt);
+	public void serialize(ByteBuf buf) {
+		buf.writeInt(getStockpile());
+		buf.writeBoolean(output);
+
+    	if (!inventory.getStackInSlot(1).isEmpty()) {
+      		ByteBufUtils.writeItemStack(buf, inventory.getStackInSlot(1));
+		}
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.stack = buf.readInt();
+		this.output = buf.readBoolean();
+		this.type = ByteBufUtils.readItemStack(buf);
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	public int getCapacity() {

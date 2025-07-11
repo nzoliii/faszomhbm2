@@ -3,28 +3,31 @@ package com.hbm.tileentity.machine.oil;
 import com.hbm.api.fluid.IFluidStandardTransceiver;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMFluidHandlerWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.fluid.FluidStack;
 import com.hbm.inventory.fluid.Fluids;
 import com.hbm.inventory.fluid.tank.FluidTankNTM;
 import com.hbm.inventory.recipes.CrackRecipes;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.util.Tuple;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class TileEntityMachineCatalyticCracker extends TileEntityLoadedBase implements INBTPacketReceiver, ITickable, IFluidStandardTransceiver {
+public class TileEntityMachineCatalyticCracker extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver {
 	
 	public FluidTankNTM[] tanks;
 	
@@ -66,21 +69,27 @@ public class TileEntityMachineCatalyticCracker extends TileEntityLoadedBase impl
 					}
 				}
 
-				NBTTagCompound data = new NBTTagCompound();
-
-				for(int i = 0; i < 5; i++)
-					tanks[i].writeToNBT(data, "tank" + i);
-
-				INBTPacketReceiver.networkPack(this, data, 50);
+				networkPackNT(50);
 			}
 			this.world.profiler.endSection();
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
+	public void serialize(ByteBuf buf) {
 		for(int i = 0; i < 5; i++)
-			tanks[i].readFromNBT(nbt, "tank" + i);
+			tanks[i].serialize(buf);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		for(int i = 0; i < 5; i++)
+			tanks[i].deserialize(buf);
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 
 	private void updateConnections() {

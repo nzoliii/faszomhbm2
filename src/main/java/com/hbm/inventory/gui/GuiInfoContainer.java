@@ -41,9 +41,7 @@ public abstract class GuiInfoContainer extends GuiContainer {
   }
 
   //the mojang employee who made this private on the super can explode
-  public boolean isMouseOverSlot(Slot slotIn, int mouseX, int mouseY) {
-    return this.isPointInRegion(slotIn.xPos, slotIn.yPos, 16, 16, mouseX, mouseY);
-  }
+  // mlbv: bro you can use AccessTransformer to make it public
 
   public void drawElectricityInfo(
       GuiInfoContainer gui,

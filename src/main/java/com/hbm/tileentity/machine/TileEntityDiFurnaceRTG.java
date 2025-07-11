@@ -7,6 +7,7 @@ import com.hbm.inventory.gui.GUIDiFurnaceRTG;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
 import com.hbm.util.RTGUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -75,17 +76,20 @@ public class TileEntityDiFurnaceRTG extends TileEntityMachineBase implements ITi
 				MachineDiFurnaceRTG.updateBlockState(trigger, this.world, pos);
 			lastTrigger = trigger;
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setShort("progress", progress);
-			data.setInteger("rtgPower", rtgPower);
-			networkPack(data, 10);
+			networkPackNT(10);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		progress = nbt.getShort("progress");
-		rtgPower = nbt.getShort("rtgPower");
+	public void serialize(ByteBuf buf) {
+		buf.writeShort(progress);
+		buf.writeInt(rtgPower);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		progress = buf.readShort();
+		rtgPower = buf.readInt();
 	}
 	
 	@Override

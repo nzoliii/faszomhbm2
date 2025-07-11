@@ -29,6 +29,7 @@ import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.*;
 import com.hbm.util.ParticleUtil;
 import com.hbm.util.Tuple;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -217,13 +218,7 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
                 }
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", this.power);
-            for (int i = 0; i < 5; i++) tanks[i].writeToNBT(data, "" + i);
-            data.setBoolean("exploded", hasExploded);
-            data.setBoolean("onFire", onFire);
-            data.setBoolean("isOn", this.isOn);
-            this.networkPack(data, 150);
+            networkPackNT(150);
         } else {
 
             if (this.isOn) audioTime = 20;
@@ -285,14 +280,28 @@ public class TileEntityMachineRefinery extends TileEntityMachineBase implements 
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
+    public void serialize(ByteBuf buf) {
+        buf.writeLong(this.power);
 
-        this.power = nbt.getLong("power");
-        for (int i = 0; i < 5; i++) tanks[i].readFromNBT(nbt, "" + i);
-        this.hasExploded = nbt.getBoolean("exploded");
-        this.onFire = nbt.getBoolean("onFire");
-        this.isOn = nbt.getBoolean("isOn");
+        for (int i = 0; i < 5; i++)
+            tanks[i].serialize(buf);
+
+        buf.writeBoolean(hasExploded);
+        buf.writeBoolean(onFire);
+        buf.writeBoolean(isOn);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.power = buf.readLong();
+
+        for (int i = 0; i < 5; i++)
+            tanks[i].deserialize(buf);
+
+        this.hasExploded = buf.readBoolean();
+        this.onFire = buf.readBoolean();
+        this.isOn = buf.readBoolean();
     }
 
     public DirPos[] getConPos() {

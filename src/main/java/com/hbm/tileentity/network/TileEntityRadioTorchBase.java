@@ -1,17 +1,20 @@
 package com.hbm.tileentity.network;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.interfaces.IControlReceiver;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.render.amlfrom1710.Vec3;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.packet.BufPacket;
+import com.hbm.tileentity.IBufPacketReceiver;
+import com.hbm.util.BufferUtil;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import org.jetbrains.annotations.NotNull;
 
-public class TileEntityRadioTorchBase extends TileEntity implements ITickable, INBTPacketReceiver, IControlReceiver {
+public class TileEntityRadioTorchBase extends TileEntity implements IBufPacketReceiver, ITickable, IControlReceiver {
 
 	/** channel we're broadcasting on/listening to */
 	public String channel = "";
@@ -30,23 +33,12 @@ public class TileEntityRadioTorchBase extends TileEntity implements ITickable, I
 	public void update() {
 
 		if(!world.isRemote) {
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setBoolean("isPolling", polling);
-			data.setBoolean("hasMapping", customMap);
-			if(channel != null) 
-				data.setString("channel", channel);
-			for(int i = 0; i < 16; i++) {
-				if(mapping[i] != null) {
-					data.setString("mapping" + i, mapping[i]);
-				}
-			}
-			this.networkPack(data, 50);
+			networkPackNT(50);
 		}
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
+	public void readFromNBT(@NotNull NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		this.polling = nbt.getBoolean("isPolling");
 		this.customMap = nbt.getBoolean("hasMapping");
@@ -59,7 +51,7 @@ public class TileEntityRadioTorchBase extends TileEntity implements ITickable, I
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setBoolean("isPolling", polling);
 		nbt.setBoolean("hasMapping", customMap);
 		nbt.setInteger("lastPower", lastState);
@@ -74,24 +66,14 @@ public class TileEntityRadioTorchBase extends TileEntity implements ITickable, I
 		return super.writeToNBT(nbt);
 	}
 
-	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.polling = nbt.getBoolean("isPolling");
-		this.customMap = nbt.getBoolean("hasMapping");
-		this.channel = nbt.getString("channel");
-		for(int i = 0; i < 16; i++)
-			this.mapping[i] = nbt.getString("mapping" + i);
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
-
-	public void networkPack(NBTTagCompound nbt, int range) {
-		if(!world.isRemote)
-			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
-	}
-	
 
 	@Override
 	public boolean hasPermission(EntityPlayer player) {
-		return Vec3.createVectorHelper(pos.getX() - player.posX, pos.getY() - player.posY, pos.getZ() - player.posZ).length() < 16;
+		return new Vec3d(pos.getX() - player.posX, pos.getY() - player.posY, pos.getZ() - player.posZ).length() < 16;
 	}
 
 	@Override
@@ -109,5 +91,27 @@ public class TileEntityRadioTorchBase extends TileEntity implements ITickable, I
 		}
 		
 		this.markDirty();
+	}
+
+	@Override
+	public void serialize(ByteBuf buf) {
+		buf.writeBoolean(polling);
+		buf.writeBoolean(customMap);
+		if(channel != null)
+			BufferUtil.writeString(buf, channel);
+		for(int i = 0; i < 16; i++) {
+			if(mapping[i] != null) {
+				BufferUtil.writeString(buf, mapping[i]);
+			}
+		}
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.polling = buf.readBoolean();
+		this.customMap = buf.readBoolean();
+		this.channel = BufferUtil.readString(buf);
+		for(int i = 0; i < 16; i++)
+			this.mapping[i] = BufferUtil.readString(buf);
 	}
 }

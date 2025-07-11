@@ -96,8 +96,6 @@ public class BlastFurnaceRecipes extends SerializableRecipe {
 
             if((doStacksMatch(recipeItem1, in1) && doStacksMatch(recipeItem2, in2)) || (doStacksMatch(recipeItem2, in1) && doStacksMatch(recipeItem1, in2))) {
                 return recipe.getZ().copy();
-            } else {
-                continue;
             }
         }
         return null;

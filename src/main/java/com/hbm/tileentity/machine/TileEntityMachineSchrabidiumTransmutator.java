@@ -1,7 +1,6 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.inventory.NuclearTransmutationRecipes;
 import com.hbm.inventory.container.ContainerMachineSchrabidiumTransmutator;
@@ -15,6 +14,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -65,7 +65,7 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
 				return true;
 			break;
 		case 3:
-			if(NTMBatteryCapabilityHandler.isBattery(stack))
+			if(Library.isItemBattery(stack))
 				return true;
 			break;
 		}
@@ -88,7 +88,7 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
 		}
 
 		if(i == 3) {
-			return NTMBatteryCapabilityHandler.isEmptyBattery(stack);
+			return Library.isItemEmptyBattery(stack);
 		}
 
 		return false;
@@ -121,11 +121,7 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
 				process = 0;
 			}
 
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setInteger("progress", process);
-			this.networkPack(data, 50);
-			
+			networkPackNT(50);
 			detectAndSendChanges();
 		} else {
 			if(process > 0) {
@@ -160,11 +156,17 @@ public class TileEntityMachineSchrabidiumTransmutator extends TileEntityMachineB
 			audio = null;
     	}
 	}
-	
+
 	@Override
-	public void networkUnpack(NBTTagCompound data) {
-		this.power = data.getLong("power");
-		this.process = data.getInteger("progress");
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		buf.writeInt(process);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.power = buf.readLong();
+		this.process = buf.readInt();
 	}
 	
 	private long detectPower;

@@ -1,8 +1,8 @@
 package com.hbm.inventory.container;
 
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.gui.GUICoreStabilizer;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.machine.TileEntityCoreStabilizer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,20 +13,22 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class ContainerCoreStabilizer extends Container {
 
-	private TileEntityCoreStabilizer nukeBoy;
+	private final TileEntityCoreStabilizer nukeBoy;
 	private EntityPlayerMP player;
 	
-	public ContainerCoreStabilizer(EntityPlayer player, TileEntityCoreStabilizer tedf) {
+	public ContainerCoreStabilizer(EntityPlayer player, TileEntityCoreStabilizer tile) {
 		InventoryPlayer invPlayer = player.inventory;
 		if(player instanceof EntityPlayerMP)
 			this.player = (EntityPlayerMP) player;
-		nukeBoy = tedf;
+		nukeBoy = tile;
 		
-		this.addSlotToContainer(new SlotItemHandler(tedf.inventory, 0, 47, 26));
+		this.addSlotToContainer(new SlotItemHandler(tile.inventory, 0, 47, 26));
 		
 		for(int i = 0; i < 3; i++)
 		{
@@ -43,18 +45,19 @@ public class ContainerCoreStabilizer extends Container {
 	}
 	
 	@Override
-	public void addListener(IContainerListener listener) {
+	public void addListener(@NotNull IContainerListener listener) {
 		super.addListener(listener);
 		listener.sendWindowProperty(this, 0, nukeBoy.watts);
 	}
 	
 	@Override
 	public void detectAndSendChanges() {
+		BlockPos nukePos = nukeBoy.getPos();
 		NBTTagCompound data = new NBTTagCompound();
 		data.setLong("power", nukeBoy.power);
 		data.setInteger("watts", nukeBoy.watts);
 		data.setBoolean("isOn", nukeBoy.isOn);
-		PacketDispatcher.sendTo(new NBTPacket(data, nukeBoy.getPos()), player);
+		PacketThreading.createSendToThreadedPacket(new BufPacket(nukePos.getX(), nukePos.getY(), nukePos.getZ(), nukeBoy), player);
 		super.detectAndSendChanges();
 	}
 	
@@ -72,7 +75,7 @@ public class ContainerCoreStabilizer extends Container {
     public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int par2)
     {
 		ItemStack var3 = ItemStack.EMPTY;
-		Slot var4 = (Slot) this.inventorySlots.get(par2);
+		Slot var4 = this.inventorySlots.get(par2);
 		
 		if (var4 != null && var4.getHasStack())
 		{

@@ -6,8 +6,10 @@ import com.hbm.inventory.container.ContainerMachineReactorBreeding;
 import com.hbm.inventory.gui.GUIMachineReactorBreeding;
 import com.hbm.inventory.recipes.BreederRecipes;
 import com.hbm.lib.ForgeDirection;
+import com.hbm.tileentity.IBufPacketReceiver;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-public class TileEntityMachineReactorBreeding extends TileEntityMachineBase implements IGUIProvider, ITickable {
+public class TileEntityMachineReactorBreeding extends TileEntityMachineBase implements IBufPacketReceiver, IGUIProvider, ITickable {
 
     public int flux;
     public float progress;
@@ -49,7 +51,7 @@ public class TileEntityMachineReactorBreeding extends TileEntityMachineBase impl
 
             if(canProcess()) {
 
-                progress += 0.0025F * (this.flux / BreederRecipes.getOutput(inventory.getStackInSlot(0)).flux);
+                progress += 0.0025F * ((float) this.flux / BreederRecipes.getOutput(inventory.getStackInSlot(0)).flux);
 
                 if(this.progress >= 1.0F) {
                     this.progress = 0F;
@@ -60,18 +62,21 @@ public class TileEntityMachineReactorBreeding extends TileEntityMachineBase impl
                 progress = 0.0F;
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setInteger("flux", flux);
-            data.setFloat("progress", progress);
-            this.networkPack(data, 20);
+            networkPackNT(20);
         }
     }
 
-    public void networkUnpack(NBTTagCompound data) {
-        super.networkUnpack(data);
+    @Override
+    public void serialize(ByteBuf buf) {
+        buf.writeInt(flux);
+        buf.writeFloat(progress);
+    }
 
-        flux = data.getInteger("flux");
-        progress = data.getFloat("progress");
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        flux = buf.readInt();
+        progress = buf.readFloat();
     }
 
     public void getInteractions() {

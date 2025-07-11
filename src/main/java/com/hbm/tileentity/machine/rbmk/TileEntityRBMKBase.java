@@ -19,13 +19,12 @@ import com.hbm.lib.HBMSoundHandler;
 import com.hbm.main.AdvancementManager;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.AuxParticlePacketNT;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.IOverpressurable;
 import com.hbm.tileentity.TileEntityLoadedBase;
 import com.hbm.tileentity.machine.rbmk.TileEntityRBMKConsole.ColumnType;
 import com.hbm.util.I18nUtil;
+import java.util.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -45,15 +44,14 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
-import java.util.*;
-
-public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements INBTPacketReceiver, ITickable, IControllable {
+public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements ITickable, IControllable {
 
 	public static int rbmkHeight = 4;
 	
@@ -67,7 +65,6 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements
 	public static final int maxWater = 16000*20;
 	public int steam;
 	public static final int maxSteam = 16000*20;
-	
 
 	public boolean hasLid() {
 		
@@ -119,8 +116,7 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements
 			
 			NBTTagCompound data = new NBTTagCompound();
 			this.writeToNBT(data);
-			this.networkPack(data, trackingRange());
-			
+			networkPackNT(trackingRange());
 		}
 	}
 
@@ -291,20 +287,10 @@ public abstract class TileEntityRBMKBase extends TileEntityLoadedBase implements
 		nbt.setInteger("realSimSteam", this.steam);
 		return nbt;
 	}
-	
-	public void networkPack(NBTTagCompound nbt, int range) {
 
-		diag = true;
-		if(!world.isRemote)
-			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
-		diag = false;
-	}
-	
-	public void networkUnpack(NBTTagCompound nbt) {
-		
-		diag = true;
-		this.readFromNBT(nbt);
-		diag = false;
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	public void getDiagData(NBTTagCompound nbt) {

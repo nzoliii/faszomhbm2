@@ -24,6 +24,9 @@ import com.hbm.main.MainRegistry;
 import com.hbm.tileentity.IFluidCopiable;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -43,10 +46,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
-import java.util.List;
-
 
 public class TileEntityMachineGasFlare extends TileEntityMachineBase implements ITickable, IEnergyProviderMK2, IFluidStandardReceiver, IGUIProvider, IControlReceiver, IFluidCopiable {
 	public long power;
@@ -174,13 +173,8 @@ public class TileEntityMachineGasFlare extends TileEntityMachineBase implements 
 			}
 			
 			power = Library.chargeItemsFromTE(inventory, 0, power, maxPower);
-
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", this.power);
-			data.setBoolean("isOn", isOn);
-			data.setBoolean("doesBurn", doesBurn);
-			tank.writeToNBT(data, "t");
-			this.networkPack(data, 50);
+			
+			networkPackNT(50);
 
 		} else {
 
@@ -227,17 +221,24 @@ public class TileEntityMachineGasFlare extends TileEntityMachineBase implements 
 			}
 		}
 	}
-
+	
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		super.networkUnpack(nbt);
-
-		this.power = nbt.getLong("power");
-		this.isOn = nbt.getBoolean("isOn");
-		this.doesBurn = nbt.getBoolean("doesBurn");
-		tank.readFromNBT(nbt, "t");
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(this.power);
+		buf.writeBoolean(isOn);
+		buf.writeBoolean(doesBurn);
+		tank.serialize(buf);
 	}
 
+	@Override
+	public void deserialize(ByteBuf buf) {
+		super.deserialize(buf);
+		this.power = buf.readLong();
+		this.isOn = buf.readBoolean();
+		this.doesBurn = buf.readBoolean();
+		tank.deserialize(buf);
+	}
+	
 	@Override
 	public int[] getAccessibleSlotsFromSide(EnumFacing e) {
 		return new int[] {0, 1, 2, 3, 4, 5};

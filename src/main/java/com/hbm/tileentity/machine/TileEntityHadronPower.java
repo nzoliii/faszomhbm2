@@ -2,12 +2,16 @@ package com.hbm.tileentity.machine;
 
 import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.TileEntityTickingBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityHadronPower extends TileEntityTickingBase implements IEnergyReceiverMK2 {
@@ -18,10 +22,10 @@ public class TileEntityHadronPower extends TileEntityTickingBase implements IEne
 	@Override
 	public void update() {
 		if(!world.isRemote) {
-			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) this.trySubscribe(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			this.networkPack(data, 15);
+			for(ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS)
+				this.trySubscribe(world, pos.getX() + dir.offsetX, pos.getY() + dir.offsetY, pos.getZ() + dir.offsetZ, dir);
+
+			networkPackNT(15);
 		}
 	}
 
@@ -31,8 +35,18 @@ public class TileEntityHadronPower extends TileEntityTickingBase implements IEne
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.power = nbt.getLong("power");
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.power = buf.readLong();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	@Override

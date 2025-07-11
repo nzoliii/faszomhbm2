@@ -1,6 +1,5 @@
 package com.hbm.items.tool;
 
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.items.ModItems;
 import com.hbm.items.armor.ArmorFSBPowered;
 import com.hbm.items.gear.ArmorFSB;
@@ -38,7 +37,7 @@ public class ItemFusionCore extends Item {
 
         	for(ItemStack st : player.inventory.armorInventory) {
         		if(st == null) continue;
-				NTMBatteryCapabilityHandler.addChargeIfValid(st, this.charge, true);
+				Library.chargeBatteryIfValid(st, this.charge, true);
         	}
 
         	stack.shrink(1);

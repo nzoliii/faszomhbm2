@@ -1,9 +1,13 @@
 package com.hbm.tileentity.machine;
 
 import com.hbm.blocks.machine.BlockHadronDiode;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.TileEntityTickingBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityHadronDiode extends TileEntityTickingBase {
@@ -43,24 +47,29 @@ public class TileEntityHadronDiode extends TileEntityTickingBase {
 	}
 	
 	public void sendSides() {
-
-		NBTTagCompound data = new NBTTagCompound();
-
-		for(int i = 0; i < 6; i++) {
-
-			if(sides[i] != null)
-				data.setInteger("" + i, sides[i].ordinal());
-		}
 		BlockHadronDiode.resetBlockState(world, pos);
-		this.networkPack(data, 250);
+		networkPackNT(250);
+	}
+
+	@Override
+	public void serialize(ByteBuf buf) {
+		for(int i = 0; i < 6; i++) {
+			if(sides[i] != null)
+				buf.writeInt(sides[i].ordinal());
+		}
 	}
 	
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
+	public void deserialize(ByteBuf buf) {
 		for(int i = 0; i < 6; i++) {
-			sides[i] = DiodeConfig.values()[nbt.getInteger("" + i)];
+			sides[i] = DiodeConfig.values()[buf.readInt()];
 		}
 		//world.markBlockRangeForRenderUpdate(pos, pos);
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	public DiodeConfig getConfig(int side) {

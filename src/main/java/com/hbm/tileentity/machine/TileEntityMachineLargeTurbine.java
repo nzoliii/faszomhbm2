@@ -22,6 +22,7 @@ import com.hbm.main.MainRegistry;
 import com.hbm.sound.AudioWrapper;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -107,8 +108,6 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
 
             power = Library.chargeItemsFromTE(inventory, 4, power, maxPower);
 
-            boolean operational = false;
-
             FluidType in = tanksNew[0].getTankType();
             boolean valid = false;
             if (in.hasTrait(FT_Coolable.class)) {
@@ -124,7 +123,7 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
                     tanksNew[1].setFill(tanksNew[1].getFill() + ops * trait.amountProduced);
                     this.power += (ops * trait.heatEnergy * eff);
                     valid = true;
-                    operational = ops > 0;
+                    shouldTurn = ops > 0;
                 }
             }
             if (!valid) tanksNew[1].setTankType(Fluids.NONE);
@@ -135,10 +134,7 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
             for (int i = 0; i < 2; i++)
                 tanksNew[i].updateTank(pos.getX(), pos.getY(), pos.getZ(), world.provider.getDimension());
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", power);
-            data.setBoolean("operational", operational);
-            this.networkPack(data, 50);
+            networkPackNT(50);
         } else {
             this.lastRotor = this.rotor;
             this.rotor += this.fanAcceleration;
@@ -188,11 +184,16 @@ public class TileEntityMachineLargeTurbine extends TileEntityMachineBase impleme
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound data) {
-        super.networkUnpack(data);
+    public void serialize(ByteBuf buf) {
+        buf.writeLong(power);
+        buf.writeBoolean(shouldTurn);
+    }
 
-        this.power = data.getLong("power");
-        this.shouldTurn = data.getBoolean("operational");
+    @Override
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.power = buf.readLong();
+        this.shouldTurn = buf.readBoolean();
     }
 
     public long getPowerScaled(int i) {

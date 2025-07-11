@@ -212,6 +212,11 @@ public abstract class BlockDummyable extends BlockContainer implements ICustomBl
 
     	super.onBlockPlacedBy(world, pos, state, player, itemStack);
     }
+
+	protected boolean standardOpenBehavior(World world, BlockPos pos, EntityPlayer player, int id){
+		return this.standardOpenBehavior(world, pos.getX(), pos.getY(), pos.getZ(), player, id);
+	}
+
     protected boolean standardOpenBehavior(World world, int x, int y, int z, EntityPlayer player, int id) {
 		
 		if(world.isRemote) {

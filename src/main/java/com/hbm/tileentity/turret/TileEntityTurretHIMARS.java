@@ -10,6 +10,7 @@ import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.IGUIProvider;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -38,7 +39,6 @@ public class TileEntityTurretHIMARS extends TileEntityTurretBaseArtillery implem
 
   public FiringMode mode = FiringMode.AUTO;
 
-  // TODO: Change var type typeLoaded from int to RocketType
   public int typeLoaded = -1;
   public int ammo = 0;
   public float crane;
@@ -256,8 +256,7 @@ public class TileEntityTurretHIMARS extends TileEntityTurretBaseArtillery implem
 
       this.power = Library.chargeTEFromItems(inventory, 10, this.power, this.getMaxPower());
 
-      NBTTagCompound data = this.writePacket();
-      this.networkPack(data, 250);
+      networkPackNT(250);
 
     } else {
       if (Math.abs(this.lastRotationYaw - this.rotationYaw) > Math.PI) {
@@ -326,22 +325,21 @@ public class TileEntityTurretHIMARS extends TileEntityTurretBaseArtillery implem
   }
 
   @Override
-  public NBTTagCompound writePacket() {
-    NBTTagCompound nbt = super.writePacket();
-    nbt.setShort("mode", (short) this.mode.ordinal());
-    nbt.setInteger("type", this.typeLoaded);
-    nbt.setInteger("ammo", this.ammo);
-    nbt.setFloat("crane", this.crane);
-    return nbt;
+  public void serialize(ByteBuf buf) {
+    super.serialize(buf);
+    buf.writeShort(this.mode.ordinal());
+    buf.writeInt(this.typeLoaded);
+    buf.writeInt(this.ammo);
+    buf.writeFloat(this.crane);
   }
 
   @Override
-  public void networkUnpack(NBTTagCompound nbt) {
-    super.networkUnpack(nbt);
-    this.mode = FiringMode.values()[nbt.getShort("mode")];
-    this.typeLoaded = nbt.getShort("type");
-    this.ammo = nbt.getInteger("ammo");
-    this.crane = nbt.getFloat("crane");
+  public void deserialize(ByteBuf buf) {
+    super.deserialize(buf);
+    this.mode = FiringMode.values()[buf.readShort()];
+    this.typeLoaded = buf.readShort();
+    this.ammo = buf.readInt();
+    this.crane = buf.readFloat();
   }
 
   @Override

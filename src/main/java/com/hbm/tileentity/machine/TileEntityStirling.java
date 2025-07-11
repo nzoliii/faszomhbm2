@@ -8,13 +8,15 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
 import com.hbm.entity.projectile.EntityCog;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.DirPos;
 import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.Library;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.IConfigurableMachine;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -23,6 +25,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 
 
-public class TileEntityStirling extends TileEntityLoadedBase implements INBTPacketReceiver, IEnergyProviderMK2, IConfigurableMachine, ITickable {
+public class TileEntityStirling extends TileEntityLoadedBase implements IEnergyProviderMK2, IConfigurableMachine, ITickable {
 
     /* CONFIGURABLE CONSTANTS */
     public static double diffusion = 0.1D;
@@ -95,11 +98,7 @@ public class TileEntityStirling extends TileEntityLoadedBase implements INBTPack
                 this.warnCooldown = 0;
             }
 
-            NBTTagCompound data = new NBTTagCompound();
-            data.setLong("power", powerBuffer);
-            data.setInteger("heat", heat);
-            data.setBoolean("hasCog", hasCog);
-            INBTPacketReceiver.networkPack(this, data, 150);
+            networkPackNT(150);
 
             if (hasCog) {
                 for (DirPos pos : getConPos()) {
@@ -150,10 +149,22 @@ public class TileEntityStirling extends TileEntityLoadedBase implements INBTPack
     }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        this.powerBuffer = nbt.getLong("power");
-        this.heat = nbt.getInteger("heat");
-        this.hasCog = nbt.getBoolean("hasCog");
+    public void serialize(ByteBuf buf) {
+        buf.writeLong(powerBuffer);
+        buf.writeInt( heat);
+        buf.writeBoolean(hasCog);
+    }
+
+    @Override
+    public void deserialize(ByteBuf buf) {
+        this.powerBuffer = buf.readLong();
+        this.heat = buf.readInt();
+        this.hasCog = buf.readBoolean();
+    }
+
+    public void networkPackNT(int range) {
+        if (!world.isRemote)
+            PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
     }
 
     protected void tryPullHeat() {

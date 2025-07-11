@@ -25,6 +25,10 @@ import com.hbm.packet.AuxParticlePacketNT;
 import com.hbm.particle.SpentCasing;
 import com.hbm.render.amlfrom1710.Vec3;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.INpc;
@@ -53,10 +57,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase implements IEnergyReceiverMK2, IControllable, IControlReceiver, ITickable {
 
@@ -223,8 +223,7 @@ public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase imple
 			
 			this.power = Library.chargeTEFromItems(inventory, 10, this.power, this.getMaxPower());
 			manualOverride = false;
-			NBTTagCompound data = this.writePacket();
-			this.networkPack(data, 250);
+			networkPackNT(250);
 
 			if(usesCasings() && this.casingDelay() > 0) {
 				if(casingDelay > 0) {
@@ -251,47 +250,44 @@ public abstract class TileEntityTurretBaseNT extends TileEntityMachineBase imple
 		}
 	}
 
-	protected NBTTagCompound writePacket() {
-
-		NBTTagCompound data = new NBTTagCompound();
-		if(this.tPos != null) {
-			data.setDouble("tX", this.tPos.x);
-			data.setDouble("tY", this.tPos.y);
-			data.setDouble("tZ", this.tPos.z);
-		}
-		data.setDouble("pitch", this.rotationPitch);
-		data.setDouble("yaw", this.rotationYaw);
-		data.setLong("power", this.power);
-		data.setBoolean("isOn", this.isOn);
-		data.setBoolean("targetPlayers", this.targetPlayers);
-		data.setBoolean("targetAnimals", this.targetAnimals);
-		data.setBoolean("targetMobs", this.targetMobs);
-		data.setBoolean("targetMachines", this.targetMachines);
-		data.setInteger("stattrak", this.stattrak);
-
-		return data;
-	}
-	
 	@Override
-	public void networkUnpack(NBTTagCompound nbt){
-		super.networkUnpack(nbt);
+	public void serialize(ByteBuf buf) {
+		buf.writeBoolean(this.tPos != null);
+		if(this.tPos != null) {
+			buf.writeDouble(this.tPos.x);
+			buf.writeDouble(this.tPos.y);
+			buf.writeDouble(this.tPos.z);
+		}
 
-		this.turnProgress = 2;
-		this.syncRotationPitch = nbt.getDouble("pitch");
-		this.syncRotationYaw = nbt.getDouble("yaw");
-		this.power = nbt.getLong("power");
-		this.isOn = nbt.getBoolean("isOn");
-		this.targetPlayers = nbt.getBoolean("targetPlayers");
-		this.targetAnimals = nbt.getBoolean("targetAnimals");
-		this.targetMobs = nbt.getBoolean("targetMobs");
-		this.targetMachines = nbt.getBoolean("targetMachines");
-		this.stattrak = nbt.getInteger("stattrak");
-		
-		if(nbt.hasKey("tX")) {
-			this.tPos = new Vec3d(nbt.getDouble("tX"), nbt.getDouble("tY"), nbt.getDouble("tZ"));
+		buf.writeDouble(this.rotationPitch);
+		buf.writeDouble(this.rotationYaw);
+		buf.writeLong(this.power);
+		buf.writeBoolean(this.isOn);
+		buf.writeBoolean(this.targetPlayers);
+		buf.writeBoolean(this.targetAnimals);
+		buf.writeBoolean(this.targetMobs);
+		buf.writeBoolean(this.targetMachines);
+		buf.writeInt(this.stattrak);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		if(buf.readBoolean()) {
+			this.tPos = new Vec3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		} else {
 			this.tPos = null;
 		}
+
+		this.turnProgress = 2;
+		this.syncRotationPitch = buf.readDouble();
+		this.syncRotationYaw = buf.readDouble();
+		this.power = buf.readLong();
+		this.isOn = buf.readBoolean();
+		this.targetPlayers = buf.readBoolean();
+		this.targetAnimals = buf.readBoolean();
+		this.targetMobs = buf.readBoolean();
+		this.targetMachines = buf.readBoolean();
+		this.stattrak = buf.readInt();
 	}
 	
 	@Override

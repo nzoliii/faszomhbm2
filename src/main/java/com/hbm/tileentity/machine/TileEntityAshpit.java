@@ -10,10 +10,11 @@ import com.hbm.items.ModItems;
 import com.hbm.tileentity.IConfigurableMachine;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -23,8 +24,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 
 public class TileEntityAshpit extends TileEntityMachineBase implements ITickable, IGUIProvider, IConfigurableMachine {
 
@@ -95,11 +94,8 @@ public class TileEntityAshpit extends TileEntityMachineBase implements ITickable
             for(int i = 0; i < 5; i++) {
                 if(!inventory.getStackInSlot(i).isEmpty()) isFull = true;
             }
-
-            NBTTagCompound data = new NBTTagCompound();
-            data.setInteger("playersUsing", this.playersUsing);
-            data.setBoolean("isFull", this.isFull);
-            this.networkPack(data, 50);
+            
+            this.networkPackNT(50);
 
         } else {
             this.prevDoorAngle = this.doorAngle;
@@ -132,22 +128,23 @@ public class TileEntityAshpit extends TileEntityMachineBase implements ITickable
 
         return false;
     }
+    
+    @Override
+    public void serialize(ByteBuf buf) {
+        buf.writeInt(this.playersUsing);
+        buf.writeBoolean(this.isFull);
+    }
 
     @Override
-    public void networkUnpack(NBTTagCompound nbt) {
-        super.networkUnpack(nbt);
-        this.playersUsing = nbt.getInteger("playersUsing");
-        this.isFull = nbt.getBoolean("isFull");
+    public void deserialize(ByteBuf buf) {
+        super.deserialize(buf);
+        this.playersUsing = buf.readInt();
+        this.isFull = buf.readBoolean();
     }
 
     @Override
     public int[] getAccessibleSlotsFromSide(EnumFacing e) {
         return new int[] { 0, 1, 2, 3, 4 };
-    }
-
-    @Override
-    public boolean canExtractItem(int i, ItemStack itemStack, int j) {
-        return true;
     }
 
     @Override
@@ -174,7 +171,7 @@ public class TileEntityAshpit extends TileEntityMachineBase implements ITickable
     AxisAlignedBB bb = null;
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public @NotNull AxisAlignedBB getRenderBoundingBox() {
 
         if(bb == null) {
             bb = new AxisAlignedBB(

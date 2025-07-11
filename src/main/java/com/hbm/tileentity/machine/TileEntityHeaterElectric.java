@@ -4,9 +4,11 @@ import com.hbm.api.energymk2.IEnergyReceiverMK2;
 import com.hbm.api.tile.IHeatSource;
 import com.hbm.blocks.BlockDummyable;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.tileentity.INBTPacketReceiver;
+import com.hbm.packet.BufPacket;
 import com.hbm.tileentity.TileEntityLoadedBase;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -14,13 +16,14 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public class TileEntityHeaterElectric extends TileEntityLoadedBase implements IHeatSource, IEnergyReceiverMK2, ITickable, INBTPacketReceiver {
+public class TileEntityHeaterElectric extends TileEntityLoadedBase implements IHeatSource, IEnergyReceiverMK2, ITickable {
 	
 	public long power;
 	public int heatEnergy;
@@ -47,20 +50,28 @@ public class TileEntityHeaterElectric extends TileEntityLoadedBase implements IH
 				this.heatEnergy += getHeatGen();
 				this.isOn = true;
 			}
-			
-			NBTTagCompound data = new NBTTagCompound();
-			data.setByte("s", (byte) this.setting);
-			data.setInteger("h", this.heatEnergy);
-			data.setBoolean("o", isOn);
-			INBTPacketReceiver.networkPack(this, data, 25);
+
+			networkPackNT(25);
 		}
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.setting = nbt.getByte("s");
-		this.heatEnergy = nbt.getInteger("h");
-		this.isOn = nbt.getBoolean("o");
+	public void serialize(ByteBuf buf) {
+		buf.writeByte(this.setting);
+		buf.writeInt(this.heatEnergy);
+		buf.writeBoolean(isOn);
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
+		this.setting = buf.readByte();
+		this.heatEnergy = buf.readInt();
+		this.isOn = buf.readBoolean();
+	}
+
+	public void networkPackNT(int range) {
+		if (!world.isRemote)
+			PacketThreading.createAllAroundThreadedPacket(new BufPacket(pos.getX(), pos.getY(), pos.getZ(), this), new NetworkRegistry.TargetPoint(this.world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), range));
 	}
 	
 	@Override

@@ -11,8 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 public class GUIMachineEPress extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_epress.png");
-	private TileEntityMachineEPress press;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_epress.png");
+	private final TileEntityMachineEPress press;
 	
 	public GUIMachineEPress(InventoryPlayer invPlayer, TileEntityMachineEPress tedf) {
 		super(new ContainerMachineEPress(invPlayer, tedf));
@@ -26,7 +26,7 @@ public class GUIMachineEPress extends GuiInfoContainer {
 	public void drawScreen(int mouseX, int mouseY, float f) {
 		super.drawScreen(mouseX, mouseY, f);
 		
-		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 26, guiTop + 69 - 52, 16, 52, press.power, TileEntityMachineEPress.maxPower);
+		this.drawElectricityInfo(this, mouseX, mouseY, guiLeft + 17, guiTop + 69 - 52, 16, 52, press.power, TileEntityMachineEPress.maxPower);
 		this.renderHoveredToolTip(mouseX, mouseY);
 	}
 
@@ -46,7 +46,7 @@ public class GUIMachineEPress extends GuiInfoContainer {
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
 		int i = (int)press.getPowerScaled(52);
-		drawTexturedModalRect(guiLeft + 26, guiTop + 69 - i, 176, 52 - i, 16, i);
+		drawTexturedModalRect(guiLeft + 17, guiTop + 69 - i, 176, 52 - i, 16, i);
 		
 		int k = press.getProgressScaled(16);
         this.drawTexturedModalRect(guiLeft + 79, guiTop + 35, 192, 0, 18, k);

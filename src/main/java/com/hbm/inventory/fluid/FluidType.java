@@ -15,8 +15,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.input.Keyboard;
 
 import java.util.ArrayList;
@@ -107,8 +109,10 @@ public class FluidType {
 		return this;
 	}
 
+	@Nullable
 	public Fluid getFF(){
-		return NTMFluidCapabilityHandler.getForgeFluid(this);
+		if (this.ffBan) return null;
+		return FluidRegistry.getFluid(this.getFFName());
 	}
 
 	public FluidType addContainers(Object... containers) {

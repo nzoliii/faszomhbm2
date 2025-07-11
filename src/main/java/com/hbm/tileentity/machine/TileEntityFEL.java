@@ -5,6 +5,7 @@ import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.machine.MachineSILEX;
 import com.hbm.capability.NTMEnergyCapabilityWrapper;
+import com.hbm.handler.threading.PacketThreading;
 import com.hbm.inventory.container.ContainerFEL;
 import com.hbm.inventory.gui.GUIFEL;
 import com.hbm.items.machine.ItemFELCrystal;
@@ -13,12 +14,15 @@ import com.hbm.lib.ForgeDirection;
 import com.hbm.lib.Library;
 import com.hbm.main.MainRegistry;
 import com.hbm.packet.LoopedSoundPacket;
-import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.IGUIProvider;
 import com.hbm.tileentity.TileEntityMachineBase;
+import com.hbm.util.BufferUtil;
 import com.hbm.util.ContaminationUtil;
 import com.hbm.util.ContaminationUtil.ContaminationType;
 import com.hbm.util.ContaminationUtil.HazardType;
+import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiScreen;
@@ -39,15 +43,12 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TileEntityFEL extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IGUIProvider {
 	
@@ -237,14 +238,8 @@ public class TileEntityFEL extends TileEntityMachineBase implements ITickable, I
 				}
 			}
 			
-			PacketDispatcher.wrapper.sendToAll(new LoopedSoundPacket(pos.getX(), pos.getY(), pos.getZ()));
-			NBTTagCompound data = new NBTTagCompound();
-			data.setLong("power", power);
-			data.setString("mode", mode.toString());
-			data.setBoolean("isOn", isOn);
-			data.setBoolean("valid", missingValidSilex);
-			data.setInteger("distance", distance);
-			this.networkPack(data, 250);
+			PacketThreading.createSendToAllThreadedPacket(new LoopedSoundPacket(pos.getX(), pos.getY(), pos.getZ()));
+			networkPackNT(250);
 		}
 	}
 	
@@ -257,14 +252,23 @@ public class TileEntityFEL extends TileEntityMachineBase implements ITickable, I
 		 
 		return false;
 	}
+	
+	@Override
+	public void serialize(ByteBuf buf) {
+		buf.writeLong(power);
+		BufferUtil.writeString(buf, mode.toString());
+		buf.writeBoolean(isOn);
+		buf.writeBoolean(missingValidSilex);
+		buf.writeInt(distance);
+	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
-		this.power = nbt.getLong("power");
-		this.mode = EnumWavelengths.valueOf(nbt.getString("mode"));
-		this.isOn = nbt.getBoolean("isOn");
-		this.distance = nbt.getInteger("distance");
-		this.missingValidSilex = nbt.getBoolean("valid");
+	public void deserialize(ByteBuf buf) {
+		this.power = buf.readLong();
+		this.mode = EnumWavelengths.valueOf(BufferUtil.readString(buf));
+		this.isOn = buf.readBoolean();
+		this.distance = buf.readInt();
+		this.missingValidSilex = buf.readBoolean();
 	}
 
 	@Override

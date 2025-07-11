@@ -22,7 +22,7 @@ public class FluidLoaderForge implements IFluidLoadingHandler {
         if (inputStack.isEmpty() || NTMFluidCapabilityHandler.isHbmFluidContainer(inputStack.getItem()) || tank.getFill() <= 0 || tankFluidType == Fluids.NONE) {
             return false;
         }
-        Fluid forgeFluid = NTMFluidCapabilityHandler.getForgeFluid(tankFluidType);
+        Fluid forgeFluid = tankFluidType.getFF();
         if (forgeFluid == null) {
             return false;
         }
@@ -80,7 +80,7 @@ public class FluidLoaderForge implements IFluidLoadingHandler {
         if (fluidInContainer == null || fluidInContainer.amount <= 0) {
             return false;
         }
-        FluidType ntmType = NTMFluidCapabilityHandler.getHbmFluidType(fluidInContainer.getFluid());
+        FluidType ntmType = NTMFluidCapabilityHandler.getFluidType(fluidInContainer.getFluid());
 
         if (ntmType == null || ntmType == Fluids.NONE) {
             return false;

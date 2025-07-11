@@ -1,10 +1,10 @@
 package com.hbm.inventory.container;
 
 import com.hbm.api.item.IDesignatorItem;
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.FluidContainerRegistry;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.items.ModItems;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.bomb.TileEntityLaunchPadBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -62,7 +62,7 @@ public class ContainerLaunchPadLarge extends Container {
 				}
 			} else {
 				
-				if(NTMBatteryCapabilityHandler.isBattery(stackCopy)) {
+				if(Library.isItemBattery(stackCopy)) {
 					if(!this.mergeItemStack(stack, 2, 3, false)) {
 						return ItemStack.EMPTY;
 					}

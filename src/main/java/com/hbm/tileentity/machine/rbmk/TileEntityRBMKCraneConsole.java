@@ -8,10 +8,12 @@ import com.hbm.handler.HbmKeybinds.EnumKeybind;
 import com.hbm.inventory.control_panel.*;
 import com.hbm.items.machine.ItemRBMKRod;
 import com.hbm.lib.ForgeDirection;
-import com.hbm.packet.NBTPacket;
-import com.hbm.packet.PacketDispatcher;
-import com.hbm.tileentity.INBTPacketReceiver;
 import com.hbm.tileentity.TileEntityMachineBase;
+import io.netty.buffer.ByteBuf;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -27,18 +29,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
-public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements ITickable, INBTPacketReceiver, SimpleComponent, IControllable {
+public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements ITickable, SimpleComponent, IControllable {
 	
 	public int centerX;
 	public int centerY;
@@ -216,27 +212,8 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 				this.loadedHeat = 20;
 				this.loadedEnrichment = 20;
 			}
-			
-			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setBoolean("crane", setUpCrane);
-			
-			if(setUpCrane) { //no need to send any of this if there's NO FUCKING CRANE THERE
-				nbt.setInteger("centerX", centerX);
-				nbt.setInteger("centerY", centerY);
-				nbt.setInteger("centerZ", centerZ);
-				nbt.setInteger("spanF", spanF);
-				nbt.setInteger("spanB", spanB);
-				nbt.setInteger("spanL", spanL);
-				nbt.setInteger("spanR", spanR);
-				nbt.setInteger("height", height);
-				nbt.setDouble("posFront", posFront);
-				nbt.setDouble("posLeft", posLeft);
-				nbt.setBoolean("loaded", this.hasItemLoaded());
-				nbt.setDouble("loadedHeat", loadedHeat);
-				nbt.setDouble("loadedEnrichment", loadedEnrichment);
-				nbt.setBoolean("goesDown", goesDown);
-			}
-			PacketDispatcher.wrapper.sendToAllAround(new NBTPacket(nbt, pos), new TargetPoint(world.provider.getDimension(), pos.getX(), pos.getY(), pos.getZ(), 250));
+
+			networkPackNT(250);
 		}
 	}
 
@@ -330,28 +307,49 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Override
-	public void networkUnpack(NBTTagCompound nbt) {
+	public void serialize(ByteBuf buf) {
+		buf.writeBoolean(setUpCrane);
+
+		if(setUpCrane) { //no need to send any of this if there's NO FUCKING CRANE THERE
+			buf.writeInt(centerX);
+			buf.writeInt(centerY);
+			buf.writeInt(centerZ);
+			buf.writeInt(spanF);
+			buf.writeInt(spanB);
+			buf.writeInt(spanL);
+			buf.writeInt(spanR);
+			buf.writeInt(height);
+			buf.writeDouble(posFront);
+			buf.writeDouble(posLeft);
+			buf.writeBoolean(this.hasItemLoaded());
+			buf.writeDouble(loadedHeat);
+			buf.writeDouble(loadedEnrichment);
+			buf.writeBoolean(goesDown);
+		}
+	}
+
+	@Override
+	public void deserialize(ByteBuf buf) {
 		
 		lastPosFront = posFront;
 		lastPosLeft = posLeft;
 		lastProgress = progress;
 		
-		this.setUpCrane = nbt.getBoolean("crane");
-		this.centerX = nbt.getInteger("centerX");
-		this.centerY = nbt.getInteger("centerY");
-		this.centerZ = nbt.getInteger("centerZ");
-		this.spanF = nbt.getInteger("spanF");
-		this.spanB = nbt.getInteger("spanB");
-		this.spanL = nbt.getInteger("spanL");
-		this.spanR = nbt.getInteger("spanR");
-		this.height = nbt.getInteger("height");
-		this.posFront = nbt.getDouble("posFront");
-		this.posLeft = nbt.getDouble("posLeft");
-		this.hasLoaded = nbt.getBoolean("loaded");
-		this.posLeft = nbt.getDouble("posLeft");
-		this.loadedHeat = nbt.getDouble("loadedHeat");
-		this.loadedEnrichment = nbt.getDouble("loadedEnrichment");
-		this.goesDown = nbt.getBoolean("goesDown");
+		this.setUpCrane = buf.readBoolean();
+		this.centerX = buf.readInt();
+		this.centerY = buf.readInt();
+		this.centerZ = buf.readInt();
+		this.spanF = buf.readInt();
+		this.spanB = buf.readInt();
+		this.spanL = buf.readInt();
+		this.spanR = buf.readInt();
+		this.height = buf.readInt();
+		this.posFront = buf.readDouble();
+		this.posLeft = buf.readDouble();
+		this.hasLoaded = buf.readBoolean();
+		this.loadedHeat = buf.readDouble();
+		this.loadedEnrichment = buf.readDouble();
+		this.goesDown = buf.readBoolean();
 	}
 	
 	public void setTarget(int x, int y, int z) {

@@ -1,10 +1,10 @@
 package com.hbm.inventory.container;
 
-import com.hbm.capability.NTMBatteryCapabilityHandler;
 import com.hbm.inventory.SlotMachineOutput;
 import com.hbm.inventory.SlotUpgrade;
 import com.hbm.items.machine.IItemFluidIdentifier;
 import com.hbm.items.machine.ItemMachineUpgrade;
+import com.hbm.lib.Library;
 import com.hbm.tileentity.machine.TileEntityMachineArcWelder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -65,7 +65,7 @@ public class ContainerMachineArcWelder extends Container {
                 }
             } else {
 
-                if(NTMBatteryCapabilityHandler.isBattery(rStack)) {
+                if(Library.isItemBattery(rStack)) {
                     if(!this.mergeItemStack(stack, 4, 5, false)) return ItemStack.EMPTY;
                 } else if(rStack.getItem() instanceof IItemFluidIdentifier) {
                     if(!this.mergeItemStack(stack, 5, 6, false)) return ItemStack.EMPTY;
