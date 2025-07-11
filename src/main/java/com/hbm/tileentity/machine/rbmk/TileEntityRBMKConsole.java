@@ -33,13 +33,13 @@ import java.util.*;
 
 @Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
 public class TileEntityRBMKConsole extends TileEntityMachineBase implements IControlReceiver, ITickable, SimpleComponent {
-	
+
 	private int targetX;
 	private int targetY;
 	private int targetZ;
 
 	protected static int lookbackLength = 40;
-	
+
 	//made this one-dimensional because it's a lot easier to serialize
 	public RBMKColumn[] columns = new RBMKColumn[15 * 15];
 
@@ -62,9 +62,9 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 
 	@Override
 	public void update() {
-		
+
 		if(!world.isRemote) {
-			
+
 			if(this.world.getTotalWorldTime() % 10 == 0) {
 				rescan();
 				prepareScreenInfo();
@@ -73,26 +73,26 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			sendNetworkPackNT();
 		}
 	}
-	
+
 	private void rescan() {
-		
+
 		for(int i = -7; i <= 7; i++) {
 			for(int j = -7; j <= 7; j++) {
-				
+
 				TileEntity te = world.getTileEntity(new BlockPos(targetX + i, targetY, targetZ + j));
 				int index = (i + 7) + (j + 7) * 15;
-				
+
 				if(te instanceof TileEntityRBMKBase) {
-					
+
 					TileEntityRBMKBase rbmk = (TileEntityRBMKBase)te;
-					
+
 					columns[index] = new RBMKColumn(rbmk.getConsoleType(), rbmk.getNBTForConsole());
 					columns[index].data.setDouble("heat", rbmk.heat);
 					columns[index].data.setDouble("maxHeat", rbmk.maxHeat());
 					columns[index].data.setDouble("realSimWater", rbmk.water);
 					columns[index].data.setDouble("realSimSteam", rbmk.steam);
 					if(rbmk.isModerated()) columns[index].data.setBoolean("moderated", true); //false is the default anyway and not setting it when we don't need to reduces cruft
-					
+
 				} else {
 					columns[index] = null;
 				}
@@ -109,15 +109,15 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	public void setupScreensAndGraph(){
-		List<Integer> fuelRods = new ArrayList(); 
+		List<Integer> fuelRods = new ArrayList();
 		List<Integer> controlRods = new ArrayList();
 		for(int i = 0; i < columns.length; i++){
 			if(columns[i] != null){
 				switch(columns[i].type){
-				case FUEL:
-				case FUEL_SIM: fuelRods.add(i); break;
-				case CONTROL:
-				case CONTROL_AUTO: controlRods.add(i); break;
+					case FUEL:
+					case FUEL_SIM: fuelRods.add(i); break;
+					case CONTROL:
+					case CONTROL_AUTO: controlRods.add(i); break;
 				}
 			}
 		}
@@ -137,83 +137,18 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			graph.dataBuffer = new int[lookbackLength];
 			return;
 		}
-		
+
 		double value = 0;
 		int count = 0;
-		
+
 		for(Integer i : graph.columns) {
-			
+
 			RBMKColumn col = this.columns[i];
-			
+
 			if(col == null)
 				continue;
-			
-			switch(graph.type) {
-			case COL_TEMP:
-				count++;
-				value += col.data.getDouble("heat");
-				break;
-			case FUEL_DEPLETION:
-				if(col.data.hasKey("enrichment")) {
-					count++;
-					value += (100D - (col.data.getDouble("enrichment") * 100D));
-				}
-				break;
-			case FUEL_POISON:
-				if(col.data.hasKey("xenon")) {
-					count++;
-					value += col.data.getDouble("xenon");
-				}
-				break;
-			case FUEL_TEMP:
-				if(col.data.hasKey("c_heat")) {
-					count++;
-					value += col.data.getDouble("c_heat");
-				}
-				break;
-			case FLUX:
-				if(col.data.hasKey("flux")) {
-					count++;
-					value += col.data.getDouble("flux");
-				}
-				break;
-			case ROD_EXTRACTION:
-				if(col.data.hasKey("level")) {
-					count++;
-					value += col.data.getDouble("level") * 100;
-				}
-				break;
-			}
-		}
-		
-		double result = value / (double) count;
-		for(int i = 0; i < graph.dataBuffer.length - 1; i++) {
-			graph.dataBuffer[i] = graph.dataBuffer[i + 1];
-		}
-		
-		graph.dataBuffer[graph.dataBuffer.length - 1] = (int) result;
-	}
 
-	private void prepareScreenInfo() {
-		
-		for(RBMKScreen screen : this.screens) {
-			
-			if(screen.type == ScreenType.NONE) {
-				screen.display = null;
-				continue;
-			}
-			
-			double value = 0;
-			int count = 0;
-			
-			for(Integer i : screen.columns) {
-				
-				RBMKColumn col = this.columns[i];
-				
-				if(col == null)
-					continue;
-				
-				switch(screen.type) {
+			switch(graph.type) {
 				case COL_TEMP:
 					count++;
 					value += col.data.getDouble("heat");
@@ -248,21 +183,86 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 						value += col.data.getDouble("level") * 100;
 					}
 					break;
+			}
+		}
+
+		double result = value / (double) count;
+		for(int i = 0; i < graph.dataBuffer.length - 1; i++) {
+			graph.dataBuffer[i] = graph.dataBuffer[i + 1];
+		}
+
+		graph.dataBuffer[graph.dataBuffer.length - 1] = (int) result;
+	}
+
+	private void prepareScreenInfo() {
+
+		for(RBMKScreen screen : this.screens) {
+
+			if(screen.type == ScreenType.NONE) {
+				screen.display = null;
+				continue;
+			}
+
+			double value = 0;
+			int count = 0;
+
+			for(Integer i : screen.columns) {
+
+				RBMKColumn col = this.columns[i];
+
+				if(col == null)
+					continue;
+
+				switch(screen.type) {
+					case COL_TEMP:
+						count++;
+						value += col.data.getDouble("heat");
+						break;
+					case FUEL_DEPLETION:
+						if(col.data.hasKey("enrichment")) {
+							count++;
+							value += (100D - (col.data.getDouble("enrichment") * 100D));
+						}
+						break;
+					case FUEL_POISON:
+						if(col.data.hasKey("xenon")) {
+							count++;
+							value += col.data.getDouble("xenon");
+						}
+						break;
+					case FUEL_TEMP:
+						if(col.data.hasKey("c_heat")) {
+							count++;
+							value += col.data.getDouble("c_heat");
+						}
+						break;
+					case FLUX:
+						if(col.data.hasKey("flux")) {
+							count++;
+							value += col.data.getDouble("flux");
+						}
+						break;
+					case ROD_EXTRACTION:
+						if(col.data.hasKey("level")) {
+							count++;
+							value += col.data.getDouble("level") * 100;
+						}
+						break;
 				}
 			}
-			
+
 			double result = value / (double) count;
 			String text = ((int)(result * 10)) / 10D + "";
-			
+
 			switch(screen.type) {
-			case COL_TEMP: text = "rbmk.screen.temp=" + text + "°C"; break;
-			case FUEL_DEPLETION: text = "rbmk.screen.depletion=" + text + "%"; break;
-			case FUEL_POISON: text = "rbmk.screen.xenon=" + text + "%"; break;
-			case FUEL_TEMP: text = "rbmk.screen.core=" + text + "°C"; break;
-			case FLUX: text = "rbmk.screen.flux=" + text ; break;
-			case ROD_EXTRACTION: text = "rbmk.screen.rod=" + text + "%"; break;
+				case COL_TEMP: text = "rbmk.screen.temp=" + text + "°C"; break;
+				case FUEL_DEPLETION: text = "rbmk.screen.depletion=" + text + "%"; break;
+				case FUEL_POISON: text = "rbmk.screen.xenon=" + text + "%"; break;
+				case FUEL_TEMP: text = "rbmk.screen.core=" + text + "°C"; break;
+				case FLUX: text = "rbmk.screen.flux=" + text ; break;
+				case ROD_EXTRACTION: text = "rbmk.screen.rod=" + text + "%"; break;
 			}
-			
+
 			screen.display = text;
 		}
 	}
@@ -277,37 +277,37 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 
 			buf.writeBoolean(true);
 
-            for (RBMKColumn column : columns) {
+			for (RBMKColumn column : columns) {
 				buf.writeBoolean(column != null);
-                if (column != null) {
+				if (column != null) {
 					buf.writeShort(column.type.ordinal());
-                    ByteBufUtils.writeTag(buf, column.data);
-                }
-            }
+					ByteBufUtils.writeTag(buf, column.data);
+				}
+			}
 
 			BufferUtil.writeIntArray(buf, this.graph.dataBuffer);
 
-            for (RBMKScreen screen : this.screens) {
+			for (RBMKScreen screen : this.screens) {
 				buf.writeBoolean(screen.display != null);
-                if (screen.display != null) {
-                    BufferUtil.writeString(buf, screen.display);
-                }
-            }
+				if (screen.display != null) {
+					BufferUtil.writeString(buf, screen.display);
+				}
+			}
 		}
 
-        for (RBMKScreen screen : this.screens) {
-            buf.writeByte((byte) screen.type.ordinal());
-        }
+		for (RBMKScreen screen : this.screens) {
+			buf.writeByte((byte) screen.type.ordinal());
+		}
 
 		buf.writeByte(graph.type.ordinal());
 	}
-	
+
 	@Override
 	public void deserialize(ByteBuf buf) {
-		
+
 		if(buf.readBoolean()) {
 			this.columns = new RBMKColumn[15 * 15];
-			
+
 			for(int i = 0; i < columns.length; i++) {
 				if (buf.readBoolean()) {
 					this.columns[i] = new RBMKColumn(ColumnType.values()[buf.readShort()], ByteBufUtils.readTag(buf));
@@ -316,18 +316,18 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 
 			this.graph.dataBuffer = BufferUtil.readIntArray(buf);
 
-            for (RBMKScreen screen : this.screens) {
+			for (RBMKScreen screen : this.screens) {
 				if (buf.readBoolean()) {
 					screen.display = BufferUtil.readString(buf);
 				} else {
 					screen.display = null;
 				}
-            }
+			}
 		}
 
-        for (RBMKScreen screen : this.screens) {
-            screen.type = ScreenType.values()[buf.readByte()];
-        }
+		for (RBMKScreen screen : this.screens) {
+			screen.type = ScreenType.values()[buf.readByte()];
+		}
 
 		graph.type = ScreenType.values()[buf.readByte()];
 	}
@@ -339,20 +339,20 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 
 	@Override
 	public void receiveControl(NBTTagCompound data) {
-		
+
 		if(data.hasKey("level")) {
-			
+
 			Set<String> keys = data.getKeySet();
-			
+
 			for(String key : keys) {
-				
+
 				if(key.startsWith("sel_")) {
 
 					int x = data.getInteger(key) % 15 - 7;
 					int z = data.getInteger(key) / 15 - 7;
-					
+
 					TileEntity te = world.getTileEntity(new BlockPos(targetX + x, targetY, targetZ + z));
-					
+
 					if(te instanceof TileEntityRBMKControlManual) {
 						TileEntityRBMKControlManual rod = (TileEntityRBMKControlManual) te;
 						rod.startingLevel = rod.level;
@@ -377,11 +377,11 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 				this.screens[slot].type = type;
 			}
 		}
-		
+
 		if(data.hasKey("id")) {
 			int slot = data.getByte("id");
 			List<Integer> list = new ArrayList();
-			
+
 			for(int i = 0; i < 15 * 15; i++) {
 				if(data.getBoolean("s" + i)) {
 					list.add(i);
@@ -396,25 +396,25 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			}
 		}
 	}
-	
+
 	@Override
 	public AxisAlignedBB getRenderBoundingBox() {
 		return new AxisAlignedBB(pos.getX() - 2, pos.getY(), pos.getZ() - 2, pos.getX() + 3, pos.getY() + 4, pos.getZ() + 3);
 	}
-	
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		return 65536.0D;
 	}
-	
+
 	public void setTarget(int x, int y, int z) {
 		this.targetX = x;
 		this.targetY = y;
 		this.targetZ = z;
 		this.markDirty();
 	}
-	
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
@@ -430,7 +430,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		this.graph.type = ScreenType.values()[nbt.getByte("g")];
 		this.graph.columns = Arrays.stream(nbt.getIntArray("gc")).boxed().toArray(Integer[]::new);
 	}
-	
+
 	@Override
 	public @NotNull NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
@@ -445,22 +445,22 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		}
 		nbt.setByte("g", (byte) this.graph.type.ordinal());
 		nbt.setIntArray("gc", Arrays.stream(this.graph.columns).mapToInt(Integer::intValue).toArray());
-		
+
 		return nbt;
 	}
-	
+
 	public static class RBMKColumn {
-		
+
 		public ColumnType type;
 		public NBTTagCompound data;
-		
+
 		public RBMKColumn(ColumnType type) {
 			this.type = type;
 		}
-		
+
 		public RBMKColumn(ColumnType type, NBTTagCompound data) {
 			this.type = type;
-			
+
 			if(data != null) {
 				this.data = data;
 			} else {
@@ -471,78 +471,78 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		@SuppressWarnings("incomplete-switch")
 		@SideOnly(Side.CLIENT)
 		public List<String> getFancyStats() {
-			
+
 			if(this.data == null)
 				return null;
-			
+
 			/*
 			 * Making a big switch with the values converted based on type by hand might seem "UnPrOfEsSiOnAl" and a major pain in the ass
 			 * but my only other solution that would not have me do things in multiple places where they shouldn't be involved passing
 			 * classes in the enum and then calling a special method from that class and quite honestly it turned out to be such a crime
 			 * against humanity that I threw the towel. It's not fancy, I get that, please fuck off.
 			 */
-			
+
 			List<String> stats = new ArrayList<>();
 			stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.heat", ((int)((this.data.getDouble("heat") * 10D)) / 10D) + "°C"));
 			switch(this.type) {
-			case HEATEX:
-				stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.heater.fluid", this.data.getString("inputFluid"), this.data.getInteger("inputFluidAmount"), this.data.getInteger("inputFluidMax")));
-				stats.add(TextFormatting.RED + I18nUtil.resolveKey("rbmk.heater.fluid", this.data.getString("outputFluid"), this.data.getInteger("outputFluidAmount"), this.data.getInteger("outputFluidMax")));
-				break;
-			case FUEL:
-			case FUEL_SIM:
-				if(this.data.hasKey("rod_name"))
-					stats.add("§3" + I18n.format("rbmk.rod.name") + " " + I18n.format(this.data.getString("rod_name")+".name"));
-				else
-					stats.add("§3" + I18n.format("rbmk.rod.name"));
-				stats.add(TextFormatting.GREEN + I18nUtil.resolveKey("rbmk.rod.flux", (int)this.data.getDouble("flux")));
-				stats.add(TextFormatting.DARK_GREEN + I18nUtil.resolveKey("rbmk.rod.depletion", ((int)(((1D - this.data.getDouble("enrichment")) * 100000)) / 1000D) + "%"));
-				stats.add(TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("rbmk.rod.xenon", ((int)(((this.data.getDouble("xenon")) * 1000D)) / 1000D) + "%"));
-				stats.add(TextFormatting.RED + I18nUtil.resolveKey("rbmk.rod.skinTemp", ((int)((this.data.getDouble("c_heat") * 10D)) / 10D) + "°C", ((int)((this.data.getDouble("c_maxHeat") * 10D)) / 10D) + "°C"));
-				stats.add(TextFormatting.DARK_RED + I18nUtil.resolveKey("rbmk.rod.coreTemp", ((int)((this.data.getDouble("c_coreHeat") * 10D)) / 10D) + "°C"));
-				stats.add(TextFormatting.DARK_RED + I18nUtil.resolveKey("trait.rbmk.meltdown", ((int)(((this.data.getDouble("meltdown")) * 1000D)) / 1000D) + "%"));
-				break;
-			case BOILER:
-				stats.add(TextFormatting.BLUE + I18nUtil.resolveKey("rbmk.boiler.water", this.data.getInteger("water"), this.data.getInteger("maxWater")));
-				stats.add(TextFormatting.WHITE + I18nUtil.resolveKey("rbmk.boiler.steam", this.data.getInteger("steam"), this.data.getInteger("maxSteam")));
-				stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.boiler.type", I18nUtil.resolveKey(FluidRegistry.getFluid(this.data.getString("type")).getUnlocalizedName())));
-				break;
-			case COOLER:
-				stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.cooler.cooling", this.data.getInteger("cooled") * 20));
-				stats.add(TextFormatting.DARK_AQUA + I18nUtil.resolveKey("rbmk.cooler.cryo", this.data.getInteger("cryo")));
-				break;
-			case OUTGASSER:
-				double flux = this.data.getDouble("usedFlux");
-				double progress = this.data.getDouble("progress");
-				double maxProgress = this.data.getDouble("maxProgress");
-				int eta = 0;
-				if(flux > 0)
-					eta = (int)((maxProgress-progress)/flux);
+				case HEATEX:
+					stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.heater.fluid", this.data.getString("inputFluid"), this.data.getInteger("inputFluidAmount"), this.data.getInteger("inputFluidMax")));
+					stats.add(TextFormatting.RED + I18nUtil.resolveKey("rbmk.heater.fluid", this.data.getString("outputFluid"), this.data.getInteger("outputFluidAmount"), this.data.getInteger("outputFluidMax")));
+					break;
+				case FUEL:
+				case FUEL_SIM:
+					if(this.data.hasKey("rod_name"))
+						stats.add("§3" + I18n.format("rbmk.rod.name") + " " + I18n.format(this.data.getString("rod_name")+".name"));
+					else
+						stats.add("§3" + I18n.format("rbmk.rod.name"));
+					stats.add(TextFormatting.GREEN + I18nUtil.resolveKey("rbmk.rod.flux", (int)this.data.getDouble("flux")));
+					stats.add(TextFormatting.DARK_GREEN + I18nUtil.resolveKey("rbmk.rod.depletion", ((int)(((1D - this.data.getDouble("enrichment")) * 100000)) / 1000D) + "%"));
+					stats.add(TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("rbmk.rod.xenon", ((int)(((this.data.getDouble("xenon")) * 1000D)) / 1000D) + "%"));
+					stats.add(TextFormatting.RED + I18nUtil.resolveKey("rbmk.rod.skinTemp", ((int)((this.data.getDouble("c_heat") * 10D)) / 10D) + "°C", ((int)((this.data.getDouble("c_maxHeat") * 10D)) / 10D) + "°C"));
+					stats.add(TextFormatting.DARK_RED + I18nUtil.resolveKey("rbmk.rod.coreTemp", ((int)((this.data.getDouble("c_coreHeat") * 10D)) / 10D) + "°C"));
+					stats.add(TextFormatting.DARK_RED + I18nUtil.resolveKey("trait.rbmk.meltdown", ((int)(((this.data.getDouble("meltdown")) * 1000D)) / 1000D) + "%"));
+					break;
+				case BOILER:
+					stats.add(TextFormatting.BLUE + I18nUtil.resolveKey("rbmk.boiler.water", this.data.getInteger("water"), this.data.getInteger("maxWater")));
+					stats.add(TextFormatting.WHITE + I18nUtil.resolveKey("rbmk.boiler.steam", this.data.getInteger("steam"), this.data.getInteger("maxSteam")));
+					stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.boiler.type", I18nUtil.resolveKey(FluidRegistry.getFluid(this.data.getString("type")).getUnlocalizedName())));
+					break;
+				case COOLER:
+					stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.cooler.cooling", this.data.getInteger("cooled") * 20));
+					stats.add(TextFormatting.DARK_AQUA + I18nUtil.resolveKey("rbmk.cooler.cryo", this.data.getInteger("cryo")));
+					break;
+				case OUTGASSER:
+					double flux = this.data.getDouble("usedFlux");
+					double progress = this.data.getDouble("progress");
+					double maxProgress = this.data.getDouble("maxProgress");
+					int eta = 0;
+					if(flux > 0)
+						eta = (int)((maxProgress-progress)/flux);
 
-				stats.add("§6" + I18nUtil.resolveKey("rbmk.outgasser.eta", BobMathUtil.toDate(BobMathUtil.ticksToDate(eta, 72000))));
-				stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.outgasser.flux", Library.getShortNumber((long)flux)));
-				stats.add(TextFormatting.DARK_AQUA + I18nUtil.resolveKey("rbmk.outgasser.progress", Library.getShortNumber((long)progress), Library.getShortNumber((long)maxProgress), Library.getPercentage(progress/maxProgress)));
-				stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.outgasser.gas", this.data.getInteger("gas"), this.data.getInteger("maxGas")));
-				break;
-			case CONTROL:
-				if(this.data.hasKey("color")) {
-					short col = this.data.getShort("color");
-					
-					if(col >= 0 && col < RBMKColor.values().length)
-						stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.control." + RBMKColor.values()[col].name().toLowerCase()));
-				}
-			case CONTROL_AUTO:
-				stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.control.level", ((int)((this.data.getDouble("level") * 100D))) + "%"));
-				break;
+					stats.add("§6" + I18nUtil.resolveKey("rbmk.outgasser.eta", BobMathUtil.toDate(BobMathUtil.ticksToDate(eta, 72000))));
+					stats.add(TextFormatting.AQUA + I18nUtil.resolveKey("rbmk.outgasser.flux", Library.getShortNumber((long)flux)));
+					stats.add(TextFormatting.DARK_AQUA + I18nUtil.resolveKey("rbmk.outgasser.progress", Library.getShortNumber((long)progress), Library.getShortNumber((long)maxProgress), Library.getPercentage(progress/maxProgress)));
+					stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.outgasser.gas", this.data.getInteger("gas"), this.data.getInteger("maxGas")));
+					break;
+				case CONTROL:
+					if(this.data.hasKey("color")) {
+						short col = this.data.getShort("color");
+
+						if(col >= 0 && col < RBMKColor.values().length)
+							stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.control." + RBMKColor.values()[col].name().toLowerCase()));
+					}
+				case CONTROL_AUTO:
+					stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.control.level", ((int)((this.data.getDouble("level") * 100D))) + "%"));
+					break;
 			}
-			
+
 			if(data.getBoolean("moderated"))
 				stats.add(TextFormatting.YELLOW + I18nUtil.resolveKey("rbmk.moderated"));
-			
+
 			return stats;
 		}
 	}
-	
+
 	public static enum ColumnType {
 		BLANK(0),
 		FUEL(10),
@@ -558,9 +558,9 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		STORAGE(110),
 		COOLER(120),
 		HEATEX(130);
-		
+
 		public int offset;
-		
+
 		private ColumnType(int offset) {
 			this.offset = offset;
 		}
@@ -570,7 +570,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		public ScreenType type = ScreenType.NONE;
 		public Integer[] columns = new Integer[0];
 		public String display = null;
-		
+
 		public RBMKScreen() { }
 		public RBMKScreen(ScreenType type, Integer[] columns, String display) {
 			this.type = type;
@@ -583,14 +583,14 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		public ScreenType type = ScreenType.NONE;
 		public Integer[] columns = new Integer[0];
 		public int[] dataBuffer = new int[lookbackLength];
-		
+
 		public RBMKGraph() {
-			Arrays.fill(this.dataBuffer, 0); 
+			Arrays.fill(this.dataBuffer, 0);
 		}
 		public RBMKGraph(ScreenType type, Integer[] columns) {
 			this.type = type;
 			this.columns = columns;
-			Arrays.fill(this.dataBuffer, 0); 
+			Arrays.fill(this.dataBuffer, 0);
 		}
 		public RBMKGraph(ScreenType type, Integer[] columns, int[] dataBuffer) {
 			this.type = type;
@@ -598,7 +598,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			this.dataBuffer = dataBuffer;
 		}
 	}
-	
+
 	public static enum ScreenType {
 		NONE(0 * 18),
 		COL_TEMP(1 * 18),
@@ -607,9 +607,9 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		FLUX(6 * 18),
 		FUEL_DEPLETION(3 * 18),
 		FUEL_POISON(4 * 18);
-		
+
 		public int offset;
-		
+
 		private ScreenType(int offset) {
 			this.offset = offset;
 		}
@@ -703,7 +703,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		for(int i = -7; i <= 7; i++) {
 			for(int j = -7; j <= 7; j++) {
 				TileEntity te = world.getTileEntity(new BlockPos(targetX + i, targetY, targetZ + j));
-	
+
 				if (te instanceof TileEntityRBMKControlManual) {
 					TileEntityRBMKControlManual rod = (TileEntityRBMKControlManual) te;
 					rod.startingLevel = rod.level;
@@ -728,7 +728,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		double new_level = args.checkDouble(2);
 
 		TileEntity te = world.getTileEntity(new BlockPos(targetX + x, targetY, targetZ + y));
-		
+
 		if (te instanceof TileEntityRBMKControlManual) {
 			TileEntityRBMKControlManual rod = (TileEntityRBMKControlManual) te;
 			rod.startingLevel = rod.level;
@@ -737,7 +737,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 			rod.setTarget(new_level);
 			te.markDirty();
 			return new Object[] {"Controlrod at "+(x+7)+","+(7-y)+" set to "+new_level*100+"%"};
-		}	
+		}
 		return new Object[] {"No controlrod found at "+(x+7)+","+(7-y)};
 	}
 
@@ -761,7 +761,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 							te.markDirty();
 							foundRods = true;
 						}
-					}	
+					}
 				}
 			}
 			if(foundRods)
@@ -797,14 +797,14 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 		for(int i = -7; i <= 7; i++) {
 			for(int j = -7; j <= 7; j++) {
 				TileEntity te = world.getTileEntity(new BlockPos(targetX + i, targetY, targetZ + j));
-		
+
 				if (te instanceof TileEntityRBMKControlManual) {
 					TileEntityRBMKControlManual rod = (TileEntityRBMKControlManual) te;
 					rod.startingLevel = rod.level;
 					rod.setTarget(0);
 					te.markDirty();
 					hasRods = true;
-				}	
+				}
 			}
 		}
 		if(hasRods){

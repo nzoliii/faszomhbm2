@@ -128,8 +128,6 @@ import java.util.Random;
 @Spaghetti("Total cluserfuck")
 public class MainRegistry {
 
-    private boolean customMenuDisplayed = false;
-
     @SidedProxy(clientSide = RefStrings.CLIENTSIDE, serverSide = RefStrings.SERVERSIDE)
     public static ServerProxy proxy;
     @Mod.Instance(RefStrings.MODID)
@@ -819,6 +817,7 @@ public class MainRegistry {
         MinecraftForge.EVENT_BUS.register(fhbm2FleshCutscene.class);
         MinecraftForge.EVENT_BUS.register(fhbm2AdvancementAnnouncer.class);
         MinecraftForge.EVENT_BUS.register(new fhbm2CutsceneItemTracker());
+        MinecraftForge.EVENT_BUS.register(new fhbm2CustomMainMenuLoader());
     }
 
     @EventHandler
@@ -832,8 +831,6 @@ public class MainRegistry {
         Fluids.initForgeFluidCompat();
         PacketThreading.init();
         IMCHandler.init();
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @EventHandler //Apparently this is "legacy", well I am not making my own protocol
@@ -850,40 +847,6 @@ public class MainRegistry {
             } else {
                 MainRegistry.logger.error("Could not process unknown IMC type \"" + message.key + "\"");
             }
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
-                && fhbm2MenuStateManager.isCustomMenuEnabled()
-                && !customMenuDisplayed) {
-
-            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
-            customMenuDisplayed = true;
-        }
-
-        if (!(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu)) {
-            customMenuDisplayed = false;
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
-            int yOffset = event.getGui().height / 4 + 48;
-            event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
-        if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
-            fhbm2MenuStateManager.setCustomMenuEnabled(true);
-            Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
         }
     }
 
