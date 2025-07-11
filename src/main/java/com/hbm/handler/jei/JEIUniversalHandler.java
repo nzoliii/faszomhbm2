@@ -36,17 +36,49 @@ public abstract class JEIUniversalHandler implements IRecipeCategory<JeiRecipes.
 
     protected void buildRecipes(HashMap<Object, Object> recipeMap, ItemStack[] machines) {
         for (Map.Entry<Object, Object> entry : recipeMap.entrySet()) {
-            ItemStack[] inputs = extractInput(entry.getKey());
+            List<List<ItemStack>> inputs = extractInputLists(entry.getKey());
             ItemStack[] outputs = extractOutput(entry.getValue());
-            if (inputs.length > 0 && outputs.length > 0)
+            if (!inputs.isEmpty() && outputs.length > 0)
                 recipes.add(new JeiUniversalRecipe(inputs, outputs, machines));
         }
+    }
+
+    protected List<List<ItemStack>> extractInputLists(Object o) {
+        List<List<ItemStack>> allSlots = new ArrayList<>();
+        if (o instanceof Object[]) {
+            for (Object slotObject : (Object[]) o) {
+                if (slotObject instanceof RecipesCommon.AStack) {
+                    List<ItemStack> items = new ArrayList<>();
+                    for (ItemStack stack : ((RecipesCommon.AStack) slotObject).extractForJEI()) {
+                        items.add(stack.copy());
+                    }
+                    allSlots.add(items);
+                } else if (slotObject instanceof ItemStack) {
+                    allSlots.add(Collections.singletonList(((ItemStack) slotObject).copy()));
+                }
+            }
+            return allSlots;
+        }
+        if (o instanceof RecipesCommon.AStack) {
+            List<ItemStack> items = new ArrayList<>();
+            for (ItemStack stack : ((RecipesCommon.AStack) o).extractForJEI()) {
+                items.add(stack.copy());
+            }
+            allSlots.add(items);
+            return allSlots;
+        }
+        MainRegistry.logger.warn("JEIUniversalHandler: extractInputLists failed for type " + o.getClass());
+        return Collections.emptyList();
     }
 
     public List<JeiUniversalRecipe> getRecipes() {
         return recipes;
     }
 
+    /**
+     * @deprecated use {@link #extractInputLists(Object)}
+     */
+    @Deprecated
     protected ItemStack[] extractInput(Object o) {
         return extract(o);
     }

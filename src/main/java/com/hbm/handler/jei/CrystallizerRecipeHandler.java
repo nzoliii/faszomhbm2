@@ -8,6 +8,7 @@ import mezz.jei.api.IGuiHelper;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CrystallizerRecipeHandler extends JEIUniversalHandler {
@@ -15,11 +16,15 @@ public class CrystallizerRecipeHandler extends JEIUniversalHandler {
 	@Override
 	protected void buildRecipes(HashMap<Object, Object> recipeMap, ItemStack[] machines) {
 		for (Map.Entry<Object, Object> entry : recipeMap.entrySet()) {
-			ItemStack[] inputs = extractInput(entry.getKey());
-			if (inputs.length < 2) continue;
+			List<List<ItemStack>> inputsList = extractInputLists(entry.getKey());
+			if (inputsList.size() < 2) continue;
+			List<ItemStack> acidStacks = inputsList.get(0);
+			List<ItemStack> itemStacks = inputsList.get(1);
 
-			ItemStack acidStack = inputs[0];
-			ItemStack itemStack = inputs[1];
+			if (acidStacks.isEmpty() || itemStacks.isEmpty()) continue;
+
+			ItemStack acidStack = acidStacks.get(0);
+			ItemStack itemStack = itemStacks.get(0);
 
 			FluidType fluidType = null;
 			if (acidStack.getItem() instanceof ItemFluidIcon) {
@@ -31,14 +36,10 @@ public class CrystallizerRecipeHandler extends JEIUniversalHandler {
 			CrystallizerRecipes.CrystallizerRecipe originalRecipe = CrystallizerRecipes.getOutput(itemStack, fluidType);
 
 			if (originalRecipe == null) continue;
-
 			ItemStack output = originalRecipe.output.copy();
-			output.setCount(output.getCount() * (int)(1 + originalRecipe.productivity));
-
 			int productivity = (int)(originalRecipe.productivity * 100);
-
 			recipes.add(new JeiRecipes.CrystallizerRecipe(
-					inputs,
+					inputsList,
 					new ItemStack[]{output},
 					machines,
 					productivity

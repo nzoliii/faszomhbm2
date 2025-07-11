@@ -587,19 +587,19 @@ public class JeiRecipes {
 	}
 
 	public static class JeiUniversalRecipe implements IRecipeWrapper {
-		private final ItemStack[] inputs;
+		private final List<List<ItemStack>> inputs;
 		private final ItemStack[] outputs;
 		private final ItemStack[] machines;
 
-		public JeiUniversalRecipe(ItemStack[] inputs, ItemStack[] outputs, ItemStack[] machine) {
-			this.inputs = Arrays.stream(inputs).map(ItemStack::copy).toArray(ItemStack[]::new);
+		public JeiUniversalRecipe(List<List<ItemStack>> inputs, ItemStack[] outputs, ItemStack[] machine) {
+			this.inputs = inputs;
 			this.outputs = Arrays.stream(outputs).map(ItemStack::copy).toArray(ItemStack[]::new);
 			this.machines = Arrays.stream(machine).map(ItemStack::copy).toArray(ItemStack[]::new);
 		}
 
 		@Override
 		public void getIngredients(IIngredients ingredients) {
-			ingredients.setInputs(VanillaTypes.ITEM, Arrays.asList(inputs));
+			ingredients.setInputLists(VanillaTypes.ITEM, inputs);
 			ingredients.setOutputs(VanillaTypes.ITEM, Arrays.asList(outputs));
 		}
 
@@ -615,7 +615,7 @@ public class JeiRecipes {
 
 			Gui.drawModalRectWithCustomSizedTexture(74, 14, 59, 87, 18, 36, 256, 256);
 
-			int[][] inCoords = JEIUniversalHandler.getInputCoords(inputs.length);
+			int[][] inCoords = JEIUniversalHandler.getInputCoords(inputs.size());
 			for (int[] coords : inCoords) {
 				Gui.drawModalRectWithCustomSizedTexture(coords[0], coords[1], 5, 87, 18, 18, 256, 256);
 			}
@@ -629,8 +629,7 @@ public class JeiRecipes {
 
 	public static class CrystallizerRecipe extends JeiUniversalRecipe {
 		private final int productivity;
-
-		public CrystallizerRecipe(ItemStack[] inputs, ItemStack[] outputs, ItemStack[] machine, int productivity) {
+		public CrystallizerRecipe(List<List<ItemStack>> inputs, ItemStack[] outputs, ItemStack[] machine, int productivity) {
 			super(inputs, outputs, machine);
 			this.productivity = productivity;
 		}

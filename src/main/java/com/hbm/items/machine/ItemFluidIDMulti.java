@@ -29,8 +29,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class ItemFluidIDMulti extends Item implements IItemFluidIdentifier, IIte
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+    public @NotNull ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
         if (!world.isRemote && !player.isSneaking()) {
@@ -60,7 +62,8 @@ public class ItemFluidIDMulti extends Item implements IItemFluidIdentifier, IIte
         }
 
         if (world.isRemote && player.isSneaking()) {
-            player.openGui(MainRegistry.instance, ModItems.guiID_item_fluid_identifier, world, 0, 0, 0);
+            BlockPos pos = player.getPosition();
+            FMLNetworkHandler.openGui(player, MainRegistry.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());
         }
 
         return super.onItemRightClick(world, player, hand);

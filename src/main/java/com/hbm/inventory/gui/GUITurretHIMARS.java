@@ -1,14 +1,15 @@
 package com.hbm.inventory.gui;
 
-import com.hbm.handler.threading.PacketThreading;
 import com.hbm.lib.RefStrings;
 import com.hbm.packet.AuxButtonPacket;
+import com.hbm.packet.PacketDispatcher;
 import com.hbm.tileentity.turret.TileEntityTurretBaseNT;
 import com.hbm.tileentity.turret.TileEntityTurretHIMARS;
 import com.hbm.util.I18nUtil;
-import java.io.IOException;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
+
+import java.io.IOException;
 
 public class GUITurretHIMARS extends GUITurretBase {
   private static final ResourceLocation texture =
@@ -43,7 +44,7 @@ public class GUITurretHIMARS extends GUITurretBase {
     if (guiLeft + 151 <= x && guiLeft + 151 + 18 > x && guiTop + 16 < y && guiTop + 16 + 18 >= y) {
 
       playPressSound();
-      PacketThreading.createSendToServerThreadedPacket(
+      PacketDispatcher.wrapper.sendToServer(
           new AuxButtonPacket(
               turret.getPos().getX(), turret.getPos().getY(), turret.getPos().getZ(), 0, 5));
     }

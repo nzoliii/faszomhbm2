@@ -73,15 +73,6 @@ public class ModItems {
 	
 	public static final List<Item> ALL_ITEMS = new ArrayList<Item>();
 	
-	public static final int guiID_item_folder = 1099;
-	public static final int guiID_item_designator = 10100;
-	public static final int guiID_item_sat_interface = 10101;
-	public static final int guiID_item_bobmazon = 10103;
-	public static final int guiID_item_sat_coord = 10104;
-	public static final int guiID_item_book = 10105;
-	public static final int guiID_item_guide = 10106;
-	public static final int guiID_item_fluid_identifier = 10107;
-	
 	public static final Item redstone_sword = new RedstoneSword(ToolMaterial.STONE, "redstone_sword").setCreativeTab(CreativeTabs.COMBAT);
 	public static final Item big_sword = new BigSword(ToolMaterial.DIAMOND, "big_sword").setCreativeTab(CreativeTabs.COMBAT);
 	
