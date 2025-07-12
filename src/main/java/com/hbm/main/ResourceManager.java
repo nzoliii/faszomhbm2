@@ -406,6 +406,12 @@ public class ResourceManager {
 	public static final IModelCustom bomb_multi = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/BombGeneric.obj")).asVBO();
 	public static final IModelCustom dud = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/BalefireCrashed.obj")).asVBO();
 
+	// fhbm2 - More Dud model variants.
+	public static final IModelCustom fhbm2_dud_balefire = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/fhbm2_dud_balefire.obj")).asVBO();
+	public static final IModelCustom fhbm2_dud_conventional = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/fhbm2_dud_conventional.obj")).asVBO();
+	public static final IModelCustom fhbm2_dud_nuke = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/fhbm2_dud_nuke.obj")).asVBO();
+	public static final IModelCustom fhbm2_dud_salted = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/fhbm2_dud_salted.obj")).asVBO();
+
 	//Landmines
 	public static final IModelCustom mine_ap = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/bombs/ap_mine.obj")).asVBO();
 	public static final IModelCustom mine_he = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/mine_he.obj")).asVBO();
@@ -932,6 +938,12 @@ public class ResourceManager {
 	public static final ResourceLocation bomb_custom_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/CustomNuke.png");
 	public static final ResourceLocation bomb_multi_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/BombGeneric.png");
 	public static final ResourceLocation dud_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/BalefireCrashed.png");
+
+	// fhbm2 - More Dud texture variants.
+	public static final ResourceLocation fhbm2_dud_balefire_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/fhbm2_dud_balefire.png");
+	public static final ResourceLocation fhbm2_dud_conventional_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/fhbm2_dud_conventional.png");
+	public static final ResourceLocation fhbm2_dud_nuke_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/fhbm2_dud_nuke.png");
+	public static final ResourceLocation fhbm2_dud_salted_tex = new ResourceLocation(RefStrings.MODID, "textures/models/bombs/fhbm2_dud_salted.png");
 
 	//Satellites
 	public static final ResourceLocation sat_base_tex = new ResourceLocation(RefStrings.MODID, "textures/models/sat/sat_base.png");
