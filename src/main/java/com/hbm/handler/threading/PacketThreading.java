@@ -3,6 +3,7 @@ package com.hbm.handler.threading;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.hbm.config.GeneralConfig;
 import com.hbm.main.MainRegistry;
+import com.hbm.main.NetworkHandler;
 import com.hbm.packet.PacketDispatcher;
 import com.hbm.packet.threading.ThreadedPacket;
 import io.netty.buffer.ByteBuf;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class PacketThreading {
@@ -30,19 +32,17 @@ public class PacketThreading {
     public static final List<Future<?>> futureList = new ArrayList<>();
 
     /**
-     * Global lock guarding the FML channel state for outbound packets.
+     * Global lock guarding the FML channel state for outbound server packets.
      * <p>
-     * FML's networking uses thread-local attributes on the channel to determine a packet's destination (e.g., a specific
-     * player, a dimension). Modifying these attributes from multiple threads concurrently is not safe. This lock ensures
-     * that only one thread can set these attributes and write to the channel at a time.
-     * <p>
-     * The lock is held for the shortest possible duration. Expensive operations like packet serialization happen
-     * on worker threads *before* the lock is acquired.
+     * This lock is acquired by the methods within the {@link NetworkHandler} class
+     * before they write to the server channel. This ensures that while packet serialization
+     * happens concurrently on worker threads, the final stateful write to the network is
+     * properly serialized, preventing race conditions.
      */
     public static final ReentrantLock lock = new ReentrantLock();
 
     /** Total packets submitted since the last flush. */
-    public static int totalCnt = 0;
+    public static AtomicInteger totalCnt = new AtomicInteger(0);
     /** Total nanoseconds the main thread waited for worker completion. */
     public static long nanoTimeWaited = 0;
 
@@ -112,19 +112,19 @@ public class PacketThreading {
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToServer(IMessage)}. */
     public static void createSendToServerThreadedPacket(@NotNull ThreadedPacket message) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToServer(message)));
     }
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToDimension(IMessage, int)}. */
     public static void createSendToDimensionThreadedPacket(@NotNull ThreadedPacket message, int dimensionId) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToDimension(message, dimensionId)));
     }
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToAllAround(IMessage, TargetPoint)}. */
     public static void createAllAroundThreadedPacket(@NotNull ThreadedPacket message, @NotNull TargetPoint target) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToAllAround(message, target)));
     }
 
@@ -133,7 +133,7 @@ public class PacketThreading {
      * This method is safer for concurrency as it deals with a stateless buffer.
      */
     public static void createAllAroundThreadedPacket(@NotNull ByteBuf buffer, @NotNull TargetPoint target) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
 
         // Retain a reference for thread-safe use; will be released inside the task.
         final ByteBuf retained = buffer.retainedDuplicate();
@@ -151,25 +151,25 @@ public class PacketThreading {
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToAllTracking(IMessage, TargetPoint)}. */
     public static void createSendToAllTrackingThreadedPacket(@NotNull ThreadedPacket message, @NotNull TargetPoint point) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToAllTracking(message, point)));
     }
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToAllTracking(IMessage, Entity)}. */
     public static void createSendToAllTrackingThreadedPacket(@NotNull ThreadedPacket message, @NotNull Entity entity) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToAllTracking(message, entity)));
     }
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendTo(IMessage, EntityPlayerMP)}. */
     public static void createSendToThreadedPacket(@NotNull ThreadedPacket message, @NotNull EntityPlayerMP player) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendTo(message, player)));
     }
 
     /** Mirrors {@link com.hbm.main.NetworkHandler#sendToAll(IMessage)}. */
     public static void createSendToAllThreadedPacket(@NotNull ThreadedPacket message) {
-        totalCnt++;
+        totalCnt.incrementAndGet();
         addTask(createTask(message, () -> PacketDispatcher.wrapper.sendToAll(message)));
     }
 
@@ -180,7 +180,7 @@ public class PacketThreading {
     public static void waitUntilThreadFinished() {
         if (futureList.isEmpty() || !GeneralConfig.enablePacketThreading || isTriggered()) {
             futureList.clear();
-            totalCnt = 0;
+            totalCnt.set(0);
             return;
         }
 
@@ -215,7 +215,7 @@ public class PacketThreading {
                 }
                 clearThreadPoolTasks();
             }
-            totalCnt = 0;
+            totalCnt.set(0);
         }
     }
 

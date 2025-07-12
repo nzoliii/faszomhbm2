@@ -12,8 +12,8 @@ import org.lwjgl.opengl.GL11;
 
 public class GUILaunchPadTier1 extends GuiInfoContainer {
 
-	private static ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_pad.png");
-	private TileEntityLaunchPad diFurnace;
+	private static final ResourceLocation texture = new ResourceLocation(RefStrings.MODID + ":textures/gui/gui_launch_pad.png");
+	private final TileEntityLaunchPad diFurnace;
 
 	public GUILaunchPadTier1(InventoryPlayer invPlayer, TileEntityLaunchPad tedf) {
 		super(new ContainerLaunchPadTier1(invPlayer, tedf));
@@ -52,7 +52,7 @@ public class GUILaunchPadTier1 extends GuiInfoContainer {
 		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		
-		int j1 = (int)diFurnace.getPowerScaled(160);
+		int j1 = (int)(diFurnace.power * 160 / diFurnace.maxPower);
 		drawTexturedModalRect(guiLeft + 8, guiTop + 53, 8, 166, j1, 16);
 
 		this.drawInfoPanel(guiLeft - 16, guiTop + 36, 16, 16, 2);

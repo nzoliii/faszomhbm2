@@ -71,7 +71,7 @@ import java.util.Set;
 public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver, SimpleComponent, CompatHandler.OCComponent, IFluidCopiable {
 	
 	/** Automatic instantiation of generic missiles, i.e. everything that both extends EntityMissileBaseNT and needs a designator */
-	public static final HashMap<ComparableStack, Class<? extends EntityMissileBaseNT>> missiles = new HashMap();
+	public static final HashMap<ComparableStack, Class<? extends EntityMissileBaseNT>> missiles = new HashMap<>();
 	
 	public static void registerLaunchables() {
 
@@ -127,8 +127,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	
 	public FluidTankNTM[] tanks;
 
-	public TileEntityLaunchPadBase() {
-		super(7);
+	public TileEntityLaunchPadBase(int scount) {
+		super(scount);
 		this.tanks = new FluidTankNTM[2];
 		this.tanks[0] = new FluidTankNTM(Fluids.NONE, 24_000);
 		this.tanks[1] = new FluidTankNTM(Fluids.NONE, 24_000);
@@ -180,9 +180,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 			tanks[1].loadTank(5, 6, inventory);
 			
 			if(this.isMissileValid()) {
-				if(inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard) {
-					ItemMissileStandard missile = (ItemMissileStandard) inventory.getStackInSlot(0).getItem();
-					setFuel(missile);
+				if(inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard missile) {
+                    setFuel(missile);
 				}
 			}
 
@@ -334,9 +333,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	public boolean hasFuel() {
 		if(this.power < 75_000) return false;
 		
-		if(!inventory.getStackInSlot(0).isEmpty() && inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard) {
-			ItemMissileStandard missile = (ItemMissileStandard) inventory.getStackInSlot(0).getItem();
-			if(this.tanks[0].getFill() < missile.fuelCap) return false;
+		if(!inventory.getStackInSlot(0).isEmpty() && inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard missile) {
+            if(this.tanks[0].getFill() < missile.fuelCap) return false;
 			if(this.tanks[1].getFill() < missile.fuelCap) return false;
 			
 			return true;
@@ -355,9 +353,9 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 			try {
 				EntityMissileBaseNT missile = clazz.getConstructor(World.class, float.class, float.class, float.class, int.class, int.class).newInstance(world, pos.getX() + 0.5F, pos.getY() + (float) getLaunchOffset() /* Position arguments need to be floats, jackass */, pos.getZ() + 0.5F, targetX, targetZ);
 				if(GeneralConfig.enableExtendedLogging) MainRegistry.logger.log(Level.INFO, "[MISSILE] Tried to launch missile at " + pos.getX() + " / " + pos.getY() + " / " + pos.getZ() + " to " + pos.getX() + " / " + pos.getZ() + "!");
-				missile.getDataManager().set(missile.pr3, (byte) MathHelper.clamp(this.getBlockMetadata() - 10, 2, 5));
+				missile.getDataManager().set(EntityMissileBaseNT.pr3, (byte) MathHelper.clamp(this.getBlockMetadata() - 10, 2, 5));
 				return missile;
-			} catch(Exception e) { }
+			} catch(Exception ignored) { }
 		}
 
 		if(inventory.getStackInSlot(0).getItem() == ModItems.missile_anti_ballistic) {
@@ -378,9 +376,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 
 		this.power -= 75_000;
 		
-		if(!inventory.getStackInSlot(0).isEmpty() && inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard) {
-			ItemMissileStandard item = (ItemMissileStandard) inventory.getStackInSlot(0).getItem();
-			tanks[0].setFill(tanks[0].getFill() - item.fuelCap);
+		if(!inventory.getStackInSlot(0).isEmpty() && inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard item) {
+            tanks[0].setFill(tanks[0].getFill() - item.fuelCap);
 			tanks[1].setFill(tanks[1].getFill() - item.fuelCap);
 		}
 		
@@ -395,10 +392,9 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 		int targetX = 0;
 		int targetZ = 0;
 		
-		if(!inventory.getStackInSlot(1).isEmpty() && inventory.getStackInSlot(1).getItem() instanceof IDesignatorItem) {
-			IDesignatorItem designator = (IDesignatorItem) inventory.getStackInSlot(1).getItem();
-			
-			if(!designator.isReady(world, inventory.getStackInSlot(1), pos.getX(), pos.getY(), pos.getZ()) && needsDesignator) return BombReturnCode.ERROR_MISSING_COMPONENT;
+		if(!inventory.getStackInSlot(1).isEmpty() && inventory.getStackInSlot(1).getItem() instanceof IDesignatorItem designator) {
+
+            if(!designator.isReady(world, inventory.getStackInSlot(1), pos.getX(), pos.getY(), pos.getZ()) && needsDesignator) return BombReturnCode.ERROR_MISSING_COMPONENT;
 			
 			Vec3d coords = designator.getCoords(world, inventory.getStackInSlot(1), pos.getX(), pos.getY(), pos.getZ());
 			targetX = (int) Math.floor(coords.x);
@@ -417,9 +413,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 		Entity e = instantiateMissile((int) Math.floor(entity.posX), (int) Math.floor(entity.posZ));
 		if(e != null) {
 			
-			if(e instanceof EntityMissileAntiBallistic) {
-				EntityMissileAntiBallistic abm = (EntityMissileAntiBallistic) e;
-				abm.tracking = entity;
+			if(e instanceof EntityMissileAntiBallistic abm) {
+                abm.tracking = entity;
 			}
 			
 			finalizeLaunch(e);
@@ -469,9 +464,8 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	public int getGaugeState(int tank) {
 		if(inventory.getStackInSlot(0).isEmpty()) return 0;
 		
-		if(inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard) {
-			ItemMissileStandard missile = (ItemMissileStandard) inventory.getStackInSlot(0).getItem();
-			MissileFuel fuel = missile.fuel;
+		if(inventory.getStackInSlot(0).getItem() instanceof ItemMissileStandard missile) {
+            MissileFuel fuel = missile.fuel;
 			
 			if(fuel == MissileFuel.SOLID) return 0;
 			return tanks[tank].getFill() >= missile.fuelCap ? 1 : -1;
@@ -555,20 +549,15 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	@Override
 	@Optional.Method(modid = "OpenComputers")
 	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
-		switch(method) {
-			case ("getEnergyInfo"):
-				return getEnergyInfo(context, args);
-			case ("getFluid"):
-				return getFluid(context, args);
-			case ("canLaunch"):
-				return canLaunch(context, args);
-			case ("getTier"):
-				return getTier(context, args);
-			case ("launch"):
-				return launch(context, args);
-		}
-	throw new NoSuchMethodException();
-	}
+        return switch (method) {
+            case ("getEnergyInfo") -> getEnergyInfo(context, args);
+            case ("getFluid") -> getFluid(context, args);
+            case ("canLaunch") -> canLaunch(context, args);
+            case ("getTier") -> getTier(context, args);
+            case ("launch") -> launch(context, args);
+            default -> throw new NoSuchMethodException();
+        };
+    }
 
 	@Override
 	public int[] getFluidIDToCopy() {

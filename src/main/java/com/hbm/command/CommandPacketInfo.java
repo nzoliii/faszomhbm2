@@ -97,8 +97,8 @@ public class CommandPacketInfo extends CommandBase {
                     sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Amount total: " + totalCnt));
                     sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Amount remaining: " + PacketThreading.threadPool.getQueue().size()));
 
-                    if (totalCnt != 0)
-                        sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "% Remaining to process: " + BobMathUtil.roundDecimal(((double) PacketThreading.threadPool.getQueue().size() / totalCnt) * 100, 2) + "%"));
+                    if (totalCnt.get() != 0)
+                        sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "% Remaining to process: " + BobMathUtil.roundDecimal(((double) PacketThreading.threadPool.getQueue().size() / totalCnt.get()) * 100, 2) + "%"));
 
                     sender.sendMessage(new TextComponentString(TextFormatting.YELLOW + "Time spent waiting on thread(s) last tick: " + BobMathUtil.roundDecimal(TimeUnit.MILLISECONDS.convert(PacketThreading.nanoTimeWaited, TimeUnit.NANOSECONDS), 4) + "ms"));
                     return;

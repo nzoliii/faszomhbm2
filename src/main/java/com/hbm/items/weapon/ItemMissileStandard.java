@@ -182,9 +182,9 @@ public class ItemMissileStandard extends ItemCustomLore {
 		ATLAS(MissileFuel.JETFUEL_LOXY),
 		OTHER(MissileFuel.KEROSENE_PEROXIDE);
 
-		protected MissileFuel defaultFuel;
+		private final MissileFuel defaultFuel;
 
-		private MissileFormFactor(MissileFuel defaultFuel) {
+		MissileFormFactor(MissileFuel defaultFuel) {
 			this.defaultFuel = defaultFuel;
 		}
 	}
@@ -196,9 +196,9 @@ public class ItemMissileStandard extends ItemCustomLore {
 		TIER3("Tier 3"),
 		TIER4("Tier 4");
 
-		public String display;
+		public final String display;
 
-		private MissileTier(String display) {
+		MissileTier(String display) {
 			this.display = display;
 		}
 	}
@@ -210,10 +210,10 @@ public class ItemMissileStandard extends ItemCustomLore {
 		KEROSENE_LOXY(TextFormatting.LIGHT_PURPLE + "Kerosene / Liquid Oxygen", 12_000),
 		JETFUEL_LOXY(TextFormatting.RED + "Jet Fuel / Liquid Oxygen", 16_000);
 
-		public String display;
-		public int defaultCap;
+		public final String display;
+		public final int defaultCap;
 
-		private MissileFuel(String display, int defaultCap) {
+		MissileFuel(String display, int defaultCap) {
 			this.display = display;
 			this.defaultCap = defaultCap;
 		}

@@ -55,9 +55,8 @@ public class LaunchPadLarge extends BlockDummyable implements IBomb {
 			int[] corePos = findCore(world, pos.getX(), pos.getY(), pos.getZ());
 			BlockPos cPos = new BlockPos(corePos[0], corePos[1], corePos[2]);
 			TileEntity core = world.getTileEntity(cPos);
-			if(core instanceof TileEntityLaunchPadLarge){
-				TileEntityLaunchPadLarge entity = (TileEntityLaunchPadLarge)core;
-				return entity.launchFromDesignator();
+			if(core instanceof TileEntityLaunchPadLarge entity){
+                return entity.launchFromDesignator();
 			}
 		}
 		

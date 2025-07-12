@@ -52,7 +52,7 @@ public class GUITurretHIMARS extends GUITurretBase {
 
   @Override
   protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-    super.drawDefaultBackground();
+    super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
     TileEntityTurretHIMARS.FiringMode mode = ((TileEntityTurretHIMARS) turret).mode;
     if (mode == TileEntityTurretHIMARS.FiringMode.MANUAL)

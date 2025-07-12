@@ -7,9 +7,11 @@ import com.hbm.handler.RadiationSystemNT.RadPocket;
 import com.hbm.main.MainRegistry;
 import com.hbm.saveddata.RadiationSaveStructure;
 import com.hbm.saveddata.RadiationSavedData;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBush;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockSand;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -21,183 +23,133 @@ import java.util.Map.Entry;
 
 public class RadiationWorldHandler {
 
-	public static void handleWorldDestruction(World world) {
+    public static void handleWorldDestruction(World world) {
+        if (!(world instanceof WorldServer)) return;
+        if (!RadiationConfig.worldRadEffects || !GeneralConfig.enableRads) return;
+        if (GeneralConfig.advancedRadiation) {
+            handleAdvancedDestruction(world);
+        } else {
+            handleLegacyDestruction(world);
+        }
+    }
 
-		//TODO fix this up for new radiation system
-		if(!(world instanceof WorldServer))
-			return;
-		if(!RadiationConfig.worldRadEffects || !GeneralConfig.enableRads)
-			return;
+    private static void handleAdvancedDestruction(World world) {
+        if (GeneralConfig.enableDebugMode) {
+            MainRegistry.logger.info("[Debug] Starting advanced world destruction processing");
+        }
 
-		int count = 50;//MainRegistry.worldRad;
-		int threshold = 5;//MainRegistry.worldRadThreshold;
-		
-		if(GeneralConfig.advancedRadiation) {
-			if(GeneralConfig.enableDebugMode) {
-				MainRegistry.logger.info("[Debug] Starting world destruction processing");
-			}
+        Collection<RadPocket> activePockets = RadiationSystemNT.getActiveCollection(world);
+        if (activePockets.isEmpty()) {
+            return;
+        }
 
-			Collection<RadPocket> activePockets = RadiationSystemNT.getActiveCollection(world);
-			if(activePockets.size() == 0)
-				return;
-			int randIdx = world.rand.nextInt(activePockets.size());
-			int itr = 0;
-			for(RadPocket p : activePockets){
-				if(itr == randIdx){
-					if(p.radiation < threshold)
-						return;
-					BlockPos startPos = p.getSubChunkPos();
-					RadPocket[] pocketsByBlock = p.parent.pocketsByBlock;
+        RadPocket[] pockets = activePockets.toArray(new RadPocket[0]);
+        RadPocket p = pockets[world.rand.nextInt(pockets.length)];
 
-					for(int i = 0; i < 16; i ++){
-						for(int j = 0; j < 16; j ++){
-							for(int k = 0; k < 16; k ++){
-								if(world.rand.nextInt(3) != 0)
-									continue;
-								if(pocketsByBlock != null && pocketsByBlock[i*16*16+j*16+k] != p){
-									continue;
-								}
-								BlockPos pos = startPos.add(i, j, k);
-								IBlockState b = world.getBlockState(pos);
-								Block bblock = b.getBlock();
+        float threshold = 5.0F;
 
-								if(!world.isAirBlock(pos)){
-									if(bblock == Blocks.GRASS) {
-										world.setBlockState(pos, ModBlocks.waste_earth.getDefaultState());
-									
-									} else if(bblock == Blocks.DIRT || bblock == Blocks.FARMLAND) {
-										world.setBlockState(pos, ModBlocks.waste_dirt.getDefaultState());
-									} else if(bblock == Blocks.SANDSTONE) {
-										world.setBlockState(pos, ModBlocks.waste_sandstone.getDefaultState());
-									} else if(bblock == Blocks.RED_SANDSTONE) {
-										world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
-									} else if(bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) {
-										world.setBlockState(pos, ModBlocks.waste_terracotta.getDefaultState());
-									} else if(bblock == Blocks.SAND) {
-										BlockSand.EnumType meta = b.getValue(BlockSand.VARIANT);
-										world.setBlockState(pos, meta == BlockSand.EnumType.SAND ? ModBlocks.waste_sand.getDefaultState() : ModBlocks.waste_sand_red.getDefaultState());
-									} else if(bblock == Blocks.GRAVEL) {
-										world.setBlockState(pos, ModBlocks.waste_gravel.getDefaultState());
+        if (p.radiation.get() < threshold) {
+            return;
+        }
 
-									} else if(bblock == Blocks.MYCELIUM) {
-										world.setBlockState(pos, ModBlocks.waste_mycelium.getDefaultState());
+        BlockPos startPos = p.parent.subChunkPos;
+        RadPocket[] pocketsByBlock = p.parent.pocketsByBlock;
 
-									} else if(bblock instanceof BlockSnow) {
-										world.setBlockState(pos, ModBlocks.waste_snow.getDefaultState());
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 16; j++) {
+                for (int k = 0; k < 16; k++) {
+                    if (world.rand.nextInt(3) != 0) continue;
+                    if (pocketsByBlock != null && pocketsByBlock[i * 256 + j * 16 + k] != p) continue;
 
-									} else if(bblock instanceof BlockSnowBlock) {
-										world.setBlockState(pos, ModBlocks.waste_snow_block.getDefaultState());
+                    BlockPos pos = startPos.add(i, j, k);
+                    if (world.isAirBlock(pos)) continue;
 
-									} else if(bblock instanceof BlockIce) {
-										world.setBlockState(pos, ModBlocks.waste_ice.getDefaultState());
+                    IBlockState state = world.getBlockState(pos);
+                    decayBlock(world, pos, state, false);
+                }
+            }
+        }
 
-									} else if(bblock instanceof BlockBush) {
-										world.setBlockState(pos, ModBlocks.waste_grass_tall.getDefaultState());
-									
-									} else if(bblock == ModBlocks.waste_leaves) {
-										if(world.rand.nextInt(8) == 0) {
-											world.setBlockToAir(pos);
-										}
+        if (GeneralConfig.enableDebugMode) {
+            MainRegistry.logger.info("[Debug] Finished advanced world destruction processing");
+        }
+    }
 
-									} else if(bblock instanceof BlockLeaves) {
-										world.setBlockState(pos, ModBlocks.waste_leaves.getDefaultState());
-									}
-								}
-							}
-						}
-					}
-					break;
-				}
-				itr ++;
-			}
-			if(GeneralConfig.enableDebugMode) {
-				MainRegistry.logger.info("[Debug] Finished world destruction processing");
-			}
-			return;
-		}
-		
-		WorldServer serv = (WorldServer)world;
+    private static void handleLegacyDestruction(World world) {
+        WorldServer serv = (WorldServer) world;
+        RadiationSavedData data = RadiationSavedData.getData(serv);
+        ChunkProviderServer provider = serv.getChunkProvider();
+        Object[] entries = data.contamination.entrySet().toArray();
 
-		RadiationSavedData data = RadiationSavedData.getData(serv);
-		ChunkProviderServer provider = (ChunkProviderServer) serv.getChunkProvider();
+        if (entries.length == 0) return;
 
-		Object[] entries = data.contamination.entrySet().toArray();
+        @SuppressWarnings("unchecked") Entry<ChunkPos, RadiationSaveStructure> randEnt =
+                (Entry<ChunkPos, RadiationSaveStructure>) entries[world.rand.nextInt(entries.length)];
+        ChunkPos coords = randEnt.getKey();
+        float threshold = 5.0F;
 
-		if(entries.length == 0)
-			return;
+        if (randEnt.getValue().radiation < threshold) return;
+        if (!provider.chunkExists(coords.x, coords.z)) return;
 
-		Entry<ChunkPos, RadiationSaveStructure> randEnt = (Entry<ChunkPos, RadiationSaveStructure>) entries[world.rand.nextInt(entries.length)];
+        for (int a = 0; a < 16; a++) {
+            for (int b = 0; b < 16; b++) {
+                if (world.rand.nextInt(3) != 0) continue;
 
-		ChunkPos coords = randEnt.getKey();
+                int x = coords.getXStart() + a;
+                int z = coords.getZStart() + b;
+                int y = world.getHeight(x, z) - world.rand.nextInt(2);
+                BlockPos pos = new BlockPos(x, y, z);
 
+                if (world.isAirBlock(pos)) continue;
 
-		if(randEnt == null || randEnt.getValue().radiation < threshold)
-			return;
+                IBlockState state = world.getBlockState(pos);
+                decayBlock(world, pos, state, true);
+            }
+        }
+    }
 
-		if(provider.chunkExists(coords.x, coords.z)) {
+    private static void decayBlock(World world, BlockPos pos, IBlockState state, boolean isLegacy) {
+        Block block = state.getBlock();
+        if (block.getRegistryName() == null) return;
+        String registryName = block.getRegistryName().toString();
 
-			for(int a = 0; a < 16; a ++) {
-				for(int b = 0; b < 16; b ++) {
+        if ("hbm:waste_leaves".equals(registryName)) {
+            if (world.rand.nextInt(8) == 0) {
+                world.setBlockToAir(pos);
+            }
+            return;
+        }
 
-					if(world.rand.nextInt(3) != 0)
-						continue;
+        IBlockState newState = switch (registryName) {
+            case "minecraft:grass" -> ModBlocks.waste_earth.getDefaultState();
+            case "minecraft:dirt", "minecraft:farmland" -> ModBlocks.waste_dirt.getDefaultState();
+            case "minecraft:sandstone" -> ModBlocks.waste_sandstone.getDefaultState();
+            case "minecraft:red_sandstone" -> ModBlocks.waste_red_sandstone.getDefaultState();
+            case "minecraft:hardened_clay", "minecraft:stained_hardened_clay" -> ModBlocks.waste_terracotta.getDefaultState();
+            case "minecraft:gravel" -> ModBlocks.waste_gravel.getDefaultState();
+            case "minecraft:mycelium" -> ModBlocks.waste_mycelium.getDefaultState();
+            case "minecraft:snow_layer" -> ModBlocks.waste_snow.getDefaultState();
+            case "minecraft:snow" -> ModBlocks.waste_snow_block.getDefaultState();
+            case "minecraft:ice" -> ModBlocks.waste_ice.getDefaultState();
+            case "minecraft:sand" -> {
+                BlockSand.EnumType meta = state.getValue(BlockSand.VARIANT);
+                if (isLegacy && world.rand.nextInt(60) == 0) {
+                    yield meta == BlockSand.EnumType.SAND ? ModBlocks.waste_trinitite.getDefaultState() :
+                            ModBlocks.waste_trinitite_red.getDefaultState();
+                } else {
+                    yield meta == BlockSand.EnumType.SAND ? ModBlocks.waste_sand.getDefaultState() : ModBlocks.waste_sand_red.getDefaultState();
+                }
+            }
+            default -> {
+                if (block instanceof BlockLeaves) {
+                    yield ModBlocks.waste_leaves.getDefaultState();
+                } else if (block instanceof BlockBush) {
+                    yield ModBlocks.waste_grass_tall.getDefaultState();
+                }
+                yield null;
+            }
+        };
 
-					int x = coords.getXStart() + a;
-					int z = coords.getZStart() + b;
-					int y = world.getHeight(x, z) - world.rand.nextInt(2);
-					BlockPos pos = new BlockPos(x, y, z);
-					IBlockState c = world.getBlockState(pos);
-					Block bblock = c.getBlock();
-
-					if(!world.isAirBlock(pos)){
-						if(bblock == Blocks.GRASS) {
-							world.setBlockState(pos, ModBlocks.waste_earth.getDefaultState());
-						
-						} else if(bblock == Blocks.DIRT) {
-							world.setBlockState(pos, ModBlocks.waste_dirt.getDefaultState());
-
-						} else if(bblock == Blocks.SAND) {
-							BlockSand.EnumType meta = c.getValue(BlockSand.VARIANT);
-							if(world.rand.nextInt(60) == 0) {
-								world.setBlockState(pos, meta == BlockSand.EnumType.SAND ? ModBlocks.waste_trinitite.getDefaultState() : ModBlocks.waste_trinitite_red.getDefaultState());
-							} else {
-								world.setBlockState(pos, meta == BlockSand.EnumType.SAND ? ModBlocks.waste_sand.getDefaultState() : ModBlocks.waste_sand_red.getDefaultState());
-							}
-						} else if(bblock == Blocks.SANDSTONE) {
-							world.setBlockState(pos, ModBlocks.waste_sandstone.getDefaultState());
-						} else if(bblock == Blocks.RED_SANDSTONE) {
-							world.setBlockState(pos, ModBlocks.waste_red_sandstone.getDefaultState());
-						} else if(bblock == Blocks.HARDENED_CLAY || bblock == Blocks.STAINED_HARDENED_CLAY) {
-										world.setBlockState(pos, ModBlocks.waste_terracotta.getDefaultState());
-						} else if(bblock == Blocks.GRAVEL) {
-							world.setBlockState(pos, ModBlocks.waste_gravel.getDefaultState());
-
-						} else if(bblock == Blocks.MYCELIUM) {
-							world.setBlockState(pos, ModBlocks.waste_mycelium.getDefaultState());
-
-						} else if(bblock instanceof BlockSnow) {
-							world.setBlockState(pos, ModBlocks.waste_snow.getDefaultState());
-
-						} else if(bblock instanceof BlockSnowBlock) {
-							world.setBlockState(pos, ModBlocks.waste_snow_block.getDefaultState());
-
-						} else if(bblock instanceof BlockIce) {
-							world.setBlockState(pos, ModBlocks.waste_ice.getDefaultState());
-
-						} else if(bblock instanceof BlockBush) {
-							world.setBlockState(pos, ModBlocks.waste_grass_tall.getDefaultState());
-						
-						} else if(bblock == ModBlocks.waste_leaves) {
-							if(world.rand.nextInt(8) == 0) {
-								world.setBlockToAir(pos);
-							}
-
-						} else if(bblock instanceof BlockLeaves) {
-							world.setBlockState(pos, ModBlocks.waste_leaves.getDefaultState());
-						}
-					}
-				}
-			}
-		}
-	}
+        if (newState != null) world.setBlockState(pos, newState);
+    }
 }

@@ -46,6 +46,10 @@ public class TileEntityLaunchPadLarge extends TileEntityLaunchPadBase {
 	protected boolean liftMoving = false;
 	protected boolean erectorMoving = false;
 
+	public TileEntityLaunchPadLarge() {
+		super(7);
+	}
+
 	@Override public boolean isReadyForLaunch() { return this.erected && this.readyToLoad; }
 	@Override public double getLaunchOffset() { return 2D; }
 

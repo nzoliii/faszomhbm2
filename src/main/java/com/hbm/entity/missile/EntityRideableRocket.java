@@ -59,6 +59,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -511,13 +512,13 @@ public class EntityRideableRocket extends EntityMissileBaseNT implements ILookOv
 	 * Called when the entity is attacked.
 	 */
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount) {
+	public boolean attackEntityFrom(@NotNull DamageSource source, float amount) {
 		if(!world.isRemote && !isDead) {
 			if(isEntityInvulnerable(source)) {
 				return false;
 			} else if(getPassengers().isEmpty() && source.getTrueSource() instanceof EntityPlayer) {
 				// A pickaxe is required to break, unless it's just the capsule (or it has tipped over)
-				if((getRocket().stages.size() == 0 && getRocket().capsule.part != ModItems.rp_pod_20) || getState() == RocketState.TIPPING) {
+				if((getRocket().stages.isEmpty() && getRocket().capsule.part != ModItems.rp_pod_20) || getState() == RocketState.TIPPING) {
 					dropNDie(source);
 				} else {
 					ItemStack stack = ((EntityPlayer) source.getTrueSource()).getHeldItem(((EntityPlayer) source.getTrueSource()).getActiveHand());
@@ -539,15 +540,15 @@ public class EntityRideableRocket extends EntityMissileBaseNT implements ILookOv
 		// Drop the rocket itself, to be taken to a pad and refueled
 		// unless it's just the capsule
 		RocketStruct rocket = getRocket();
-		if(rocket.stages.size() == 0) {
-			ItemStack stack = new ItemStack(rocket.capsule.part);
-			entityDropItem(stack, 0.0F);
-		} else {
-			ItemStack stack = ItemCustomRocket.build(rocket, true);
-			entityDropItem(stack, 0.0F);
-		}
+        ItemStack stack;
+        if(rocket.stages.isEmpty()) {
+            stack = new ItemStack(rocket.capsule.part);
+        } else {
+            stack = ItemCustomRocket.build(rocket, true);
+        }
+        entityDropItem(stack, 0.0F);
 
-		// Drop the drive if it is still present
+        // Drop the drive if it is still present
 		if(navDrive != null) {
 			entityDropItem(navDrive, 0.0F);
 		}
