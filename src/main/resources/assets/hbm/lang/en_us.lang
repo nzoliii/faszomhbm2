@@ -7836,7 +7836,8 @@ item.waste_plutonium_legacy.name=Waste Plutonium (Legacy)
 item.waste_thorium_legacy=Waste Thorium (Legacy)
 item.waste_uranium_legacy=Waste uranium (Legacy)
 
-death.attack.unabomber=%1$s got a package from Uncle Ted.
+death.attack.unabomber_mail=%1$s got a mail from Uncle Ted.
+death.attack.unabomber_package=%1$s got a package from Uncle Ted.
 death.attack.copper_pig=%1$s was bewitched by The Copper Pig's magic, and then they were killed.
 
 fluid.bromine_fluid=Bromine
@@ -7932,14 +7933,15 @@ tile.dummy_port_launch_table=Dummy
 tile.dummy_plate_cargo.name=Dummy
 tile.orbital_station.name=Orbital Station
 
-hbm.achievement.fhbm2_copper_pig_bewitch.desc=Its in your head.
-hbm.achievement.fhbm2_copper_pig_bewitch=Bewitched
-hbm.achievement.fhbm2_copper_pig_bewitch_death.desc=Die by Кабан's powers.
-hbm.achievement.fhbm2_copper_pig_bewitch_death=Кабан's Wrath
-hbm.achievement.fhbm2_copper_pig_key.desc=Observe the sky in the night.
-hbm.achievement.fhbm2_copper_pig_key=Its not over yet
-hbm.achievement.fhbm2_one_with_copper_pig.desc=It won't hurt you.
-hbm.achievement.fhbm2_one_with_copper_pig=One with It
+hbm.achievement.fhbm2_copper_pig_bewitch=§6Bewitched
+hbm.achievement.fhbm2_copper_pig_bewitch.desc=§6He's in your mind.
+hbm.achievement.fhbm2_copper_pig_bewitch_death=§6Mind Overwhelmed
+hbm.achievement.fhbm2_copper_pig_bewitch_death.desc=§6You can't comprehend his existence... yet.
+hbm.achievement.fhbm2_one_with_copper_pig=§6One with Him
+hbm.achievement.fhbm2_one_with_copper_pig.desc=§6You can comprehend his existence now.
+hbm.achievement.fhbm2_copper_pig_key=§6Key of Кабан
+hbm.achievement.fhbm2_copper_pig_key.desc=§6This key is from another planet.
+
 item.fhbm2_abalt_szalonna.name=Abált Szalonna
 item.fhbm2_bucket_abale_old.name=Abalé
 item.fhbm2_copper_pig_fragment.name=Copper Pig Fragment

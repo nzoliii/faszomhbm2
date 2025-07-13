@@ -29,7 +29,7 @@ public class fhbm2Mail extends Item {
             {
                 float strength = 50.0F;
                 world.createExplosion(player, player.posX, player.posY, player.posZ, strength, true);
-                player.attackEntityFrom(ModDamageSource.unabomber, 40);
+                player.attackEntityFrom(ModDamageSource.unabomber_mail, 40);
 
                 player.getHeldItem(hand).shrink(1);
             }
