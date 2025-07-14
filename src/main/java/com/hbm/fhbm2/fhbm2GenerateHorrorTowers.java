@@ -20,7 +20,7 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
     // fixme
 
     private static final int STRUCTURE_SIZE = 18;
-    private static final String DIGAMMA_TOWER = "digamma_tower";
+    private static final String DIGAMMA_TOWER = "fhbm2_digamma_tower";
     private static final int BASE_SPAWN_CHANCE = 1;
 
     @Override

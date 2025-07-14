@@ -17,13 +17,24 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 public class fhbm2GenerateKabanStatue implements IWorldGenerator {
 
     private static final int STRUCTURE_SIZE = 3;
-    private static final String KABAN_STATUE = "kaban_statue";
+    private static final String KABAN_STATUE = "fhbm2_kaban_statue";
     private static final int BASE_SPAWN_CHANCE = 1;
 
     private static final Set<String> ALLOWED_BIOMES = new HashSet<>();
     static {
+        //TODO: use biomedictionary later for deserts and jungles instead of this.
         ALLOWED_BIOMES.add("minecraft:desert");
+        ALLOWED_BIOMES.add("minecraft:desert_hills");
+        ALLOWED_BIOMES.add("minecraft:desert_m");
+        ALLOWED_BIOMES.add("minecraft:mesa");
+        ALLOWED_BIOMES.add("minecraft:mesa_plateau");
+        ALLOWED_BIOMES.add("minecraft:mesa_plateau_m");
+        ALLOWED_BIOMES.add("minecraft:mesa_bryce");
         ALLOWED_BIOMES.add("minecraft:jungle");
+        ALLOWED_BIOMES.add("minecraft:jungle_edge");
+        ALLOWED_BIOMES.add("minecraft:jungle_hills");
+        ALLOWED_BIOMES.add("minecraft:mutated_jungle");
+        ALLOWED_BIOMES.add("minecraft:mutated_jungle_edge");
     }
 
     @Override
@@ -78,7 +89,7 @@ public class fhbm2GenerateKabanStatue implements IWorldGenerator {
             BlockPos adjustedPos = pos.add((STRUCTURE_SIZE - structureSize.getX()) / 2, 0, (STRUCTURE_SIZE - structureSize.getZ()) / 2);
 
             template.addBlocksToWorld(world, adjustedPos, settings);
-            System.out.println("Generated structure: " + KABAN_STATUE + " at " + adjustedPos);
+            System.out.println("[fhbm2GenerateKabanStatue] Generated structure: " + KABAN_STATUE + " at " + adjustedPos);
         } else {
             System.err.println("[fhbm2GenerateKabanStatue] Could not find structure: " + KABAN_STATUE);
         }

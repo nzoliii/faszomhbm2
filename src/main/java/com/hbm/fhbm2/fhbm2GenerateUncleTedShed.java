@@ -21,6 +21,7 @@ public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
 
     private static final Set<String> ALLOWED_BIOMES = new HashSet<>();
     static {
+        //TODO: use biomedictionary later for deserts and jungles instead of this.
         ALLOWED_BIOMES.add("minecraft:taiga");
     }
 
@@ -63,7 +64,7 @@ public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
         System.out.println("Placing Unabomber Shed at: " + position);
 
         TemplateManager manager = world.getSaveHandler().getStructureTemplateManager();
-        ResourceLocation location = new ResourceLocation("hbm", "unabomber_shed");
+        ResourceLocation location = new ResourceLocation("hbm", "fhbm2_unabomber_shed");
         Template template = manager.getTemplate(world.getMinecraftServer(), location);
 
         if (template != null) {
