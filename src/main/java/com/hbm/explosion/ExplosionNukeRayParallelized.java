@@ -4,10 +4,13 @@ import com.hbm.config.BombConfig;
 import com.hbm.config.CompatibilityConfig;
 import com.hbm.interfaces.IExplosionRay;
 import com.hbm.main.MainRegistry;
+import com.hbm.packet.PacketDispatcher;
+import com.hbm.packet.SetSubChunkAirPacket;
 import com.hbm.util.ConcurrentBitSet;
 import com.hbm.util.SubChunkKey;
 import com.hbm.util.SubChunkSnapshot;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -17,9 +20,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -32,6 +37,10 @@ import java.util.concurrent.atomic.DoubleAdder;
  */
 public class ExplosionNukeRayParallelized implements IExplosionRay {
 
+    /**
+     * If true, will read blockstates off the main thread.
+     */
+    private static final boolean unsafeAccess = true;
     private static final int WORLD_HEIGHT = 256;
     private static final int BITSET_SIZE = 16 * WORLD_HEIGHT * 16;
     private static final int SUBCHUNK_PER_CHUNK = WORLD_HEIGHT >> 4;
@@ -42,17 +51,6 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private static final int LUT_DISTANCE_BINS = 256;
     private static final float LUT_MAX_RESISTANCE = 100.0F;
     private static final float[][] ENERGY_LOSS_LUT = new float[LUT_RESISTANCE_BINS][LUT_DISTANCE_BINS];
-
-    static {
-        for (int r = 0; r < LUT_RESISTANCE_BINS; r++) {
-            float resistance = (r / (float) (LUT_RESISTANCE_BINS - 1)) * LUT_MAX_RESISTANCE;
-            for (int d = 0; d < LUT_DISTANCE_BINS; d++) {
-                float distFrac = d / (float) (LUT_DISTANCE_BINS - 1);
-                ENERGY_LOSS_LUT[r][d] = (float) (Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0);
-            }
-        }
-    }
-
     private static final String TAG_ALGORITHM = "algorithm";
     private static final String TAG_RAY_COUNT = "rayCount";
     private static final String TAG_IS_CONTAINED = "isContained";
@@ -68,6 +66,16 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
     private static final String TAG_POS_X = "pX";
     private static final String TAG_POS_Y = "pY";
     private static final String TAG_POS_Z = "pZ";
+
+    static {
+        for (int r = 0; r < LUT_RESISTANCE_BINS; r++) {
+            float resistance = (r / (float) (LUT_RESISTANCE_BINS - 1)) * LUT_MAX_RESISTANCE;
+            for (int d = 0; d < LUT_DISTANCE_BINS; d++) {
+                float distFrac = d / (float) (LUT_DISTANCE_BINS - 1);
+                ENERGY_LOSS_LUT[r][d] = (float) (Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0);
+            }
+        }
+    }
 
     private final World world;
     private final double explosionX, explosionY, explosionZ;
@@ -166,18 +174,17 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
 
         RayTracerTask mainTask = new RayTracerTask(0, rayCount);
 
-        CompletableFuture.runAsync(() -> pool.invoke(mainTask), pool)
-                .whenComplete((v, ex) -> {
-                    if (ex != null) {
-                        MainRegistry.logger.error("Nuke ray-tracing failed catastrophically.", ex);
-                    }
-                    collectFinished = true;
-                    if (algorithm == 2) {
-                        pool.submit(this::runConsolidation);
-                    } else {
-                        consolidationFinished = true;
-                    }
-                });
+        CompletableFuture.runAsync(() -> pool.invoke(mainTask), pool).whenComplete((v, ex) -> {
+            if (ex != null) {
+                MainRegistry.logger.error("Nuke ray-tracing failed catastrophically.", ex);
+            }
+            collectFinished = true;
+            if (algorithm == 2) {
+                pool.submit(this::runConsolidation);
+            } else {
+                consolidationFinished = true;
+            }
+        });
     }
 
     private List<SubChunkKey> getAllSubChunks() {
@@ -217,7 +224,7 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
 
     @Override
     public void cacheChunksTick(int timeBudgetMs) {
-        if (collectFinished) return;
+        if (unsafeAccess || collectFinished) return;
         final long deadline = System.nanoTime() + (timeBudgetMs * 1_000_000L);
         while (System.nanoTime() < deadline) {
             SubChunkKey ck = reactiveSnapQueue.poll();
@@ -265,12 +272,55 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
             ExtendedBlockStorage[] storages = chunk.getBlockStorageArray();
             boolean chunkModified = false;
 
-            for (int subY = 0; subY < storages.length; subY++) {
+            for (int subY = 0; subY < SUBCHUNK_PER_CHUNK; subY++) {
                 ExtendedBlockStorage storage = storages[subY];
                 if (storage == null || storage.isEmpty()) continue;
 
                 int startBit = (WORLD_HEIGHT - 1 - ((subY << 4) + 15)) << 8;
                 int endBit = ((WORLD_HEIGHT - 1 - (subY << 4)) << 8) | 0xFF;
+
+                boolean hasSurvivor = false;
+                int clearBit = bs.nextClearBit(startBit);
+                while (clearBit >= 0 && clearBit <= endBit) {
+                    int yGlobal = WORLD_HEIGHT - 1 - (clearBit >>> 8);
+                    int lx = (clearBit >>> 4) & 0xF;
+                    int lz = clearBit & 0xF;
+                    int ly = yGlobal - (subY << 4);
+                    if (storage.get(lx, ly, lz).getBlock() != Blocks.AIR) {
+                        hasSurvivor = true;
+                        break;
+                    }
+                    clearBit = bs.nextClearBit(clearBit + 1);
+                }
+
+                if (!hasSurvivor) {
+                    chunkModified = true;
+                    IBlockState airState = Blocks.AIR.getDefaultState();
+                    for (int lx = 0; lx < 16; lx++) {
+                        for (int ly = 0; ly < 16; ly++) {
+                            for (int lz = 0; lz < 16; lz++) {
+                                int xGlobal = (cp.x << 4) + lx;
+                                int yGlobal = (subY << 4) + ly;
+                                int zGlobal = (cp.z << 4) + lz;
+                                BlockPos pos = new BlockPos(xGlobal, yGlobal, zGlobal);
+                                world.removeTileEntity(pos);
+                                if (storage.get(lx, ly, lz).getBlock() != Blocks.AIR) {
+                                    destroyedList.add(pos);
+                                }
+                                storage.set(lx, ly, lz, airState);
+                            }
+                        }
+                    }
+                    storage.recalculateRefCounts();
+                    bs.clear(startBit, endBit + 1);
+
+                    double sendRange = this.radius * 2.0;
+                    NetworkRegistry.TargetPoint target = new NetworkRegistry.TargetPoint(world.provider.getDimension(), explosionX, explosionY,
+                            explosionZ, sendRange);
+                    PacketDispatcher.wrapper.sendToAllAround(new SetSubChunkAirPacket(cp.x, cp.z, subY), target);
+
+                    continue;
+                }
 
                 int bit = bs.nextSetBit(startBit);
 
@@ -286,12 +336,13 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                     int yLocal = yGlobal & 0xF;
                     int zLocal = zGlobal & 0xF;
 
-                    if (storage.get(xLocal, yLocal, zLocal).getBlock() != Blocks.AIR) {
+                    IBlockState oldState = storage.get(xLocal, yLocal, zLocal);
+                    if (oldState.getBlock() != Blocks.AIR) {
                         BlockPos pos = new BlockPos(xGlobal, yGlobal, zGlobal);
-                        if (world.getTileEntity(pos) != null) world.removeTileEntity(pos);
+                        world.removeTileEntity(pos);
                         storage.set(xLocal, yLocal, zLocal, Blocks.AIR.getDefaultState());
                         chunkModified = true;
-                        world.notifyBlockUpdate(pos, chunk.getBlockState(pos), Blocks.AIR.getDefaultState(), 3);
+                        world.notifyBlockUpdate(pos, oldState, Blocks.AIR.getDefaultState(), 3);
                         this.destroyedList.add(pos);
                     }
                     bs.clear(bit);
@@ -401,20 +452,29 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                     continue;
                 }
                 int yGlobal = WORLD_HEIGHT - 1 - (bitIndex >>> 8);
-                int subY = yGlobal >> 4;
-                if (subY < 0) {
-                    iterator.remove();
-                    continue;
+
+                Block originalBlock;
+                if (unsafeAccess) {
+                    int xGlobal = (cp.x << 4) | ((bitIndex >>> 4) & 0xF);
+                    int zGlobal = (cp.z << 4) | (bitIndex & 0xF);
+                    originalBlock = world.getBlockState(new BlockPos(xGlobal, yGlobal, zGlobal)).getBlock();
+                } else {
+                    int subY = yGlobal >> 4;
+                    if (subY < 0) {
+                        iterator.remove();
+                        continue;
+                    }
+                    SubChunkKey snapshotKey = new SubChunkKey(cp, subY);
+                    SubChunkSnapshot snap = snapshots.get(snapshotKey);
+                    if (snap == null || snap == SubChunkSnapshot.EMPTY) {
+                        iterator.remove();
+                        continue;
+                    }
+                    int xLocal = (bitIndex >>> 4) & 0xF;
+                    int zLocal = bitIndex & 0xF;
+                    originalBlock = snap.getBlock(xLocal, yGlobal & 0xF, zLocal);
                 }
-                SubChunkKey snapshotKey = new SubChunkKey(cp, subY);
-                SubChunkSnapshot snap = snapshots.get(snapshotKey);
-                if (snap == null || snap == SubChunkSnapshot.EMPTY) {
-                    iterator.remove();
-                    continue;
-                }
-                int xLocal = (bitIndex >>> 4) & 0xF;
-                int zLocal = bitIndex & 0xF;
-                Block originalBlock = snap.getBlock(xLocal, yGlobal & 0xF, zLocal);
+
                 if (originalBlock == Blocks.AIR) {
                     iterator.remove();
                     continue;
@@ -520,11 +580,10 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
 
     private class RayTracerTask extends RecursiveAction {
         private static final int THRESHOLD = 512; // Number of rays to process in a single batch
-        private final int start, end;
-
         private static final double RAY_DIRECTION_EPSILON = 1e-6;
         private static final double PROCESSING_EPSILON = 1e-9;
         private static final float MIN_EFFECTIVE_DIST_FOR_ENERGY_CALC = 0.01f;
+        private final int start, end;
         private Map<ChunkPos, Map<Integer, Double>> localDamageMap;
 
         RayTracerTask(int start, int end) {
@@ -601,26 +660,41 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                 while (energy > 0) {
                     if (y < 0 || y >= WORLD_HEIGHT || Thread.currentThread().isInterrupted()) break;
                     if (currentRayPosition >= radius - PROCESSING_EPSILON) break;
+                    Block block;
+                    ChunkPos chunkPos;
                     int cx = x >> 4;
                     int cz = z >> 4;
-                    int subY = y >> 4;
-                    if (cx != lastCX || cz != lastCZ || subY != lastSubY) {
-                        currentSubChunkKey = new SubChunkKey(cx, cz, subY);
-                        lastCX = cx;
-                        lastCZ = cz;
-                        lastSubY = subY;
-                    }
-                    SubChunkSnapshot snap = snapshots.get(currentSubChunkKey);
-                    if (snap == null) {
-                        final boolean[] amFirst = {false};
-                        ConcurrentLinkedQueue<RayTracerTask> waiters = waitingRoom.computeIfAbsent(currentSubChunkKey, k -> {
-                            amFirst[0] = true;
-                            return new ConcurrentLinkedQueue<>();
-                        });
-                        if (amFirst[0]) reactiveSnapQueue.add(currentSubChunkKey);
 
-                        waiters.add(new RayTracerTask(dirIndex, dirIndex + 1));
-                        return;
+                    if (unsafeAccess && world instanceof WorldServer server && server.getChunkProvider().chunkExists(cx, cz)) {
+                        block = world.getBlockState(new BlockPos(x, y, z)).getBlock();
+                        chunkPos = new ChunkPos(cx, cz);
+                    } else {
+                        int subY = y >> 4;
+                        if (cx != lastCX || cz != lastCZ || subY != lastSubY) {
+                            currentSubChunkKey = new SubChunkKey(cx, cz, subY);
+                            lastCX = cx;
+                            lastCZ = cz;
+                            lastSubY = subY;
+                        }
+                        SubChunkSnapshot snap = snapshots.get(currentSubChunkKey);
+                        if (snap == null) {
+                            final boolean[] amFirst = {false};
+                            ConcurrentLinkedQueue<RayTracerTask> waiters = waitingRoom.computeIfAbsent(currentSubChunkKey, k -> {
+                                amFirst[0] = true;
+                                return new ConcurrentLinkedQueue<>();
+                            });
+                            if (amFirst[0]) reactiveSnapQueue.add(currentSubChunkKey);
+
+                            waiters.add(new RayTracerTask(dirIndex, dirIndex + 1));
+                            return;
+                        }
+
+                        if (snap == SubChunkSnapshot.EMPTY) {
+                            block = Blocks.AIR;
+                        } else {
+                            block = snap.getBlock(x & 0xF, y & 0xF, z & 0xF);
+                        }
+                        chunkPos = currentSubChunkKey.getPos();
                     }
 
                     double t_exit_voxel = Math.min(tMaxX, Math.min(tMaxY, tMaxZ));
@@ -635,26 +709,21 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
                         segmentLenForProcessing = segmentLenInVoxel;
                     }
 
-                    if (snap != SubChunkSnapshot.EMPTY && segmentLenForProcessing > PROCESSING_EPSILON) {
-                        Block block = snap.getBlock(x & 0xF, y & 0xF, z & 0xF);
-                        if (block != Blocks.AIR) {
-                            float resistance = getNukeResistance(block);
-                            if (resistance >= NUKE_RESISTANCE_CUTOFF) {
-                                energy = 0;
-                            } else {
-                                double energyLossFactor = getEnergyLossFactor(resistance, currentRayPosition);
-                                float damageDealt = (float) (energyLossFactor * segmentLenForProcessing);
-                                energy -= damageDealt;
+                    if (block != Blocks.AIR && segmentLenForProcessing > PROCESSING_EPSILON) {
+                        float resistance = getNukeResistance(block);
+                        if (resistance >= NUKE_RESISTANCE_CUTOFF) {
+                            energy = 0;
+                        } else {
+                            double energyLossFactor = getEnergyLossFactor(resistance, currentRayPosition);
+                            float damageDealt = (float) (energyLossFactor * segmentLenForProcessing);
+                            energy -= damageDealt;
 
-                                if (damageDealt > 0) {
-                                    int bitIndex = ((WORLD_HEIGHT - 1 - y) << 8) | ((x & 0xF) << 4) | (z & 0xF);
-                                    ChunkPos chunkPos = currentSubChunkKey.getPos();
-                                    if (algorithm == 2) {
-                                        localDamageMap.computeIfAbsent(chunkPos, k -> new HashMap<>())
-                                                .merge(bitIndex, (double) damageDealt, Double::sum);
-                                    } else if (energy > 0) {
-                                        destructionMap.computeIfAbsent(chunkPos, posKey -> new ConcurrentBitSet(BITSET_SIZE)).set(bitIndex);
-                                    }
+                            if (damageDealt > 0) {
+                                int bitIndex = ((WORLD_HEIGHT - 1 - y) << 8) | ((x & 0xF) << 4) | (z & 0xF);
+                                if (algorithm == 2) {
+                                    localDamageMap.computeIfAbsent(chunkPos, k -> new HashMap<>()).merge(bitIndex, (double) damageDealt, Double::sum);
+                                } else if (energy > 0) {
+                                    destructionMap.computeIfAbsent(chunkPos, posKey -> new ConcurrentBitSet(BITSET_SIZE)).set(bitIndex);
                                 }
                             }
                         }
@@ -691,13 +760,13 @@ public class ExplosionNukeRayParallelized implements IExplosionRay {
         private double getEnergyLossFactor(float resistance, double currentRayPosition) {
             double effectiveDist = Math.max(currentRayPosition, MIN_EFFECTIVE_DIST_FOR_ENERGY_CALC);
             double distFrac = effectiveDist / radius;
-
-            if (resistance >= 0 && resistance <= LUT_MAX_RESISTANCE) {
-                int rBin = (int) (resistance * (LUT_RESISTANCE_BINS - 1) / LUT_MAX_RESISTANCE);
-                int dBin = (int) (distFrac * (LUT_DISTANCE_BINS - 1));
-                return ENERGY_LOSS_LUT[rBin][dBin];
-            }
-            return (Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0);
+            if (resistance >= NUKE_RESISTANCE_CUTOFF) return resistance;
+            if (resistance <= 0) return 0.0;
+            if (resistance > LUT_MAX_RESISTANCE) return Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0;
+            int rBin = (int) (resistance * (LUT_RESISTANCE_BINS - 1) / LUT_MAX_RESISTANCE);
+            if (rBin == 0 && resistance > 0) return Math.pow(resistance + 1.0, 3.0 * distFrac) - 1.0;
+            int dBin = (int) (distFrac * (LUT_DISTANCE_BINS - 1));
+            return ENERGY_LOSS_LUT[rBin][dBin];
         }
     }
 }

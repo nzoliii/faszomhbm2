@@ -12,11 +12,6 @@ public abstract class BlockGraphiteDrilledTE extends BlockGraphiteDrilledBase im
 	}
 	
 	@Override
-	public boolean hasTileEntity(IBlockState state){
-		return true;
-	}
-	
-	@Override
 	public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state){
 		super.onBlockAdded(worldIn, pos, state);
 	}

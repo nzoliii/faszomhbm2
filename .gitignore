@@ -1,5 +1,4 @@
 # eclipse
-bin
 *.launch
 .settings
 .metadata

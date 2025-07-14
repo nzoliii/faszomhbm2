@@ -107,7 +107,7 @@ public class GaugeUtil {
 		GlStateManager.enableTexture2D();
 	}
 
-	private static Vec3d rotateZ(Vec3d vec, float angle) {
+	public static Vec3d rotateZ(Vec3d vec, float angle) {
 		float cos = MathHelper.cos(angle);
 		float sin = MathHelper.sin(angle);
 		double newX = vec.x * cos - vec.y * sin;

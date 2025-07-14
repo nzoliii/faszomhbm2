@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityCoreInjector extends TileEntityMachineBase implements ITickable, IFluidStandardReceiver, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
 
     public static final int range = 15;
@@ -186,25 +186,25 @@ public class TileEntityCoreInjector extends TileEntityMachineBase implements ITi
 
     // do some opencomputer stuff
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "dfc_injector";
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getFuel(Context context, Arguments args) {
         return new Object[]{tanks[0].getFill(), tanks[1].getFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getTypes(Context context, Arguments args) {
         return new Object[]{tanks[0].getTankType().getName(), tanks[1].getTankType().getName()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInfo(Context context, Arguments args) {
         return new Object[]{tanks[0].getFill(), tanks[0].getTankType().getName(), tanks[1].getFill(), tanks[1].getTankType().getName()};
     }

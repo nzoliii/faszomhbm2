@@ -119,9 +119,6 @@ public class DiFurnaceRecipes {
 		addFuel(new ComparableStack(ModItems.solid_fuel), 400);
 		addFuel(new ComparableStack(ModItems.solid_fuel_presto), 800);
 		addFuel(new ComparableStack(ModItems.solid_fuel_presto_triplet), 2400);
-		addFuel(new ComparableStack(ModBlocks.block_solid_fuel), 4000);
-		addFuel(new ComparableStack(ModBlocks.block_solid_fuel_presto), 8000);
-		addFuel(new ComparableStack(ModBlocks.block_solid_fuel_presto_triplet), 12800);
 	}
 
 	public static void addRecipe(AStack inputTop, AStack inputBottom, ItemStack output){

@@ -55,7 +55,7 @@ import java.util.Map.Entry;
 
 import static com.hbm.items.machine.ItemPWRFuel.EnumPWRFuel;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityPWRController extends TileEntityMachineBase implements ITickable, IGUIProvider, IControlReceiver, SimpleComponent, IFluidStandardTransceiver, CompatHandler.OCComponent {
 
     public static final long coreHeatCapacityBase = 10_000_000;
@@ -576,56 +576,56 @@ public class TileEntityPWRController extends TileEntityMachineBase implements IT
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "ntm_pwr_control";
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getHeat(Context context, Arguments args) {
         return new Object[]{coreHeat, hullHeat};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getFlux(Context context, Arguments args) {
         return new Object[]{flux};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getLevel(Context context, Arguments args) {
         return new Object[]{rodTarget, rodLevel};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getCoolantInfo(Context context, Arguments args) {
         return new Object[]{tanks[0].getFill(), tanks[0].getMaxFill(), tanks[1].getFill(), tanks[1].getMaxFill()};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getFuelInfo(Context context, Arguments args) {
         return new Object[]{amountLoaded, progress, processTime};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInfo(Context context, Arguments args) {
         return new Object[]{coreHeat, hullHeat, flux, rodTarget, rodLevel, amountLoaded, progress, processTime, tanks[0].getFill(), tanks[0].getMaxFill(), tanks[1].getFill(), tanks[1].getMaxFill()};
     }
 
     @SuppressWarnings("unused")
     @Callback(direct = true, limit = 4)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setLevel(Context context, Arguments args) {
         rodTarget = MathHelper.clamp(args.checkDouble(0), 0, 100);
         this.markDirty();

@@ -19,17 +19,12 @@ public class RenderCentrifuge extends TileEntitySpecialRenderer<TileEntityMachin
         GL11.glTranslated(x + 0.5D, y, z + 0.5D);
         GlStateManager.enableLighting();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
-		switch(te.getBlockMetadata())
-		{
-		case 4:
-			GL11.glRotatef(90, 0F, 1F, 0F); break;
-		case 3:
-			GL11.glRotatef(180, 0F, 1F, 0F); break;
-		case 5:
-			GL11.glRotatef(270, 0F, 1F, 0F); break;
-		case 2:
-			GL11.glRotatef(0, 0F, 1F, 0F); break;
-		}
+        switch (te.getBlockMetadata()) {
+            case 14 -> GL11.glRotatef(90, 0F, 1F, 0F);
+            case 13 -> GL11.glRotatef(180, 0F, 1F, 0F);
+            case 15 -> GL11.glRotatef(270, 0F, 1F, 0F);
+            case 12 -> GL11.glRotatef(0, 0F, 1F, 0F);
+        }
 
 		bindTexture(ResourceManager.centrifuge_new_tex);
         ResourceManager.centrifuge.renderAll();

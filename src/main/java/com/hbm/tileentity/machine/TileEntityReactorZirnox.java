@@ -60,7 +60,7 @@ import java.util.List;
 
 import static com.hbm.items.machine.ItemZirnoxRodDepleted.EnumZirnoxTypeDepleted;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityReactorZirnox extends TileEntityMachineBase implements ITickable, IControlReceiver, IFluidStandardTransceiver, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
 
     public static final int maxHeat = 100000;
@@ -513,62 +513,62 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
 
     // do some opencomputer stuff
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "zirnox_reactor";
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getTemp(Context context, Arguments args) {
         return new Object[]{heat};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getPressure(Context context, Arguments args) {
         return new Object[]{pressure};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getWater(Context context, Arguments args) {
         return new Object[]{water.getFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getSteam(Context context, Arguments args) {
         return new Object[]{steam.getFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getCarbonDioxide(Context context, Arguments args) {
         return new Object[]{carbonDioxide.getFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] isActive(Context context, Arguments args) {
         return new Object[]{isOn};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInfo(Context context, Arguments args) {
         return new Object[]{heat, pressure, water.getFill(), steam.getFill(), carbonDioxide.getFill(), isOn};
     }
 
     @Callback(direct = true, limit = 4)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setActive(Context context, Arguments args) {
         isOn = args.checkBoolean(0);
         return new Object[]{};
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String[] methods() {
         return new String[]{
                 "getTemp",
@@ -583,7 +583,7 @@ public class TileEntityReactorZirnox extends TileEntityMachineBase implements IT
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] invoke(String method, Context context, Arguments args) throws Exception {
         switch (method) {
             case ("getTemp"):

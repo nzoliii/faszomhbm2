@@ -55,7 +55,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityLaunchTable extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IBufPacketReceiver, IFluidStandardReceiver, SimpleComponent, IGUIProvider {
 
     public static final long maxPower = 100000;
@@ -475,11 +475,13 @@ public class TileEntityLaunchTable extends TileEntityMachineBase implements ITic
     // --- OpenComputers Interface ---
 
     @Override
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "launchtable";
     }
 
     @Callback(doc = "setTarget(x:integer, z:integer) -- Sets the target coordinates in the designator. Returns true on success.")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setTarget(Context context, Arguments args) {
         int x = args.checkInteger(0);
         int z = args.checkInteger(1);
@@ -487,6 +489,7 @@ public class TileEntityLaunchTable extends TileEntityMachineBase implements ITic
     }
 
     @Callback(doc = "launch() -- Tries to launch the missile. Returns true on success, or false and a reason on failure.")
+    @Optional.Method(modid = "opencomputers")
     public Object[] launch(Context context, Arguments args) {
         if (!isMissileValid()) return new Object[]{false, "Invalid or no missile."};
         if (!hasDesignator()) return new Object[]{false, "Missing or unlinked designator."};
@@ -498,31 +501,37 @@ public class TileEntityLaunchTable extends TileEntityMachineBase implements ITic
     }
 
     @Callback(doc = "getPower() -- Returns current and maximum stored power.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] getPower(Context context, Arguments args) {
         return new Object[]{this.power, maxPower};
     }
 
     @Callback(doc = "getSolidFuel() -- Returns current and maximum solid fuel.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] getSolidFuel(Context context, Arguments args) {
         return new Object[]{this.solid, maxSolid};
     }
 
     @Callback(doc = "getLiquidFuel() -- Returns fuel tank info: current amount, max capacity, and fluid name.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] getLiquidFuel(Context context, Arguments args) {
         return new Object[]{tanks[0].getFill(), tanks[0].getMaxFill(), tanks[0].getTankType().getTranslationKey()};
     }
 
     @Callback(doc = "getOxidizer() -- Returns oxidizer tank info: current amount, max capacity, and fluid name.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] getOxidizer(Context context, Arguments args) {
         return new Object[]{tanks[1].getFill(), tanks[1].getMaxFill(), tanks[1].getTankType().getTranslationKey()};
     }
 
     @Callback(doc = "canLaunch() -- Returns true if all conditions for launch are met.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] canLaunch(Context context, Arguments args) {
         return new Object[]{canLaunch()};
     }
 
     @Callback(doc = "getMissileInfo() -- Returns the display name of the loaded missile.", direct = true)
+    @Optional.Method(modid = "opencomputers")
     public Object[] getMissileInfo(Context context, Arguments args) {
         ItemStack missile = inventory.getStackInSlot(0);
         if (missile.isEmpty()) {

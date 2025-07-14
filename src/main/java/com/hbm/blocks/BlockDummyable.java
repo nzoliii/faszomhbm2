@@ -157,25 +157,14 @@ public abstract class BlockDummyable extends BlockContainer implements ICustomBl
 		int i = MathHelper.floor(player.rotationYaw * 4.0F / 360.0F + 0.5D) & 3;
 		int o = -getOffset();
 		pos = new BlockPos(pos.getX(), pos.getY() + getHeightOffset(), pos.getZ());
-		
-		ForgeDirection dir = ForgeDirection.NORTH;
-		
-		if(i == 0)
-		{
-			dir = ForgeDirection.getOrientation(2);
-		}
-		if(i == 1)
-		{
-			dir = ForgeDirection.getOrientation(5);
-		}
-		if(i == 2)
-		{
-			dir = ForgeDirection.getOrientation(3);
-		}
-		if(i == 3)
-		{
-			dir = ForgeDirection.getOrientation(4);
-		}
+
+		ForgeDirection dir = switch (i) {
+            case 0 -> ForgeDirection.getOrientation(2);
+            case 1 -> ForgeDirection.getOrientation(5);
+            case 2 -> ForgeDirection.getOrientation(3);
+            case 3 -> ForgeDirection.getOrientation(4);
+            default -> ForgeDirection.NORTH;
+        };
 		
 		dir = getDirModified(dir);
 		

@@ -42,16 +42,15 @@ public class CompatHandler {
      * @return Object[] array containing an int with the "compression level"
      */
     public static Object[] steamTypeToInt(FluidType type) {
-        switch(type.getID()) {
-            default:
-                return new Object[] {0};
-            case(4): // Fluids.HOTSTEAM
-                return new Object[] {1};
-            case(5): // Fluids.SUPERHOTSTEAM
-                return new Object[] {2};
-            case(6): // Fluids.ULTRAHOTSTEAM
-                return new Object[] {3};
-        }
+        return switch (type.getID()) {
+            case (4) -> // Fluids.HOTSTEAM
+                    new Object[]{1};
+            case (5) -> // Fluids.SUPERHOTSTEAM
+                    new Object[]{2};
+            case (6) -> // Fluids.ULTRAHOTSTEAM
+                    new Object[]{3};
+            default -> new Object[]{0};
+        };
     }
 
     /**
@@ -60,16 +59,12 @@ public class CompatHandler {
      * @return FluidType of the steam type based on the compression level.
      */
     public static FluidType intToSteamType(int arg) {
-        switch(arg) {
-            default:
-                return Fluids.STEAM;
-            case(1):
-                return Fluids.HOTSTEAM;
-            case(2):
-                return Fluids.SUPERHOTSTEAM;
-            case(3):
-                return Fluids.ULTRAHOTSTEAM;
-        }
+        return switch (arg) {
+            case (1) -> Fluids.HOTSTEAM;
+            case (2) -> Fluids.SUPERHOTSTEAM;
+            case (3) -> Fluids.ULTRAHOTSTEAM;
+            default -> Fluids.STEAM;
+        };
     }
 
     /**
@@ -85,7 +80,7 @@ public class CompatHandler {
         }
 
         @Override
-        @Optional.Method(modid = "OpenComputers")
+        @Optional.Method(modid = "opencomputers")
         public li.cil.oc.api.fs.FileSystem call() throws Exception {
             return asReadOnly(fromClass(MainRegistry.class, RefStrings.MODID, "disks/" + FloppyDisk.sanitizeName(name)));
         }
@@ -144,7 +139,7 @@ public class CompatHandler {
      * Loads various parts of OC compatibility.
      */
     public static void init() {
-        if(Loader.isModLoaded("OpenComputers")) {
+        if(Loader.isModLoaded("opencomputers")) {
             /*
             For anyone wanting to add their own floppy disks,
             read the README found in assets.hbm.disks.
@@ -156,8 +151,8 @@ public class CompatHandler {
             // begin registering disks
             Logger logger = LogManager.getLogger("HBM");
             logger.info("Loading OpenComputers disks...");
-            if(disks.size() == 0) {
-                logger.info("No disks registered; see com.hbm.handler.CompatHandler.disks");
+            if(disks.isEmpty()) {
+                logger.warn("No disks registered; see com.hbm.handler.CompatHandler.disks");
                 return;
             }
             disks.forEach((s, disk) -> {
@@ -167,24 +162,24 @@ public class CompatHandler {
 
                 if (fs == null) { // Disk path does NOT exist, and it should not be loaded.
 
-                    logger.error("Error loading disk: " + s + " at /assets/" + RefStrings.MODID + "/disks/" + disk.fs.name);
+                    logger.error("Error loading disk: {} at /assets/" + RefStrings.MODID + "/disks/{}", s, disk.fs.name);
                     logger.error("This is likely due to the path to the disk being non-existent.");
 
                 } else { // Disk path DOES exist, and it should be loaded.
 
                     disk.item = Items.registerFloppy(s, disk.color, disk.fs, true); // The big part, actually registering the floppies!
-                    logger.info("Registered disk: " + s + " at /assets/" + RefStrings.MODID + "/disks/" + disk.fs.name);
+                    logger.info("Registered disk: {} at /assets/" + RefStrings.MODID + "/disks/{}", s, disk.fs.name);
 
                 }
             });
             logger.info("OpenComputers disks registered.");
-
+            logger.info("What we have: {}", disks.keySet());
             // OC disk recipes!
             List<ItemStack> floppyDisks = new RecipesCommon.OreDictStack("oc:floppy").toStacks();
 
-            if(floppyDisks.size() > 0) { //check that floppy disks even exist in oredict.
-
+            if(!floppyDisks.isEmpty()) { //check that floppy disks even exist in oredict.
                 // Recipes must be initialized here, since if they were initialized in `CraftingManager` then the disk item would not be created yet.
+                // FIXME: This didn't add the correct recipes for the PWRangler disk.
                 addShapelessAuto(disks.get("PWRangler").item, new Object[] {"oc:floppy", new ItemStack(ModBlocks.block_bismuth)});
 
                 logger.info("OpenComputers disk recipe added for PWRangler.");
@@ -209,9 +204,9 @@ public class CompatHandler {
      *
      **/
     @Optional.InterfaceList({
-            @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
-            @Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-            @Optional.Interface(iface = "li.cil.oc.api.network.ManagedPeripheral", modid = "OpenComputers"),
+            @Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers"),
+            @Optional.Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "opencomputers"),
+            @Optional.Interface(iface = "li.cil.oc.api.network.ManagedPeripheral", modid = "opencomputers"),
     })
     @SimpleComponent.SkipInjection // make sure OC doesn't inject this shit into the interface and crash
     public interface OCComponent extends SimpleComponent, SidedComponent, ManagedPeripheral {
@@ -223,7 +218,7 @@ public class CompatHandler {
          * @return String
          */
         @Override
-        @Optional.Method(modid = "OpenComputers")
+        @Optional.Method(modid = "opencomputers")
         default String getComponentName() {
             return nullComponent;
         }
@@ -234,7 +229,7 @@ public class CompatHandler {
          * @return If the side should be able to connect.
          */
         @Override
-        @Optional.Method(modid = "OpenComputers")
+        @Optional.Method(modid = "opencomputers")
         default boolean canConnectNode(EnumFacing side) {
             return true;
         }
@@ -244,7 +239,7 @@ public class CompatHandler {
          * @return Array of methods to expose to the computer.
          */
         @Override
-        @Optional.Method(modid = "OpenComputers")
+        @Optional.Method(modid = "opencomputers")
         default String[] methods() {return new String[0];}
 
         /**
@@ -252,7 +247,7 @@ public class CompatHandler {
          * @return Data to the computer as a return from the function.
          */
         @Override
-        @Optional.Method(modid = "OpenComputers")
+        @Optional.Method(modid = "opencomputers")
         default Object[] invoke(String method, Context context, Arguments args) throws Exception {return null;}
     }
 }

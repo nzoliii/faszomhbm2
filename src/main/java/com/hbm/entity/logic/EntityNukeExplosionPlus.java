@@ -79,7 +79,7 @@ public class EntityNukeExplosionPlus extends Entity {
         	ContaminationUtil.radiate(this.world, this.posX, this.posY, this.posZ, this.destructionRange * 2, this.destructionRange * 10, 0, this.destructionRange * 2, this.destructionRange * 3);
         } else {
 			if (!did2 && waste) {
-				EntityFalloutRain fallout = new EntityFalloutRain(this.world, (this.wasteRange) * 10);
+				EntityFalloutRain fallout = new EntityFalloutRain(this.world);
 				fallout.posX = this.posX;
 				fallout.posY = this.posY;
 				fallout.posZ = this.posZ;

@@ -36,16 +36,15 @@ import java.util.Random;
 
 public class Landmine extends BlockContainer implements IBomb {
 
-
-    public double range;
-    public double height;
     public static final float f = 0.0625F;
     public static final AxisAlignedBB AP_BOX = new AxisAlignedBB(5 * f, 0.0F, 5 * f, 11 * f, 1 * f, 11 * f);
     public static final AxisAlignedBB HE_BOX = new AxisAlignedBB(4 * f, 0.0F, 4 * f, 12 * f, 2 * f, 12 * f);
     public static final AxisAlignedBB SHRAP_BOX = new AxisAlignedBB(5 * f, 0.0F, 5 * f, 11 * f, 1 * f, 11 * f);
     public static final AxisAlignedBB FAT_BOX = new AxisAlignedBB(5 * f, 0.0F, 4 * f, 11 * f, 6 * f, 12 * f);
+    private static final Random rand = new Random();
     public static boolean safeMode = false;
-    private static Random rand = new Random();
+    public double range;
+    public double height;
 
     public Landmine(Material materialIn, String s, double range, double height) {
         super(materialIn);
@@ -68,22 +67,21 @@ public class Landmine extends BlockContainer implements IBomb {
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-        if (this == ModBlocks.mine_ap) {
-            return AP_BOX;
-        } else if (this == ModBlocks.mine_he) {
-            return HE_BOX;
-        } else if (this == ModBlocks.mine_shrap) {
-            return SHRAP_BOX;
-        } else if (this == ModBlocks.mine_fat) {
-            return FAT_BOX;
-        } else {
-            return FULL_BLOCK_AABB;
-        }
+        String name = this.getRegistryName().getPath();
+        return switch (name) {
+            case "mine_ap" -> AP_BOX;
+            case "mine_he" -> HE_BOX;
+            case "mine_shrap" -> SHRAP_BOX;
+            case "mine_fat" -> FAT_BOX;
+            default -> FULL_BLOCK_AABB;
+        };
     }
 
     @Override
     public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-        return worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP) || worldIn.getBlockState(pos.down()).getBlock() instanceof BlockFence;
+        boolean solidBelow = worldIn.getBlockState(pos.down()).isSideSolid(worldIn, pos.down(), EnumFacing.UP);
+        boolean fenceBelow = worldIn.getBlockState(pos.down()).getBlock() instanceof BlockFence;
+        return solidBelow || fenceBelow;
     }
 
     @Override
@@ -92,13 +90,10 @@ public class Landmine extends BlockContainer implements IBomb {
             explode(world, pos);
         }
 
-        boolean flag = false;
+        boolean unsupported =
+                !world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP) && !(world.getBlockState(pos.down()).getBlock() instanceof BlockFence);
 
-        if (!world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP) && !(world.getBlockState(pos.down()).getBlock() instanceof BlockFence)) {
-            flag = true;
-        }
-
-        if (flag) {
+        if (unsupported) {
             this.dropBlockAsItem(world, pos, world.getBlockState(pos), 0);
             world.setBlockToAir(pos);
         }
@@ -113,31 +108,34 @@ public class Landmine extends BlockContainer implements IBomb {
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (player.getHeldItemMainhand().getItem() == ModItems.defuser || player.getHeldItemOffhand().getItem() == ModItems.defuser || player.getHeldItemMainhand().getItem() == ModItems.defuser_desh || player.getHeldItemOffhand().getItem() == ModItems.defuser_desh) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX
+            , float hitY, float hitZ) {
+        Item heldMain = player.getHeldItemMainhand().getItem();
+        Item heldOff = player.getHeldItemOffhand().getItem();
+        boolean hasDefuser =
+                heldMain == ModItems.defuser || heldOff == ModItems.defuser || heldMain == ModItems.defuser_desh || heldOff == ModItems.defuser_desh;
 
+        if (hasDefuser) {
             safeMode = true;
             world.setBlockToAir(pos);
 
-            ItemStack itemstack = new ItemStack(this, 1);
-            float f = world.rand.nextFloat() * 0.6F + 0.2F;
-            float f1 = world.rand.nextFloat() * 0.2F;
-            float f2 = world.rand.nextFloat() * 0.6F + 0.2F;
+            ItemStack stack = new ItemStack(this, 1);
+            float fx = world.rand.nextFloat() * 0.6F + 0.2F;
+            float fy = world.rand.nextFloat() * 0.2F;
+            float fz = world.rand.nextFloat() * 0.6F + 0.2F;
 
-            EntityItem entityitem = new EntityItem(world, pos.getX() + f, pos.getY() + f1 + 1, pos.getZ() + f2, itemstack);
+            EntityItem drop = new EntityItem(world, pos.getX() + fx, pos.getY() + fy + 1, pos.getZ() + fz, stack);
 
-            float f3 = 0.05F;
-            entityitem.motionX = (float) world.rand.nextGaussian() * f3;
-            entityitem.motionY = (float) world.rand.nextGaussian() * f3 + 0.2F;
-            entityitem.motionZ = (float) world.rand.nextGaussian() * f3;
+            float velocity = 0.05F;
+            drop.motionX = world.rand.nextGaussian() * velocity;
+            drop.motionY = world.rand.nextGaussian() * velocity + 0.2F;
+            drop.motionZ = world.rand.nextGaussian() * velocity;
 
             if (!world.isRemote)
-                world.spawnEntity(entityitem);
-
+                world.spawnEntity(drop);
             safeMode = false;
             return true;
         }
-
         return false;
     }
 
@@ -187,39 +185,40 @@ public class Landmine extends BlockContainer implements IBomb {
 
     @Override
     public BombReturnCode explode(World world, BlockPos pos) {
-        if (!world.isRemote) {
-            int x = pos.getX();
-            int y = pos.getY();
-            int z = pos.getZ();
-            Landmine.safeMode = true;
-            world.destroyBlock(pos, false);
-            Landmine.safeMode = false;
-
-            if(this == ModBlocks.mine_ap) {
-                ExplosionVNT vnt = new ExplosionVNT(world, x + 0.5, y + 0.5, z + 0.5, 3F);
+        if (world.isRemote) return BombReturnCode.DETONATED;
+        int x = pos.getX(), y = pos.getY(), z = pos.getZ();
+        safeMode = true;
+        world.destroyBlock(pos, false);
+        safeMode = false;
+        if (this.getRegistryName() == null) return BombReturnCode.UNDEFINED;
+        String name = this.getRegistryName().getPath();
+        switch (name) {
+            case "mine_ap" -> {
+                ExplosionVNT vnt = new ExplosionVNT(world, x + .5, y + .5, z + .5, 3F);
                 vnt.setEntityProcessor(new EntityProcessorCrossSmooth(0.5, 10F).setupPiercing(5F, 0.2F));
                 vnt.setPlayerProcessor(new PlayerProcessorStandard());
-                vnt.setSFX(new ExplosionEffectWeapon(5, 1F, 0.5F));
+                vnt.setSFX(new ExplosionEffectWeapon(5, 1F, .5F));
                 vnt.explode();
-            } else if(this == ModBlocks.mine_he) {
-                ExplosionVNT vnt = new ExplosionVNT(world, x + 0.5, y + 0.5, z + 0.5, 4F);
+            }
+            case "mine_he" -> {
+                ExplosionVNT vnt = new ExplosionVNT(world, x + .5, y + .5, z + .5, 4F);
                 vnt.setBlockAllocator(new BlockAllocatorStandard());
                 vnt.setBlockProcessor(new BlockProcessorStandard());
                 vnt.setEntityProcessor(new EntityProcessorCrossSmooth(1, 35).setupPiercing(15F, 0.2F));
                 vnt.setPlayerProcessor(new PlayerProcessorStandard());
                 vnt.setSFX(new ExplosionEffectWeapon(15, 3.5F, 1.25F));
                 vnt.explode();
-            } else if(this == ModBlocks.mine_shrap) {
+            }
+            case "mine_shrap" -> {
                 ExplosionVNT vnt = new ExplosionVNT(world, x + 0.5, y + 0.5, z + 0.5, 3F);
                 vnt.setEntityProcessor(new EntityProcessorCrossSmooth(0.5, 7.5F));
                 vnt.setPlayerProcessor(new PlayerProcessorStandard());
                 vnt.setSFX(new ExplosionEffectWeapon(5, 1F, 0.5F));
                 vnt.explode();
-                ExplosionLarge.spawnShrapnelShower(world, x + 0.5, y + 0.5, z + 0.5, 0, 1D, 0, 45, 0.2D);
+                ExplosionLarge.spawnShrapnelShower(world, x + 0.5, y + 0.5, z + 0.5, 0, 1D, 0, 45, .2D);
                 ExplosionLarge.spawnShrapnels(world, x + 0.5, y + 0.5, z + 0.5, 5);
             }
-            else if (this == ModBlocks.mine_fat) {
-
+            case "mine_fat" -> {
                 world.spawnEntity(EntityNukeExplosionMK5.statFac(world, BombConfig.fatmanRadius, x + 0.5, y + 0.5, z + 0.5));
                 if (rand.nextInt(100) == 0 || MainRegistry.polaroidID == 11) {
                     EntityNukeTorex.statFacBale(world, x + 0.5, y + 0.5, z + 0.5, BombConfig.fatmanRadius);
@@ -228,7 +227,6 @@ public class Landmine extends BlockContainer implements IBomb {
                 }
             }
         }
-
         return BombReturnCode.DETONATED;
     }
 }

@@ -1,5 +1,6 @@
 package com.hbm.world;
 
+import com.hbm.blocks.BlockDummyable;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.blocks.generic.DecoPoleSatelliteReceiver;
 import com.hbm.blocks.generic.DecoSteelPoles;
@@ -368,8 +369,8 @@ public class DesertAtom003
 		world.setBlockState(pos.setPos(x + 20, y + 4, z + 7), Blocks.VINE.getDefaultState().withProperty(BlockVine.NORTH, true), 3);
 		world.setBlockState(pos.setPos(x + 23, y + 4, z + 7), Library.getRandomConcrete().getDefaultState(), 3);
 		world.setBlockState(pos.setPos(x + 25, y + 4, z + 7), Block8.getDefaultState().withProperty(DecoSteelPoles.FACING, EnumFacing.SOUTH), 3);
-		world.setBlockState(pos.setPos(x + 26, y + 4, z + 7), Block19.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 3);
-		world.setBlockState(pos.setPos(x + 27, y + 4, z + 7), Block19.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 3);
+		world.setBlockState(pos.setPos(x + 26, y + 4, z + 7), Block19.getDefaultState().withProperty(BlockDummyable.META, 13), 3);
+		world.setBlockState(pos.setPos(x + 27, y + 4, z + 7), Block19.getDefaultState().withProperty(BlockDummyable.META, 13), 3);
 		world.setBlockState(pos.setPos(x + 28, y + 4, z + 7), Block20.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 3);
 		world.setBlockState(pos.setPos(x + 29, y + 4, z + 7), Block20.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 3);
 		world.setBlockState(pos.setPos(x + 30, y + 4, z + 7), Block21.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 3);

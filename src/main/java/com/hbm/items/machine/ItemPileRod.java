@@ -1,7 +1,9 @@
 package com.hbm.items.machine;
 
+import com.hbm.items.ItemBakedBase;
 import com.hbm.items.ItemBase;
 import com.hbm.items.ModItems;
+import com.hbm.util.I18nUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -9,7 +11,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemPileRod extends ItemBase {
+public class ItemPileRod extends ItemBakedBase {
 
 	public ItemPileRod(String s){
 		super(s);
@@ -17,22 +19,16 @@ public class ItemPileRod extends ItemBase {
 
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn){
-		tooltip.add(TextFormatting.YELLOW + "Use on drilled graphite to insert");
-		tooltip.add(TextFormatting.YELLOW + "Use screwdriver to extract");
-		tooltip.add("");
+		String[] defaultLocs = I18nUtil.resolveKey("desc.item.pileRod").split("\\$");
 
-		if(this == ModItems.pile_rod_uranium) {
-			tooltip.add(TextFormatting.GREEN + "[Reactive Fuel]");
-			tooltip.add(TextFormatting.YELLOW + "Use hand drill to take core sample");
+		for(String loc : defaultLocs) {
+			tooltip.add(loc);
 		}
 
-		if(this == ModItems.pile_rod_boron) {
-			tooltip.add(TextFormatting.BLUE + "[Neutron Absorber]");
-			tooltip.add(TextFormatting.YELLOW + "Click to toggle");
-		}
+		String[] descLocs = I18nUtil.resolveKey(this.getTranslationKey() + ".desc").split("\\$");
 
-		if(this == ModItems.pile_rod_source || this == ModItems.pile_rod_plutonium) {
-			tooltip.add(TextFormatting.LIGHT_PURPLE + "[Neutron Source]");
+		for(String loc : descLocs) {
+			tooltip.add(loc);
 		}
 	}
 }

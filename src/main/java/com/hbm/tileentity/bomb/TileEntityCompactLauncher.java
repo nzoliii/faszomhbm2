@@ -58,7 +58,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityCompactLauncher extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardTransceiver, SimpleComponent, IGUIProvider {
 
 	public long power;
@@ -490,11 +490,13 @@ public class TileEntityCompactLauncher extends TileEntityMachineBase implements 
 	// opencomputers interface
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "launchpad_compact";
 	}
 
 	@Callback(doc = "setTarget(x:int, z:int); saves coords in target designator item - returns true if it worked")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setTarget(Context context, Arguments args) {
 		int x = args.checkInteger(0);
 		int z = args.checkInteger(1);
@@ -503,6 +505,7 @@ public class TileEntityCompactLauncher extends TileEntityMachineBase implements 
 	}
 
 	@Callback(doc = "launch(); tries to launch the rocket")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] launch(Context context, Arguments args) {
 		Block b = world.getBlockState(pos).getBlock();
 		if(b instanceof IBomb){

@@ -118,7 +118,7 @@ public class BlockCableGauge extends BlockContainer implements ILookOverlay, ITo
 		ILookOverlay.printGeneric(event, I18nUtil.resolveKey(getTranslationKey() + ".name"), 0xffff00, 0x404000, text);
 	}
 
-	@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+	@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 	public static class TileEntityCableGauge extends TileEntityCableBaseNT implements SimpleComponent {
 
 		private long deltaTick = 10;
@@ -160,11 +160,13 @@ public class BlockCableGauge extends BlockContainer implements ILookOverlay, ITo
 		}
 	
 		@Override
+		@Optional.Method(modid = "opencomputers")
 		public String getComponentName() {
 			return "power_gauge";
 		}
 
 		@Callback(doc = "getPowerPerS(); returns the power(long) per s traveling through the gauge.")
+		@Optional.Method(modid = "opencomputers")
 		public Object[] getPowerPerS(Context context, Arguments args) {
 			return new Object[] {deltaLastSecond};
 		}

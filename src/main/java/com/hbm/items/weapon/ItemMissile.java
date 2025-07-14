@@ -223,37 +223,36 @@ public class ItemMissile extends Item {
 			list.add(TextFormatting.DARK_PURPLE + "\"" + title + "\"");
 		
 		try {
-			switch(type) {
-			case CHIP:
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.inaccuracy") + " " + TextFormatting.GRAY + (Float)attributes[0] * 100 + "%");
-				break;
-			case WARHEAD:
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(bottom));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.type") + " " + TextFormatting.GRAY + getWarhead((WarheadType)attributes[0]));
-				if(attributes[0] != WarheadType.APOLLO && attributes[0] != WarheadType.SATELLITE)
-					list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.strength") + " " + TextFormatting.RED + (Float)attributes[1]);
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.weight") + " " + TextFormatting.GRAY + (Float)attributes[2] + "t");
-				list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
-				break;
-			case FUSELAGE:
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.topsize") + " " + TextFormatting.GRAY + getSize(top));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.botsize") + " " + TextFormatting.GRAY + getSize(bottom));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fueltype") + " " + TextFormatting.GRAY + getFuel((FuelType)attributes[0]));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fuelamnt") + " " + TextFormatting.GRAY + (Float)attributes[1] + "l");
-				list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
-				break;
-			case FINS:
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(top));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.inaccuracy") + " " + TextFormatting.GRAY + (Float)attributes[0] * 100 + "%");
-				break;
-			case THRUSTER:
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(top));
-				list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fuelamnt") + " " + TextFormatting.GRAY + getFuel((FuelType)attributes[0]));
-				list.add(TextFormatting.BOLD + "Thrust: " + TextFormatting.GRAY + (Integer)attributes[3] + "N");
-				list.add(TextFormatting.BOLD + "ISP: " + TextFormatting.GRAY + (Integer)attributes[4] + "s");
-				list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
-				break;
-			}
+            switch (type) {
+                case CHIP ->
+                        list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.inaccuracy") + " " + TextFormatting.GRAY + (Float) attributes[0] * 100 + "%");
+                case WARHEAD -> {
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(bottom));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.type") + " " + TextFormatting.GRAY + getWarhead((WarheadType) attributes[0]));
+                    if (attributes[0] != WarheadType.APOLLO && attributes[0] != WarheadType.SATELLITE)
+                        list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.strength") + " " + TextFormatting.RED + (Float) attributes[1]);
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.weight") + " " + TextFormatting.GRAY + (Float) attributes[2] + "t");
+                    list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
+                }
+                case FUSELAGE -> {
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.topsize") + " " + TextFormatting.GRAY + getSize(top));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.botsize") + " " + TextFormatting.GRAY + getSize(bottom));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fueltype") + " " + TextFormatting.GRAY + getFuel((FuelType) attributes[0]));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fuelamnt") + " " + TextFormatting.GRAY + (Float) attributes[1] + "l");
+                    list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
+                }
+                case FINS -> {
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(top));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.inaccuracy") + " " + TextFormatting.GRAY + (Float) attributes[0] * 100 + "%");
+                }
+                case THRUSTER -> {
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.size") + " " + TextFormatting.GRAY + getSize(top));
+                    list.add(TextFormatting.BOLD + I18nUtil.resolveKey("desc.fuelamnt") + " " + TextFormatting.GRAY + getFuel((FuelType) attributes[0]));
+                    list.add(TextFormatting.BOLD + "Thrust: " + TextFormatting.GRAY + (Integer) attributes[3] + "N");
+                    list.add(TextFormatting.BOLD + "ISP: " + TextFormatting.GRAY + (Integer) attributes[4] + "s");
+                    list.add(TextFormatting.BOLD + "Mass: " + TextFormatting.GRAY + mass + "kg");
+                }
+            }
 		} catch(Exception ex) {
 			list.add("### I AM ERROR ###");
 		}
@@ -270,121 +269,72 @@ public class ItemMissile extends Item {
 	}
 	
 	public String getSize(PartSize size) {
-		
-		switch(size) {
-		case ANY:
-			return I18nUtil.resolveKey("desc.any");
-		case SIZE_10:
-			return "§e1.0m";
-		case SIZE_15:
-			return "§61.5m";
-		case SIZE_20:
-			return "§c2.0m";
-		default:
-			return I18nUtil.resolveKey("desc.none");
-		}
+        return switch (size) {
+            case ANY -> I18nUtil.resolveKey("desc.any");
+            case SIZE_10 -> "§e1.0m";
+            case SIZE_15 -> "§61.5m";
+            case SIZE_20 -> "§c2.0m";
+            default -> I18nUtil.resolveKey("desc.none");
+        };
 	}
 	
 	public String getWarhead(WarheadType type) {
 		if(type.labelCustom != null) return type.labelCustom;
-		
-		switch(type) {
-		case HE:
-			return TextFormatting.YELLOW + I18nUtil.resolveKey("warhead.he");
-		case INC:
-			return TextFormatting.GOLD + I18nUtil.resolveKey("warhead.inc");
-		case CLUSTER:
-			return TextFormatting.GRAY + I18nUtil.resolveKey("warhead.cluster");
-		case BUSTER:
-			return TextFormatting.WHITE + I18nUtil.resolveKey("warhead.buster");
-		case NUCLEAR:
-			return TextFormatting.DARK_GREEN + I18nUtil.resolveKey("warhead.nuclear");
-		case TX:
-			return TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.tx");
-		case N2:
-			return TextFormatting.RED + I18nUtil.resolveKey("warhead.n2");
-		case BALEFIRE:
-			return TextFormatting.GREEN + I18nUtil.resolveKey("warhead.balefire");
-		case SCHRAB:
-			return TextFormatting.AQUA + I18nUtil.resolveKey("warhead.schrab");
-		case TAINT:
-			return TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.taint");
-		case CLOUD:
-			return TextFormatting.LIGHT_PURPLE + I18nUtil.resolveKey("warhead.cloud");
-		case VOLCANO:
-			return TextFormatting.DARK_RED + I18nUtil.resolveKey("warhead.volcano");
-		case MIRV:
-			return TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.mirv");
-		default:
-			return TextFormatting.BOLD + I18nUtil.resolveKey("desc.na");
-		}
+
+        return switch (type) {
+            case HE -> TextFormatting.YELLOW + I18nUtil.resolveKey("warhead.he");
+            case INC -> TextFormatting.GOLD + I18nUtil.resolveKey("warhead.inc");
+            case CLUSTER -> TextFormatting.GRAY + I18nUtil.resolveKey("warhead.cluster");
+            case BUSTER -> TextFormatting.WHITE + I18nUtil.resolveKey("warhead.buster");
+            case NUCLEAR -> TextFormatting.DARK_GREEN + I18nUtil.resolveKey("warhead.nuclear");
+            case TX -> TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.tx");
+            case N2 -> TextFormatting.RED + I18nUtil.resolveKey("warhead.n2");
+            case BALEFIRE -> TextFormatting.GREEN + I18nUtil.resolveKey("warhead.balefire");
+            case SCHRAB -> TextFormatting.AQUA + I18nUtil.resolveKey("warhead.schrab");
+            case TAINT -> TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.taint");
+            case CLOUD -> TextFormatting.LIGHT_PURPLE + I18nUtil.resolveKey("warhead.cloud");
+            case VOLCANO -> TextFormatting.DARK_RED + I18nUtil.resolveKey("warhead.volcano");
+            case MIRV -> TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("warhead.mirv");
+            default -> TextFormatting.BOLD + I18nUtil.resolveKey("desc.na");
+        };
 	}
 	
 	public String getFuel(FuelType type) {
 
-		switch(type) {
-		case ANY:
-			return TextFormatting.GRAY + "Any Liquid Fuel";
-		case KEROSENE:
-			return TextFormatting.LIGHT_PURPLE + I18nUtil.resolveKey("fuel.kerosene");
-		case METHALOX:
-			return TextFormatting.YELLOW + "Natural Gas / Oxygen";
-		case KEROLOX:
-			return TextFormatting.LIGHT_PURPLE + "Kerosene / Oxygen";
-		case SOLID:
-			return TextFormatting.GOLD + I18nUtil.resolveKey("fuel.solid");
-		case HYDROGEN:
-			return TextFormatting.DARK_AQUA + I18nUtil.resolveKey("fuel.hydrogen");
-		case XENON:
-			return TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("fuel.xenon");
-		case BALEFIRE:
-			return TextFormatting.GREEN + I18nUtil.resolveKey("fuel.balefire");
-		case HYDRAZINE:
-			return TextFormatting.AQUA + "Hydrazine";
-		default:
-			return TextFormatting.BOLD + I18nUtil.resolveKey("desc.na");
-		}
+        return switch (type) {
+            case ANY -> TextFormatting.GRAY + "Any Liquid Fuel";
+            case KEROSENE -> TextFormatting.LIGHT_PURPLE + I18nUtil.resolveKey("fuel.kerosene");
+            case METHALOX -> TextFormatting.YELLOW + "Natural Gas / Oxygen";
+            case KEROLOX -> TextFormatting.LIGHT_PURPLE + "Kerosene / Oxygen";
+            case SOLID -> TextFormatting.GOLD + I18nUtil.resolveKey("fuel.solid");
+            case HYDROGEN -> TextFormatting.DARK_AQUA + I18nUtil.resolveKey("fuel.hydrogen");
+            case XENON -> TextFormatting.DARK_PURPLE + I18nUtil.resolveKey("fuel.xenon");
+            case BALEFIRE -> TextFormatting.GREEN + I18nUtil.resolveKey("fuel.balefire");
+            case HYDRAZINE -> TextFormatting.AQUA + "Hydrazine";
+        };
 	}
 
 	public FluidType getFuel() {
 		if(!(attributes[0] instanceof FuelType)) return null;
-
-		switch((FuelType)attributes[0]) {
-			case KEROSENE:
-				return Fluids.KEROSENE;
-			case KEROLOX:
-				return Fluids.KEROSENE;
-			case METHALOX:
-				return Fluids.GAS;
-			case HYDROGEN:
-				return Fluids.HYDROGEN;
-			case XENON:
-				return Fluids.XENON;
-			case BALEFIRE:
-				return Fluids.BALEFIRE;
-			case HYDRAZINE:
-				return Fluids.HYDRAZINE;
-			case SOLID:
-				return Fluids.NONE; // Requires non-fluid fuel
-			default:
-				return null;
-		}
+        return switch ((FuelType) attributes[0]) {
+            case KEROSENE, KEROLOX -> Fluids.KEROSENE;
+            case METHALOX -> Fluids.GAS;
+            case HYDROGEN -> Fluids.HYDROGEN;
+            case XENON -> Fluids.XENON;
+            case BALEFIRE -> Fluids.BALEFIRE;
+            case HYDRAZINE -> Fluids.HYDRAZINE;
+            case SOLID -> Fluids.NONE; // Requires non-fluid fuel
+            default -> null;
+        };
 	}
 
 	public FluidType getOxidizer() {
 		if(!(attributes[0] instanceof FuelType)) return null;
-
-		switch((FuelType)attributes[0]) {
-			case KEROLOX:
-			case HYDROGEN:
-			case METHALOX:
-				return Fluids.OXYGEN;
-			case KEROSENE:
-			case BALEFIRE:
-				return Fluids.PEROXIDE;
-			default:
-				return null;
-		}
+        return switch ((FuelType) attributes[0]) {
+            case KEROLOX, HYDROGEN, METHALOX -> Fluids.OXYGEN;
+            case KEROSENE, BALEFIRE -> Fluids.PEROXIDE;
+            default -> null;
+        };
 	}
 
 	public int getThrust() {

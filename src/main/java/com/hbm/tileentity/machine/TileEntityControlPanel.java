@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityControlPanel extends TileEntity implements ITickable, IControllable, IControlReceiver, SimpleComponent, IGUIProvider {
 
 	public ItemStackHandler inventory;
@@ -263,11 +263,13 @@ public class TileEntityControlPanel extends TileEntity implements ITickable, ICo
 	// opencomputers interface
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "control_panel";
 	}
 
 	@Callback()
+	@Optional.Method(modid = "opencomputers")
 	public Object[] listControls(Context context, Arguments args) {
 		List<String> ctrlList = new ArrayList<>();
 		for (int i=0; i < panel.controls.size(); i++) {
@@ -277,11 +279,13 @@ public class TileEntityControlPanel extends TileEntity implements ITickable, ICo
 	}
 
 	@Callback()
+	@Optional.Method(modid = "opencomputers")
 	public Object[] listGlobalVars(Context context, Arguments args) {
 		return new Object[]{panel.globalVars};
 	}
 
 	@Callback(doc = "getGlobalVar(name:str);")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getGlobalVar(Context context, Arguments args) {
 		String name = args.checkString(0);
 		DataValue value = panel.getVar(name);
@@ -292,6 +296,7 @@ public class TileEntityControlPanel extends TileEntity implements ITickable, ICo
 	}
 
 	@Callback(doc = "setGlobalVar(name:str, value:[bool,str,double,int]);")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setGlobalVar(Context context, Arguments args) {
 		String name = args.checkString(0);
 
@@ -310,11 +315,13 @@ public class TileEntityControlPanel extends TileEntity implements ITickable, ICo
 	}
 
 	@Callback(doc = "listLocalVars(ID:int); list local vars for control ID.")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] listLocalVars(Context context, Arguments args) {
 		return new Object[]{panel.controls.get(args.checkInteger(0)).vars};
 	}
 
 	@Callback(doc = "getLocalVar(ID:int, name:str); get var for control ID.")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getLocalVar(Context context, Arguments args) {
 		int index = args.checkInteger(0);
 		String name = args.checkString(1);
@@ -326,6 +333,7 @@ public class TileEntityControlPanel extends TileEntity implements ITickable, ICo
 	}
 
 	@Callback(doc = "getLocalVar(ID:int, name:str, value:[bool,str,double,int]); set var for control ID.")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setLocalVar(Context context, Arguments args) {
 		int index = args.checkInteger(0);
 		String name = args.checkString(1);

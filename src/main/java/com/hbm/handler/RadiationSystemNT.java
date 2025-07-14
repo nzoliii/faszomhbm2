@@ -38,6 +38,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.world.ChunkDataEvent;
@@ -48,6 +49,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -71,6 +73,7 @@ public class RadiationSystemNT {
      * A tick counter so radiation only updates once every second.
      */
     private static int ticks;
+    private static CompletableFuture<RadiationUpdates> radiationFuture;
 
     /**
      * Increments the radiation at the specified block position. Only increments if the current radiation stored is less than max
@@ -220,6 +223,7 @@ public class RadiationSystemNT {
      * @param world - the world to get the radiation data from
      * @return the radiation data for the world
      */
+    @NotNull
     private static WorldRadiationData getWorldRadData(World world) {
         return worldMap.computeIfAbsent(world, WorldRadiationData::new);
     }
@@ -447,16 +451,24 @@ public class RadiationSystemNT {
             r.iteratingDirty = true;
 
             //For each dirty sub chunk, rebuild it
-            for (SubChunkKey dirtyKey : r.dirtyChunks) {
+            Iterator<SubChunkKey> itr = r.dirtyChunks.iterator();
+            while (itr.hasNext()) {
+                SubChunkKey dirtyKey = itr.next();
                 if (GeneralConfig.enableDebugMode) {
                     MainRegistry.logger.info("[Debug] Rebuilding chunk pockets for dirty chunk at {}", dirtyKey);
                 }
-
-                rebuildChunkPockets(r.world.getChunk(dirtyKey.getChunkXPos(), dirtyKey.getChunkZPos()), dirtyKey.getSubY());
+                int cx = dirtyKey.getChunkXPos();
+                int cz = dirtyKey.getChunkZPos();
+                if (r.world instanceof WorldServer server && server.getChunkProvider().chunkExists(cx, cz)) {
+                    rebuildChunkPockets(r.world.getChunk(cx, cz), dirtyKey.getSubY());
+                    itr.remove();
+                } else {
+                    r.deferredRebuild.add(dirtyKey);
+                    itr.remove();
+                }
             }
             r.iteratingDirty = false;
             //Clear the dirty chunks lists, and add any chunks that might have been marked while iterating to be dealt with next tick.
-            r.dirtyChunks.clear();
             r.dirtyChunks.addAll(r.dirtyChunks2);
             r.dirtyChunks2.clear();
         });
@@ -490,10 +502,20 @@ public class RadiationSystemNT {
 
         if (e.phase == Phase.END) {
             ticks++;
-            if (ticks % 20 == 17) {
+            if (ticks % 20 == 17 && radiationFuture == null) {
                 //Every second, do a full system update, which will spread around radiation and all that
-                CompletableFuture.supplyAsync(RadiationSystemNT::computeRadiationUpdates, pool).thenAccept(RadiationSystemNT::applyRadiationUpdates);
+                radiationFuture = CompletableFuture.supplyAsync(RadiationSystemNT::computeRadiationUpdates, pool);
             }
+        }
+
+        if (radiationFuture != null && radiationFuture.isDone()) {
+            try {
+                RadiationUpdates updates = radiationFuture.get();
+                applyRadiationUpdates(updates);
+            } catch (InterruptedException | ExecutionException ex) {
+                MainRegistry.logger.error("Error applying radiation updates", ex);
+            }
+            radiationFuture = null;
         }
 
         //Make sure any chunks marked as dirty by radiation resistant blocks are rebuilt instantly
@@ -520,10 +542,23 @@ public class RadiationSystemNT {
     public static void onChunkLoad(ChunkDataEvent.Load e) {
         if (!GeneralConfig.enableRads || !GeneralConfig.advancedRadiation) return;
         if (!e.getWorld().isRemote) {
+            WorldRadiationData data;
             if (e.getData().hasKey("hbmRadDataNT")) {
                 //If this chunk had saved radiation in it, read it and add the persistent chunk data at this chunk position
-                WorldRadiationData data = getWorldRadData(e.getWorld());
+                data = getWorldRadData(e.getWorld());
                 readFromNBT(data, e.getChunk().getPos(), e.getData().getCompoundTag("hbmRadDataNT"));
+            } else return;
+            ChunkPos cpos = e.getChunk().getPos();
+            if (data.deferredDirty.contains(cpos)) {
+                data.deferredDirty.remove(cpos);
+                e.getChunk().markDirty();
+            }
+            for (int i = 0; i < 16; i++) {
+                SubChunkKey key = new SubChunkKey(cpos.x, cpos.z, i);
+                if (data.deferredRebuild.contains(key)) {
+                    data.deferredRebuild.remove(key);
+                    data.dirtyChunks.add(key);
+                }
             }
         }
     }
@@ -567,7 +602,7 @@ public class RadiationSystemNT {
             for (RadPocket p : itrActive) {
                 BlockPos pos = p.parent.subChunkPos;
                 p.radiation.updateAndGet(current -> Math.max(0.0f, current * 0.999F - 0.05F));
-                wu.dirtyChunks.add(w.world.getChunk(pos));
+                wu.dirtyChunkPositions.add(new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
                 float currentRadiation = p.radiation.get();
                 if (currentRadiation <= 0) {
                     // Pocket is depleted before spreading, add to its own accumulatedRads and it will be removed later.
@@ -676,8 +711,14 @@ public class RadiationSystemNT {
             for (RadPocket p : wu.toRemove) {
                 w.removeActivePocket(p);
             }
-            for (Chunk c : wu.dirtyChunks) {
-                c.markDirty();
+            for (ChunkPos cp : wu.dirtyChunkPositions) {
+                int cx = cp.x;
+                int cz = cp.z;
+                if (w.world instanceof WorldServer server && server.getChunkProvider().chunkExists(cx, cz)) {
+                    w.world.getChunk(cx, cz).markDirty();
+                } else {
+                    w.deferredDirty.add(cp);
+                }
             }
             for (BlockPos d : wu.dirtyRebuild) {
                 markChunkForRebuild(w.world, d);
@@ -991,7 +1032,7 @@ public class RadiationSystemNT {
         static class WorldUpdate {
             Set<RadPocket> toAdd = ConcurrentHashMap.newKeySet();
             List<RadPocket> toRemove = new ArrayList<>();
-            Set<Chunk> dirtyChunks = new HashSet<>();
+            Set<ChunkPos> dirtyChunkPositions = new HashSet<>();
             List<BlockPos> dirtyRebuild = new ArrayList<>();
             List<BlockPos> fogPositions = new ArrayList<>();
         }
@@ -1215,6 +1256,8 @@ public class RadiationSystemNT {
         private final Set<SubChunkKey> dirtyChunks = ConcurrentHashMap.newKeySet();
         private final Set<SubChunkKey> dirtyChunks2 = ConcurrentHashMap.newKeySet();
         private final Set<RadPocket> activePockets = ConcurrentHashMap.newKeySet();
+        private final Set<SubChunkKey> deferredRebuild = ConcurrentHashMap.newKeySet();
+        private final Set<ChunkPos> deferredDirty = ConcurrentHashMap.newKeySet();
         public World world;
         public Map<SubChunkKey, SubChunkRadiationStorage> data = new ConcurrentHashMap<>();
         private volatile boolean iteratingDirty = false;
@@ -1236,7 +1279,7 @@ public class RadiationSystemNT {
                 SubChunkKey chunkKey = new SubChunkKey(radPocket.getSubChunkPos().getX() >> 4, radPocket.getSubChunkPos().getZ() >> 4,
                         radPocket.getSubChunkPos().getY() >> 4);
                 MainRegistry.logger.info("[Debug] Added active pocket {} (radiation: {}, accumulatedRads: {}, sealed: {}) at {} (Chunk:{}) for " +
-                        "world {}", radPocket.index, radPocket.radiation.get(), radPocket.accumulatedRads.get(), radPocket.isSealed(),
+                                "world {}", radPocket.index, radPocket.radiation.get(), radPocket.accumulatedRads.get(), radPocket.isSealed(),
                         radPocket.getSubChunkPos(), chunkKey, world);
             }
         }

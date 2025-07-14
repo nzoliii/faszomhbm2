@@ -5,10 +5,7 @@ import com.hbm.blocks.gas.*;
 import com.hbm.blocks.generic.*;
 import com.hbm.blocks.generic.BlockHazard.ExtDisplayEffect;
 import com.hbm.blocks.machine.*;
-import com.hbm.blocks.machine.pile.BlockGraphite;
-import com.hbm.blocks.machine.pile.BlockGraphiteFuel;
-import com.hbm.blocks.machine.pile.BlockGraphiteRod;
-import com.hbm.blocks.machine.pile.BlockGraphiteSource;
+import com.hbm.blocks.machine.pile.*;
 import com.hbm.blocks.machine.rbmk.*;
 import com.hbm.blocks.network.*;
 import com.hbm.blocks.network.energy.*;
@@ -486,7 +483,7 @@ public class ModBlocks {
 	public static final Block waste_terracotta = new BlockHazardMeta(Material.ROCK, SoundType.STONE, "waste_terracotta", "contamination/terracotta/", BlockBakeFrame.BlockForm.ALL, (short) 7).setCreativeTab(MainRegistry.resourceTab).setHardness(4.0F).setResistance(8.0F);
 
 	public static final Block waste_log = new WasteLog(Material.WOOD, SoundType.WOOD, "waste_log").setHardness(5.0F).setResistance(2.5F).setCreativeTab(MainRegistry.resourceTab);
-	public static final Block waste_planks = new BlockFuel(Material.WOOD, "waste_planks", 5, 5, 1600).setHardness(0.5F).setResistance(2.5F).setCreativeTab(MainRegistry.resourceTab);
+	public static final Block waste_planks = new BlockNTMOre("waste_planks", 2).setHardness(0.5F).setResistance(2.5F).setCreativeTab(MainRegistry.resourceTab);
 	public static final Block waste_leaves = new WasteLeaves("waste_leaves").setHardness(0.3F).setResistance(0.3F).setCreativeTab(MainRegistry.resourceTab);
 
 	public static final Block waste_grass_tall = new WasteGrassTall(Material.PLANTS, "waste_grass_tall").setCreativeTab(MainRegistry.resourceTab);
@@ -563,18 +560,16 @@ public class ModBlocks {
 	public static final Block block_white_phosphorus = new BlockHazard(Material.ROCK, "block_white_phosphorus").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_red_phosphorus = new BlockFallingBase(Material.SAND, "block_red_phosphorus", SoundType.SAND).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_foam = new BlockBase(Material.CRAFTED_SNOW, "block_foam").setSoundType(SoundType.SNOW).setCreativeTab(MainRegistry.blockTab).setHardness(0.5F).setResistance(0.0F);
-	public static final Block block_lignite = new BlockFuel(Material.ROCK, "block_lignite", 10, 10, 12000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_coke = new BlockCoke().setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_coal_infernal = new BlockFuel(Material.ROCK, "block_coal_infernal", 1, 1, 84000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_solid_fuel = new BlockFuel(Material.ROCK, "block_solid_fuel", 10, 10, 32000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_solid_fuel_presto = new BlockFuel(Material.ROCK, "block_solid_fuel_presto", 6, 6, 64000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_solid_fuel_presto_triplet = new BlockFuel(Material.ROCK, "block_solid_fuel_presto_triplet", 2, 2, 192000).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
-	public static final Block block_graphite = new BlockGraphite(Material.IRON, "block_graphite", 30, 5, 16000).setSoundType(SoundType.METAL).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
+	public static final Block block_graphite = new BlockGraphite(Material.IRON, "block_graphite", 30, 5).setSoundType(SoundType.METAL).setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_graphite_drilled = new BlockGraphiteDrilled("block_graphite_drilled");
 	public static final Block block_graphite_fuel = new BlockGraphiteFuel("block_graphite_fuel");
 	public static final Block block_graphite_plutonium = new BlockGraphiteSource("block_graphite_plutonium");
 	public static final Block block_graphite_rod = new BlockGraphiteRod("block_graphite_rod");
 	public static final Block block_graphite_source = new BlockGraphiteSource("block_graphite_source");
+	public static final Block block_graphite_lithium = new BlockGraphiteBreedingFuel("block_graphite_lithium");
+	public static final Block block_graphite_tritium = new BlockGraphiteBreedingProduct("block_graphite_tritium");
+	public static final Block block_graphite_detector = new BlockGraphiteNeutronDetector("block_graphite_detector");
 
 	public static final Block block_reiium = new BlockRadResistant(Material.IRON, "block_reiium").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);
 	public static final Block block_weidanium = new BlockRadResistant(Material.IRON, "block_weidanium").setCreativeTab(MainRegistry.blockTab).setHardness(5.0F).setResistance(10.0F);

@@ -3,9 +3,7 @@ package com.hbm.items;
 import com.hbm.api.block.IToolable.ToolType;
 import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.blocks.ModBlocks;
-import com.hbm.blocks.generic.BlockFuel;
 import com.hbm.blocks.generic.BlockModDoor;
-import com.hbm.blocks.items.ItemFuelBlock;
 import com.hbm.blocks.machine.ItemSelfcharger;
 import com.hbm.config.BombConfig;
 import com.hbm.fhbm2.fhbm2Consumables;
@@ -1293,9 +1291,12 @@ public class ModItems {
 	public static final Item tritium_deuterium_cake = new ItemCustomLore("tritium_deuterium_cake").setCreativeTab(MainRegistry.controlTab).setMaxStackSize(1);
 	
 	public static final Item pile_rod_uranium = new ItemPileRod("pile_rod_uranium").setCreativeTab(MainRegistry.controlTab);
+	public static final Item pile_rod_pu239 = new ItemPileRod("pile_rod_pu239").setCreativeTab(MainRegistry.controlTab);
 	public static final Item pile_rod_plutonium = new ItemPileRod("pile_rod_plutonium").setCreativeTab(MainRegistry.controlTab);
 	public static final Item pile_rod_source = new ItemPileRod("pile_rod_source").setCreativeTab(MainRegistry.controlTab);
 	public static final Item pile_rod_boron = new ItemPileRod("pile_rod_boron").setCreativeTab(MainRegistry.controlTab);
+	public static final Item pile_rod_lithium = new ItemPileRod("pile_rod_lithium").setCreativeTab(MainRegistry.controlTab);
+	public static final Item pile_rod_detector = new ItemPileRod("pile_rod_detector").setCreativeTab(MainRegistry.controlTab);
 
 	//That's a lot of rods
 	public static final Item rod_empty = new ItemBase("rod_empty").setCreativeTab(MainRegistry.controlTab);
@@ -3519,8 +3520,6 @@ public class ModItems {
 		for(Block block : ModBlocks.ALL_BLOCKS){
 			if(block instanceof ICustomBlockItem){
 				((ICustomBlockItem)block).registerItem();
-			} else if(block instanceof BlockFuel){
-				ForgeRegistries.ITEMS.register(new ItemFuelBlock(block).setRegistryName(block.getRegistryName()));
 			} else if(block instanceof BlockModDoor){
 			} else {
 				ForgeRegistries.ITEMS.register(new ItemBlock(block).setRegistryName(block.getRegistryName()));

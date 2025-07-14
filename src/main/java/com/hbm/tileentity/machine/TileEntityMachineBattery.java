@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityMachineBattery extends TileEntityMachineBase implements ITickable, IEnergyConductorMK2, IEnergyProviderMK2, IEnergyReceiverMK2, SimpleComponent, IGUIProvider {
 
 	public long[] log = new long[20];
@@ -263,6 +263,7 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 
 	@Override
 	public void serialize(ByteBuf buf) {
+		super.serialize(buf);
 		buf.writeLong(power);
 		buf.writeLong(delta);
 		buf.writeShort(redLow);
@@ -330,41 +331,50 @@ public class TileEntityMachineBattery extends TileEntityMachineBase implements I
 	// opencomputers interface
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "battery";
 	}
 
 	@Callback(doc = "getPower(); returns the current power level - long")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getPower(Context context, Arguments args) {
 		return new Object[] {power};
 	}
 
 	@Callback(doc = "getMaxPower(); returns the maximum power level - long")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getMaxPower(Context context, Arguments args) {
 		return new Object[] {getMaxPower()};
 	}
 
 	@Callback(doc = "getChargePercent(); returns the charge in percent - double")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getChargePercent(Context context, Arguments args) {
 		return new Object[] {100D * getPower()/(double)getMaxPower()};
 	}
 
 	@Callback(doc = "getPowerDelta(); returns the in/out power flow - long")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getPowerDelta(Context context, Arguments args) {
 		return new Object[] {delta};
 	}
 
 	@Callback(doc = "getPriority(); returns the priority (1:low, 2:normal, 3:high) - int")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getPriority(Context context, Arguments args) {
-		return new Object[] {1+getPriority().ordinal()};
+		return new Object[] {getPriority().ordinal()};
 	}
 
 	@Callback(doc = "setPriority(int prio); sets the priority (1:low, 2:normal, 3:high)")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setPriority(Context context, Arguments args) {
-		int prio = args.checkInteger(0);
-		if(prio == 1) priority = ConnectionPriority.LOW;
-		if(prio == 2) priority = ConnectionPriority.NORMAL;
-		if(prio == 3) priority = ConnectionPriority.HIGH;
+        switch (args.checkInteger(0)) {
+            case 1 -> priority = ConnectionPriority.LOW;
+            case 2 -> priority = ConnectionPriority.NORMAL;
+            case 3 -> priority = ConnectionPriority.HIGH;
+			default -> throw new IllegalArgumentException("Invalid priority level");
+        }
 		return new Object[] {null};
 	}
 

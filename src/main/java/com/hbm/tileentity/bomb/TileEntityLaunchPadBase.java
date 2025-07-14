@@ -67,7 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IFluidStandardReceiver, IGUIProvider, IRadarCommandReceiver, SimpleComponent, CompatHandler.OCComponent, IFluidCopiable {
 	
 	/** Automatic instantiation of generic missiles, i.e. everything that both extends EntityMissileBaseNT and needs a designator */
@@ -480,19 +480,19 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 
 	// do some opencomputer stuff
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "ntm_launch_pad";
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyInfo(Context context, Arguments args) {
 		return new Object[] {getPower(), getMaxPower()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getFluid(Context context, Arguments args) {
 		return new Object[] {
 				this.tanks[0].getFill(), this.tanks[0].getMaxFill(), this.tanks[0].getTankType().getTranslationKey(),
@@ -501,13 +501,13 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] canLaunch(Context context, Arguments args) {
 		return new Object[] {canLaunch()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getTier(Context context, Arguments args) {
 		if(!isMissileValid())
 			return new Object[] {};
@@ -526,7 +526,7 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	}
 
 	@Callback
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] launch(Context context, Arguments args) {
 		if(canLaunch()) {
 			return new Object[] {sendCommandPosition(args.checkInteger(0), -1 /*unused anyway*/, args.checkInteger(1))};
@@ -535,7 +535,7 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String[] methods() {
 		return new String[] {
 				"getEnergyInfo",
@@ -547,7 +547,7 @@ public abstract class TileEntityLaunchPadBase extends TileEntityMachineBase impl
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
         return switch (method) {
             case ("getEnergyInfo") -> getEnergyInfo(context, args);

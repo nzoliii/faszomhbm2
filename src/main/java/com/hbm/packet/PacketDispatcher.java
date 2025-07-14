@@ -42,8 +42,6 @@ public class PacketDispatcher {
 		wrapper.registerMessage(TEFluidTypePacketTest.Handler.class, TEFluidTypePacketTest.class, i++, Side.CLIENT);
 		//Packet for updating the bomber flying sound, I think
 		wrapper.registerMessage(LoopedEntitySoundPacket.Handler.class, LoopedEntitySoundPacket.class, i++, Side.CLIENT);
-		//Missile type for render sync with client
-		wrapper.registerMessage(TEMissilePacket.Handler.class, TEMissilePacket.class, i++, Side.CLIENT);
 		//Packet for sending designator data to server
 		wrapper.registerMessage(ItemDesignatorPacket.Handler.class, ItemDesignatorPacket.class, i++, Side.SERVER);
 		//New particle packet
@@ -127,6 +125,7 @@ public class PacketDispatcher {
 		wrapper.registerMessage(ControlPanelUpdatePacket.Handler.class, ControlPanelUpdatePacket.class, i++, Side.CLIENT);
 // 		wrapper.registerMessage(ControlPanelLinkerServerPacket.Handler.class, ControlPanelUpdatePacket.class, i++, Side.SERVER);
 //		wrapper.registerMessage(ControlPanelLinkerClientPacket.Handler.class, ControlPanelUpdatePacket.class, i++, Side.CLIENT);
+		wrapper.registerMessage(SetSubChunkAirPacket.Handler.class, SetSubChunkAirPacket.class, i++, Side.CLIENT);
 	}
 	
 	public static void sendTo(IMessage message, EntityPlayerMP player){

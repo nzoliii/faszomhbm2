@@ -94,7 +94,7 @@ public class TileEntityLaunchPadLarge extends TileEntityLaunchPadBase {
 					}
 					
 					// if there is no missile or the missile isn't ready (i.e. the erector hasn't returned to zero position yet), retract
-					if(inventory.getStackInSlot(0) == null || !readyToLoad) {
+					if(inventory.getStackInSlot(0).isEmpty() || !readyToLoad) {
 						//fold back erector
 						if(erector < 90F) {
 							erector = Math.min(erector + erectorSpeed, 90F);
@@ -114,7 +114,7 @@ public class TileEntityLaunchPadLarge extends TileEntityLaunchPadBase {
 					
 					//only extend if the erector isn't up yet and the missile can be loaded
 					if(!erected && readyToLoad) {
-						this.state = this.STATE_LOADING;
+						this.state = STATE_LOADING;
 						
 						//first, rotate the erector
 						if(erector != 0F) {

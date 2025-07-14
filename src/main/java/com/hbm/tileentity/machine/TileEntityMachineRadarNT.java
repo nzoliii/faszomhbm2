@@ -65,7 +65,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityMachineRadarNT extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, IGUIProvider, IConfigurableMachine, IControlReceiver, SimpleComponent, CompatHandler.OCComponent {
 
 	public boolean scanMissiles = true;
@@ -628,25 +628,25 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	//OC compat!
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "ntm_radar";
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getSettings(Context context, Arguments args) {
 		return new Object[] {scanMissiles, scanShells, scanPlayers, smartMode};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getRange(Context context, Arguments args) {
 		return new Object[] {this.getRange()};
 	}
 
 	@Callback(direct = true, limit = 4)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setSettings(Context context, Arguments args) {
 		this.scanMissiles = args.checkBoolean(0);
 		this.scanShells = args.checkBoolean(1);
@@ -656,25 +656,25 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyInfo(Context context, Arguments args) {
 		return new Object[] {getPower(), getMaxPower()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] isJammed(Context context, Arguments args) {
 		return new Object[] {this.jammed};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getAmount(Context context, Arguments args) {
 		return new Object[] {entries.size()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] isIndexPlayer(Context context, Arguments args) {
 		int index = args.checkInteger(0) - 1;
 		if(index > entries.size() || index < 0) {
@@ -685,7 +685,7 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getIndexType(Context context, Arguments args) {
 		int index = args.checkInteger(0) - 1;
 		if(index > entries.size() || index < 0) {
@@ -696,7 +696,7 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getEntityAtIndex(Context context, Arguments args) {
 		int index = args.checkInteger(0) - 1;
 		if(index > entries.size() || index < 0) {
@@ -711,7 +711,7 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String[] methods() {
 		return new String[] {
 				"getSettings",
@@ -727,7 +727,7 @@ public class TileEntityMachineRadarNT extends TileEntityMachineBase implements I
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
 		switch(method) {
 			case ("getSettings"):

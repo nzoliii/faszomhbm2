@@ -1,27 +1,31 @@
 package com.hbm.blocks.generic;
 
-import com.hbm.blocks.BlockBase;
+import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
-public class BlockFuel extends BlockBase {
+public class BlockFuel extends BlockMeta {
 
-	private int burntime;
 	public int encouragement;
 	public int flammability;
 	
-	public BlockFuel(Material m, String s, int en, int flam, int burntime){
+	public BlockFuel(Material m, String s, int en, int flam){
 		super(m, s);
 		this.encouragement = en;
 		this.flammability = flam;
-		this.burntime = burntime;
 	}
 
-	public int getBurnTime(){
-		return burntime;
+	public BlockFuel(Material m, String s, int en, int flam, SoundType type, short metaCount){
+		super(m, type, s, metaCount);
+		this.encouragement = en;
+		this.flammability = flam;
 	}
 	
 	@Override
@@ -42,5 +46,24 @@ public class BlockFuel extends BlockBase {
 	@Override
 	public boolean isFireSource(World world, BlockPos pos, EnumFacing side){
 		return true;
+	}
+
+	@Override
+	public void registerItem() {
+		ItemBlock itemBlock = new BlockFuelMetaItem(this);
+		itemBlock.setRegistryName(this.getRegistryName());
+		if (getShowMetaInCreative()) itemBlock.setCreativeTab(this.getCreativeTab());
+		ForgeRegistries.ITEMS.register(itemBlock);
+	}
+
+	public static class BlockFuelMetaItem extends BlockMeta.MetaBlockItem {
+		public BlockFuelMetaItem(Block block) {
+			super(block);
+		}
+
+		@Override
+		public String getTranslationKey(ItemStack stack) {
+			return this.block.getTranslationKey();
+		}
 	}
 }

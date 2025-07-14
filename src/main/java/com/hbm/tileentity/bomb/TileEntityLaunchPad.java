@@ -20,7 +20,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityLaunchPad extends TileEntityLaunchPadBase {
 
     public int clearingTimer = 0;
@@ -98,12 +97,13 @@ public class TileEntityLaunchPad extends TileEntityLaunchPadBase {
     }
 
     @Override
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "launchpad";
     }
 
     @Callback(doc = "setTarget(x:int, z:int):boolean; Sets coordinates in the installed designator item.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setTarget(Context context, Arguments args) {
         ItemStack designatorStack = inventory.getStackInSlot(1);
         if (!designatorStack.isEmpty() && designatorStack.getItem() instanceof IDesignatorItem) {
@@ -118,13 +118,13 @@ public class TileEntityLaunchPad extends TileEntityLaunchPadBase {
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String[] methods() {
         return new String[]{"getEnergyInfo", "canLaunch", "launch", "setTarget"};
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] invoke(String method, Context context, Arguments args) throws Exception {
         return switch (method) {
             case "getEnergyInfo" -> getEnergyInfo(context, args);

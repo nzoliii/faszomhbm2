@@ -38,17 +38,12 @@ public abstract class BlockDummyableMBB extends BlockDummyable {
 				for(int y = y1; y <= y2; y++) {
 					for(int z = z1; z <= z2; z++) {
 						BlockPos pos = new BlockPos(x, y, z);
-						List<AxisAlignedBB> blockBBs = blocks.get(pos);
-						if(blockBBs == null){
-							blockBBs = new ArrayList<>();
-							blocks.put(pos, blockBBs);
-						}
-						AxisAlignedBB blockBB = clampToPos(box, pos).offset(-pos.getX(), -pos.getY(), -pos.getZ());
+                        List<AxisAlignedBB> blockBBs = blocks.computeIfAbsent(pos, k -> new ArrayList<>());
+                        AxisAlignedBB blockBB = clampToPos(box, pos).offset(-pos.getX(), -pos.getY(), -pos.getZ());
 						if(volume(blockBB) == 0){
-							if(blockBBs.size() == 0)
+							if(blockBBs.isEmpty())
 								blocks.remove(pos);
-							continue;
-						} else if(FULL_BLOCK_AABB.equals(blockBB)){
+                        } else if(FULL_BLOCK_AABB.equals(blockBB)){
 							blockBBs.add(FULL_BLOCK_AABB);
 						} else {
 							blockBBs.add(blockBB);

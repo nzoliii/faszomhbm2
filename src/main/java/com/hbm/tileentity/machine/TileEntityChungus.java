@@ -50,7 +50,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityChungus extends TileEntityLoadedBase implements ITickable, IFluidStandardTransceiver, SimpleComponent, IEnergyProviderMK2, CompatHandler.OCComponent, IFluidCopiable, IConfigurableMachine, IFFtoNTMF {
 
 	public long power;
@@ -317,12 +317,6 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
-	public String getComponentName() {
-		return "ntm_turbine";
-	}
-
-	@Override
 	public void onChunkUnload() {
 		super.onChunkUnload();
 
@@ -342,33 +336,39 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 		}
 	}
 
+	@Override
+	@Optional.Method(modid = "opencomputers")
+	public String getComponentName() {
+		return "ntm_turbine";
+	}
+
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getFluid(Context context, Arguments args) {
 		return new Object[] {tanks[0].getFill(), tanks[0].getMaxFill(), tanks[1].getFill(), tanks[1].getMaxFill()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getType(Context context, Arguments args) {
 		return CompatHandler.steamTypeToInt(tanks[1].getTankType());
 	}
 
 	@Callback(direct = true, limit = 4)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setType(Context context, Arguments args) {
 		tanks[0].setTankType(CompatHandler.intToSteamType(args.checkInteger(0)));
 		return new Object[] {};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getInfo(Context context, Arguments args) {
 		return new Object[] {tanks[0].getFill(), tanks[0].getMaxFill(), tanks[1].getFill(), tanks[1].getMaxFill(), CompatHandler.steamTypeToInt(tanks[0].getTankType())};
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String[] methods() {
 		return new String[] {
 				"getFluid",
@@ -379,20 +379,16 @@ public class TileEntityChungus extends TileEntityLoadedBase implements ITickable
 	}
 
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] invoke(String method, Context context, Arguments args) throws Exception {
-		switch(method) {
-			case ("getFluid"):
-				return getFluid(context, args);
-			case ("getType"):
-				return getType(context, args);
-			case ("setType"):
-				return setType(context, args);
-			case ("getInfo"):
-				return getInfo(context, args);
-		}
-		throw new NoSuchMethodException();
-	}
+        return switch (method) {
+            case ("getFluid") -> getFluid(context, args);
+            case ("getType") -> getType(context, args);
+            case ("setType") -> setType(context, args);
+            case ("getInfo") -> getInfo(context, args);
+            default -> throw new NoSuchMethodException();
+        };
+    }
 
 	@Override
 	public FluidTankNTM[] getSendingTanks() {

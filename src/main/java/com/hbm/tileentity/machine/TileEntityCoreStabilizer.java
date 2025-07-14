@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityCoreStabilizer extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2, SimpleComponent, IGUIProvider, CompatHandler.OCComponent {
 
     public static final long maxPower = 2500000000L;
@@ -192,34 +192,34 @@ public class TileEntityCoreStabilizer extends TileEntityMachineBase implements I
 
     // do some opencomputer stuff
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "dfc_stabilizer";
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getEnergyInfo(Context context, Arguments args) {
         return new Object[]{getPower(), getMaxPower()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInput(Context context, Arguments args) {
         return new Object[]{watts};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getDurability(Context context, Arguments args) {
-        if (getLensSlot() != null && getLensSlot().getItem() == ModItems.ams_lens && ItemLens.getLensDamage(getLensSlot()) < ((ItemLens) ModItems.ams_lens).maxDamage) {
+        if (getLensSlot().getItem() == ModItems.ams_lens && ItemLens.getLensDamage(getLensSlot()) < ((ItemLens) ModItems.ams_lens).maxDamage) {
             return new Object[]{ItemLens.getLensDamage(getLensSlot())};
         }
         return new Object[]{"N/A"};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInfo(Context context, Arguments args) {
         Object lens_damage_buf;
         if (!getLensSlot().isEmpty() && getLensSlot().getItem() == ModItems.ams_lens && ItemLens.getLensDamage(getLensSlot()) < ((ItemLens) ModItems.ams_lens).maxDamage) {
@@ -231,7 +231,7 @@ public class TileEntityCoreStabilizer extends TileEntityMachineBase implements I
     }
 
     @Callback(direct = true, limit = 4)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setInput(Context context, Arguments args) {
         int newOutput = args.checkInteger(0);
         watts = MathHelper.clamp(newOutput, 0, 100);

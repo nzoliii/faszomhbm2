@@ -1,110 +1,87 @@
 package com.hbm.blocks.machine.pile;
 
 import com.hbm.api.block.IToolable;
-import com.hbm.blocks.ModBlocks;
+import com.hbm.blocks.generic.BlockMeta;
 import com.hbm.items.ModItems;
+import com.hbm.lib.RefStrings;
+import com.hbm.render.block.BlockBakeFrame;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockGraphiteRod extends BlockGraphiteDrilledBase implements IToolable {
-
-	public static final PropertyBool OUT = PropertyBool.create("out");
 	
 	public BlockGraphiteRod(String s){
 		super(s);
+		this.blockFrames = new BlockBakeFrame[16];
+		for (int meta = 0; meta < 16; meta++) {
+			boolean isAluminum = (meta & 4) != 0;
+			boolean isOut = (meta & 8) != 0;
+			String front;
+			if (isAluminum) {
+				front = isOut ? "block_graphite_rod_out_aluminum" : "block_graphite_rod_in_aluminum";
+			} else {
+				front = isOut ? "block_graphite_rod_out" : "block_graphite_rod_in";
+			}
+			this.blockFrames[meta] = new BlockBakeFrame(front, "block_graphite", front);
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerSprite(TextureMap map) {
+		super.registerSprite(map);
+		map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/" + "block_graphite_rod_out_aluminum"));
+		map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/" + "block_graphite_rod_in_aluminum"));
+		map.registerSprite(new ResourceLocation(RefStrings.MODID, "blocks/" + "block_graphite_rod_out"));
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ){
-		if(player.isSneaking())
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+		if (player.isSneaking())
 			return false;
-		
-		EnumFacing.Axis axis = state.getValue(AXIS);
-		boolean out = state.getValue(OUT);
 
-		if(facing.getAxis() == axis) {
-			
-			if(world.isRemote)
+		int oldMeta = getMetaFromState(state);
+		int newMeta = oldMeta ^ 8; // toggle bit #4
+		int pureMeta = oldMeta & 3;
+
+		int sideIdx = side.getIndex();
+		if (sideIdx == pureMeta * 2 || sideIdx == pureMeta * 2 + 1) {
+			if (world.isRemote)
 				return true;
-			
-			world.setBlockState(pos, state.withProperty(AXIS, axis).withProperty(OUT, !out));
-			
-			world.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F, !out ? 0.75F : 0.65F);
-			
-			int oX = axis == EnumFacing.Axis.X ? 1 : 0;
-			int oY = axis == EnumFacing.Axis.Y ? 1 : 0;
-			int oZ = axis == EnumFacing.Axis.Z ? 1 : 0;
-			for(int i = -1; i <= 1; i += 1) {
-				
-				int ix = pos.getX() + oX * i;
-				int iy = pos.getY() + oY * i;
-				int iz = pos.getZ() + oZ * i;
-				
-				IBlockState state2 = world.getBlockState(new BlockPos(ix, iy, iz));
-				while(state2.getBlock() == this && state2.getValue(AXIS) == axis && state2.getValue(OUT) == out) {
-					
-					world.setBlockState(new BlockPos(ix, iy, iz), state2.withProperty(OUT, !out));
-					
-					ix += oX * i;
-					iy += oY * i;
-					iz += oZ * i;
+
+			world.setBlockState(pos, state.withProperty(BlockMeta.META, newMeta), 3);
+
+			world.playSound(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
+					SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3F,
+					pureMeta == (oldMeta & 11) ? 0.75F : 0.65F);
+
+			for (int i = -1; i <= 1; i++) {
+				BlockPos iPos = pos.offset(side, i);
+				while (world.getBlockState(iPos).getBlock() == this &&
+						getMetaFromState(world.getBlockState(iPos)) == oldMeta) {
+					world.setBlockState(iPos, world.getBlockState(iPos).withProperty(BlockMeta.META, newMeta), 3);
+					iPos = iPos.offset(side, i);
 				}
 			}
-			
 			return true;
 		}
-		
 		return false;
 	}
-	
-	@Override
-	public boolean onScrew(World world, EntityPlayer player, int x, int y, int z, EnumFacing side, float fX, float fY, float fZ, EnumHand e, ToolType tool) {
-		
-		if(tool != ToolType.SCREWDRIVER)
-			return false;
-		
-		if(!world.isRemote) {
 
-			EnumFacing.Axis axis = world.getBlockState(new BlockPos(x, y, z)).getValue(AXIS);
-			
-			if(side.getAxis() == axis) {
-				world.setBlockState(new BlockPos(x, y, z), ModBlocks.block_graphite_drilled.getDefaultState().withProperty(AXIS, axis), 3);
-				ejectItem(world, x, y, z, side, new ItemStack(ModItems.pile_rod_boron));
-			}
-		}
-		
-		return true;
-	}
-	
 	@Override
-	public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune){
-		super.getDrops(drops, world, pos, state, fortune);
-		drops.add(new ItemStack(ModItems.pile_rod_boron));
-	}
-	
-	@Override
-	protected BlockStateContainer createBlockState(){
-		return new BlockStateContainer(this, AXIS, OUT);
-	}
-	
-	@Override
-	public int getMetaFromState(IBlockState state){
-		return super.getMetaFromState(state) | (state.getValue(OUT) ? 4 : 0);
-	}
-	
-	@Override
-	public IBlockState getStateFromMeta(int meta){
-		return this.getDefaultState().withProperty(AXIS, EnumFacing.Axis.values()[meta&3]).withProperty(OUT, (meta&4) > 0);
+	protected ItemStack getInsertedItem() {
+		return new ItemStack(ModItems.pile_rod_boron);
 	}
 }

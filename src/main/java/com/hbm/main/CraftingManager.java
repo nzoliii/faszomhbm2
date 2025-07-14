@@ -2118,11 +2118,6 @@ public class CraftingManager {
 		add1To9Pair(ModItems.powder_boron, ModItems.powder_boron_tiny);
 		add1To9Pair(ModBlocks.block_graphite, ModItems.ingot_graphite);
 		add1To9Pair(ModBlocks.block_coke, ModItems.coke);
-		add1To9Pair(ModBlocks.block_lignite, ModItems.lignite);
-		add1To9Pair(ModBlocks.block_coal_infernal, ModItems.coal_infernal);
-		add1To9Pair(ModBlocks.block_solid_fuel, ModItems.solid_fuel);
-		add1To9Pair(ModBlocks.block_solid_fuel_presto, ModItems.solid_fuel_presto);
-		add1To9Pair(ModBlocks.block_solid_fuel_presto_triplet, ModItems.solid_fuel_presto_triplet);
 
 		add1To9Pair(ModItems.ingot_osmiridium, ModItems.nugget_osmiridium);
 		add1To9Pair(ModItems.ingot_radspice, ModItems.nugget_radspice);
@@ -3224,16 +3219,16 @@ public class CraftingManager {
 
 		boolean shouldUseOD = false;
 		boolean patternEnded = false;
-		for(int i = 0; i < args.length; i++) {
-			if(args[i] instanceof String) {
-				if(patternEnded) {
-					shouldUseOD = true;
-					break;
-				}
-			} else {
-				patternEnded = true;
-			}
-		}
+        for (Object arg : args) {
+            if (arg instanceof String) {
+                if (patternEnded) {
+                    shouldUseOD = true;
+                    break;
+                }
+            } else {
+                patternEnded = true;
+            }
+        }
 
 		ResourceLocation loc = getRecipeName(output);
 		IRecipe recipe;
@@ -3250,13 +3245,13 @@ public class CraftingManager {
 	public static void addShapelessAuto(ItemStack output, Object... args) {
 
 		boolean shouldUseOD = false;
-		
-		for(int i = 0; i < args.length; i ++) {		
-			if(args[i] instanceof String) {
-				shouldUseOD = true;
-				break;
-			}
-		}
+
+        for (Object arg : args) {
+            if (arg instanceof String) {
+                shouldUseOD = true;
+                break;
+            }
+        }
 
 		ResourceLocation loc = getRecipeName(output);
 		IRecipe recipe;

@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -21,8 +22,8 @@ import java.util.Random;
 public class MudBlock extends BlockFluidClassic {
 
 	public static DamageSource damageSource;
-	public Random rand = new Random();
-	
+	private final Random rand = new Random();
+
 	public MudBlock(Fluid fluid, Material material, DamageSource d, String s) {
 		super(fluid, material);
 		damageSource = d;
@@ -42,7 +43,7 @@ public class MudBlock extends BlockFluidClassic {
 		}
 		return super.canDisplace(world, pos);
 	}
-	
+
 	@Override
 	public boolean displaceIfPossible(World world, BlockPos pos) {
 		if (world.getBlockState(pos).getMaterial().isLiquid()) {
@@ -55,7 +56,7 @@ public class MudBlock extends BlockFluidClassic {
 	public void onEntityCollision(World worldIn, BlockPos pos, IBlockState state, Entity entity) {
 		entity.setInWeb();
 
-		if (entity instanceof EntityPlayer && ArmorUtil.checkForHazmat((EntityPlayer) entity)) {} else {
+		if (!(entity instanceof EntityPlayer && ArmorUtil.checkForHazmat((EntityPlayer) entity))) {
 			entity.attackEntityFrom(ModDamageSource.mudPoisoning, 8);
 		}
 	}
@@ -70,7 +71,7 @@ public class MudBlock extends BlockFluidClassic {
 		reactToBlocks2(world, pos.north());
 		super.updateTick(world, pos, state, rand);
 	}
-	
+
 	@Override
 	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighbourPos) {
 		reactToBlocks(world, pos.east());
@@ -81,89 +82,67 @@ public class MudBlock extends BlockFluidClassic {
 		reactToBlocks(world, pos.north());
 		super.neighborChanged(state, world, pos, neighborBlock, neighbourPos);
 	}
-	
+
 	public void reactToBlocks(World world, BlockPos pos) {
-		if(world.getBlockState(pos).getMaterial() != ModBlocks.fluidmud) {
-			IBlockState block = world.getBlockState(pos);
-			
-			if(block.getMaterial().isLiquid()) {
+		if (world.getBlockState(pos).getMaterial() != ModBlocks.fluidmud) {
+			IBlockState blockState = world.getBlockState(pos);
+			if (blockState.getMaterial().isLiquid()) {
 				world.setBlockToAir(pos);
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void reactToBlocks2(World world, BlockPos pos) {
-		if(world.getBlockState(pos).getMaterial() != ModBlocks.fluidmud) {
-			IBlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
+		IBlockState state = world.getBlockState(pos);
+		if (state.getMaterial() == ModBlocks.fluidmud) {
+			return;
+		}
 
-			if (block == Blocks.STONE || 
-					block == Blocks.STONE_BRICK_STAIRS || 
-					block == Blocks.STONEBRICK || 
-					block == Blocks.STONE_SLAB || 
-					block == Blocks.STONE) {
-				if(rand.nextInt(20) == 0)
+		Block block = state.getBlock();
+		ResourceLocation rl = block.getRegistryName();
+		String blockName = (rl != null ? rl.getPath() : "");
+		String matName = state.getMaterial().toString();
+		switch (blockName) {
+			case "stone_brick_stairs", "stonebrick", "stone_slab", "stone" -> {
+				if (rand.nextInt(20) == 0) {
 					world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
-			} else if (block == Blocks.COBBLESTONE) {
-				if(rand.nextInt(15) == 0)
+				}
+			}
+			case "cobblestone" -> {
+				if (rand.nextInt(15) == 0) {
 					world.setBlockState(pos, Blocks.GRAVEL.getDefaultState());
-			} else if (block == Blocks.SANDSTONE) {
-				if(rand.nextInt(5) == 0)
+				}
+			}
+			case "sandstone" -> {
+				if (rand.nextInt(5) == 0) {
 					world.setBlockState(pos, Blocks.SAND.getDefaultState());
-			} else if (block == Blocks.HARDENED_CLAY || 
-					block == Blocks.STAINED_HARDENED_CLAY) {
-				if(rand.nextInt(10) == 0)
+				}
+			}
+			case "hardened_clay", "stained_hardened_clay" -> {
+				if (rand.nextInt(10) == 0) {
 					world.setBlockState(pos, Blocks.CLAY.getDefaultState());
-			} else if (state.getMaterial() == Material.WOOD) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CACTUS) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CAKE) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CIRCUITS) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CLOTH) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CORAL) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.CRAFTED_SNOW) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.GLASS) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.GOURD) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.ICE) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.LEAVES) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.PACKED_ICE) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.PISTON) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.PLANTS) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.PORTAL) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.REDSTONE_LIGHT) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.SNOW) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.SPONGE) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.VINE) {
-				world.setBlockToAir(pos);
-			} else if (state.getMaterial() == Material.WEB) {
-				world.setBlockToAir(pos);
-			} else if (block.getExplosionResistance(null) < 1.2F) {
-				world.setBlockToAir(pos);
+				}
+			}
+			default -> {
+				switch (matName) {
+					case "WOOD", "CACTUS", "CAKE", "CIRCUITS", "CLOTH",
+						 "CORAL", "CRAFTED_SNOW", "GLASS", "GOURD",
+						 "ICE", "LEAVES", "PACKED_ICE", "PISTON",
+						 "PLANTS", "PORTAL", "REDSTONE_LIGHT", "SNOW",
+						 "SPONGE", "VINE", "WEB" -> world.setBlockToAir(pos);
+					default -> {
+						if (block.getExplosionResistance(null) < 1.2F) {
+							world.setBlockToAir(pos);
+						}
+					}
+				}
 			}
 		}
 	}
-	
+
 	@Override
 	public int tickRate(World world) {
 		return 15;
 	}
-	
 }

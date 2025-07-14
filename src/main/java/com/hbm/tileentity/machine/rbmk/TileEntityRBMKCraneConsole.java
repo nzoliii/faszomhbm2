@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements ITickable, SimpleComponent, IControllable {
 	
 	public int centerX;
@@ -421,16 +421,19 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	// opencomputers interface
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getName() {
 		return "rbmk_crane";
 	}
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "rbmk_crane";
 	}
 
 	@Callback(doc = "moveUp(); move the crane up 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveUp(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -444,6 +447,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveDown(); move the crane down 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveDown(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -457,6 +461,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveLeft(); move the crane left 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveLeft(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -470,6 +475,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveRight(); move the crane right 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveRight(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -483,6 +489,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveUpLeft(); move the crane up and left 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveUpLeft(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -496,6 +503,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveUpRight(); move the crane up and right 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveUpRight(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -509,6 +517,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveDownLeft(); move the crane down and left 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveDownLeft(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -522,6 +531,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "moveDownRight(); move the crane down and right 1 block")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] moveDownRight(Context context, Arguments args) {
 		if(setUpCrane) {
 			if(!isCraneLoading()){
@@ -535,6 +545,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "loadUnload(); starts loading/unloading of items")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] loadUnload(Context context, Arguments args) {
 		if (setUpCrane) {
 			if(!isCraneLoading()){
@@ -548,6 +559,7 @@ public class TileEntityRBMKCraneConsole extends TileEntityMachineBase implements
 	}
 
 	@Callback(doc = "getPos(); get the (x, y) crane displacements. 0,0 is at center rbmk column and y is to the front and x is to the right")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getPos(Context context, Arguments args) {
 		if (setUpCrane) 
 			return new Object[] {-posLeft, posFront};

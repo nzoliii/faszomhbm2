@@ -442,12 +442,7 @@ public class TileEntityBarrel extends TileEntityMachineBase implements
         if (i == 0 && stack.getItem() instanceof ItemForgeFluidIdentifier) {
             return true;
         }
-
-        if (i == 2) {
-            return true;
-        }
-
-        return false;
+        return i == 2;
     }
 
     @Override
@@ -457,49 +452,44 @@ public class TileEntityBarrel extends TileEntityMachineBase implements
 
     @Override
     public boolean canExtractItem(int slot, ItemStack itemStack, int amount) {
-        if (slot == 1) {
-            return true;
-        }
-
-        if (slot == 3) {
-            return true;
-        }
-
-        return false;
+        return switch (slot) {
+            case 1, 3 -> true;
+            default -> false;
+        };
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String getComponentName() {
         return "ntm_fluid_tank";
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getFluidStored(Context context, Arguments args) {
         return new Object[]{tankNew.getFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getMaxStored(Context context, Arguments args) {
         return new Object[]{tankNew.getMaxFill()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getTypeStored(Context context, Arguments args) {
         return new Object[]{tankNew.getTankType().getName()};
     }
 
     @Callback(direct = true)
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getInfo(Context context, Arguments args) {
         return new Object[]{tankNew.getFill(), tankNew.getMaxFill(), tankNew.getTankType().getName()};
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public String[] methods() {
         return new String[]{
                 "getFluidStored",
@@ -510,19 +500,15 @@ public class TileEntityBarrel extends TileEntityMachineBase implements
     }
 
     @Override
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] invoke(String method, Context context, Arguments args) throws Exception {
-        switch (method) {
-            case "getFluidStored":
-                return getFluidStored(context, args);
-            case "getMaxStored":
-                return getMaxStored(context, args);
-            case "getTypeStored":
-                return getTypeStored(context, args);
-            case "getInfo":
-                return getInfo(context, args);
-        }
-        throw new NoSuchMethodException();
+        return switch (method) {
+            case "getFluidStored" -> getFluidStored(context, args);
+            case "getMaxStored" -> getMaxStored(context, args);
+            case "getTypeStored" -> getTypeStored(context, args);
+            case "getInfo" -> getInfo(context, args);
+            default -> throw new NoSuchMethodException();
+        };
     }
 
     @Override

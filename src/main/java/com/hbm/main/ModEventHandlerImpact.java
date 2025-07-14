@@ -14,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent.CheckSpawn;
@@ -29,7 +28,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
 
@@ -141,24 +139,16 @@ public class ModEventHandlerImpact {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLoad(WorldEvent.Load event) {
-		
 		TomSaveData.resetLastCached();
 
 		if (event.getWorld().provider.getDimension() == 0) {
-			try {
-				WorldProviderEarth customProvider = new WorldProviderEarth();
-				customProvider.setWorld(event.getWorld());
-				customProvider.setDimension(0);
-				Field providerField = World.class.getDeclaredField("provider");
-				providerField.setAccessible(true);
-				providerField.set(event.getWorld(), customProvider);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			WorldProviderEarth customProvider = new WorldProviderEarth();
+			customProvider.setWorld(event.getWorld());
+			customProvider.setDimension(0);
+			event.getWorld().provider = customProvider;
 		}
 	}
 

@@ -1197,6 +1197,9 @@ public class ModEventHandler {
         System.out.println("Memory usage before: " + mem);
         CraftingManager.hack = e;
         CraftingManager.init();
+        // Load compatibility for OC.
+        // mlbv: this would throw an Exception if called at PostInit, at that time hack would be null.
+        CompatHandler.init();
         CraftingManager.hack = null;
         mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("Memory usage after: " + mem);

@@ -138,6 +138,10 @@ public class BlockMeta extends BlockBase implements ICustomBlockItem, IDynamicMo
         return this;
     }
 
+    protected boolean getShowMetaInCreative(){
+        return showMetaInCreative;
+    }
+
 
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
         int meta = state.getValue(META);

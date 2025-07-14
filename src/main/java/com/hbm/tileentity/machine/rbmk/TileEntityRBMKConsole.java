@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityRBMKConsole extends TileEntityMachineBase implements IControlReceiver, ITickable, SimpleComponent {
 
 	private int targetX;
@@ -618,11 +618,13 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	// opencomputers interface 
 
 	@Override
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "rbmk_console";
 	}
 
 	@Callback(direct = true, doc = "getColumnData(x:int, y:int); retrieves data for column @(x,y) 0,0 is in left bottom and y is up and x is right")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getColumnData(Context context, Arguments args) {
 		int x = args.checkInteger(0) - 7;
 		int y = -args.checkInteger(1) + 7;
@@ -684,6 +686,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "getRBMKPos(); retrieves position of connected center rbmk rod")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getRBMKPos(Context context, Arguments args) {
 		if(!(targetX == 0 && targetY== 0 && targetZ==0)){
 			LinkedHashMap<String, Integer> data_table = new LinkedHashMap<>();
@@ -697,6 +700,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "setLevel(level:double); set retraction of all control rods given 0≤level≤1")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setLevel(Context context, Arguments args) {
 		double new_level = args.checkDouble(0);
 		boolean foundRods = false;
@@ -722,6 +726,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "setColumnLevel(x:int, y:int, level:double); set retraction of control rod @(x,y) given 0≤level≤1")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setColumnLevel(Context context, Arguments args) {
 		int x = args.checkInteger(0) - 7;
 		int y = -args.checkInteger(1) + 7;
@@ -742,6 +747,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "setColorLevel(color:int, level:double); set retraction of control rods of color given 0≤level≤1. Color is (RED:0, YELLOW:1, GREEN:2, BLUE:3, PURPLE:4)")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setColorLevel(Context context, Arguments args) {
 		int color = args.checkInteger(0);
 		double new_level = args.checkDouble(1);
@@ -773,6 +779,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "setColor(x:int, y:int, color:int); set color of control rod @(x,y) where color is (RED:0, YELLOW:1, GREEN:2, BLUE:3, PURPLE:4)")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setColor(Context context, Arguments args) {
 		int x = args.checkInteger(0) - 7;
 		int y = -args.checkInteger(1) + 7;
@@ -792,6 +799,7 @@ public class TileEntityRBMKConsole extends TileEntityMachineBase implements ICon
 	}
 
 	@Callback(doc = "pressAZ5(); shut down EVERYTHING!!")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] pressAZ5(Context context, Arguments args) {
 		boolean hasRods = false;
 		for(int i = -7; i <= 7; i++) {

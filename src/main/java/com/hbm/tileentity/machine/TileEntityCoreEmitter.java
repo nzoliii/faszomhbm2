@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")})
+@Optional.InterfaceList({@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")})
 public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITickable, IEnergyReceiverMK2,  ILaserable, IFluidStandardReceiver, IGUIProvider, SimpleComponent, CompatHandler.OCComponent {
 
 	public long power;
@@ -305,50 +305,50 @@ public class TileEntityCoreEmitter extends TileEntityMachineBase implements ITic
 
 	// do some opencomputer stuff
 	@Override
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public String getComponentName() {
 		return "dfc_emitter";
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getEnergyInfo(Context context, Arguments args) {
 		return new Object[] {getPower(), getMaxPower()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getCryogel(Context context, Arguments args) {
 		return new Object[] {tank.getFill()};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getInput(Context context, Arguments args) {
 		return new Object[] {watts};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] getInfo(Context context, Arguments args) {
 		return new Object[] {getPower(), getMaxPower(), tank.getFill(), watts, isOn};
 	}
 
 	@Callback(direct = true)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] isActive(Context context, Arguments args) {
 		return new Object[] {isOn};
 	}
 
 	@Callback(direct = true, limit = 4)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setActive(Context context, Arguments args) {
 		isOn = args.checkBoolean(0);
 		return new Object[] {};
 	}
 
 	@Callback(direct = true, limit = 4)
-	@Optional.Method(modid = "OpenComputers")
+	@Optional.Method(modid = "opencomputers")
 	public Object[] setInput(Context context, Arguments args) {
 		int newOutput = args.checkInteger(0);
 		watts = MathHelper.clamp(newOutput, 0, 100);
