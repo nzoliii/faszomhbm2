@@ -1,5 +1,8 @@
 package com.hbm.fhbm2;
 
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
@@ -11,10 +14,6 @@ import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraftforge.fml.common.IWorldGenerator;
-
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
 
@@ -75,7 +74,7 @@ public class fhbm2GenerateUncleTedShed implements IWorldGenerator {
 
             template.addBlocksToWorld(world, position, settings);
         } else {
-            System.err.println("Structure template 'unabomber_shed' not found! Make sure the file is in assets/hbm/structures/");
+            System.err.println("[fhbm2GenerateUncleTedShed] Structure template 'unabomber_shed' not found! Make sure the file is in assets/hbm/structures/");
         }
     }
 }

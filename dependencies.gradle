@@ -58,4 +58,8 @@ dependencies {
     runtimeOnlyNonPublishable rfg.deobf("curse.maven:codechicken-lib-1-8-242818:2779848")
     //runtimeOnlyNonPublishable rfg.deobf("curse.maven:universal-tweaks-705000:6388731")
     runtimeOnlyNonPublishable rfg.deobf("curse.maven:configanytime-870276:5212709")
+
+    // fhbm2
+    runtimeOnlyNonPublishable rfg.deobf("curse.maven:betteradvancements-272515:2685984")
+    runtimeOnlyNonPublishable rfg.deobf("curse.maven:worldedit-225608:2941712")
 }

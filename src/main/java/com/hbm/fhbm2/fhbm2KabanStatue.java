@@ -11,6 +11,8 @@ import com.hbm.main.MainRegistry;
 import com.hbm.potion.HbmPotion;
 import com.hbm.saveddata.RadiationSavedData;
 import com.hbm.util.ContaminationUtil;
+import java.util.List;
+import java.util.Random;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -32,9 +34,6 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.List;
-import java.util.Random;
 
 public class fhbm2KabanStatue extends BlockBase {
 
@@ -182,11 +181,8 @@ public class fhbm2KabanStatue extends BlockBase {
             if (!players.isEmpty()) {
                 for (EntityPlayer player : players) {
                     if (fhbm2KabanTracker.hasPlayersAteFragment(player)) {
-                        // player.sendMessage(new TextComponentString("Fragment eaten, we do nothing."));
+                        // Fragment eaten, we do nothing.
                     } else {
-                        // player.sendMessage(new TextComponentString("Fragment not eaten yet, bewitching player."));
-
-                        // copper_pig_bewitches_the_clueless_player(player, worldIn, pos.getX(), pos.getY(), pos.getZ());
                         copper_pig_bewitches_the_clueless_player_and_makes_them_experience_very_bad_schizophrenic_hallucinations(player, worldIn, pos.getX(), pos.getY(), pos.getZ());
                     }
                 }

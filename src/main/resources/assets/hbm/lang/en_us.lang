@@ -2047,7 +2047,7 @@ hbm.achievement.progress_am241.desc=Murricaa fuck yeahh
 hbm.achievement.progress_am241=Americium
 hbm.achievement.progress_anvil.desc=Manual but efficient.
 hbm.achievement.progress_anvil=Anvil
-hbm.achievement.progress_assembler.desc=Wait, it's already 1 am?
+hbm.achievement.progress_assembler.desc=Wait, it's already 1 AM?
 hbm.achievement.progress_assembler=The Factory Grows
 hbm.achievement.progress_au198.desc=Lets make some jewelry!
 hbm.achievement.progress_au198=Hottest Gold
@@ -7932,6 +7932,8 @@ tile.dummy_plate_launch_table.name=Dummy
 tile.dummy_port_launch_table=Dummy
 tile.dummy_plate_cargo.name=Dummy
 tile.orbital_station.name=Orbital Station
+
+hbm.achievement.fhbm2_complete_msg=%s has completed %s
 
 hbm.achievement.fhbm2_copper_pig_bewitch=§6Bewitched
 hbm.achievement.fhbm2_copper_pig_bewitch.desc=§6He's in your mind.

@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.GuiModList;
-
 import java.io.IOException;
 
 public class fhbm2CustomMainMenu extends GuiMainMenu {
@@ -107,7 +106,7 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         if (button.id == 104) { mc.displayGuiScreen(new GuiLanguage(this, mc.gameSettings, mc.getLanguageManager())); }
         if (button.id == 105) { mc.displayGuiScreen(new GuiOptions(this, mc.gameSettings)); }
         if (button.id == 106) { mc.shutdown(); }
-        if (button.id == 107) { fhbm2MenuStateManager.setCustomMenuEnabled(false); mc.displayGuiScreen(new GuiMainMenu()); } else { super.actionPerformed(button); }
+        if (button.id == 107) { fhbm2CustomMainMenuStateManager.setCustomMenuEnabled(false); mc.displayGuiScreen(new GuiMainMenu()); } else { super.actionPerformed(button); }
     }
 
     @Override
@@ -122,18 +121,4 @@ public class fhbm2CustomMainMenu extends GuiMainMenu {
         RealmsBridge realmsbridge = new RealmsBridge();
         realmsbridge.switchToRealms(this);
     }
-
-//    Used to have extra links in the main menu for Wiki and Source Code,
-//    then I realized that it wouldn't fit in higher GUI scales, and I was lazy to fix it.
-//
-//    This was used to open the links. I just comment it in case I need it again.
-//
-//    private void openLink(String url) {
-//        try {
-//            Desktop.getDesktop().browse(new URI(url));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
 }

@@ -17,7 +17,7 @@ public class fhbm2CustomMainMenuLoader {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu
-                && fhbm2MenuStateManager.isCustomMenuEnabled()
+                && fhbm2CustomMainMenuStateManager.isCustomMenuEnabled()
                 && !customMenuDisplayed) {
 
             Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
@@ -32,7 +32,7 @@ public class fhbm2CustomMainMenuLoader {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onGuiInit(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.getGui() instanceof GuiMainMenu && !fhbm2MenuStateManager.isCustomMenuEnabled()) {
+        if (event.getGui() instanceof GuiMainMenu && !fhbm2CustomMainMenuStateManager.isCustomMenuEnabled()) {
             int yOffset = event.getGui().height / 4 + 48;
             event.getButtonList().add(new GuiButton(108, event.getGui().width / 2 + 104, yOffset + 84, 20, 20, "SM"));
         }
@@ -42,7 +42,7 @@ public class fhbm2CustomMainMenuLoader {
     @SubscribeEvent
     public void onGuiButtonPress(GuiScreenEvent.ActionPerformedEvent.Post event) {
         if (event.getButton().id == 108 && event.getGui() instanceof GuiMainMenu) {
-            fhbm2MenuStateManager.setCustomMenuEnabled(true);
+            fhbm2CustomMainMenuStateManager.setCustomMenuEnabled(true);
             Minecraft.getMinecraft().displayGuiScreen(new fhbm2CustomMainMenu());
         }
     }

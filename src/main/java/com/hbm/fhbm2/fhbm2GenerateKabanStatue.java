@@ -1,6 +1,9 @@
 package com.hbm.fhbm2;
 
 import com.hbm.lib.RefStrings;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -10,10 +13,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
 import net.minecraftforge.fml.common.IWorldGenerator;
-
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 public class fhbm2GenerateKabanStatue implements IWorldGenerator {
 
@@ -81,7 +80,7 @@ public class fhbm2GenerateKabanStatue implements IWorldGenerator {
             template.addBlocksToWorld(world, adjustedPos, settings);
             System.out.println("Generated structure: " + KABAN_STATUE + " at " + adjustedPos);
         } else {
-            System.err.println("Could not find structure: " + KABAN_STATUE);
+            System.err.println("[fhbm2GenerateKabanStatue] Could not find structure: " + KABAN_STATUE);
         }
     }
 }

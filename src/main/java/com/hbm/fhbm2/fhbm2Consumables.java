@@ -1,31 +1,28 @@
 package com.hbm.fhbm2;
 
-import java.util.List;
-import java.util.UUID;
-
-import com.hbm.config.VersatileConfig;
-import com.hbm.items.ModItems;
 import com.hbm.config.BombConfig;
+import com.hbm.config.VersatileConfig;
 import com.hbm.entity.effect.EntityNukeTorex;
 import com.hbm.entity.logic.EntityNukeExplosionMK5;
+import com.hbm.items.ModItems;
 import com.hbm.main.AdvancementManager;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.entity.player.EntityPlayer;
+import com.hbm.util.ContaminationUtil.ContaminationType;
+import com.hbm.util.ContaminationUtil.HazardType;
+import com.hbm.util.ContaminationUtil;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraft.item.ItemFood;
-import com.hbm.util.ContaminationUtil;
-import com.hbm.util.ContaminationUtil.ContaminationType;
-import com.hbm.util.ContaminationUtil.HazardType;
 
 public class fhbm2Consumables extends ItemFood {
-
-    fhbm2KabanTracker kabanTracker;
 
     public fhbm2Consumables(int hunger, String s) {
         super(hunger, false);

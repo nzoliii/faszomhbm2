@@ -1,11 +1,10 @@
 package com.hbm.fhbm2;
 
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.function.Consumer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class fhbm2Scheduler {
 

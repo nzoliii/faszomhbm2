@@ -1,13 +1,12 @@
 package com.hbm.fhbm2;
 
-import org.lwjgl.opengl.Display;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
+import org.lwjgl.opengl.Display;
 
 public class fhbm2Window {
 
@@ -21,10 +20,8 @@ public class fhbm2Window {
 
     public static void apply(String title, String iconPath16, String iconPath32) {
         try {
-            // Set the title
             Display.setTitle(title);
 
-            // Load and set the icon(s)
             List<ByteBuffer> icons = new ArrayList<>();
 
             icons.add(loadIcon(iconPath16));
@@ -55,10 +52,10 @@ public class fhbm2Window {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF)); // Red
-                buffer.put((byte) ((pixel >> 8) & 0xFF));  // Green
-                buffer.put((byte) (pixel & 0xFF));         // Blue
-                buffer.put((byte) ((pixel >> 24) & 0xFF)); // Alpha
+                buffer.put((byte) ((pixel >> 16) & 0xFF));
+                buffer.put((byte) ((pixel >> 8) & 0xFF));
+                buffer.put((byte) (pixel & 0xFF));
+                buffer.put((byte) ((pixel >> 24) & 0xFF));
             }
         }
         buffer.flip();

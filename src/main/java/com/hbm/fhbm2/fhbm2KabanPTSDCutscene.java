@@ -1,5 +1,7 @@
 package com.hbm.fhbm2;
 
+import java.io.IOException;
+import java.util.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,13 +15,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
-import java.util.*;
-
 public class fhbm2KabanPTSDCutscene {
 
     private static final int TOTAL_FRAMES = 30;
-    private static final int FRAME_INTERVAL_TICKS = 2; // 10 FPS
+    private static final int FRAME_INTERVAL_TICKS = 2;
     private static final String BASE_PATH = "textures/gui/kabanptsd_cutscene/kabanptsd";
 
     private static final Map<UUID, Integer> frameIndices = new HashMap<>();
@@ -80,7 +79,7 @@ public class fhbm2KabanPTSDCutscene {
 
         int frame = frameIndices.getOrDefault(playerId, 0);
         ResourceLocation texture = getFrameResource(frame);
-        if (texture == null) return; // Skip if neither format exists
+        if (texture == null) return;
 
         mc.getTextureManager().bindTexture(texture);
 
@@ -116,21 +115,19 @@ public class fhbm2KabanPTSDCutscene {
         Minecraft mc = Minecraft.getMinecraft();
         String padded = String.format("%02d", frameNumber);
 
-        // Try PNG
         ResourceLocation png = new ResourceLocation("hbm", BASE_PATH + padded + ".png");
         try {
             mc.getResourceManager().getResource(png);
             return png;
         } catch (IOException ignored) {}
 
-        // Try JPG
         ResourceLocation jpg = new ResourceLocation("hbm", BASE_PATH + padded + ".jpg");
         try {
             mc.getResourceManager().getResource(jpg);
             return jpg;
         } catch (IOException ignored) {}
 
-        return null; // Neither exists
+        return null;
     }
 
     @SubscribeEvent

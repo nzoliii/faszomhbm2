@@ -15,7 +15,6 @@ public class fhbm2CutsceneItemTracker {
         if (event.phase != TickEvent.Phase.END) return;
 
         EntityPlayer player = event.player;
-        // System.out.println("Tick for player: " + player.getName());
 
         checkHoldingKeyAndTriggerCutscene(player);
         checkHoldingFleshTrigger(player);
@@ -35,7 +34,6 @@ public class fhbm2CutsceneItemTracker {
 
                 fhbm2KabanTracker.setPlayersHavingVisions(player, true);
                 playerHasVisionsFromTouchingTheKey(player);
-
             }
         }
     }
@@ -54,7 +52,6 @@ public class fhbm2CutsceneItemTracker {
 
                 fhbm2KabanTracker.setPlayersHavingFleshVisions(player, true);
                 playerSeesTheFlesh(player);
-
             }
         }
     }

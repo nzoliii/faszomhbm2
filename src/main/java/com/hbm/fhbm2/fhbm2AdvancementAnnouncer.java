@@ -1,5 +1,6 @@
 package com.hbm.fhbm2;
 
+import com.hbm.lib.RefStrings;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -7,11 +8,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
 import java.util.*;
 
 public class fhbm2AdvancementAnnouncer {
@@ -32,7 +33,7 @@ public class fhbm2AdvancementAnnouncer {
         Iterable<Advancement> allAdvancements = server.getAdvancementManager().getAdvancements();
 
         for (Advancement adv : allAdvancements) {
-            if (!adv.getId().getNamespace().equals("hbm")) continue;
+            if (!adv.getId().getNamespace().equals(RefStrings.MODID)) continue;
 
             if (!player.getAdvancements().getProgress(adv).isDone()) continue;
 
@@ -58,7 +59,7 @@ public class fhbm2AdvancementAnnouncer {
 
             String title = stripLegacyColorCode(rawTitle);
 
-            TextComponentString prefix = new TextComponentString(player.getName() + " has completed ");
+            TextComponentTranslation prefix = new TextComponentTranslation("hbm.achievement.fhbm2_complete_msg", player.getDisplayName());
 
             TextComponentString advText = new TextComponentString(title);
             advText.getStyle().setColor(color);
