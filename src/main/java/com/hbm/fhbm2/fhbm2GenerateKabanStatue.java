@@ -22,19 +22,14 @@ public class fhbm2GenerateKabanStatue implements IWorldGenerator {
 
     private static final Set<String> ALLOWED_BIOMES = new HashSet<>();
     static {
-        //TODO: use biomedictionary later for deserts and jungles instead of this.
+
+        //  TODO: Use BiomeDictionary to allow every deserts and every jungles, including modded, instead of this.
+        //      Actually never mind that. Since I was lazy to fix the spawn rates, this is how I kept it in check.
+        //      Just limit it to desert, mesa, and jungle.
+
         ALLOWED_BIOMES.add("minecraft:desert");
-        ALLOWED_BIOMES.add("minecraft:desert_hills");
-        ALLOWED_BIOMES.add("minecraft:desert_m");
         ALLOWED_BIOMES.add("minecraft:mesa");
-        ALLOWED_BIOMES.add("minecraft:mesa_plateau");
-        ALLOWED_BIOMES.add("minecraft:mesa_plateau_m");
-        ALLOWED_BIOMES.add("minecraft:mesa_bryce");
         ALLOWED_BIOMES.add("minecraft:jungle");
-        ALLOWED_BIOMES.add("minecraft:jungle_edge");
-        ALLOWED_BIOMES.add("minecraft:jungle_hills");
-        ALLOWED_BIOMES.add("minecraft:mutated_jungle");
-        ALLOWED_BIOMES.add("minecraft:mutated_jungle_edge");
     }
 
     @Override
