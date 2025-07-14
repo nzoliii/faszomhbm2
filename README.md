@@ -19,7 +19,7 @@ the HBM mods. You can find out the rest of the features by downloading this mod 
 update the Curseforge page)](https://www.curseforge.com/minecraft/mc-mods/faszomhbm2), or by building it from source.
 
 # Development guide:
-For development Java 17 / 21 is used.
+For development Java 17 is used.
 
 We use [Jabel](https://github.com/bsideup/jabel) to target Java 8 bytecode seamlessly (make sure you don't use APIs introduced in Java 9+)
 
