@@ -13,10 +13,12 @@ public class HbmCoreModContainer extends DummyModContainer {
 		super(new ModMetadata());
         ModMetadata meta = getMetadata();
         meta.modId = "hbmcore";
-        meta.name = "NTMCore";
-        meta.description = "HBM Core Mod";
-        meta.version = "1.12.2-1.0";
-        meta.authorList = Arrays.asList("HBMTheBobcat", "Drillgon200", "TheOriginalGolem");
+        meta.name = "FaszomHBM 2 Core";
+		meta.credits = "nzoliii";
+        meta.description = "FaszomHBM 2 Core Mod";
+        meta.version = "Community-Edition";
+		meta.authorList = Arrays.asList("HBMMods", "Drillgon200", "TheOriginalGolem", "nzoliii");
+		meta.url = "https://github.com/nzoliii/faszomhbm2";
 	}
 	
 	@Override

@@ -8,8 +8,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class fhbm2GUIButtonLanguage extends GuiButton
-{
+public class fhbm2GUIButtonLanguage extends GuiButton {
+
     private static final ResourceLocation CUSTOM_BUTTON_TEXTURES = new ResourceLocation("hbm", "textures/gui/widgets.png");
 
     public fhbm2GUIButtonLanguage(int buttonID, int xPos, int yPos)

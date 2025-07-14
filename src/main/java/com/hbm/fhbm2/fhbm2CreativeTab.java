@@ -16,6 +16,7 @@ public class fhbm2CreativeTab extends CreativeTabs {
         if(ModBlocks.fhbm2_kaban_statue != null){
             return new ItemStack(ModBlocks.fhbm2_kaban_statue);
         }
+
         return new ItemStack(Items.IRON_PICKAXE);
     }
 }

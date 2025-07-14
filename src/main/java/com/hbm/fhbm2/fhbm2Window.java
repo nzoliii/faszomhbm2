@@ -58,6 +58,7 @@ public class fhbm2Window {
                 buffer.put((byte) ((pixel >> 24) & 0xFF));
             }
         }
+
         buffer.flip();
         return buffer;
     }
