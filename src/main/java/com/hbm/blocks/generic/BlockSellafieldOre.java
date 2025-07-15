@@ -73,6 +73,7 @@ public class BlockSellafieldOre extends BlockSellafieldSlaked implements ICustom
     public void bakeModel(ModelBakeEvent event) {
         try {
             IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation("minecraft:block/cube_all"));
+            IBakedModel inventoryModel = null;
 
             for (int textureIndex = 0; textureIndex <= sellafieldTextures.length - 1; textureIndex++) {
                 ImmutableMap.Builder<String, String> textureMap = ImmutableMap.builder();
@@ -88,10 +89,18 @@ public class BlockSellafieldOre extends BlockSellafieldSlaked implements ICustom
                         ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter()
                 );
 
+                if (textureIndex == 0) {
+                    inventoryModel = bakedModel;
+                }
+
                 List<ModelResourceLocation> modelLocations = new ArrayList<>();
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=false,variant=" + textureIndex));
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=true,variant=" + textureIndex));
                 modelLocations.forEach(model -> event.getModelRegistry().putObject(model, bakedModel));
+            }
+
+            if (inventoryModel != null) {
+                event.getModelRegistry().putObject(new ModelResourceLocation(getRegistryName(), "inventory"), inventoryModel);
             }
 
         } catch (Exception e) {

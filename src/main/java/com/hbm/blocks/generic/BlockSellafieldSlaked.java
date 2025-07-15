@@ -53,7 +53,8 @@ import java.util.Objects;
  * @author MrNorwood
  */
 public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem, IDynamicModels {
-    public static final String[] sellafieldTextures = new String[]{"sellafield_slaked", "sellafield_slaked_1", "sellafield_slaked_2", "sellafield_slaked_3"};
+    public static final String[] sellafieldTextures = new String[]{"sellafield_slaked", "sellafield_slaked_1", "sellafield_slaked_2",
+            "sellafield_slaked_3"};
     public static final int TEXTURE_VARIANTS = sellafieldTextures.length;
     public static final int META_COUNT = TEXTURE_VARIANTS;
     public static final String basePath = "blocks/";
@@ -62,11 +63,11 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
     public static final PropertyBool NATURAL = PropertyBool.create("natural");
 
     public static final boolean showMetaInCreative = true;
-    protected boolean isNatural = true;
 
     public BlockSellafieldSlaked(Material mat, SoundType type, String s) {
         super(mat, type, s);
         INSTANCES.add(this);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(NATURAL, false).withProperty(VARIANT, 0));
     }
 
     public static int getVariantForPos(BlockPos pos) {
@@ -84,13 +85,13 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
     @SideOnly(Side.CLIENT)
     public void registerModel() {
         // Register the model for natural
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0,
-                new ModelResourceLocation(getRegistryName(), "natural=true,variant=0")); // Special handling for natural
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "natural=true," +
+                "variant=0")); // Special handling for natural
 
         // Register the models for meta=1 to meta=4
         for (int meta = 1; meta <= META_COUNT; meta++) {
-            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), meta,
-                    new ModelResourceLocation(getRegistryName(), "natural=false,variant=" + (meta - 1)));
+            ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), meta, new ModelResourceLocation(getRegistryName(), "natural" +
+                    "=false,variant=" + (meta - 1)));
         }
     }
 
@@ -103,13 +104,22 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
 
     @Override
     public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
-        return new ItemStack(Item.getItemFromBlock(this), 1, getMetaFromState(state));
+        boolean natural = state.getValue(NATURAL);
+        int meta;
+        if (natural) {
+            meta = 0;
+        } else {
+            int variant = state.getValue(VARIANT);
+            meta = variant + 1;
+        }
+        return new ItemStack(Item.getItemFromBlock(this), 1, meta);
     }
 
     @SideOnly(Side.CLIENT)
     public void bakeModel(ModelBakeEvent event) {
         try {
             IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation("minecraft:block/cube_all"));
+            IBakedModel inventoryModel = null;
 
             for (int textureIndex = 0; textureIndex <= sellafieldTextures.length - 1; textureIndex++) {
                 ImmutableMap.Builder<String, String> textureMap = ImmutableMap.builder();
@@ -121,14 +131,20 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
 
 
                 IModel retexturedModel = baseModel.retexture(textureMap.build());
-                IBakedModel bakedModel = retexturedModel.bake(
-                        ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter()
-                );
+                IBakedModel bakedModel = retexturedModel.bake(ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter());
+
+                if (textureIndex == 0) {
+                    inventoryModel = bakedModel;
+                }
 
                 List<ModelResourceLocation> modelLocations = new ArrayList<>();
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=false,variant=" + textureIndex));
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=true,variant=" + textureIndex));
                 modelLocations.forEach(model -> event.getModelRegistry().putObject(model, bakedModel));
+            }
+
+            if (inventoryModel != null) {
+                event.getModelRegistry().putObject(new ModelResourceLocation(getRegistryName(), "inventory"), inventoryModel);
             }
 
         } catch (Exception e) {
@@ -142,16 +158,13 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack
-            stack) {
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         int meta = stack.getMetadata();
         IBlockState newState;
         if (meta == 0) {
-            newState = this.getStateFromMeta(meta).withProperty(VARIANT, getVariantForPos(pos));
-            this.isNatural = true;
+            newState = this.getDefaultState().withProperty(NATURAL, true).withProperty(VARIANT, getVariantForPos(pos));
         } else {
-            newState = this.getStateFromMeta(meta).withProperty(VARIANT, (meta - 1));
-            this.isNatural = false;
+            newState = this.getDefaultState().withProperty(NATURAL, false).withProperty(VARIANT, meta - 1);
         }
         world.setBlockState(pos, newState, 3);
     }
@@ -164,35 +177,18 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        boolean natural = state.getValue(NATURAL); // Get the natural property (boolean)
-        int variant = state.getValue(VARIANT); // Get the variant property (int)
-
-        // 1 bit for NATURAL (true = 0, false = 1)
-        // 1 bit for padding
-        // 2 bits for variant
-
-        // 7 variants possible atm, can be 8 if player obtainable gem  block was meta 16 or higher
-
-        return (variant & 0b111) | ((natural ? 0 : 1) << 3);
-
+        int meta = state.getValue(VARIANT);
+        if (state.getValue(NATURAL)) {
+            meta |= 8;
+        }
+        return meta;
     }
 
     @Override
     public IBlockState getStateFromMeta(int meta) {
-        boolean natural;
-        int variant = (meta & 0b111);
-        //0 is reserved for natural block accessable from ingame
-        //Anything >= 8 is not neutralized as blockItems only go up to 4 meta
-        if (meta == 0 || meta >= 8) {
-            natural = true;
-        } else {
-            //Enforce staggered ID
-            variant--;
-            natural = ((meta >> 3) & 1) == 1;
-        }
-        return this.getDefaultState()
-                .withProperty(NATURAL, natural)
-                .withProperty(VARIANT, variant);
+        int variant = meta & 3;
+        boolean isNatural = (meta & 8) != 0;
+        return this.getDefaultState().withProperty(NATURAL, isNatural).withProperty(VARIANT, variant);
     }
 
 
@@ -201,8 +197,7 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
         boolean natural = state.getValue(NATURAL);
         int variant = state.getValue(VARIANT);
         int meta = variant + 1;
-        if (natural)
-            meta = 0;
+        if (natural) meta = 0;
         return Collections.singletonList(new ItemStack(Item.getItemFromBlock(this), 1, meta));
     }
 
@@ -249,22 +244,19 @@ public class BlockSellafieldSlaked extends BlockBase implements ICustomBlockItem
             int meta = stack.getMetadata();
             String name = I18nUtil.resolveKey(this.getTranslationKey() + ".name");
             String neutralizedKey = I18nUtil.resolveKey("adjective.neutralized");
-            if (meta == 0)
-                return name;
-            else
-                return neutralizedKey + " " + name;
+            if (meta == 0) return name;
+            else return neutralizedKey + " " + name;
         }
 
 
         @Override
         @SideOnly(Side.CLIENT)
         public void registerModels() {
-            ModelLoader.setCustomModelResourceLocation(this, 0,
-                    new ModelResourceLocation(this.getRegistryName(), "variant=1"));
+            ModelLoader.setCustomModelResourceLocation(this, 0, new ModelResourceLocation(this.getRegistryName(), "natural=true,variant=0"));
 
             for (int meta = 1; meta <= META_COUNT; meta++) {
-                ModelLoader.setCustomModelResourceLocation(this, meta,
-                        new ModelResourceLocation(this.getRegistryName(), "variant=" + meta));
+                ModelLoader.setCustomModelResourceLocation(this, meta, new ModelResourceLocation(this.getRegistryName(),
+                        "natural=false,variant=" + (meta - 1)));
             }
         }
 

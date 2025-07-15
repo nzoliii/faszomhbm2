@@ -201,6 +201,28 @@ public class LoopedSoundPacket implements IMessage {
 					if(flag && te.getWorld().isRemote && ((TileEntityMachineGasCent)te).isProgressing)
 						Minecraft.getMinecraft().getSoundHandler().playSound(new SoundLoopCentrifuge(HBMSoundHandler.centrifugeOperate, te));
 				}
+
+				if (te instanceof TileEntityHeatBoilerIndustrial) {
+
+					boolean flag = true;
+					for(int i = 0; i < SoundLoopHeatBoilerIndustrial.list.size(); i++)  {
+						if(SoundLoopHeatBoilerIndustrial.list.get(i).getTE() == te && !SoundLoopHeatBoilerIndustrial.list.get(i).isDonePlaying()) {
+                            flag = false;
+                            break;
+                        }
+					}
+
+					int j = te.getPos().getX() + te.getPos().getY() + te.getPos().getZ();
+					int rand = Math.abs(j) % 3 + 1;
+					SoundEvent sound = switch (rand) {
+                        case 2 -> HBMSoundHandler.boiler_groan2;
+                        case 3 -> HBMSoundHandler.boiler_groan3;
+                        default -> HBMSoundHandler.boiler_groan1;
+                    };
+
+                    if(flag && te.getWorld().isRemote)
+						Minecraft.getMinecraft().getSoundHandler().playSound(new SoundLoopHeatBoilerIndustrial(sound, te));
+				}
 			});
 			
 			

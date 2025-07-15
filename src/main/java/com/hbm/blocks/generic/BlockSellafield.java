@@ -3,7 +3,6 @@ package com.hbm.blocks.generic;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.hbm.blocks.ICustomBlockItem;
 import com.hbm.blocks.ModBlocks;
 import com.hbm.handler.RadiationSystemNT;
 import com.hbm.items.IDynamicModels;
@@ -45,9 +44,9 @@ import java.util.Random;
  * See parent class for more detailed info. Since I could not cram all the data into single item due to 4bit block data
  * restriction, check out getSellafiteFromLvl and getLvlfromSellafite, they should make it much closer in behavior to
  * what 1.7 can get away with.
-  * @author MrNorwood
+ * @author MrNorwood
  */
-public class BlockSellafield extends BlockSellafieldSlaked implements ICustomBlockItem, IDynamicModels {
+public class BlockSellafield extends BlockSellafieldSlaked implements IDynamicModels {
 
     public static final int LEVELS = 7;
     public static final float rad = 0.5f;
@@ -92,7 +91,7 @@ public class BlockSellafield extends BlockSellafieldSlaked implements ICustomBlo
 
     @Override
     public void onEntityWalk(World worldIn, BlockPos pos, Entity entityIn) {
-        if(!isNatural)
+        if(!worldIn.getBlockState(pos).getValue(NATURAL))
             return;
         int level = this.level;
 
@@ -147,6 +146,7 @@ public class BlockSellafield extends BlockSellafieldSlaked implements ICustomBlo
     public void bakeModel(ModelBakeEvent event) {
         try {
             IModel baseModel = ModelLoaderRegistry.getModel(new ResourceLocation("minecraft:block/cube_all"));
+            IBakedModel inventoryModel = null;
 
             for (int textureIndex = 0; textureIndex <= sellafieldTextures.length - 1; textureIndex++) {
                 ImmutableMap.Builder<String, String> textureMap = ImmutableMap.builder();
@@ -162,10 +162,18 @@ public class BlockSellafield extends BlockSellafieldSlaked implements ICustomBlo
                         ModelRotation.X0_Y0, DefaultVertexFormats.BLOCK, ModelLoader.defaultTextureGetter()
                 );
 
+                if (textureIndex == 0) {
+                    inventoryModel = bakedModel;
+                }
+
                 List<ModelResourceLocation> modelLocations = new ArrayList<>();
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=false,variant=" + textureIndex));
                 modelLocations.add(new ModelResourceLocation(getRegistryName(), "natural=true,variant=" + textureIndex));
                 modelLocations.forEach(model -> event.getModelRegistry().putObject(model, bakedModel));
+            }
+
+            if (inventoryModel != null) {
+                event.getModelRegistry().putObject(new ModelResourceLocation(getRegistryName(), "inventory"), inventoryModel);
             }
 
         } catch (Exception e) {

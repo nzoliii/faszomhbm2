@@ -367,6 +367,7 @@ public class MainRegistry {
         GameRegistry.registerTileEntity(TileEntityDiFurnaceRTG.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_difurnace_rtg"));
         GameRegistry.registerTileEntity(TileEntityMachinePress.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_press"));
         GameRegistry.registerTileEntity(TileEntityMachineAmmoPress.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_ammo_press"));
+        GameRegistry.registerTileEntity(TileEntityHeatBoilerIndustrial.class, new ResourceLocation(RefStrings.MODID, "tileentity_heat_boiler_industrial"));
         GameRegistry.registerTileEntity(TileEntityTestRender.class, new ResourceLocation(RefStrings.MODID, "tileentity_testrenderer"));
         GameRegistry.registerTileEntity(TileEntityMachineChemplant.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_chemplant"));
         GameRegistry.registerTileEntity(TileEntityMachineChemfac.class, new ResourceLocation(RefStrings.MODID, "tileentity_machine_chemfac"));

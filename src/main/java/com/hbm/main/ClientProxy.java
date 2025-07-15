@@ -36,7 +36,6 @@ import com.hbm.items.special.ItemAutogen;
 import com.hbm.items.special.ItemBedrockOreNew;
 import com.hbm.items.special.ItemDepletedFuel;
 import com.hbm.items.tool.ItemGasCanister;
-import com.hbm.items.weapon.IMetaItemTesr;
 import com.hbm.lib.HBMSoundHandler;
 import com.hbm.lib.RecoilHandler;
 import com.hbm.lib.RefStrings;
@@ -97,6 +96,14 @@ import com.hbm.tileentity.turret.*;
 import com.hbm.util.BobMathUtil;
 import com.hbm.util.I18nUtil;
 import com.hbm.wiaj.cannery.Jars;
+import java.awt.*;
+import java.io.File;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDirt;
 import net.minecraft.block.BlockStainedHardenedClay;
@@ -142,23 +149,11 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import paulscode.sound.SoundSystemConfig;
-
-import java.awt.*;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
 
 public class ClientProxy extends ServerProxy {
 
@@ -180,7 +175,7 @@ public class ClientProxy extends ServerProxy {
     public static boolean renderingConstant = false;
     public static int boxcarCalllist;
     public RenderInfoSystemLegacy theInfoSystem = new RenderInfoSystemLegacy();
-    private final HashMap<Integer, Long> vanished = new HashMap<>();
+    private HashMap<Integer, Long> vanished = new HashMap<>();
 
     public static void registerItemRenderer(Item i, TileEntityItemStackRenderer render, IRegistry<ModelResourceLocation, IBakedModel> reg) {
         i.setTileEntityItemStackRenderer(render);
@@ -228,6 +223,7 @@ public class ClientProxy extends ServerProxy {
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachinePress.class, new RenderPress());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineAmmoPress.class, new RenderAmmoPress());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatBoilerIndustrial.class, new RenderIndustrialBoiler());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineAssembler.class, new RenderAssembler());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityMachineAssemfac.class, new RenderAssemfac());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTestRender.class, new RenderTestRender());
@@ -1356,7 +1352,7 @@ public class ClientProxy extends ServerProxy {
                         newDirection = newDirection.mult((float) direction.length() + rand.nextFloat() * velocityRand);
                         Particle fx = new ParticleSpark(world, x, y, z, length + rand.nextFloat() * randLength, width
                                 , lifetime + rand.nextInt(randLifeTime), gravity).color(r, g, b, a).motion((float) newDirection.xCoord,
-(float) newDirection.yCoord, (float) newDirection.zCoord);
+                                (float) newDirection.yCoord, (float) newDirection.zCoord);
                         Minecraft.getMinecraft().effectRenderer.addEffect(fx);
                     }
                 }
@@ -1438,7 +1434,7 @@ public class ClientProxy extends ServerProxy {
                     Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleFlame.Factory().createParticle(-1,
                             world, ix - ox, iy, iz - oz, p.motionX + moX * 2, p.motionY + moY * 2, p.motionZ + moZ * 2));
                     Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSmokeNormal.Factory().createParticle(-1, world, ix + ox, iy,
- iz + oz, p.motionX + moX * 3, p.motionY + moY * 3, p.motionZ + moZ * 3));
+                            iz + oz, p.motionX + moX * 3, p.motionY + moY * 3, p.motionZ + moZ * 3));
                     Minecraft.getMinecraft().effectRenderer.addEffect(new ParticleSmokeNormal.Factory().createParticle(-1, world, ix - ox, iy,
                             iz - oz, p.motionX + moX * 3, p.motionY + moY * 3, p.motionZ + moZ * 3));
                 }
@@ -2095,8 +2091,8 @@ public class ClientProxy extends ServerProxy {
     @SuppressWarnings("deprecation")
     @Override
     public float partialTicks() {
-            boolean paused = Minecraft.getMinecraft().isGamePaused();
-            return paused ?  Minecraft.getMinecraft().renderPartialTicksPaused : Minecraft.getMinecraft().getRenderPartialTicks();
+        boolean paused = Minecraft.getMinecraft().isGamePaused();
+        return paused ?  Minecraft.getMinecraft().renderPartialTicksPaused : Minecraft.getMinecraft().getRenderPartialTicks();
     }
 
 }

@@ -374,6 +374,9 @@ public class ResourceManager {
 	//Strand Caster
 	public static final IModelCustom strand_caster = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/strand_caster.obj")).asVBO();
 
+	//Industrial Boiler
+	public static final IModelCustom boiler_industrial = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/industrial_boiler.obj")).asVBO();
+
 	//IGen
 	public static final IModelCustom igen = new HFRWavefrontObject(new ResourceLocation(RefStrings.MODID, "models/machines/igen.obj")).asVBO();
 	
@@ -579,6 +582,9 @@ public class ResourceManager {
 
 	//Strand Caster
 	public static final ResourceLocation strand_caster_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/strand_caster.png");
+
+	//Industrial Boiler
+	public static final ResourceLocation boiler_industrial_tex = new ResourceLocation(RefStrings.MODID, "textures/models/machines/industrial_boiler.png");
 
 	//FENSU
 	public static final ResourceLocation[] fensu_tex = new ResourceLocation[] { 

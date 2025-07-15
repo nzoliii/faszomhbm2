@@ -2726,6 +2726,20 @@ public class ItemRenderLibrary {
                 GlStateManager.shadeModel(GL11.GL_FLAT);
             }
         });
+
+        renderers.put(Item.getItemFromBlock(ModBlocks.machine_industrial_boiler), new ItemRenderBase() {
+            public void renderInventory() {
+                GlStateManager.translate(0, -3, 0);
+                GlStateManager.scale(2.5, 2.5, 2.5);
+            }
+            public void renderCommon() {
+                GlStateManager.rotate(90, 0F, 1F, 0F);
+                GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                bindTexture(ResourceManager.boiler_industrial_tex);
+                ResourceManager.boiler_industrial.renderAll();
+                GlStateManager.shadeModel(GL11.GL_FLAT);
+            }
+        });
     }
 
     private static void bindTexture(ResourceLocation res) {

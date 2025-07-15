@@ -1,5 +1,8 @@
 package com.hbm.blocks;
 
+import static com.hbm.blocks.BlockEnums.OreType;
+import static com.hbm.blocks.OreEnumUtil.OreEnum;
+
 import com.hbm.blocks.bomb.*;
 import com.hbm.blocks.gas.*;
 import com.hbm.blocks.generic.*;
@@ -20,6 +23,8 @@ import com.hbm.main.MainRegistry;
 import com.hbm.render.block.BlockBakeFrame;
 import com.hbm.tileentity.DoorDecl;
 import com.hbm.tileentity.machine.*;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
@@ -28,13 +33,6 @@ import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.hbm.blocks.BlockEnums.OreType;
-import static com.hbm.blocks.OreEnumUtil.OreEnum;
-
 
 public class ModBlocks {
 
@@ -1133,6 +1131,7 @@ public class ModBlocks {
 	public static final Block foundry_basin = new FoundryBasin("foundry_basin").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block foundry_channel = new FoundryChannel("foundry_channel").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 	public static final Block foundry_outlet = new FoundryOutlet("foundry_outlet").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
+	public static final Block machine_industrial_boiler = new MachineHeatBoilerIndustrial(Material.IRON, "machine_industrial_boiler").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
 
 	//Misc
 	public static final Block radsensor = new RadSensor(Material.IRON, "radsensor").setHardness(5.0F).setResistance(10.0F).setCreativeTab(MainRegistry.machineTab);
