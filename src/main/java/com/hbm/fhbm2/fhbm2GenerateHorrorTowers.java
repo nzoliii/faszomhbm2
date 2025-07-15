@@ -71,7 +71,7 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
             BlockPos adjustedPos = pos.add((STRUCTURE_SIZE - structureSize.getX()) / 2, 0, (STRUCTURE_SIZE - structureSize.getZ()) / 2);
 
             template.addBlocksToWorld(world, adjustedPos, settings);
-            System.out.println("Generated structure: " + DIGAMMA_TOWER + " at " + adjustedPos);
+            System.out.println("[fhbm2GenerateHorrorTowers] Generated structure: " + DIGAMMA_TOWER + " at " + adjustedPos);
         } else {
             System.err.println("[fhbm2GenerateHorrorTowers] Could not find structure: " + DIGAMMA_TOWER);
         }
