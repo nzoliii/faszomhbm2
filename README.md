@@ -1,6 +1,8 @@
 ![fhbm2_title](https://raw.githubusercontent.com/nzoliii/faszomhbm2/master/static_banners/fhbm2_title.png)
 
 # Description
+The worst version of all HBM mods.
+
 The sequel to [Faszom HBM](https://github.com/nzoliii/faszomhbm).
 
 I named this mod Faszom HBM because when I first started messing with Hbm’s Nuclear Tech Mod, I had no idea how anything worked, and it just kept making me mad, so I kept saying “faszom hbm,” which is basically the Hungarian version of “fucking hbm.” That saying stuck with me when I made my own fork.

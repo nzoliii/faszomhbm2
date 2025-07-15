@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 public class fhbm2GenerateKabanStatue implements IWorldGenerator {
 
     private static final int STRUCTURE_SIZE = 3;
-    private static final String KABAN_STATUE = "fhbm2_kaban_statue";
+    private static final String KABAN_STATUE = "Nfhbm2_kaban_statue";
     private static final int BASE_SPAWN_CHANCE = 1;
 
     private static final Set<String> ALLOWED_BIOMES = new HashSet<>();
@@ -37,8 +37,6 @@ public class fhbm2GenerateKabanStatue implements IWorldGenerator {
         if (world.provider.getDimension() != 0) return;
         if (world.getWorldType() == WorldType.FLAT) return;
 
-        int spawnChance = BASE_SPAWN_CHANCE;
-
         int x = chunkX * 16 + random.nextInt(16);
         int z = chunkZ * 16 + random.nextInt(16);
         int y = world.getHeight(x, z);
@@ -48,7 +46,7 @@ public class fhbm2GenerateKabanStatue implements IWorldGenerator {
         if (biome.getRegistryName() != null && ALLOWED_BIOMES.contains(biome.getRegistryName().toString())) {
 
             if (isFlatAndClear(world, origin, STRUCTURE_SIZE)) {
-                if (random.nextInt(100) < spawnChance) {
+                if (random.nextInt(100) < BASE_SPAWN_CHANCE) {
                     spawnStructure(world, origin);
                 }
             }

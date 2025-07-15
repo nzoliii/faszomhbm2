@@ -28,15 +28,13 @@ public class fhbm2GenerateHorrorTowers implements IWorldGenerator {
         if (world.provider.getDimension() != 0) return;
         if (world.getWorldType() == WorldType.FLAT) return;
 
-        int spawnChance = BASE_SPAWN_CHANCE;
-
         int x = chunkX * 16 + random.nextInt(16);
         int z = chunkZ * 16 + random.nextInt(16);
         int y = world.getHeight(x, z);
         BlockPos origin = new BlockPos(x, y, z);
 
         if (isFlatAndClear(world, origin, STRUCTURE_SIZE)) {
-            if (random.nextInt(100) < spawnChance) {
+            if (random.nextInt(100) < BASE_SPAWN_CHANCE) {
                 spawnStructure(world, origin);
             }
         }
